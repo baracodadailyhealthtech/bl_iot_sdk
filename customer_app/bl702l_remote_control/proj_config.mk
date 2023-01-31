@@ -1,0 +1,39 @@
+#
+#compiler flag config domain
+#
+
+#
+#board config domain
+#
+
+
+#
+#app specific config domain
+#
+
+CONFIG_CHIP_NAME := BL702L
+CONFIG_USE_STDLIB_MALLOC := 0
+CONFIG_BUILD_ROM_CODE := 0
+CONFIG_DBG_RUN_ON_FPGA := 0
+CONFIG_EASYFLASH_ENABLE:=1
+
+# use internal RC32K by default; may set to 1 for better accuracy if there is XTAL32K on the board
+CONFIG_USE_XTAL32K := 0
+CONFIG_BL702_USE_ROM_DRIVER := 1
+LOG_ENABLED_COMPONENTS := hosal vfs
+CONF_ENABLE_COREDUMP:=1
+CONFIG_SYS_COMMON_MAIN_ENABLE := 1
+CONFIG_SYS_APP_TASK_STACK_SIZE := 2048
+CONFIG_SYS_APP_TASK_PRIORITY := 14
+CONFIG_SYS_BLOG_ENABLE := 1
+
+CONFIG_SYS_VFS_ENABLE := 1
+CONFIG_SYS_VFS_UART_ENABLE := 1
+CONFIG_SYS_AOS_CLI_ENABLE := 1
+CONFIG_SYS_AOS_LOOP_ENABLE := 1
+
+EXT_CFG_FILE := $(PROJECT_PATH)/proj_config_ext.mk
+ifeq ($(EXT_CFG_FILE), $(wildcard $(EXT_CFG_FILE)))
+include $(PROJECT_PATH)/proj_config_ext.mk
+endif
+

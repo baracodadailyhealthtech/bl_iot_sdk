@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Bouffalolab.
+ * Copyright (c) 2016-2023 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -59,11 +59,8 @@
 #include <hosal_gpio.h>
 #include <hal_gpio.h>
 #include <hal_button.h>
-#include <hal_hwtimer.h>
 #include <hal_pds.h>
 #include <hal_tcal.h>
-#include <FreeRTOS.h>
-#include <timers.h>
 
 #ifdef CFG_ETHERNET_ENABLE
 #include <lwip/netif.h>
@@ -757,12 +754,37 @@ static void system_init(void)
     bl_hbn_gpio_wakeup_cfg(pin_list, 1);
 #endif
 
+#if defined(CFG_WATCHDOG_ENABLE)
+    bl_wdt_init(4000);
+#endif
+
 #if defined(CFG_USE_PSRAM)
     bl_psram_init();
     vPortDefineHeapRegionsPsram(xHeapRegionsPsram);
     printf("PSRAM Heap %u@%p\r\n",(unsigned int)&_heap3_size, &_heap3_start);
 #endif /*CFG_USE_PSRAM*/
 }
+
+#if defined(CFG_ZIGBEE_PDS) && (CFG_PDS_LEVEL == 31)
+uint8_t* zb_allocateFlashCacheBuffer(uint32_t bufferSize)
+{
+    extern uint8_t _tcm_rsvd_start;
+    extern uint8_t _tcm_rsvd_end;
+
+    if ((&_tcm_rsvd_start + bufferSize) <= &_tcm_rsvd_end)
+    {
+        return &_tcm_rsvd_start;
+    }
+
+    printf("Failed to allocate buffer for flash cache\r\n");
+    return NULL;
+}
+
+void zb_freeFlashCacheBuffer(uint8_t* pBuffer)
+{
+    //no need to free
+}
+#endif
 
 static void system_thread_init()
 {
@@ -793,16 +815,7 @@ static void system_thread_init()
     #endif
 #endif
 #if defined(CFG_ZIGBEE_ENABLE)
-#if defined(CFG_ZIGBEE_SLEEPY_END_DEVICE_STARTUP) && (CFG_PDS_LEVEL == 31)
-    zb_disableFlashCache();
-#endif
     zigbee_init();
-
-    #if defined(CONFIG_HW_SEC_ENG_DISABLE)
-    //if sec engine is disabled, use software rand in bl_rand
-    int seed = bl_timer_get_current_time();
-    srand(seed);
-    #endif
 #endif
 }
 

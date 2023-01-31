@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cronalarm &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  <title>cronalarm &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-697-gfb0840df5 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-697-gfb0840df5 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+                release_bl_iot_sdk_1.6.40-697-gfb0840df5
               </div>
             
           
@@ -93,16 +93,14 @@
             
             
                 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API 参考</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
 </ul>
 
             
@@ -167,27 +165,27 @@
            <div itemprop="articleBody">
             
   <div class="section" id="cronalarm">
-<span id="cronalarm-index"></span><h1>cronalarm<a class="headerlink" href="#cronalarm" title="永久链接至标题"></a></h1>
+<span id="cronalarm-index"></span><h1>cronalarm<a class="headerlink" href="#cronalarm" title="永久链接至标题">¶</a></h1>
 <div class="section" id="id1">
-<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
 <p>本示例主要介绍如何配置cronalarm</p>
 </div>
 <div class="section" id="id2">
-<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <ul class="simple">
-<li>使用步骤：<ul>
-<li>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_cronalarm</span></code> 工程并下载工程；</li>
-<li>在main.c中有相关头文件的使用，main.c中aos_loop_proc 中有cronalarm相关的初始化。使用cronalarm 需要包含头文件cronalarms.h 。</li>
+<li><p>使用步骤：</p>
+<ul>
+<li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_cronalarm</span></code> 工程并下载工程；</p></li>
+<li><p>在main.c中有相关头文件的使用，main.c中aos_loop_proc 中有cronalarm相关的初始化。使用cronalarm 需要包含头文件cronalarms.h 。</p></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="id3">
-<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
 <ul>
-<li><p class="first">命令解析</p>
-</li>
-<li><img alt="" class="first" src="../../../_images/01.png" />
+<li><p>命令解析</p></li>
+<li><img alt="" src="../../../_images/01.png" />
 </li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cron_alarm_create(&quot;0 30 8 * * *&quot;, MorningAlarm, 0);
@@ -262,7 +260,7 @@ cron_alarm_create(&quot;11 23 1 1 JAN-FEB *&quot;, test_month02, 0);
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            VERSION:'release_bl_iot_sdk_1.6.40-697-gfb0840df5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# build for demo image
+#   CONFIG_CSL_RX, for SED/SSED device type
+#       0, SED device, CSL receiver disabled
+#       1, SSED device, CSL recevier enabled
+CONFIG_CSL_RX=0
+CONFIG_LINK_METRICS=1
+CONFIG_ENABLE_FP=1
+
+jobs=4
+if (( $1 -eq "" )); then
+jobs=$1
+fi
+
+if [ ! -d build_out ]; then
+mkdir build_out
+fi
+
+options="CONFIG_CPP_ENABLE=1 \
+    CONFIG_FTD=0 \
+    CONFIG_TIMESYNC=0 \
+    CONFIG_LINK_METRICS=1 \
+    CONFIG_CSL_RX=$CONFIG_CSL_RX"
+
+options=$options" CONFIG_PDS_ENABLE=1"
+options=$options" CONFIG_ENABLE_FP=$CONFIG_ENABLE_FP"
+
+options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
+
+make $options -j $jobs 2>&1 | tee build_out/make.log
+
+exit $?

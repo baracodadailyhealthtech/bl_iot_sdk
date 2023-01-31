@@ -1,12 +1,10 @@
-# Openthread
+# Openthread examples
 
-Current source code of openthread is based on [Thread Reference 2020-08-18](https://github.com/openthread/openthread/releases/tag/thread-reference-20200818). 
-
-# Command line example
+## Command line example
 
 Command line example is for openthread official examples: `ot-cli-ftd` and `ot-cli-mtd`, which doesn't have extra configurations during startup. 
 
-## Build
+### Build
 
 Type following command to build:
 
@@ -19,11 +17,11 @@ Type following command to build:
 | option        | comments                                                     |
 | ------------- | ------------------------------------------------------------ |
 | CONFIG_FTD    | `0`, build MTD image, which enables joiner<br />`1`, build FTD image, which enables both of commissioner and joiner. |
-| CONFIG_PREFIX | `0`, original openthread cli command names, eg, type `state` to get status of device.<br/>`1`, build bouffalolab command line set together, openthread command line set works as `otc` command's sub set. eg, type`otc state` to get status of device. |
+| CONFIG_PREFIX | set prefix for command. |
 | CONFIG_USB_CDC | `1`, enable CDC; <br />`0`, disabe CDC|
 | CONFIG_BT_OAD_SERVER | `1`, enable BLE for OTA upgrade; <br /> `0`, disable BLE |
 
-## Execution - 1
+### Execution - 1
 
 1. Build a FTD image and a MTD image,  (Two FTD images are also OK) and download to the eval boards.
 
@@ -81,7 +79,7 @@ Type following command to build:
 
 Please refer the [official page](https://openthread.google.cn/guides/build/commissioning) for more detail information.
 
-## Execution - 2
+### Execution - 2
 
 While，directly configuring dataset to attach the device to the network also works.
 
@@ -128,11 +126,11 @@ While，directly configuring dataset to attach the device to the network also wo
 
    Type `ipaddr`  to get IP address, and then `ping <ip address>` in command line of another device. And then sniffer tool should captured ICMPv6 packets.
 
-# LED example
+## LED example
 
 LED example can toggle each other's on-board led through connecting IO12 PIN to VDD.
 
-## Build
+### Build
 
 Type following command to build:
 
@@ -149,7 +147,7 @@ Type following command to build:
 | CONFIG_OTDEMO | `1`, use UDP to send on/off message <br />`2`, use CoAP to send on/off message |
 | CONFIG_PP     | Set polling period of SED device, which is valid when CONFIG_FTD=0. And unit is `ms`. |
 
-## Execution
+### Execution
 
 1. Build a FTD image and a MTD image with UDP or CoAP selected,  (Two FTD images are also OK) and download to the eval boards.
 
@@ -167,7 +165,7 @@ Type following command to build:
 
 5. Observe RX0_LED wtheter to be toggled.
 
-## LED indications
+### LED indications
 
 |TX1_LED| RX1_LED| 状态|
 |-|-|-|
@@ -177,8 +175,8 @@ Type following command to build:
 |off|on|leader|
 
 
-# NCP/RCP example
-## Build
+## NCP/RCP example
+### Build
 
 Type following command to build:
 
@@ -194,26 +192,65 @@ Type following command to build:
 | CONFIG_FTD    | `0`, build MTD image;<br />`1`, build FTD image. |
 
 > **NOTE**, NCP/RCP only works with UART.
-## pyspinel & sniffer
+### pyspinel
 
-Please refer to [offical guide](https://openthread.io/guides/pyspinel) for more detail.
-### without extcap
+Please refer to [offical guide](https://openthread.io/guides/pyspinel) or [mirror web](https://openthread.google.cn/guides/pyspinel) for more detail.
+
+
+#### spinel-cli.py
+
+Please execute following command to connect NCP/RCP.
+```shell
+python3 spinel-cli.py -u <device_of_uart_> -b 2000000
+```
+Then, you can try following commands with another device for testing.
+
+```shell
+spinel-cli > version
+OPENTHREAD/2ce3d3bf0; BL702; Dec 14 2022 10:32:36
+Done
+# enable interface, configure network information and attach to a leader
+spinel-cli > ifconfig up
+Done
+spinel-cli > channel 23
+Done
+spinel-cli > panid 0xb702
+Done
+spinel-cli > networkkey 00112233445566778899aabbccddeeff
+Done
+spinel-cli > thread start
+Done
+spinel-cli > state
+router
+Done
+# show deivce's IP addresses
+spinel-cli > ipaddr
+fd73:b36b:54f6:186c:0:ff:fe00:4001
+fd73:b36b:54f6:186c:a4af:35d7:427d:d983
+fe80::c0b7:78bc:f0b2:6a37
+Done
+# fd73:b36b:54f6:186c:c757:effa:30bb:b256 is another device's IP address
+spinel-cli > ping fd73:b36b:54f6:186c:0:ff:fe00:4000
+spinel-cli > 
+56 bytes from fd73:b36b:54f6:186c:0:ff:fe00:4000: icmp_seq=52451 hlim=64 time=25ms
+
+```
+
+#### without extcap
 
 ```shell
 python3 sniffer.py -c <channel> -u <device_of_uart_> --crc -b <uart_baudrate> | <path_to_wireshark> -k -i -
 ```
 
-### extcap
+#### extcap
 
 Note that `COMMON_BAUDRATE` in `extcap_ot.py` doesn't support 2000000 Uart baudrate, please change uart baudrate with DTS file.
 
-## Border Router with Raspberry Pi
+### Border Router with Raspberry Pi
 
 Please refer to [Border Router](https://openthread.io/guides/border-router) and [Raspberry Pi](https://openthread.io/guides/border-router/raspberry-pi) for more detail information.
 
 **Note**, by default otbr-agent uses UART baudrate 115200 for communication. 
 - Please change baudrate with DTS file;
 - Or change `OTBR_AGENT_OPTS` in /etc/default/otbr-agent to like `spinel+hdlc+uart:///dev/ttyUSB0?uart-baudrate=<baudrate>`
-
-
 

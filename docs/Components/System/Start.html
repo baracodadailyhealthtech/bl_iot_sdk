@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK启动链接及FreeRTOS简要分析 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  <title>BL IOT SDK启动链接及FreeRTOS简要分析 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-697-gfb0840df5 文档</title>
   
 
   
@@ -39,10 +39,7 @@
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
-        <link rel="up" title="&lt;no title&gt;" href="index.html"/>
-        <link rel="next" title="&lt;no title&gt;" href="../Middleware/index.html"/>
-        <link rel="prev" title="BL libc" href="Libc.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-697-gfb0840df5 文档" href="../../index.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -74,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+                release_bl_iot_sdk_1.6.40-697-gfb0840df5
               </div>
             
           
@@ -95,32 +92,15 @@
           
             
             
-                <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">API 参考</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Examples/index.html">Example</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Components</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Coredump.html">Coredump</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Libc.html">Libc</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Start</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#start-s">start.S</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#freertos">FreeRTOS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#flash-rom-ld">flash_rom.ld</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../Middleware/yloop.html">yloop</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Middleware/vfs.html">vfs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Middleware/devicetree.html">dts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Middleware/blog.html">blog</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../BLE/ble_stack.html">ble_stack</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
 </ul>
 
             
@@ -165,10 +145,6 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../index.html">Components</a> &raquo;</li>
-        
-          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
-        
       <li>BL IOT SDK启动链接及FreeRTOS简要分析</li>
     
     
@@ -189,33 +165,33 @@
            <div itemprop="articleBody">
             
   <div class="section" id="bl-iot-sdkfreertos">
-<h1>BL IOT SDK启动链接及FreeRTOS简要分析<a class="headerlink" href="#bl-iot-sdkfreertos" title="永久链接至标题"></a></h1>
+<h1>BL IOT SDK启动链接及FreeRTOS简要分析<a class="headerlink" href="#bl-iot-sdkfreertos" title="永久链接至标题">¶</a></h1>
 <p>本文简要分析bl iot SDK的start.S文件的初始化过程，FreeRTOS以及链接脚本。</p>
 <div class="section" id="start-s">
-<h2>start.S<a class="headerlink" href="#start-s" title="永久链接至标题"></a></h2>
+<h2>start.S<a class="headerlink" href="#start-s" title="永久链接至标题">¶</a></h2>
 <p>该文件路径：components/platform/soc/bl602/bl602/evb/src/boot/gcc/start.S</p>
 <ul class="simple">
-<li>关闭中断</li>
+<li><p>关闭中断</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">li</span> <span class="n">t0</span><span class="p">,</span> <span class="n">MSTATUS_MIE</span>
 <span class="n">csrc</span> <span class="n">mstatus</span><span class="p">,</span> <span class="n">t0</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>初始化GP寄存器</li>
+<li><p>初始化GP寄存器</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>la gp, __global_pointer
 GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接时决定，不可更改。
 </pre></div>
 </div>
 <ul class="simple">
-<li>初始化栈指针</li>
+<li><p>初始化栈指针</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">la</span> <span class="n">sp</span><span class="p">,</span> <span class="n">_sp_main</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>读取boot2中约定好的partition地址来设置sdk中的boot2_partition_table变量,该变量放置在指定的section中</li>
+<li><p>读取boot2中约定好的partition地址来设置sdk中的boot2_partition_table变量,该变量放置在指定的section中</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">la</span> <span class="n">a0</span><span class="p">,</span> <span class="n">__boot2_pt_addr_src</span>
 <span class="n">la</span> <span class="n">a1</span><span class="p">,</span> <span class="n">__boot2_pt_addr_start</span>
@@ -223,7 +199,7 @@ GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接�
 </pre></div>
 </div>
 <ul class="simple">
-<li>读取boot2中约定好的flash地址来设置sdk中的boot2_flashCfg变量,该变量放置在指定的section中</li>
+<li><p>读取boot2中约定好的flash地址来设置sdk中的boot2_flashCfg变量,该变量放置在指定的section中</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jal</span> <span class="n">hal_boot2_get_flash_addr</span>
 <span class="n">la</span> <span class="n">a1</span><span class="p">,</span> <span class="n">__boot2_flashCfg_start</span>
@@ -231,7 +207,7 @@ GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接�
 </pre></div>
 </div>
 <ul class="simple">
-<li>初始化data段</li>
+<li><p>初始化data段</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">la</span> <span class="n">a0</span><span class="p">,</span> <span class="n">_data_load</span>
 <span class="n">la</span> <span class="n">a1</span><span class="p">,</span> <span class="n">_data_run</span>
@@ -239,14 +215,14 @@ GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接�
 </pre></div>
 </div>
 <ul class="simple">
-<li>初始化bss段</li>
+<li><p>初始化bss段</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">la</span> <span class="n">a0</span><span class="p">,</span> <span class="n">__bss_start</span>
 <span class="n">la</span> <span class="n">a1</span><span class="p">,</span> <span class="n">__bss_end</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>初始化main入口地址</li>
+<li><p>初始化main入口地址</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">li</span> <span class="n">a0</span><span class="p">,</span> <span class="mi">0</span>
 <span class="n">li</span> <span class="n">a1</span><span class="p">,</span> <span class="mi">0</span>
@@ -255,33 +231,33 @@ GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接�
 </div>
 </div>
 <div class="section" id="freertos">
-<h2>FreeRTOS<a class="headerlink" href="#freertos" title="永久链接至标题"></a></h2>
+<h2>FreeRTOS<a class="headerlink" href="#freertos" title="永久链接至标题">¶</a></h2>
 <p>FreeRTOS由Richard Barry开发，是一个开源的、可移植的、小型的嵌入式实时操作系统内核。FreeRTOS既支持抢占式多任务，也支持协作式多任务,SDK中源码路径：components/platform/soc/bl602/freertos_riscv_ram。</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt>中断入口</dt>
-<dd>SDK中components/platform/soc/bl602/freertos_riscv_ram/portable/GCC/RISC-V/portASM.S里的freertos_risc_v_trap_handler。</dd>
+<li><dl class="simple">
+<dt>中断入口</dt><dd><p>SDK中components/platform/soc/bl602/freertos_riscv_ram/portable/GCC/RISC-V/portASM.S里的freertos_risc_v_trap_handler。</p>
+</dd>
 </dl>
 </li>
 </ul>
 </div>
 <div class="section" id="flash-rom-ld">
-<h2>flash_rom.ld<a class="headerlink" href="#flash-rom-ld" title="永久链接至标题"></a></h2>
+<h2>flash_rom.ld<a class="headerlink" href="#flash-rom-ld" title="永久链接至标题">¶</a></h2>
 <p>该文件路径：components/platform/soc/bl602/bl602/evb/ld/flash_rom.ld</p>
 <ul class="simple">
-<li>设置输出文件的machine architecture(体系结构)</li>
+<li><p>设置输出文件的machine architecture(体系结构)</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OUTPUT_ARCH</span><span class="p">(</span> <span class="s2">&quot;riscv&quot;</span> <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>设置入口地址</li>
+<li><p>设置入口地址</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ENTRY</span><span class="p">(</span> <span class="n">bl602_start</span> <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>MEMORY命令</li>
+<li><p>MEMORY命令</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>MEMORY
 {
@@ -303,14 +279,12 @@ L 同I
 ORIGIN ：关键字，区域的开始地址，可简写成org或o
 LENGTH ：关键字，区域的大小，可简写成len或l</p>
 <ul class="simple">
-<li>SECTIONS命令</li>
+<li><p>SECTIONS命令</p></li>
 </ul>
-<dl class="docutils">
-<dt>在链接脚本中定义了.init段，.text段，.rodata段，.wifibss段，.romdata段，.data段，.boot2段，.bss段，.stack段。</dt>
-<dd><dl class="first last docutils">
-<dt>例:</dt>
-<dd><ul class="first simple">
-<li>.init段</li>
+<dl>
+<dt>在链接脚本中定义了.init段，.text段，.rodata段，.wifibss段，.romdata段，.data段，.boot2段，.bss段，.stack段。</dt><dd><dl>
+<dt>例:</dt><dd><ul class="simple">
+<li><p>.init段</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">init</span>           <span class="p">:</span>
 <span class="p">{</span>
@@ -320,7 +294,7 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
 </div>
 <p>KEEP()关键字强制连接器保留.init段， &gt; flash表示：将输出的.init段放置在flash中</p>
 <ul class="simple">
-<li>.rodata段</li>
+<li><p>.rodata段</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">rodata</span>         <span class="p">:</span>
 <span class="p">{</span>
@@ -340,7 +314,7 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
 <span class="p">}</span> <span class="o">&gt;</span> <span class="n">flash</span>
 </pre></div>
 </div>
-<p class="last">其中花括号外面的.rodata表示输出段的名字，花括号中表示输入的段。
+<p>其中花括号外面的.rodata表示输出段的名字，花括号中表示输入的段。
 整个代码段表示：所有文件的.rdata段,.rodata段,.rodata.*段,.sdata2.*段等段输出到.rodata段中,并将其放置在flash中。
 . = ALIGN(4); .表示当前地址，ALIGN(4):4字节对齐。</p>
 </dd>
@@ -348,7 +322,7 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
 </dd>
 </dl>
 <ul class="simple">
-<li>PROVIDE命令</li>
+<li><p>PROVIDE命令</p></li>
 </ul>
 <p>该关键字用于定义这类符号：在目标文件内被引用，但没有在任何目标文件内被定义的符号。
 例:</p>
@@ -364,15 +338,6 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
            </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../Middleware/index.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="Libc.html" class="btn btn-neutral" title="BL libc" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
-      
-    </div>
   
 
   <hr/>
@@ -401,7 +366,7 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            VERSION:'release_bl_iot_sdk_1.6.40-697-gfb0840df5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

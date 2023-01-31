@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>(BL702) &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  <title>Zigbee &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-697-gfb0840df5 文档</title>
   
 
   
@@ -39,10 +39,10 @@
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-697-gfb0840df5 文档" href="../../index.html"/>
         <link rel="up" title="Example" href="../index.html"/>
         <link rel="next" title="Zigbee" href="demo_zigbee/zigbee.html"/>
-        <link rel="prev" title="Ethernet OTA" href="../network/demo_ethernet_ota/ota.html"/> 
+        <link rel="prev" title="Mesh" href="../ble/demo_mesh/mesh.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+                release_bl_iot_sdk_1.6.40-697-gfb0840df5
               </div>
             
           
@@ -96,28 +96,23 @@
             
             
                 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_602.html">BL602快速入门</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">BL702快速入门</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference/index.html">API 参考</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Example</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">Bluetooth</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../network/index.html">Ethernet (BL702)</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Zigbee (BL702)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="demo_zigbee/zigbee.html">zigbee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ble/index.html">BLE</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Zigbee</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_zigbee/zigbee.html">Zigbee</a></li>
+<li class="toctree-l3"><a class="reference internal" href="BL702L_ZSED_Sensor/app_demo.html">ZSED_Demo</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../peripheral/index.html">Peripherals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../storage/index.html">Storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../system/index.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network/index.html">Ethernet</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../Components/index.html">Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../QA/index.html">QA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hw-reference/index.html">H/W 参考</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../resources.html">相关资源</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../about.html">关于</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../languages.html">Languages/语言</a></li>
 </ul>
 
             
@@ -164,7 +159,7 @@
         
           <li><a href="../index.html">Example</a> &raquo;</li>
         
-      <li>(BL702)</li>
+      <li>Zigbee</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -183,15 +178,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="bl702">
-<h1>(BL702)<a class="headerlink" href="#bl702" title="永久链接至标题"></a></h1>
+  <div class="section" id="zigbee">
+<h1>Zigbee<a class="headerlink" href="#zigbee" title="永久链接至标题">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demo_zigbee/zigbee.html">zigbee</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="demo_zigbee/zigbee.html">Zigbee</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="demo_zigbee/zigbee.html#id1">总览</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_zigbee/zigbee.html#id2">使用步骤</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_zigbee/zigbee.html#cli">Cli命令介绍</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_zigbee/zigbee.html#ota">OTA使用说明</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="BL702L_ZSED_Sensor/app_demo.html">ZSED_Demo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="BL702L_ZSED_Sensor/app_demo.html#id1">总览</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BL702L_ZSED_Sensor/app_demo.html#demo">Demo介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BL702L_ZSED_Sensor/app_demo.html#zsed">ZSED工作模式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BL702L_ZSED_Sensor/app_demo.html#id2">低功耗流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BL702L_ZSED_Sensor/app_demo.html#id3">测试准备</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BL702L_ZSED_Sensor/app_demo.html#id4">测试流程</a></li>
 </ul>
 </li>
 </ul>
@@ -208,7 +212,7 @@
         <a href="demo_zigbee/zigbee.html" class="btn btn-neutral float-right" title="Zigbee" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../network/demo_ethernet_ota/ota.html" class="btn btn-neutral" title="Ethernet OTA" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+        <a href="../ble/demo_mesh/mesh.html" class="btn btn-neutral" title="Mesh" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
       
     </div>
   
@@ -239,7 +243,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            VERSION:'release_bl_iot_sdk_1.6.40-697-gfb0840df5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

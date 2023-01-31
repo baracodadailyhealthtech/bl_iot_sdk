@@ -6,8 +6,7 @@
 #       1, build for thread FTD image, 
 #       0, build for thread MTD image. demo app set rx-on-when-idle = false, so it's build a sed device. (not, currently, the device sleep is not supported)
 #   CONFIG_PREFIX, for cli command line build, 
-#       1, build cli command with openthread command and bouffalolab command, and make openthread command set as the subset of bouffalolab command 'otc', such as `otc state`
-#       0, build cli command with only openthread command, type openthread official command directly, such as state
+#       defined, build cli command with openthread command and bouffalolab command, and make openthread command set as the subset of bouffalolab command 'otc', such as `otc state` 
 #   CONFIG_OTDEMO for demo image
 #       1, build for UDP demo image
 #       2, build for coap demo image
@@ -15,20 +14,36 @@
 #       0, do not enable SED role which means rx-on-when-idle=true
 #       > 0, polling period with unit micro second
 CONFIG_FTD=1
-CONFIG_PREFIX=0
+#CONFIG_PREFIX=otc
 CONFIG_OTDEMO=1
 
 CONFIG_PP=3000
+CONFIG_LINK_METRICS=1
+
+CONFIG_USB_CDC=0
 
 jobs=4
 if (( $1 -eq "" )); then
 jobs=$1
 fi
 
-if [ ! -f "build_out" ];then
+CONFIG_ENABLE_FP=1
+if [ ! -d build_out ]; then
 mkdir build_out
 fi
 
-make CONFIG_OTDEMO=$CONFIG_OTDEMO CONFIG_FTD=$CONFIG_FTD CONFIG_PREFIX=$CONFIG_PREFIX CONFIG_PP=$CONFIG_PP CONFIG_FLASH_SIZE=0x100000 CONFIG_MANUFACTURER_ID=0xFFFF -j $jobs 2>&1 | tee build_out/make.log
+options="CONFIG_USB_CDC=$CONFIG_USB_CDC CONFIG_ENABLE_FP=$CONFIG_ENABLE_FP CONFIG_CPP_ENABLE=1 \
+    CONFIG_FTD=$CONFIG_FTD \
+    CONFIG_TIMESYNC=$CONFIG_TIMESYNC \
+    CONFIG_LINK_METRICS=$CONFIG_LINK_METRICS \
+    CONFIG_CSL_RX=$CONFIG_CSL_RX"
+
+if [[ "$CONFIG_PREFIX" != "" ]]; then
+    options=$options" CONFIG_PREFIX=$CONFIG_PREFIX"
+fi
+
+options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
+
+make $options -j $jobs 2>&1 | tee build_out/make.log
 
 exit $?

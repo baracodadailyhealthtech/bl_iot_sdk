@@ -8,7 +8,8 @@ __CACHE_SIZE = 16K;
 MEMORY
 {
   flash (rxai!w) : ORIGIN = 0x23000000, LENGTH = (2M)
-  tcm      (wxa) : ORIGIN = 0x42014000, LENGTH = (48K)
+  tcm      (wxa) : ORIGIN = 0x42014000, LENGTH = (32K)
+  tcm_rsvd (wxa) : ORIGIN = 0x4201C000, LENGTH = (16K)
   ocram_1  (wxa) : ORIGIN = 0x42020000, LENGTH = (24K)  /* will not be initialized in bootrom */
   ocram_2  (wxa) : ORIGIN = 0x42026000, LENGTH = (16K)  /* will be initialized in bootrom */
   ocram_3  (wxa) : ORIGIN = 0x4202A000, LENGTH = (24K - __EM_SIZE)  /* will not be initialized in bootrom */
@@ -249,6 +250,8 @@ SECTIONS
     __freertos_irq_stack_top = .;
   } >ocram_2
 
+  PROVIDE( _tcm_rsvd_start = ORIGIN(tcm_rsvd) );
+  PROVIDE( _tcm_rsvd_end = ORIGIN(tcm_rsvd) + LENGTH(tcm_rsvd) );
 
   /* camera driver */
   PROVIDE( _ld_bl_driver_camera_start = _bl_driver_camera_start );

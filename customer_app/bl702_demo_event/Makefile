@@ -9,8 +9,8 @@ PROJECT_BOARD := evb
 export PROJECT_PATH PROJECT_BOARD
 #CONFIG_TOOLPREFIX :=
 
-BLECONTROLLER_LIBS := std m0s1 m0s1s m0s1p m16s1 m0s0sp
-BLECONTROLLER_LIB_DEFAULT := std
+BLECONTROLLER_LIBS := m1s1 m0s1 m0s1s m0s1p m16s1 m0s0sp
+BLECONTROLLER_LIB_DEFAULT := m1s1
 BLECONTROLLER_LIB_PREFIX := blecontroller_702_
 
 ZBSTACK_ADDITION_LIBS := gpp
@@ -30,6 +30,7 @@ INCLUDE_COMPONENTS += bl702 bl702_std newlibc bl702_rf hosal vfs yloop utils cli
 INCLUDE_COMPONENTS += blmtd blfdt
 INCLUDE_COMPONENTS += easyflash4 coredump
 INCLUDE_COMPONENTS += lmac154
+INCLUDE_COMPONENTS += openthread_utils_bl702
 
 ifeq ($(CONFIG_USB_CDC),1)
 INCLUDE_COMPONENTS += bl702_usb_cdc
@@ -47,6 +48,9 @@ else
 	endif
 endif
 INCLUDE_COMPONENTS += zbcli ecdsa macphy154
+ifeq ($(CONFIG_ZB_NCP_ENABLE), 1)
+INCLUDE_COMPONENTS += zbncp
+endif
 endif
 
 ifeq ($(CONFIG_BT),1)
@@ -100,6 +104,7 @@ INCLUDE_COMPONENTS += $(PROJECT_NAME)
 COMPONENT_COMMON := fs libc stage sys utils
 COMPONENT_PLATFORM := soc/bl702 hosal
 COMPONENT_NETWORK := ble lmac154 zigbee lwip lwip_dhcpd netutils
+COMPONENT_NETWORK += thread/openthread_utils_bl702
 COMPONENT_DIRS := $(PROJECT_PATH)/$(PROJECT_NAME)
 COMPONENT_DIRS += $(addprefix $(BL60X_SDK_PATH)/components/, $(COMPONENT_COMMON))
 COMPONENT_DIRS += $(addprefix $(BL60X_SDK_PATH)/components/platform/, $(COMPONENT_PLATFORM))

@@ -8,8 +8,10 @@
 #   CONFIG_FTD, for thread device type, if CONFIG_NCP = 1
 #       1, build for thread FTD image,
 #       0, build for thread MTD image
-CONFIG_NCP=0
+CONFIG_NCP=1
 CONFIG_FTD=1
+CONFIG_USB_CDC=0
+CONFIG_ENABLE_FP=0
 
 jobs=4
 if (( $1 -eq "" )); then
@@ -21,11 +23,15 @@ mkdir build_out
 fi
 
 
+options="CONFIG_USB_CDC=$CONFIG_USB_CDC CONFIG_ENABLE_FP=$CONFIG_ENABLE_FP CONFIG_CPP_ENABLE=1 \
+    CONFIG_NCP=$CONFIG_NCP"
 
 if [ "$CONFIG_NCP" == "1" ]; then
-make CONFIG_NCP=1 CONFIG_FTD=$CONFIG_FTD  -j $jobs 2>&1 | tee build_out/make.log
-else
-make CONFIG_NCP=0 -j $jobs 2>&1 | tee build_out/make.log
+    options=$options" CONFIG_FTD=$CONFIG_FTD"
 fi
+
+options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
+
+make $options -j $jobs 2>&1 | tee build_out/make.log
 
 exit $?

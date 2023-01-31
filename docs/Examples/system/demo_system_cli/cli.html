@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cli &mdash; BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档</title>
+  <title>cli &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-697-gfb0840df5 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-697-gfb0840df5 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee
+                release_bl_iot_sdk_1.6.40-697-gfb0840df5
               </div>
             
           
@@ -93,16 +93,14 @@
             
             
                 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_602.html">BL602快速入门</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">BL702快速入门</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">BL602 API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API 参考</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../about.html">关于</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../languages.html">Languages/语言</a></li>
 </ul>
 
             
@@ -167,35 +165,35 @@
            <div itemprop="articleBody">
             
   <div class="section" id="cli">
-<h1>cli<a class="headerlink" href="#cli" title="永久链接至标题"></a></h1>
+<h1>cli<a class="headerlink" href="#cli" title="永久链接至标题">¶</a></h1>
 <div class="section" id="id1">
-<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
 <p>本实例主要介绍如何增加一个cli（command-line interface）。</p>
 </div>
 <div class="section" id="id2">
-<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <ul class="simple">
-<li>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_cli</span></code> 工程并下载对应的bin文件。</li>
-<li>使用 <code class="docutils literal notranslate"><span class="pre">test</span></code> 命令即可在终端看到打印的 <code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world</span></code>。</li>
+<li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_cli</span></code> 工程并下载对应的bin文件。</p></li>
+<li><p>使用 <code class="docutils literal notranslate"><span class="pre">test</span></code> 命令即可在终端看到打印的 <code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world</span></code>。</p></li>
 </ul>
 </div>
 <div class="section" id="id3">
-<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
-<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">void</span> <span class="n">cmd_cli</span><span class="p">(</span><span class="n">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="nb">int</span> <span class="nb">len</span><span class="p">,</span> <span class="nb">int</span> <span class="n">argc</span><span class="p">,</span> <span class="n">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="nf">cmd_cli</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">,</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;hello world</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="n">const</span> <span class="n">static</span> <span class="n">struct</span> <span class="n">cli_command</span> <span class="n">cmds_user</span><span class="p">[]</span> <span class="n">STATIC_CLI_CMD_ATTRIBUTE</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">{</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;cli test&quot;</span><span class="p">,</span> <span class="n">cmd_cli</span><span class="p">},</span>
+<span class="k">const</span> <span class="k">static</span> <span class="k">struct</span> <span class="nc">cli_command</span> <span class="n">cmds_user</span><span class="p">[]</span> <span class="n">STATIC_CLI_CMD_ATTRIBUTE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">{</span><span class="s">&quot;test&quot;</span><span class="p">,</span> <span class="s">&quot;cli test&quot;</span><span class="p">,</span> <span class="n">cmd_cli</span><span class="p">},</span>
 <span class="p">};</span>
 
-<span class="nb">int</span> <span class="n">test_cli_init</span><span class="p">(</span><span class="n">void</span><span class="p">)</span>
+<span class="kt">int</span> <span class="nf">test_cli_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="o">//</span> <span class="n">static</span> <span class="n">command</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">do</span> <span class="n">NOT</span> <span class="n">need</span> <span class="n">to</span> <span class="n">call</span> <span class="n">aos_cli_register_command</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">to</span> <span class="n">register</span><span class="o">.</span>
-    <span class="o">//</span> <span class="n">However</span><span class="p">,</span> <span class="n">calling</span> <span class="n">aos_cli_register_command</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">here</span> <span class="ow">is</span> <span class="n">OK</span> <span class="n">but</span> <span class="ow">is</span> <span class="n">of</span> <span class="n">no</span> <span class="n">effect</span> <span class="k">as</span> <span class="n">cmds_user</span> <span class="n">are</span> <span class="n">included</span> <span class="ow">in</span> <span class="n">cmds</span> <span class="nb">list</span><span class="o">.</span>
-    <span class="o">//</span> <span class="n">XXX</span> <span class="n">NOTE</span><span class="p">:</span> <span class="n">Calling</span> <span class="n">this</span> <span class="o">*</span><span class="n">empty</span><span class="o">*</span> <span class="n">function</span> <span class="ow">is</span> <span class="n">necessary</span> <span class="n">to</span> <span class="n">make</span> <span class="n">cmds_user</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">file</span> <span class="n">to</span> <span class="n">be</span> <span class="n">kept</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">final</span> <span class="n">link</span><span class="o">.</span>
-    <span class="o">//</span><span class="k">return</span> <span class="n">aos_cli_register_commands</span><span class="p">(</span><span class="n">cmds_user</span><span class="p">,</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">cmds_user</span><span class="p">)</span><span class="o">/</span><span class="n">sizeof</span><span class="p">(</span><span class="n">cmds_user</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span>
+    <span class="c1">// static command(s) do NOT need to call aos_cli_register_command(s) to register.</span>
+    <span class="c1">// However, calling aos_cli_register_command(s) here is OK but is of no effect as cmds_user are included in cmds list.</span>
+    <span class="c1">// XXX NOTE: Calling this *empty* function is necessary to make cmds_user in this file to be kept in the final link.</span>
+    <span class="c1">//return aos_cli_register_commands(cmds_user, sizeof(cmds_user)/sizeof(cmds_user[0]));</span>
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
@@ -244,7 +242,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.39-238-gf5ba0a7ee',
+            VERSION:'release_bl_iot_sdk_1.6.40-697-gfb0840df5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
