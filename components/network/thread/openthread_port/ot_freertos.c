@@ -246,10 +246,6 @@ void otrStart(otRadio_opt_t opt)
 
     otrLock();
 
-#ifdef CFG_PDS_ENABLE
-    otPds_setDataPollCsma(CFG_DATA_POLL_CSMA);
-#endif
-
     ot_taskHandle = xTaskCreateStatic(otrStackTask, "threadTask", sizeof(ot_stackTask_stack) / sizeof(StackType_t), 
                                         (void *)((uint32_t)opt.byte), 15, ot_stackTask_stack, &ot_task);
 

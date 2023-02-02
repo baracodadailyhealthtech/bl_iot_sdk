@@ -226,6 +226,11 @@ bool le_param_req(struct bt_conn *conn, struct bt_le_conn_param *param)
 {
 	struct bt_conn_cb *cb;
 
+#ifdef BFLB_BLE_PATCH_AVOID_CONN_UPDATE_WHEN_PREVIOUS_IS_NOT_OVER
+	if(atomic_test_bit(conn->flags, BT_CONN_PARAM_UPDATE_GOING)){
+		return false;
+	}
+#endif /* BFLB_BLE_PATCH_AVOID_CONN_UPDATE_WHEN_PREVIOUS_IS_NOT_OVER */
 	if (!bt_le_conn_params_valid(param)) {
 		return false;
 	}
@@ -347,9 +352,9 @@ static void conn_update_timeout(struct k_work *work)
 
 	if (conn->state == BT_CONN_DISCONNECTED) {
 		bt_l2cap_disconnected(conn);
-	#if !defined(BFLB_BLE)
+		#if !defined(BFLB_BLE)
 		notify_disconnected(conn);
-        #endif
+		#endif
 
 		/* Release the reference we took for the very first
 		 * state transition.
@@ -2045,9 +2050,14 @@ struct bt_conn *bt_conn_ref(struct bt_conn *conn)
 
 void bt_conn_unref(struct bt_conn *conn)
 {
-	atomic_dec(&conn->ref);
+	atomic_val_t old;
 
-	BT_DBG("handle %u ref %u", conn->handle, atomic_get(&conn->ref));
+	old = atomic_dec(&conn->ref);
+
+	BT_DBG("handle %u ref %ld -> %ld", conn->handle, old,
+	       atomic_get(&conn->ref));
+
+	BT_ASSERT(old > 0);
 }
 
 const bt_addr_le_t *bt_conn_get_dst(const struct bt_conn *conn)
@@ -2510,6 +2520,7 @@ int bt_conn_le_conn_update(struct bt_conn *conn,
 {
 	struct hci_cp_le_conn_update *conn_update;
 	struct net_buf *buf;
+	int err;
 
 	buf = bt_hci_cmd_create(BT_HCI_OP_LE_CONN_UPDATE,
 				sizeof(*conn_update));
@@ -2525,7 +2536,13 @@ int bt_conn_le_conn_update(struct bt_conn *conn,
 	conn_update->conn_latency = sys_cpu_to_le16(param->latency);
 	conn_update->supervision_timeout = sys_cpu_to_le16(param->timeout);
 
-	return bt_hci_cmd_send_sync(BT_HCI_OP_LE_CONN_UPDATE, buf, NULL);
+	err = bt_hci_cmd_send_sync(BT_HCI_OP_LE_CONN_UPDATE, buf, NULL);
+#ifdef BFLB_BLE_PATCH_AVOID_CONN_UPDATE_WHEN_PREVIOUS_IS_NOT_OVER
+	if(!err){
+		atomic_set_bit(conn->flags, BT_CONN_PARAM_UPDATE_GOING);
+	}
+#endif /* BFLB_BLE_PATCH_AVOID_CONN_UPDATE_WHEN_PREVIOUS_IS_NOT_OVER */
+	return err;
 }
 
 struct net_buf *bt_conn_create_pdu_timeout(struct net_buf_pool *pool,

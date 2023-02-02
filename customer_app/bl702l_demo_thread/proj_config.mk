@@ -75,7 +75,7 @@ ifeq ($(EXT_CFG_FILE), $(wildcard $(EXT_CFG_FILE)))
 include $(PROJECT_PATH)/proj_config_ext.mk
 endif
 
-CONFIG_DATA_POLL_CSMA := 0 
+CONFIG_DATA_POLL_CSMA := 1 
 CONFIG_OPENTHREAD := 1
 CONFIG_OT_ROM_ENABLE := 1
 

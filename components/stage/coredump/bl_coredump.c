@@ -146,6 +146,8 @@ static const dump_handler_t dump_handler_list[DUMP_TYPE_MAX] = {
     dump_csr,
 };
 
+extern uint8_t __LD_CONFIG_EM_SEL;
+
 /* Define default ram dump list */
 static const struct mem_hdr {
   uintptr_t addr;
@@ -173,19 +175,23 @@ static const struct mem_hdr {
     {(uintptr_t)0x4000A420, (unsigned int)0x98, DUMP_BASE64_WORD, "pwm_reg"},
     {(uintptr_t)0x4000E404, (unsigned int)0x04, DUMP_BASE64_WORD, "PDS_reg"},
     {(uintptr_t)0x4000F030, (unsigned int)0x04, DUMP_BASE64_WORD, "HBN_reg"},
+    {(uintptr_t)0x28008000, (unsigned int)&__LD_CONFIG_EM_SEL, DUMP_BASE64_WORD, "EM_REG"},
 #elif BL702
     {(uintptr_t)&_ld_ram_addr1, (unsigned int)&_ld_ram_size1, DUMP_BASE64_BYTE, "tcm_ocram"},
     {(uintptr_t)&_ld_ram_addr2, (unsigned int)&_ld_ram_size2, DUMP_BASE64_BYTE, "hbnram"},
     {(uintptr_t)&_ld_ram_addr3, (unsigned int)&_ld_ram_size3, DUMP_BASE64_BYTE, "stack"},
+    {(uintptr_t)0x28008000, (unsigned int)&__LD_CONFIG_EM_SEL, DUMP_BASE64_WORD, "EM_REG"},
 #elif BL702L
     {(uintptr_t)&_ld_ram_addr1, (unsigned int)&_ld_ram_size1, DUMP_BASE64_BYTE, "tcm_ocram"},
     {(uintptr_t)&_ld_ram_addr2, (unsigned int)&_ld_ram_size2, DUMP_BASE64_BYTE, "hbnram"},
     {(uintptr_t)&_ld_ram_addr3, (unsigned int)&_ld_ram_size3, DUMP_BASE64_BYTE, "stack"},
+    {(uintptr_t)0x28008000, (unsigned int)&__LD_CONFIG_EM_SEL, DUMP_BASE64_WORD, "EM_REG"},
 #elif BL808
     {(uintptr_t)&_ld_ram_addr1, (unsigned int)&_ld_ram_size1, DUMP_BASE64_BYTE, "ram_psram"},
     {(uintptr_t)&_ld_ram_addr2, (unsigned int)&_ld_ram_size2, DUMP_BASE64_BYTE, "ram_wifi"},
     {(uintptr_t)&_ld_ram_addr3, (unsigned int)&_ld_ram_size3, DUMP_BASE64_BYTE, "ram_memory"},
     {(uintptr_t)&_ld_ram_addr4, (unsigned int)&_ld_ram_size4, DUMP_BASE64_BYTE, "xram_memory"},
+    {(uintptr_t)0x28010000, (unsigned int)&__LD_CONFIG_EM_SEL, DUMP_BASE64_WORD, "EM_REG"},
 #elif WB03
     {(uintptr_t)&_ld_ram_addr1, (unsigned int)&_ld_ram_size1, DUMP_BASE64_BYTE, "ram_tcm"},
     {(uintptr_t)&_ld_ram_addr2, (unsigned int)&_ld_ram_size2, DUMP_BASE64_BYTE, "ram_wifi"},
@@ -193,6 +199,7 @@ static const struct mem_hdr {
     //{(uintptr_t)0xf0004000, (unsigned int)12, DUMP_CSR, "dump riscv csr"},
     {(uintptr_t)&_ld_ram_addr1, (unsigned int)&_ld_ram_size1, DUMP_BASE64_BYTE, "ram_tcm"},
     {(uintptr_t)&_ld_ram_addr2, (unsigned int)&_ld_ram_size2, DUMP_BASE64_BYTE, "ram_wifi"},
+    {(uintptr_t)0x28010000, (unsigned int)&__LD_CONFIG_EM_SEL, DUMP_BASE64_WORD, "EM_REG"},
 #endif
 };
 
@@ -597,6 +604,9 @@ void bl_coredump_run() {
 
   /* Dump all pre-defined memory region by default */
   for (cmd_pos = 0; cmd_pos < (sizeof(mem_hdr) / sizeof(mem_hdr[0])); cmd_pos++) {
+    if (mem_hdr[cmd_pos].length == 0) {
+      continue;
+    }
     bl_coredump_print(mem_hdr[cmd_pos].addr, mem_hdr[cmd_pos].length, mem_hdr[cmd_pos].desc, mem_hdr[cmd_pos].type);
   }
 

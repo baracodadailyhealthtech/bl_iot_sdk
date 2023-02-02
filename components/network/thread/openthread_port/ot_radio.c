@@ -388,6 +388,10 @@ otError otPlatRadioEnable(otInstance *aInstance)
 {
     ot_radioEnable();
 
+#ifdef CFG_PDS_ENABLE
+    otPds_setDataPollCsma(CFG_DATA_POLL_CSMA);
+#endif
+
     bl_irq_enable(M154_IRQn);
 
     return OT_ERROR_NONE;

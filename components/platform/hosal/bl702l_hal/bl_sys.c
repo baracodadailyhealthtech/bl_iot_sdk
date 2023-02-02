@@ -210,6 +210,8 @@ int bl_sys_early_init(void)
 
     HBN_Hw_Pu_Pd_Cfg(DISABLE);
 
+//    HBN_Set_Ldo11_All_Vout(HBN_LDO_LEVEL_1P00V);
+
 #if !(defined(CFG_PDS_ENABLE) || defined(CFG_HBN_ENABLE))
     GLB_Set_System_CLK(GLB_DLL_XTAL_32M, GLB_SYS_CLK_DLL128M);
     HBN_Set_XCLK_CLK_Sel(HBN_XCLK_CLK_XTAL);
@@ -222,6 +224,8 @@ int bl_sys_early_init(void)
     GLB_Set_MTimer_CLK(1, GLB_MTIMER_CLK_XCLK, 15);
 
     AON_Set_Xtal_CapCode(192, 192);
+
+    GLB_AHB_MCU_Software_Reset(GLB_AHB_MCU_SW_UART0);
 
     /*debuger may NOT ready don't print anything*/
     return 0;

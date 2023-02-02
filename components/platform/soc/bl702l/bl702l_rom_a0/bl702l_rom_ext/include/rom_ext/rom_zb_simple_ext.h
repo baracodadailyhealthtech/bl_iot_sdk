@@ -2,10 +2,20 @@
 #define __ROM_ZB_SIMPLE_EXT_H__
 
 #include "lmac154.h"
-#include "zb_timer.h"
+#include "hosal_gpio.h"
+
+typedef struct{
+    bool uart_enable;
+    uint8_t uart_tx_pin;
+    uint8_t uart_rx_pin;
+    uint32_t uart_baudrate;
+    uint8_t gpio_num;
+    uint8_t gpio_index[4];
+    hosal_gpio_irq_trigger_t trigger_type;
+}zb_app_conf_t;
 
 void rom_zb_simple_init(void);
-void zb_pds_init(void);
+void zb_pds_init(zb_app_conf_t *app_conf);
 //enable=1:device will enter into low power mode when it is idle;
 //enable=0:device won't enter into low power mode when it
 void zb_pds_enable(uint8_t enable);

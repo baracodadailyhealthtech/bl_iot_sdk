@@ -276,6 +276,8 @@ void otPds_sleepOp(void);
 *******************************************************************************/
 void otPds_setDataPollCsma(bool isEnableCsma);
 
+void otPds_handleWakeup(bool isWakeupFromRtc);
+
 /****************************************************************************//**
  * @brief  Do utils to initialize 
  *

@@ -1996,6 +1996,9 @@ static void le_conn_update_complete(struct net_buf *buf)
 		return;
 	}
 
+#ifdef BFLB_BLE_PATCH_AVOID_CONN_UPDATE_WHEN_PREVIOUS_IS_NOT_OVER
+	atomic_clear_bit(conn->flags, BT_CONN_PARAM_UPDATE_GOING);
+#endif /* BFLB_BLE_PATCH_AVOID_CONN_UPDATE_WHEN_PREVIOUS_IS_NOT_OVER */
 	if (!evt->status) {
 		conn->le.interval = sys_le16_to_cpu(evt->interval);
 		conn->le.latency = sys_le16_to_cpu(evt->latency);

@@ -962,3 +962,7 @@ PROVIDE(ot_pds_wakeup_by_rtc_ptr = __global_pointer$ +1128);
 PROVIDE(ot_printf_ptr = __global_pointer$ +1132);
 PROVIDE(ot_timer_now_us64_ptr = __global_pointer$ +1136);
 PROVIDE(ot_utils_patchHook_ptr = __global_pointer$ +1140);
+
+PROVIDE(xTimerTaskHandle = __global_pointer$ -1844);
+PROVIDE(pxCurrentTimerList = __global_pointer$ -1860);
+PROVIDE(rom_vApplicationIdleHook = 0x2102520e);

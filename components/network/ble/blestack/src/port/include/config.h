@@ -607,6 +607,9 @@
 #define BFLB_STATIC_ALLOC_MEM   0
 #endif
 #define CONFIG_BT_SCAN_WITH_IDENTITY 1
+#define CONFIG_BT_DEVICE_NAME_GATT_WRITABLE
+#define CONFIG_BT_GAP_APPEARANCE_WRITABLE
+
 
 #if defined(CONFIG_AUTO_PTS)
 #define BFLB_FIXED_IRK 1
@@ -645,6 +648,7 @@ happens, which cause memory leak issue.*/
   intends to write information to flash.*/
 #define BFLB_BLE_PATCH_SETTINGS_LOAD
 #endif
+#define BFLB_BLE_PATCH_AVOID_CONN_UPDATE_WHEN_PREVIOUS_IS_NOT_OVER
 #define BFLB_BLE_SMP_LOCAL_AUTH
 #define BFLB_BLE_MTU_CHANGE_CB
 #if defined(CFG_BT_RESET)

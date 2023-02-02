@@ -20,7 +20,7 @@
 
 
 typedef int (*bl_romhook_t)(uint32_t arg[], void *ret);
-typedef void (*bl_pds_fastboot_done_cb_t)(void);
+typedef void (*bl_pds_cb_t)(void);
 
 
 // Public Functions
@@ -29,7 +29,7 @@ void bl_pds_init(void);
 void bl_pds_gpio_wakeup_cfg(uint8_t pin_list[], uint8_t pin_num, uint8_t edge_sel);
 void bl_pds_key_wakeup_cfg(uint8_t row_num, uint8_t col_num, uint8_t row_pins[], uint8_t col_pins[]);  // row_num: 1 - 8; col_num: 1 - 8
 void bl_pds_set_white_keys(uint8_t white_key_num, uint8_t row_idx[], uint8_t col_idx[]);  // white_key_num: 0 - 4
-void bl_pds_register_fastboot_done_callback(void *cb);
+void bl_pds_register_fastboot_done_callback(bl_pds_cb_t cb);
 void bl_pds_fastboot_entry(void);
 int bl_pds_get_wakeup_source(void);
 uint32_t bl_pds_get_wakeup_gpio(void);  // bit 0 -> GPIO0 ... bit 31 -> GPIO31

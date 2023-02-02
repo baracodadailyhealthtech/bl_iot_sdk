@@ -98,7 +98,7 @@ uint32_t  app_pds_callback(otPds_op_t pdsOp, uint32_t sleepTimeMs, int isWakeupF
         }
         case OT_PDS_WAKEUP_OP_OT:
         {
-            otPds_restoreLmac154Op();
+            otPds_handleWakeup(isWakeupFromRtc);
             return -1;
         }
         case OT_PDS_WAKEUP_OP_APP:

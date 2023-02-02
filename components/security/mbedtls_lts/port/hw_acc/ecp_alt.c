@@ -1,11 +1,11 @@
 /*
  *  Description: ECC over GF(p) hardware acceleration
- *  Copyright (C) Bouffalo Lab 2016-2022
+ *  Copyright (C) Bouffalo Lab 2016-2023
  *  SPDX-License-Identifier: Apache-2.0
  *  File Name:   ecp_alt.c
  *  Author:      Chien Wong(qwang@bouffalolab.com)
  *  Start Date:  May 28, 2022
- *  Last Update: Nov 25, 2022
+ *  Last Update: Jan 9, 2023
  */
 
 /*
@@ -113,15 +113,7 @@
 #define ECP_VALIDATE( cond )        \
     MBEDTLS_INTERNAL_VALIDATE( cond )
 
-#if defined(MBEDTLS_PLATFORM_C)
 #include "mbedtls/platform.h"
-#else
-#include <stdlib.h>
-#include <stdio.h>
-#define mbedtls_printf     printf
-#define mbedtls_calloc    calloc
-#define mbedtls_free       free
-#endif
 
 #include "mbedtls/ecp_internal.h"
 
@@ -134,11 +126,6 @@
 #error "Invalid configuration detected. Include check_config.h to ensure that the configuration is valid."
 #endif
 #endif /* MBEDTLS_ECP_NO_INTERNAL_RNG */
-
-#if ( defined(__ARMCC_VERSION) || defined(_MSC_VER) ) && \
-    !defined(inline) && !defined(__cplusplus)
-#define inline __inline
-#endif
 
 #if defined(MBEDTLS_SELF_TEST)
 /*
@@ -1828,9 +1815,12 @@ static int ecp_mul_mont( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
         MMUL( i, i, 2 );
 
     /* Randomize coordinates of the starting point */
+    int have_rng = 1;
 #if defined(MBEDTLS_ECP_NO_INTERNAL_RNG)
-    if( f_rng != NULL )
+    if( f_rng == NULL )
+        have_rng = 0;
 #endif
+    if( have_rng )
     {
         MBEDTLS_MPI_CHK( mbedtls_mpi_random( &rand, 2, &grp->P, f_rng, p_rng ) );
         MBEDTLS_MPI_CHK( mbedtls_mpi_write_binary( &rand, tmp_buf, op_sz ) );
@@ -1841,7 +1831,7 @@ static int ecp_mul_mont( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
     }
 
     /* Loop invariant: R = result so far, RP = R + P */
-    i = mbedtls_mpi_bitlen( m ); /* one past the (zero-based) most significant bit */
+    i = grp->nbits + 1; /* one past the (zero-based) required msb for private keys */
     while( i-- > 0 )
     {
         uint8_t ix, iz, jx, jz, px, pz, qx, qz;
@@ -1888,9 +1878,12 @@ static int ecp_mul_mont( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
      *
      * Avoid the leak by randomizing coordinates before we normalize them.
      */
+    have_rng = 1;
 #if defined(MBEDTLS_ECP_NO_INTERNAL_RNG)
-    if( f_rng != NULL )
+    if( f_rng == NULL )
+        have_rng = 0;
 #endif
+    if( have_rng )
     {
         MBEDTLS_MPI_CHK( mbedtls_mpi_random( &rand, 2, &grp->P, f_rng, p_rng ) );
         MBEDTLS_MPI_CHK( mbedtls_mpi_write_binary( &rand, tmp_buf, op_sz ) );
@@ -1951,10 +1944,12 @@ static int mbedtls_ecp_mul_restartable_wo_lock( mbedtls_ecp_group *grp, mbedtls_
         MBEDTLS_MPI_CHK( mbedtls_internal_ecp_init( grp ) );
 #endif /* MBEDTLS_ECP_INTERNAL_ALT */
 
+    int restarting = 0;
 #if defined(MBEDTLS_ECP_RESTARTABLE)
-    /* skip argument check when restarting */
-    if( rs_ctx == NULL || rs_ctx->rsm == NULL )
+    restarting = ( rs_ctx != NULL && rs_ctx->rsm != NULL );
 #endif
+    /* skip argument check when restarting */
+    if( !restarting )
     {
         /* check_privkey is free */
         MBEDTLS_ECP_BUDGET( MBEDTLS_ECP_OPS_CHK );
@@ -2080,14 +2075,17 @@ static int mbedtls_ecp_mul_shortcuts( mbedtls_ecp_group *grp,
 
     if( mbedtls_mpi_cmp_int( m, 0 ) == 0 )
     {
+        MBEDTLS_MPI_CHK( mbedtls_ecp_check_pubkey( grp, P ) );
         MBEDTLS_MPI_CHK( mbedtls_ecp_set_zero( R ) );
     }
     else if( mbedtls_mpi_cmp_int( m, 1 ) == 0 )
     {
+        MBEDTLS_MPI_CHK( mbedtls_ecp_check_pubkey( grp, P ) );
         MBEDTLS_MPI_CHK( mbedtls_ecp_copy( R, P ) );
     }
     else if( mbedtls_mpi_cmp_int( m, -1 ) == 0 )
     {
+        MBEDTLS_MPI_CHK( mbedtls_ecp_check_pubkey( grp, P ) );
         MBEDTLS_MPI_CHK( mbedtls_ecp_copy( R, P ) );
         if( mbedtls_mpi_cmp_int( &R->Y, 0 ) != 0 )
             MBEDTLS_MPI_CHK( mbedtls_mpi_sub_mpi( &R->Y, &grp->P, &R->Y ) );
