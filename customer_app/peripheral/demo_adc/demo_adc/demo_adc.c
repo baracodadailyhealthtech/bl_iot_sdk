@@ -14,7 +14,7 @@
 #include <bl_adc.h>
 
 /**********   BL602  ************
-*    channel0   ----->     gpio12 
+*    channel0   ----->     gpio12
 *    channel1   ----->     gpio4
 *    channel2   ----->     gpio14
 *    channel3   ----->     gpio13
@@ -27,7 +27,7 @@
 */
 
 /**********   BL702  ************
-*    channel0   ----->     gpio8 
+*    channel0   ----->     gpio8
 *    channel1   ----->     gpio15
 *    channel2   ----->     gpio17
 *    channel3   ----->     gpio11
@@ -41,6 +41,21 @@
 *    channel11  ----->     gpio21
 */
 
+/**********   BL702L  ************
+*    channel0   ----->     gpio14
+*    channel1   ----->     gpio15
+*    channel2   ----->     gpio17
+*    channel3   ----->     gpio18
+*    channel4   ----->     gpio19
+*    channel5   ----->     gpio20
+*    channel6   ----->     gpio21
+*    channel7   ----->     gpio7
+*    channel8   ----->     gpio8
+*    channel9   ----->     gpio9
+*    channel10  ----->     gpio11
+*    channel11  ----->     gpio12
+*/
+
 static hosal_adc_dev_t adc0;
 
 void demo_hosal_adc(void)
@@ -51,10 +66,12 @@ void demo_hosal_adc(void)
     adc0.port = 0;
     adc0.config.sampling_freq = 340;
 
-#ifdef CONF_USER_BL602
+#if defined(CONF_USER_BL602)
     adc0.config.pin = 5;
-#elif CONF_USER_BL702
+#elif defined(CONF_USER_BL702)
     adc0.config.pin = 12;
+#elif defined(CONF_USER_BL702L)
+    adc0.config.pin = 19;
 #endif
 
     adc0.config.mode = 0;
@@ -68,7 +85,7 @@ void demo_hosal_adc(void)
         return;
     }
    
-    /* add gpio5(602)/gpio12(702) ,and also channel4 */
+    /* add gpio5(602)/gpio12(702)/gpio19(702L), and also channel4 */
     hosal_adc_add_channel(&adc0, 4);
 
     while (1) {

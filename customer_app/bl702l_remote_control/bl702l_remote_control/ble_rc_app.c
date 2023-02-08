@@ -1,21 +1,25 @@
 #include <FreeRTOS.h>
 #include <task.h>
-
+#include "bl_audio_pdm.h"
+#include "bl_kys.h"
 #include "bluetooth.h"
 #include "ble_cli_cmds.h"
 #include "hci_driver.h"
 #include "hci_core.h"
 #include "log.h"
-
 #include "btble_lib_api.h"
 #include "bas.h"
 #include "conn.h"
 #include "conn_internal.h"
 #include "gatt.h"
+#include "bl_port.h"
 #include "cli.h"
-#include "bl_flash.h"
 #include "ble_rc_hog.h"
+#include "ble_rc_voice.h"
+#include "ble_rc_app.h"
 
+volatile bool voice_start = false;
+struct k_fifo key_scan_queue;
 static void ble_key_notify_process(u8_t hid_page, u8_t *hid_usage, bool press, bool auto_release);
 static void ble_key_notify(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
              
@@ -34,6 +38,8 @@ const struct cli_command bleFireTvRcCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
       {"ble_key_back", "", ble_key_notify},
       {"ble_key_vol_ins", "", ble_key_notify},
       {"ble_key_vol_des", "", ble_key_notify},
+      {"ble_key_voice_start", "", ble_key_notify},
+      {"ble_key_voice_stop", "", ble_key_notify},
 };
 
 struct app_env_tag{
@@ -44,7 +50,7 @@ struct app_env_tag{
 
 struct app_env_tag env;
 static struct bt_gatt_exchange_params exchange_params;
-extern struct bt_conn *default_conn;
+struct bt_conn *rc_default_conn;
 
 int ble_start_adv(void);
 void ble_stack_start(void);
@@ -52,13 +58,34 @@ void ble_stack_start(void);
 static void exchange_func(struct bt_conn *conn, u8_t err,
     struct bt_gatt_exchange_params *params)
 {
+    struct bt_le_conn_param param;
     printf("Exchange %s MTU Size =%d \r\n", err == 0U ? "successful" : "failed",bt_gatt_get_mtu(conn));
 }
 
 static void bt_gattc_exchange_mtu(void)
 {    
     exchange_params.func = exchange_func;
-    bt_gatt_exchange_mtu(default_conn, &exchange_params);
+    bt_gatt_exchange_mtu(rc_default_conn, &exchange_params);
+}
+
+static void bt_data_len_extend(struct bt_conn *conn)
+{
+    u16_t tx_octets = 0x00fb;
+    u16_t tx_time = 0x0848;
+    int ret = -1;
+    
+    if(conn == NULL)
+        return;
+    //set data length after connected.
+    ret = bt_le_set_data_len(conn, tx_octets, tx_time);
+    if(!ret)
+    {
+        printf("ble tp set data length success.");
+    }
+    else
+    {
+        printf("ble tp set data length failure, err: %d\n", ret);
+    }
 }
 
 static void connected(struct bt_conn *conn, u8_t err)
@@ -73,11 +100,12 @@ static void connected(struct bt_conn *conn, u8_t err)
 
     printf("Connected: %s \r\n", addr);
 
-    if (!default_conn) {
-        default_conn = conn;
+    if (!rc_default_conn) {
+        rc_default_conn = conn;
     }
-    
+
     env.bonded = false;
+    bt_data_len_extend(rc_default_conn);
 }
 
 static void disconnected(struct bt_conn *conn, u8_t reason)
@@ -95,16 +123,16 @@ static void disconnected(struct bt_conn *conn, u8_t reason)
         }
     }
 
-    if (default_conn == conn) {
-        default_conn = NULL;
+    if (rc_default_conn == conn) {
+        rc_default_conn = NULL;
     }
 }
 
 static void auth_cancel(struct bt_conn *conn)
 {
     
-	if (default_conn) {
-		conn = default_conn;
+	if (rc_default_conn) {
+		conn = rc_default_conn;
 	}else {
 		conn = NULL;
 	}
@@ -160,17 +188,18 @@ static struct bt_conn_auth_cb auth_cb_display = {
 
 static void ble_key_notify_process(u8_t hid_page, u8_t *hid_usage, bool press, bool auto_release)
 {
-     int err = 0;
+    int err = 0;
 
-    if(!default_conn){
+    printf("hid_page=%d,hid_usage=%p,press=%d,auto_release=%d\r\n ",hid_page,hid_usage,press,auto_release);
+    if(!rc_default_conn){
         printf("Not connected\r\n");
         return;
     }
 
-    err = bt_hog_notify(default_conn, hid_page, hid_usage, press);
+    err = bt_hog_notify(rc_default_conn, hid_page, hid_usage, press);
     if(auto_release && err == 0)
     {
-        err = bt_hog_notify(default_conn, hid_page, hid_usage, 0);
+        err = bt_hog_notify(rc_default_conn, hid_page, hid_usage, 0);
     }
 
     if(err)
@@ -189,6 +218,7 @@ static void ble_key_notify(char *pcWriteBuffer, int xWriteBufferLen, int argc, c
     u8_t hid_page = HID_PAGE_KBD;
     bool auto_release = true;
     bool press = true;
+    u8_t evt_type = 0;
     if(0==strcmp("ble_key_ch_ins",argv[0]))
     {
         hid_usage = KEY_CH_INS;
@@ -251,6 +281,25 @@ static void ble_key_notify(char *pcWriteBuffer, int xWriteBufferLen, int argc, c
         hid_page = HID_PAGE_CONS;
         hid_usage = KEY_VOL_DES;
     }
+    else if(0==strcmp("ble_key_voice_start",argv[0]))
+    {
+        voice_start = true;
+        evt_type = RC_KYS_VOICE_START;
+        printf("put RC_KYS_VOICE_START\r\n");
+        k_fifo_put(&key_scan_queue, &evt_type);
+        return;
+    }
+    else if(0==strcmp("ble_key_voice_stop",argv[0]))
+    {
+       if(voice_start)
+        {
+            voice_start = false;
+            bl_audio_pdm_stop();
+            evt_type = RC_KYS_VOICE_STOP;
+            k_fifo_put(&key_scan_queue, &evt_type); 
+        }
+       return;
+    }
     else
     {
         printf("Faild to find hid usage");
@@ -258,6 +307,152 @@ static void ble_key_notify(char *pcWriteBuffer, int xWriteBufferLen, int argc, c
     }
     
     ble_key_notify_process(hid_page, hid_usage, press, auto_release);
+}
+
+struct hids_remote_key *m_key_usage;
+static TaskHandle_t bleKeyScanTask;
+static void ble_key_scan_task(void *pvParameters)
+{
+   bl_kys_trigger_interrupt();
+
+    while(1)
+    {
+        u8_t * data = k_fifo_get(&key_scan_queue, K_FOREVER);
+        if(data)
+        {
+            u8_t evt_type = *data;
+            if(!rc_default_conn)
+            {
+                printf("rc is not connected\r\n");
+                continue;
+            }
+            switch(evt_type)
+            {
+                case RC_KYS_NOTIFY:
+                {
+                    if(m_key_usage)
+                    {
+                        printf("notify\r\n");
+                        ble_key_notify_process(m_key_usage->hid_page, m_key_usage->hid_usage, true, true);
+                        m_key_usage = NULL;
+                    }
+                }
+                break;
+                case RC_KYS_UNPAIR:
+                {
+                    printf("to unpair\r\n");  
+                    bt_unpair(0, &rc_default_conn->le.dst);
+                }
+                break;
+                case RC_KYS_VOICE_START:
+                {
+                    #if defined(CFG_BLE_PDS)
+                    GLB_Set_System_CLK(GLB_DLL_XTAL_32M, GLB_SYS_CLK_DLL128M);
+                    HBN_Set_XCLK_CLK_Sel(HBN_XCLK_CLK_XTAL);
+                    arch_delay_ms(1);
+                    #endif
+                    printf("voice_start\r\n");
+                    ble_rc_voice_start();
+                    printf("audio_pdm_start\r\n");
+                    bl_audio_pdm_start();
+                }
+                break;
+                case RC_KYS_VOICE_STOP:
+                {
+                    #if defined(CFG_BLE_PDS)
+                    GLB_Set_System_CLK(GLB_DLL_XTAL_32M, GLB_SYS_CLK_XTAL);
+                    arch_delay_ms(1);
+                    #endif
+                    printf("RC_KYS_VOICE_STOP\r\n");
+                }
+                break;
+                default:
+                break;
+            }    
+        }
+    }
+}
+
+static struct hids_remote_key *key_usage[6 /* row */][6 /* col */] = {
+    {NULL                  , NULL                  ,  &remote_kbd_map_tab[0], &remote_kbd_map_tab[1]  },
+    {&remote_kbd_map_tab[2], &remote_kbd_map_tab[3],  &remote_kbd_map_tab[4], &remote_kbd_map_tab[5]  },
+    {&remote_kbd_map_tab[6], &remote_kbd_map_tab[7],  &remote_kbd_map_tab[8], &remote_kbd_map_tab[9]  },
+    {&remote_kbd_map_tab[10], &remote_kbd_map_tab[11],&remote_kbd_map_tab[12], &remote_kbd_map_tab[13]},
+};
+
+bool bl_kys_key_check(const kys_result_t *result, uint8_t row_idx, uint8_t col_idx)
+{
+    for(int i = 0; i < result->key_num; i++)
+    {
+        if(row_idx == result->row_idx[i] && col_idx == result->col_idx[i])
+            return true;
+    }
+    
+    return false;
+}
+
+void bl_kys_interrupt_callback(const kys_result_t *result)
+{  
+    static bool pressed = false;
+    bool process = false;
+    u8_t evt_type = 0;
+
+    if(result->key_num && !pressed)
+    {
+        pressed = true;
+        process = true;
+    }
+
+    if(result->key_num == 0)
+    { 
+        if(pressed && voice_start)
+        {
+            process = true;
+        }
+
+        pressed = false;
+    }
+    
+    if(process)
+    { 
+        if(voice_start)
+        {
+            voice_start = false;
+            bl_audio_pdm_stop();
+            evt_type = RC_KYS_VOICE_STOP;
+            k_fifo_put_from_isr(&key_scan_queue, &evt_type);
+        }
+        if(result->key_num == 1)
+        {
+            printf("key(%d, %d)\r\n", result->row_idx[0], result->col_idx[0]);
+            if(result->row_idx[0] == 0 && result->col_idx[0] == 0)
+            {
+                voice_start = true;
+                evt_type = RC_KYS_VOICE_START;
+                k_fifo_put_from_isr(&key_scan_queue, &evt_type);
+            }
+            else if(result->row_idx[0] == 0 && result->col_idx[0] == 1 && rc_default_conn)
+            {
+                evt_type = RC_KYS_UNPAIR;
+                k_fifo_put_from_isr(&key_scan_queue, &evt_type);
+            }
+            else
+            {
+                evt_type = RC_KYS_NOTIFY;
+                m_key_usage = key_usage[result->row_idx[0]][result->col_idx[0]];
+                k_fifo_put_from_isr(&key_scan_queue, &evt_type);
+            }
+        } 
+    }
+    bl_kys_trigger_interrupt();
+}
+
+void ble_create_key_scan_task(void)
+{
+    printf("%s\r\n",__func__);
+    k_fifo_init(&key_scan_queue, 10);
+    xTaskCreate(ble_key_scan_task, "ble_key_scan_task", (4*1024)/sizeof(StackType_t), (void *)NULL, 20, // max is 31 ( configMAX_PRIORITIES - 1 )
+                &bleKeyScanTask);
 }
 
 int ble_cli_rc_register(void)
@@ -303,6 +498,7 @@ void bt_enable_cb(int err)
 
         bas_init();
         hog_init();
+        ble_create_key_scan_task();
 
         env.bonded = false;
 
@@ -313,6 +509,7 @@ void bt_enable_cb(int err)
         {
             printf("ble advertising is started\r\n");
         }
+        
     }
 }
 

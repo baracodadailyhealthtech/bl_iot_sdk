@@ -14,7 +14,11 @@ static hosal_gpio_dev_t gp1;
 
 void gpio_set_led_on(void)
 {
+#if defined(CONF_USER_BL602)
     gp1.port = 5;
+#elif defined(CONF_USER_BL702) || defined(CONF_USER_BL702L)
+    gp1.port = 2;
+#endif
     gp1.config = OUTPUT_OPEN_DRAIN_NO_PULL;
     hosal_gpio_init(&gp1);
     hosal_gpio_output_set(&gp1, 1);
@@ -47,12 +51,19 @@ void key2_irq(void *arg)
 
 void gpio_irq_test(void)
 {
-
+#if defined(CONF_USER_BL602)
     key1.port = 3;
+#elif defined(CONF_USER_BL702) || defined(CONF_USER_BL702L)
+    key1.port = 0;
+#endif
     key1.config = INPUT_PULL_UP;
     hosal_gpio_init(&key1);
 
+#if defined(CONF_USER_BL602)
     key2.port = 4;
+#elif defined(CONF_USER_BL702) || defined(CONF_USER_BL702L)
+    key2.port = 1;
+#endif
     key2.config = INPUT_PULL_UP;
     hosal_gpio_init(&key2);
 

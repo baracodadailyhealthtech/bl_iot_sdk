@@ -19,10 +19,10 @@
  *  RX pin : 3/5
  *  baud : 2000000
  */
-#ifdef CONF_USER_BL702
-HOSAL_UART_DEV_DECL(uart_dev_abr, 1, 10, 5, 2000000);
-#elif CONF_USER_BL602
+#if defined(CONF_USER_BL602)
 HOSAL_UART_DEV_DECL(uart_dev_abr, 1, 4, 3, 2000000);
+#elif defined(CONF_USER_BL702) || defined(CONF_USER_BL702L)
+HOSAL_UART_DEV_DECL(uart_dev_abr, 1, 10, 5, 2000000);
 #endif
 
 
@@ -31,6 +31,11 @@ HOSAL_UART_DEV_DECL(uart_dev_abr, 1, 4, 3, 2000000);
  */
 void demo_hosal_uart_abr(int uart_id)
 {
+#if defined(CONF_USER_BL702L)
+    blog_error("BL702L/704L has only one uart port, so it does not support this demo.\r\n");
+    return;
+#endif
+
     uart_dev_abr.config.uart_id = uart_id;
     uint8_t wData[2] = {0x4f, 0x4b};
     int i = 0;

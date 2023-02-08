@@ -9,7 +9,7 @@
 #include <cli.h>
 #include <hosal_pwm.h>
 #include <blog.h>
-#if defined(BL702)
+#if defined(CONF_USER_BL702)
 #include "bl702_pwm.h"
 #include "bl_irq.h"
 #include "bl_gpio.h"
@@ -18,12 +18,20 @@
 hosal_pwm_dev_t pwm;
 void demo_hosal_pwm_init(void)
 {
-    uint32_t p_freq;
-    uint32_t duty;
-    /* pwm port and pin set  note: There is corresponding relationship between port and pin, for bl602, map is  port = pin%5 */
+#if defined(CONF_USER_BL602) || defined(CONF_USER_BL702)
+    /* pwm port and pin set  note: There is corresponding relationship between port and pin, for bl602/bl702, map is  port = pin%5 */
     pwm.port = 0;
     /* pwm config */
     pwm.config.pin = 0;
+#elif defined(CONF_USER_BL702L)
+    /* for bl702l, pwm port must be 0 */
+    pwm.port = 0;
+    /* for bl702l, there are two pwm versions
+       for pwm_v1, pin%5 == 0
+       for pwm_v2, pin%5 != 0
+       here pwm_v2 is used */
+    pwm.config.pin = 1;
+#endif
     pwm.config.duty_cycle = 5000; //duty_cycle range is 0~10000 correspond to 0~100%
     pwm.config.freq = 1000;       //freq range is between 0~40MHZ,for more detail you can reference https://dev.bouffalolab.com/media/doc/602/open/reference_manual/zh/html/content/PWM.html
     /* init pwm with given settings */
@@ -52,7 +60,7 @@ void demo_hosal_pwm_stop(void)
     hosal_pwm_finalize(&pwm);
 }
 
-#if defined(BL702)
+#if defined(CONF_USER_BL702)
 void demo_pwm_sw_mode(uint32_t high_us, uint32_t low_us)
 {
     demo_hosal_pwm_init();

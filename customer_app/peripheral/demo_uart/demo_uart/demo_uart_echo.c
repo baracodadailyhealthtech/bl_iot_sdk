@@ -15,10 +15,10 @@
  *  RX pin : 7/15
  *  baud : 2000000
  */
-#ifdef CONF_USER_BL702
-HOSAL_UART_DEV_DECL(uart_dev_echo, 0, 14, 15, 2000000);
-#elif CONF_USER_BL602
+#if defined(CONF_USER_BL602)
 HOSAL_UART_DEV_DECL(uart_dev_echo, 0, 16, 7, 2000000);
+#elif defined(CONF_USER_BL702) || defined(CONF_USER_BL702L)
+HOSAL_UART_DEV_DECL(uart_dev_echo, 0, 14, 15, 2000000);
 #endif
 
 /**

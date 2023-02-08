@@ -16,10 +16,10 @@
  *  RX pin : 7/15
  *  baud : 2000000
  */
-#ifdef CONF_USER_BL702
-HOSAL_UART_DEV_DECL(uart_dev_int, 0, 14, 15, 2000000);
-#elif CONF_USER_BL602
+#if defined(CONF_USER_BL602)
 HOSAL_UART_DEV_DECL(uart_dev_int, 0, 16, 7, 2000000);
+#elif defined(CONF_USER_BL702) || defined(CONF_USER_BL702L)
+HOSAL_UART_DEV_DECL(uart_dev_int, 0, 14, 15, 2000000);
 #endif
 
 /**
@@ -31,7 +31,7 @@ static int __uart_tx_callback(void *p_arg)
     char buf[] = "TX interrupt TEST\r\n";
     hosal_uart_dev_t *p_dev = (hosal_uart_dev_t *)p_arg;
 
-    if (tx_counts < sizeof(buf)) {
+    if (tx_counts < sizeof(buf) - 1) {
         hosal_uart_send(p_dev, &buf[tx_counts++], 1);
     } else {
         /* If the data transfer is completed, turn off the TX trigger mode */

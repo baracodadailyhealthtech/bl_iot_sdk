@@ -28,6 +28,6 @@ const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
  */
 int main(void)
 {
-    blog_info("demo hosal dac!\r\n");
+    blog_info("demo hosal adc!\r\n");
     return 0;
 }

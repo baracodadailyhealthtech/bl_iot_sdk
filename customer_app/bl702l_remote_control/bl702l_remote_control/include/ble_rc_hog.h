@@ -19,7 +19,30 @@ static uint8_t KEY_VOL_DES[2]  = {0xea,0x00}; //Volume Decrement
 static uint8_t KEY_HOME[2]     = {0x23,0x02}; //AC Home
 static uint8_t KEY_BACK[2]     = {0x24,0x02}; //AC Back
 
+struct hids_remote_key {
+    u8_t hid_page;
+    u8_t *hid_usage;
+} __packed;
+
+static struct hids_remote_key remote_kbd_map_tab[] = {
+    {HID_PAGE_KBD, KEY_CH_INS},
+    {HID_PAGE_KBD, KEY_CH_DES},  
+    {HID_PAGE_KBD, KEY_LEFT},
+    {HID_PAGE_KBD, KEY_RIGHT},   
+    {HID_PAGE_KBD, KEY_DOWN},
+    {HID_PAGE_KBD, KEY_UP},
+    {HID_PAGE_KBD, KEY_MENU},
+    {HID_PAGE_KBD, KEY_PWR}, 
+    {HID_PAGE_CONS, KEY_PICK},
+    {HID_PAGE_CONS, KEY_MUTE},
+    {HID_PAGE_CONS, KEY_VOL_INS},
+    {HID_PAGE_CONS, KEY_VOL_DES},
+    {HID_PAGE_CONS, KEY_HOME},
+    {HID_PAGE_CONS, KEY_BACK},
+};
+    
 void hog_init(void);
 extern volatile u8_t Voicekey_is_press;
 int bt_hog_notify(struct bt_conn *conn, u8_t hid_page, u8_t *hid_usage, bool press);
+struct bt_gatt_attr *ble_rc_get_voice_attr(void);
 #endif //__BLE_RC_HOG_H__

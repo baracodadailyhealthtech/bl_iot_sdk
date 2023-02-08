@@ -19,11 +19,10 @@ static uint8_t g_rx_buf[16];
  *  RX pin : 7/15
  *  baud : 2000000
  */
-     
-#ifdef CONF_USER_BL702
-HOSAL_UART_DEV_DECL(uart_dev_dma, 0, 14, 15, 2000000);
-#elif CONF_USER_BL602
+#if defined(CONF_USER_BL602)
 HOSAL_UART_DEV_DECL(uart_dev_dma, 0, 16, 7, 2000000);
+#elif defined(CONF_USER_BL702) || defined(CONF_USER_BL702L)
+HOSAL_UART_DEV_DECL(uart_dev_dma, 0, 14, 15, 2000000);
 #endif
 
 /**
@@ -55,7 +54,7 @@ void demo_hosal_uart_dma(int uart_id)
 {
     hosal_uart_dma_cfg_t txdam_cfg = {
         .dma_buf = g_tx_buf,
-        .dma_buf_size = sizeof(g_tx_buf),
+        .dma_buf_size = sizeof(g_tx_buf) - 1,
     };
     hosal_uart_dma_cfg_t rxdam_cfg = {
         .dma_buf = g_rx_buf,
@@ -63,6 +62,11 @@ void demo_hosal_uart_dma(int uart_id)
     };
     
     uart_dev_dma.config.uart_id = uart_id;
+
+#if defined(CONF_USER_BL702L)
+    /* dma for uart rx is enabled for cli, disable it anyway */
+    hosal_dma_chan_stop(0);
+#endif
 
     /* uart init device */
     hosal_uart_init(&uart_dev_dma);

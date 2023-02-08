@@ -3,6 +3,8 @@
 #include <string.h>
 #include "rom_hal_ext.h"
 #include "cli.h"
+#include "bl_kys.h"
+#include "ble_rc_app.h"
 
 extern uint8_t pds_start;
 static void cmd_start_pds(char *buf, int len, int argc, char **argv)
@@ -19,6 +21,10 @@ void main(void)
     #if defined(CFG_BLE_PDS)
     bl_pds_init();
     #endif
-    extern void ble_stack_start(void);
-    ble_stack_start();;
+    //gpio0 cannot be used in keyscan.
+    //row number needs to be equal to col number
+    uint8_t row_pins[] = {31, /*10,*/25, 24, 23};
+    uint8_t col_pins[] = {9, /*0,*/ 28, 27, 26};
+    bl_kys_init(sizeof(row_pins), sizeof(col_pins), row_pins, col_pins);
+    ble_stack_start();
 }

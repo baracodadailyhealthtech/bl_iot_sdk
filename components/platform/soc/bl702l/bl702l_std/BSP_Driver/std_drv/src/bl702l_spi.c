@@ -193,7 +193,7 @@ BL_Err_Type SPI_Init(SPI_ID_Type spiNo, SPI_CFG_Type *spiCfg)
 
     /* Disable clock gate when use SPI0 */
     if (SPI0_ID == spiNo) {
-        GLB_PER_Clock_UnGate(GLB_AHB_CLOCK_IP_SPI);
+        GLB_PER_Clock_UnGate(GLB_AHB_CLOCK_SPI);
     }
 
     /* spi config */
