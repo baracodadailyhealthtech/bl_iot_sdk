@@ -12,7 +12,7 @@
 #include <event_device.h>
 #include <cli.h>
 
-#include <bl702l_glb.h>
+#include <bl702l_clock.h>
 #include <bl_sys.h>
 #include <bl_chip.h>
 #include <bl_irq.h>
@@ -356,6 +356,11 @@ void bl702_main()
     rom_freertos_init(256, 400);
     rom_hal_init();
     rom_lmac154_hook_init();
+#endif
+
+#if defined(GPIO_SIM_PRINT)
+    extern int bl_gpio_uart_init(uint8_t tx_pin, uint32_t baudrate);
+    bl_gpio_uart_init(8, 1000000);
 #endif
 
     /*Init UART In the first place*/

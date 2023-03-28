@@ -20,12 +20,6 @@
 #define LWIP_MDNS_RESPONDER     1
 #define LWIP_IGMP               1
 
-#ifdef BL602_MATTER_SUPPORT
-#define LWIP_AUTOIP             1
-#define LWIP_IPV6_MLD           1
-#define LWIP_ND6_RDNSS_MAX_DNS_SERVERS  1
-#endif
-
 #define LWIP_NUM_NETIF_CLIENT_DATA      1
 
 #define LWIP_ALTCP                      1
@@ -344,6 +338,8 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCPIP_THREAD_STACKSIZE          1536
 #elif defined(CFG_USE_WIFI_BR)
 #define TCPIP_THREAD_STACKSIZE          1536
+#elif defined(CFG_TCPIP_STACKSIZE)
+#define TCPIP_THREAD_STACKSIZE          CFG_TCPIP_STACKSIZE
 #else
 #define TCPIP_THREAD_STACKSIZE          4000
 #endif /* CFG_ETHERNET_ENABLE */
@@ -380,18 +376,20 @@ a lot of data that needs to be copied, this should be set high. */
 
 #define LWIP_RAW                        1
 
-#ifdef BL602_MATTER_SUPPORT
-#define LWIP_IPV6                       1
-#define LWIP_IPV6_DHCP6                 1
-#endif
-
 /*
    ---------------------------------
    ---------- MISC. options ----------
    ---------------------------------
 */
 
+#if defined(__cplusplus)
+extern "C" int bl_rand(void);
+extern "C" int * __errno(void);
+#else
+extern int bl_rand(void);
 extern int * __errno(void);
+#endif
+
 #define errno (*__errno())
 
 /**
@@ -399,13 +397,6 @@ extern int * __errno(void);
  * local TCP/UDP pcb (default==0). This can prevent creating predictable port
  * numbers after booting a device.
  */
-#ifndef BL602_MATTER_SUPPORT
-#if defined(__cplusplus)
-extern "C" int bl_rand(void);
-#else
-extern int bl_rand(void);
-#endif
-#endif
 
 #define LWIP_RANDOMIZE_INITIAL_LOCAL_PORTS 1
 #define LWIP_RAND() ((u32_t)bl_rand())

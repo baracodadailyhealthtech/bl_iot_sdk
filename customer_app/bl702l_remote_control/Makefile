@@ -27,7 +27,6 @@ INCLUDE_COMPONENTS += newlibc hosal vfs yloop utils cli blog
 INCLUDE_COMPONENTS += blfdt
 INCLUDE_COMPONENTS += blmtd easyflash4
 INCLUDE_COMPONENTS += coredump
-INCLUDE_COMPONENTS += opus
 
 ifeq ($(CONFIG_BUILD_ROM_CODE),1)
 INCLUDE_COMPONENTS += bl702l_freertos

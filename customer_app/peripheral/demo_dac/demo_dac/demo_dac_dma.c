@@ -11,11 +11,12 @@
 #include <blog.h>
 #include <vfs.h>
 #include <fs/vfs_romfs.h>
-#include "audio.h"
 
 #ifdef CONF_USER_BL702
+#include "doorbell.h"
 #define DAC_PIN         11
 #elif CONF_USER_BL602
+#include "audio.h"
 #define DAC_PIN         13
 #endif
 

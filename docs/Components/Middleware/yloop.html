@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>yloop &mdash; BL IoT SDK release_bl_iot_sdk_1.6.37-1009-g868818c91 文档</title>
+  <title>yloop &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-946-g480d2dbb2 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.37-1009-g868818c91 文档" href="../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-946-g480d2dbb2 文档" href="../../index.html"/>
         <link rel="up" title="&lt;no title&gt;" href="index.html"/>
         <link rel="next" title="AOS VFS" href="vfs.html"/>
         <link rel="prev" title="&lt;no title&gt;" href="index.html"/> 
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.37-1009-g868818c91
+                release_bl_iot_sdk_1.6.40-946-g480d2dbb2
               </div>
             
           
@@ -82,7 +82,7 @@
           
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="text" name="q" placeholder="在文档中搜索" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -194,7 +194,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="yloop">
-<h1>yloop<a class="headerlink" href="#yloop" title="永久链接至标题"></a></h1>
+<h1>yloop<a class="headerlink" href="#yloop" title="永久链接至标题">¶</a></h1>
 <hr class="docutils" />
 <ul class="simple">
 <li><p><a class="reference internal" href="#id1">Yloop概要</a></p></li>
@@ -206,19 +206,19 @@
 <li><p><a class="reference internal" href="#id8">注意事项</a></p></li>
 </ul>
 <div class="section" id="id1">
-<h2>Yloop概要<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<h2>Yloop概要<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
 <p>Yloop 是AliOS
 Things的异步事件框架。Yloop借鉴了，libuv及嵌入式业界常见的event
 loop，综合考虑使用复杂性，性能，及footprint，实现了一个适合于MCU的事件调度机制。我们移植了相关的插件。其主要优势是所有的处理都是在主任务中执行的，不需要额外的创建任务，从而节省内存使用。同时，由于所有处理都是在主任务进行，不需要复杂的互斥操作。</p>
 </div>
 <div class="section" id="id2">
-<h2>Yloop上下文<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<h2>Yloop上下文<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <p>每个Yloop实例（aos_loop_t）与特定的任务上下文绑定，AliOS
 Things的程序入口application_start
 所在的上下文与系统的主Yloop实例绑定，该上下文也称为主任务。主任务以外的任务也可以创建自己的Yloop实例。</p>
 </div>
 <div class="section" id="id3">
-<h2>Yloop调度<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+<h2>Yloop调度<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
 <p>Yloop实现了对IO，timer，callback，event的统一调度管理：</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">IO</span></code>：最常见的是Socket，也可以是AliOS Things的vfs管理的设备</p></li>
@@ -229,12 +229,12 @@ Things的程序入口application_start
 </ul>
 </div>
 <div class="section" id="id4">
-<h2>Yloop实现原理<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
+<h2>Yloop实现原理<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
 <p>Yloop利用协议栈的select接口实现了对IO及timer的调度。AliOS
 Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此接口把VFS的设备文件，和eventfd关联起来，实现了对整个系统的事件的统一调度。</p>
 </div>
 <div class="section" id="api">
-<h2>主要api介绍<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<h2>主要api介绍<a class="headerlink" href="#api" title="永久链接至标题">¶</a></h2>
 <ul class="simple">
 <li><p>注册事件监听函数</p></li>
 </ul>
@@ -246,8 +246,8 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
 <span class="cm"> * @param[in]  priv  private data past to cb.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return  the operation status, 0 is OK, others is error.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">aos_register_event_filter</span><span class="p">(</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">aos_event_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">priv</span><span class="p">);</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">aos_register_event_filter</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">type</span><span class="p">,</span> <span class="n">aos_event_cb</span> <span class="n">cb</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Unregister native event callback.</span>
@@ -257,8 +257,8 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
 <span class="cm"> * @param[in]  priv  private data past to cb.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return  the operation status, 0 is OK, others is error.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">aos_unregister_event_filter</span><span class="p">(</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">aos_event_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">priv</span><span class="p">);</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">aos_unregister_event_filter</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">type</span><span class="p">,</span> <span class="n">aos_event_cb</span> <span class="n">cb</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">priv</span><span class="p">);</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -272,8 +272,8 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
 <span class="cm"> * @param[in]  value  event value.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return  the operation status, 0 is OK,others is error.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">aos_post_event</span><span class="p">(</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w">  </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">aos_post_event</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">type</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">code</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span>  <span class="n">value</span><span class="p">);</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -287,8 +287,8 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
 <span class="cm"> * @param[in]  param   private data past to action.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return  the operation status, 0 is OK,others is error.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">aos_poll_read_fd</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">aos_poll_call_t</span><span class="w"> </span><span class="n">action</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">param</span><span class="p">);</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">aos_poll_read_fd</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">aos_poll_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">param</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Cancel a poll event to be executed in main loop.</span>
@@ -296,8 +296,8 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
 <span class="cm"> * @param[in]  fd      poll fd.</span>
 <span class="cm"> * @param[in]  action  action to be executed.</span>
 <span class="cm"> * @param[in]  param   private data past to action.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="kt">void</span><span class="w"> </span><span class="nf">aos_cancel_poll_read_fd</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">aos_poll_call_t</span><span class="w"> </span><span class="n">action</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">param</span><span class="p">);</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">aos_cancel_poll_read_fd</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">aos_poll_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">param</span><span class="p">);</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -314,8 +314,8 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
 <span class="cm"> * @param[in]  arg     private data past to action.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return  the operation status, 0 is OK,others is error.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">aos_post_delayed_action</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">ms</span><span class="p">,</span><span class="w"> </span><span class="n">aos_call_t</span><span class="w"> </span><span class="n">action</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">);</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">aos_post_delayed_action</span><span class="p">(</span><span class="kt">int</span> <span class="n">ms</span><span class="p">,</span> <span class="n">aos_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Cancel a delayed action to be executed in main loop.</span>
@@ -323,8 +323,8 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
 <span class="cm"> * @param[in]  ms      milliseconds to wait, -1 means don&#39;t care.</span>
 <span class="cm"> * @param[in]  action  action to be executed.</span>
 <span class="cm"> * @param[in]  arg     private data past to action.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="kt">void</span><span class="w"> </span><span class="nf">aos_cancel_delayed_action</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">ms</span><span class="p">,</span><span class="w"> </span><span class="n">aos_call_t</span><span class="w"> </span><span class="n">action</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">);</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">aos_cancel_delayed_action</span><span class="p">(</span><span class="kt">int</span> <span class="n">ms</span><span class="p">,</span> <span class="n">aos_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -339,110 +339,110 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
 <span class="cm"> * @param[in]  arg     private data past to action.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return  the operation status, &lt;0 is error,others is OK.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">aos_schedule_call</span><span class="p">(</span><span class="n">aos_call_t</span><span class="w"> </span><span class="n">action</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">);</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">aos_schedule_call</span><span class="p">(</span><span class="n">aos_call_t</span> <span class="n">action</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="id5">
-<h2>示例代码<a class="headerlink" href="#id5" title="永久链接至标题"></a></h2>
+<h2>示例代码<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
 <p>这里会介绍<a class="reference external" href="#事件注册、通知、回调、取消流程">事件注册、通知、回调、取消流程</a>、<a class="reference external" href="#poll事件的注册取消">poll事件的注册取消</a>、<a class="reference external" href="#延迟执行一个action">延迟执行一个actio</a>)以及<a class="reference external" href="#安排一次回调">安排一次回调</a>的使用方法</p>
 <div class="section" id="id6">
-<h3>事件注册、通知、回调、取消流程<a class="headerlink" href="#id6" title="永久链接至标题"></a></h3>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_register_event_filter</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span><span class="w"> </span><span class="n">event_cb_wifi_event</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<h3>事件注册、通知、回调、取消流程<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_register_event_filter</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span> <span class="n">event_cb_wifi_event</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>用户首先调用<code class="docutils literal notranslate"><span class="pre">aos_register_event_filter</span></code>注册事件监听函数，例如首先显注册一个<code class="docutils literal notranslate"><span class="pre">EV_WIFI</span></code>事件的监听函数<code class="docutils literal notranslate"><span class="pre">event_cb_wifi_event</span></code></p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_post_event</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span><span class="w"> </span><span class="n">CODE_WIFI_ON_INIT_DONE</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_post_event</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span> <span class="n">CODE_WIFI_ON_INIT_DONE</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>当有任务调用<code class="docutils literal notranslate"><span class="pre">aos_post_event</span></code>接口，发布<code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_INIT_DONE</span></code>事件之后</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">event_cb_wifi_event</span><span class="p">(</span><span class="n">input_event_t</span><span class="w"> </span><span class="o">*</span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">private_data</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">CODE_WIFI_ON_INIT_DONE</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;[APP] [EVT] CODE_WIFI_ON_INIT_DONE %lld</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">aos_now_ms</span><span class="p">());</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">CODE_WIFI_ON_PRE_GOT_IP</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;[APP] [EVT] connected %lld</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">aos_now_ms</span><span class="p">());</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">CODE_WIFI_ON_GOT_IP</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;[APP] [EVT] GOT IP %lld</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">aos_now_ms</span><span class="p">());</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">default</span><span class="o">:</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="cm">/*nothing*/</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="nf">event_cb_wifi_event</span><span class="p">(</span><span class="n">input_event_t</span> <span class="o">*</span><span class="n">event</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">private_data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span>
+        <span class="k">case</span> <span class="nl">CODE_WIFI_ON_INIT_DONE</span><span class="p">:</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[APP] [EVT] CODE_WIFI_ON_INIT_DONE %lld</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">aos_now_ms</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">CODE_WIFI_ON_PRE_GOT_IP</span><span class="p">:</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[APP] [EVT] connected %lld</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">aos_now_ms</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">CODE_WIFI_ON_GOT_IP</span><span class="p">:</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[APP] [EVT] GOT IP %lld</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">aos_now_ms</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+        <span class="p">{</span>
+            <span class="cm">/*nothing*/</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">event_cb_wifi_event</span></code>会被调用，并进入case<code class="docutils literal notranslate"><span class="pre">CODE_WIFI_ON_INIT_DONE</span></code>分支</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_unregister_event_filter</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span><span class="w"> </span><span class="n">event_cb_wifi_event</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_unregister_event_filter</span><span class="p">(</span><span class="n">EV_WIFI</span><span class="p">,</span> <span class="n">event_cb_wifi_event</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>如果用户不需要事件的监听，用户可以主动调用<code class="docutils literal notranslate"><span class="pre">aos_unregister_event_filter</span></code>取消监听</p>
 </div>
 <div class="section" id="poll">
-<h3>poll事件的注册取消<a class="headerlink" href="#poll" title="永久链接至标题"></a></h3>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*uart*/</span><span class="w"></span>
-<span class="n">fd_console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_open</span><span class="p">(</span><span class="s">&quot;/dev/ttyS0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fd_console</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Init CLI with event Driven</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">aos_cli_init</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">aos_poll_read_fd</span><span class="p">(</span><span class="n">fd_console</span><span class="p">,</span><span class="w"> </span><span class="n">aos_cli_event_cb_read_get</span><span class="p">(),</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0x12345678</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">_cli_init</span><span class="p">();</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<h3>poll事件的注册取消<a class="headerlink" href="#poll" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*uart*/</span>
+<span class="n">fd_console</span> <span class="o">=</span> <span class="n">aos_open</span><span class="p">(</span><span class="s">&quot;/dev/ttyS0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">fd_console</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Init CLI with event Driven</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">aos_cli_init</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">aos_poll_read_fd</span><span class="p">(</span><span class="n">fd_console</span><span class="p">,</span> <span class="n">aos_cli_event_cb_read_get</span><span class="p">(),</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0x12345678</span><span class="p">);</span>
+    <span class="n">_cli_init</span><span class="p">();</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>这里以 <code class="docutils literal notranslate"><span class="pre">uart0</span></code> 为例，用户首先注册一个<code class="docutils literal notranslate"><span class="pre">aos_poll_read_fd</span></code>poll事件</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_cancel_poll_read_fd</span><span class="p">(</span><span class="n">fd_console</span><span class="p">,</span><span class="w"> </span><span class="n">action</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0x12345678</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_cancel_poll_read_fd</span><span class="p">(</span><span class="n">fd_console</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="mh">0x12345678</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>如果用户不需要事件的poll，用户可以调用<code class="docutils literal notranslate"><span class="pre">aos_cancel_poll_read_fd</span></code> 取消poll</p>
 </div>
 <div class="section" id="action">
-<h3>延迟执行一个action<a class="headerlink" href="#action" title="永久链接至标题"></a></h3>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_post_delayed_action</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="n">app_delayed_action_print</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<h3>延迟执行一个action<a class="headerlink" href="#action" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_post_delayed_action</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">app_delayed_action_print</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>用户可以调用<code class="docutils literal notranslate"><span class="pre">aos_post_delayed_action</span></code>做一个延迟<code class="docutils literal notranslate"><span class="pre">1s</span></code>执行的事件</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">app_delayed_action_print</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;test.</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="nf">app_delayed_action_print</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;test.</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>那过<code class="docutils literal notranslate"><span class="pre">1s</span></code>之后会主动调用<code class="docutils literal notranslate"><span class="pre">app_delayed_action_print</span></code>函数</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_cancel_delayed_action</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="n">app_delayed_action_print</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_cancel_delayed_action</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">app_delayed_action_print</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>当用户想直接取消一个延迟动作可以调用<code class="docutils literal notranslate"><span class="pre">aos_cancel_delayed_action</span></code>，其第一个<code class="docutils literal notranslate"><span class="pre">ms</span></code>参数,
 当<code class="docutils literal notranslate"><span class="pre">ms</span> <span class="pre">==</span> <span class="pre">-1</span></code>时，表示无需关心时间是否一致</p>
 </div>
 <div class="section" id="id7">
-<h3>安排一次回调<a class="headerlink" href="#id7" title="永久链接至标题"></a></h3>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_schedule_call</span><span class="p">(</span><span class="n">app_action_print</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span><span class="w"></span>
+<h3>安排一次回调<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">aos_schedule_call</span><span class="p">(</span><span class="n">app_action_print</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>用户主动调用<code class="docutils literal notranslate"><span class="pre">aos_schedule_call</span></code>函数</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="n">app_action_print</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;test</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">app_action_print</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;test</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>那么会在下一次循环中主动调用<code class="docutils literal notranslate"><span class="pre">app_action_print</span></code>函数</p>
 </div>
 </div>
 <div class="section" id="id8">
-<h2>注意事项<a class="headerlink" href="#id8" title="永久链接至标题"></a></h2>
+<h2>注意事项<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
 <p>Yloop的API(include/aos/yloop.h)除了下述API，都必须在Yloop实例所绑定的任务的上下文执行：</p>
 <ul class="simple">
 <li><p>aos_schedule_call</p></li>
@@ -495,7 +495,7 @@ Things自带的协议栈又暴露一个特殊的eventfd接口，Yloop利用此�
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.37-1009-g868818c91',
+            VERSION:'release_bl_iot_sdk_1.6.40-946-g480d2dbb2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

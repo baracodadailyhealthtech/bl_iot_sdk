@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2016-2023 Bouffalolab.
+ *
+ * This file is part of
+ *     *** Bouffalolab Software Dev Kit ***
+ *      (see www.bouffalolab.com).
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *   1. Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *   3. Neither the name of Bouffalo Lab nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -515,6 +544,20 @@ static void bl_coredump_print(uintptr_t addr, uint32_t len, const char *desc, en
   cd_putchar(COREDUMP_BLOCK_CLOSE_STR, sizeof(COREDUMP_BLOCK_CLOSE_STR));
 }
 
+#ifndef BL_COREDUMP_PRINT_SEG_N_K
+#define BL_COREDUMP_PRINT_SEG_N_K 32
+#endif
+static void bl_coredump_print_n_k(uintptr_t addr, uint32_t len, const char *desc, enum dump_type type)
+{
+    uint32_t printed_len;
+    int seg;
+
+    for(seg = 0; seg * BL_COREDUMP_PRINT_SEG_N_K * 1024 < len; seg++) {
+        printed_len = seg*BL_COREDUMP_PRINT_SEG_N_K*1024;
+        bl_coredump_print(addr + printed_len, len - printed_len >= BL_COREDUMP_PRINT_SEG_N_K*1024 ? BL_COREDUMP_PRINT_SEG_N_K*1024: len - printed_len, desc, type);
+    }
+}
+
 /**
  * Coredump initialize.
  *
@@ -543,7 +586,7 @@ void bl_coredump_parse(const uint8_t *buf, unsigned int len) {
         } else {
           length = 0x1000;
         }
-        bl_coredump_print(addr, length, NULL, DUMP_BASE64_WORD);
+        bl_coredump_print_n_k(addr, length, NULL, DUMP_BASE64_WORD);
       }
     } while (0);
     return;
@@ -551,7 +594,7 @@ void bl_coredump_parse(const uint8_t *buf, unsigned int len) {
   case 'd':
     do {
       for (i = 0; i < (sizeof(mem_hdr) / sizeof(mem_hdr[0])); i++) {
-        bl_coredump_print(mem_hdr[i].addr, mem_hdr[i].length, mem_hdr[i].desc, mem_hdr[i].type);
+        bl_coredump_print_n_k(mem_hdr[i].addr, mem_hdr[i].length, mem_hdr[i].desc, mem_hdr[i].type);
       }
     } while (0);
     return;
@@ -579,7 +622,7 @@ void bl_coredump_run() {
     if (mem_hdr[cmd_pos].length == 0) {
       continue;
     }
-    bl_coredump_print(mem_hdr[cmd_pos].addr, mem_hdr[cmd_pos].length, mem_hdr[cmd_pos].desc, mem_hdr[cmd_pos].type);
+    bl_coredump_print_n_k(mem_hdr[cmd_pos].addr, mem_hdr[cmd_pos].length, mem_hdr[cmd_pos].desc, mem_hdr[cmd_pos].type);
   }
 
   while (1) {

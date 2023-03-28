@@ -324,6 +324,18 @@ struct bt_hci_evt_mesh_scanning_report {
 	struct bt_hci_evt_mesh_scan_report reports[0];
 } __packed;
 
+#define HCI_VS_BT_A2DP_STATUS_CMD_OPCODE        BT_OP(BT_OGF_VS, 0x0076)
+struct bt_hci_cp_vs_set_a2dp_status {
+    u16_t conhdl;
+    u8_t status;
+}__packed;
+
+#define HCI_VS_BT_A2DP_DUTY_CYCLE_CMD_OPCODE    BT_OP(BT_OGF_VS, 0x0077)
+struct hci_vsc_set_a2dp_duty_cycle_cmd {
+    u8_t duty_cycle;
+}__packed;
+
+
 #ifdef __cplusplus
 }
 #endif

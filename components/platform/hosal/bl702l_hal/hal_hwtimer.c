@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2016-2023 Bouffalolab.
+ *
+ * This file is part of
+ *     *** Bouffalolab Software Dev Kit ***
+ *      (see www.bouffalolab.com).
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *   1. Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *   3. Neither the name of Bouffalo Lab nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #include "bl_irq.h"
 #include <bl702l_timer.h>
@@ -115,8 +144,8 @@ hw_timer_t *hal_hwtimer_create(uint32_t period, hw_t handler, int repeat)
     }
     
     bl_irq_ctx_get(TIMER_CH0_IRQn, (void **)&pstctx);
-    if( xSemaphoreTake(pstctx->hwtimer_mux, portMAX_DELAY) == pdTRUE ) {
-        blog_info("get mux success \r\n");
+    if( xSemaphoreTake(pstctx->hwtimer_mux, portMAX_DELAY) != pdTRUE ) {
+        blog_error("get mux failed \r\n");
     }
 
     TIMER_IntMask(TIMER0_ID, HW_TIMER_CHANNEL, TIMER_INT_ALL, MASK); 
@@ -140,8 +169,8 @@ int hal_hwtimer_delete(hw_timer_t *pstnode)
     struct hw_timer_ctx *pstctx;
     
     bl_irq_ctx_get(TIMER_CH0_IRQn, (void **)&pstctx);
-    if( xSemaphoreTake(pstctx->hwtimer_mux, portMAX_DELAY) == pdTRUE ) {
-        blog_info("get mux success \r\n");
+    if( xSemaphoreTake(pstctx->hwtimer_mux, portMAX_DELAY) != pdTRUE ) {
+        blog_error("get mux failed \r\n");
     }
 
     TIMER_IntMask(TIMER0_ID, HW_TIMER_CHANNEL, TIMER_INT_ALL, MASK);
@@ -178,8 +207,8 @@ int hal_hwtimer_change_period(hw_timer_t *pstnode, uint32_t period)
     }
 
     bl_irq_ctx_get(TIMER_CH0_IRQn, (void **)&pstctx);
-    if( xSemaphoreTake(pstctx->hwtimer_mux, portMAX_DELAY) == pdTRUE ) {
-        blog_info("get mux success \r\n");
+    if( xSemaphoreTake(pstctx->hwtimer_mux, portMAX_DELAY) != pdTRUE ) {
+        blog_error("get mux failed \r\n");
     }
 
     TIMER_IntMask(TIMER0_ID, HW_TIMER_CHANNEL, TIMER_INT_ALL, MASK);

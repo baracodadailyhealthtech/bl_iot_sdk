@@ -21,4 +21,5 @@ void zb_pds_init(zb_app_conf_t *app_conf);
 void zb_pds_enable(uint8_t enable);
 void zbapp_action_before_sleep_callback(void);
 void zbapp_action_after_wakeup_callback(void);
+void zb_set_ota_status(bool otaOngoing);
 #endif

@@ -15,6 +15,9 @@
 #include "log.h"
 #include "ble_rc_hog.h"
 #include "ble_rc_voice.h"
+#if defined (CONFIG_ATVV_SERVER_ENABLE)
+#include "ble_atv_voice.h"
+#endif
 
 u16_t BATTERY_LEVEL_UUID_VAL = 0x2a19;
 #define BT_GATT_HIDS_EXT_REPORT(_uuid)  \
@@ -64,7 +67,6 @@ static struct hids_report report[3]= {
     HID_REPORT_REGISTER(0xf0,HIDS_INPUT),
 };
 
-static bool simulate_input;
 static u8_t ctrl_point;
 static u8_t report_map[] = {
     /*
@@ -166,7 +168,7 @@ static ssize_t read_report(struct bt_conn *conn,
 static void input_ccc_changed(const struct bt_gatt_attr *attr, u16_t value)
 {
     ARG_UNUSED(attr);
-    simulate_input = (value == BT_GATT_CCC_NOTIFY);
+    printf("%s value=%d\r\n", __func__, value);
 }
 
 static ssize_t read_input_report(struct bt_conn *conn,
@@ -277,7 +279,7 @@ static struct bt_gatt_attr attrs[]=
                            NULL, 
                            NULL),
 
-    BT_GATT_CCC(input_ccc_changed,BT_GATT_PERM_READ_AUTHEN | BT_GATT_PERM_WRITE_AUTHEN),
+    BT_GATT_CCC(input_ccc_changed,BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
     
     BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, 
                        BT_GATT_PERM_READ,
@@ -338,4 +340,7 @@ void hog_init(void)
 {
 	bt_gatt_service_register(&hog_svc);
     ble_rc_voice_cfg();
+    #if defined (CONFIG_ATVV_SERVER_ENABLE)
+    ble_atvv_init();
+    #endif
 }

@@ -11,10 +11,6 @@ ifeq ($(EXT_MK), $(wildcard $(EXT_MK)))
 include $(PROJECT_PATH)/$(notdir $(PROJECT_PATH))/bouffalo_ext.mk
 endif
 
-
-
-
-
-
-
-
+ifeq ($(CONFIG_ATVV_SERVER_ENABLE), 1)
+CPPFLAGS += -DCONFIG_ATVV_SERVER_ENABLE
+endif
