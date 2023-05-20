@@ -35,8 +35,6 @@
 #include <string.h>
 
 #include <bl_gpio.h>
-
-#include <easyflash.h>
 #include <lmac154.h>
 
 
@@ -47,6 +45,9 @@ void vApplicationTickHook( void )
     extern void usb_cdc_monitor(void);
     usb_cdc_monitor();
 #endif
+
+    extern void lmac154_monitor(void);
+    lmac154_monitor();
 }
 #endif
 
@@ -55,9 +56,11 @@ void _cli_init(int fd_console)
 #if defined(CFG_USB_CDC_ENABLE)
     extern void usb_cdc_start(int fd_console);
     usb_cdc_start(fd_console);
+    vTaskDelay(1000);
 #endif
 
     /*Put CLI which needs to be init here*/
+    extern int easyflash_cli_init(void);
     easyflash_cli_init();
 }
 
@@ -98,17 +101,17 @@ void _dump_lib_info(void)
 
 static void system_init(void)
 {
-    easyflash_init();
+    
 }
 
-static void system_thread_init()
+static void system_thread_init(void)
 {
 #if defined(CFG_BLE_ENABLE)
     ble_init();
 #endif
 }
 
-void main()
+void main(void)
 {
     extern void lmac154_example_task(void *pvParameters);
 

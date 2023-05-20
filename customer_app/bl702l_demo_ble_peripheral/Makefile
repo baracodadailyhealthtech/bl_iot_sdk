@@ -1,0 +1,58 @@
+#
+# This is a project Makefile. It is assumed the directory this Makefile resides in is a
+# project subdirectory.
+#
+
+PROJECT_PATH := $(abspath .)
+PROJECT_NAME :=  $(notdir $(PROJECT_PATH))
+PROJECT_BOARD := evb
+export PROJECT_PATH PROJECT_BOARD
+#CONFIG_TOOLPREFIX :=
+
+BTBLECONTROLLER_LIBS := m1s1r m1s1rp m1s1p m2s1p m8s1
+BTBLECONTROLLER_LIB_DEFAULT := m1s1r
+BTBLECONTROLLER_LIB_PREFIX := btblecontroller_702l_
+
+-include ./proj_config.mk
+
+ifeq ($(origin BL60X_SDK_PATH), undefined)
+BL60X_SDK_PATH_GUESS ?= $(shell pwd)
+BL60X_SDK_PATH ?= $(BL60X_SDK_PATH_GUESS)/../..
+$(info ****** Please SET BL70X_SDK_PATH ******)
+$(info ****** Trying SDK PATH [$(BL60X_SDK_PATH)])
+endif
+
+INCLUDE_COMPONENTS += bl702l bl702l_std bl702l_rf
+INCLUDE_COMPONENTS += newlibc hosal vfs yloop utils cli blog
+INCLUDE_COMPONENTS += blfdt
+INCLUDE_COMPONENTS += blmtd easyflash4
+INCLUDE_COMPONENTS += coredump
+INCLUDE_COMPONENTS += bl702l_rom_ext
+ifeq ($(CONFIG_BLUETOOTH),1)
+ifeq ($(CONFIG_BTBLECONTROLLER_LIB),all)
+	INCLUDE_COMPONENTS += $(addprefix $(BTBLECONTROLLER_LIB_PREFIX), $(BTBLECONTROLLER_LIBS))
+else
+	ifeq ($(findstring $(CONFIG_BTBLECONTROLLER_LIB), $(BTBLECONTROLLER_LIBS)),)
+		INCLUDE_COMPONENTS += $(addprefix $(BTBLECONTROLLER_LIB_PREFIX), $(BTBLECONTROLLER_LIB_DEFAULT))
+	else
+		INCLUDE_COMPONENTS += $(addprefix $(BTBLECONTROLLER_LIB_PREFIX), $(CONFIG_BTBLECONTROLLER_LIB))
+	endif
+endif
+INCLUDE_COMPONENTS += blestack
+endif
+INCLUDE_COMPONENTS += $(PROJECT_NAME)
+
+include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk
+
+ifdef CONFIG_CACHE_SIZE
+EXTRA_LDFLAGS += -Wl,--defsym=__CACHE_SIZE=$(CONFIG_CACHE_SIZE)
+endif
+
+ifdef CONFIG_BLE_EM_SIZE
+EXTRA_LDFLAGS += -Wl,--defsym=__EM_SIZE=$(CONFIG_BLE_EM_SIZE)
+endif
+
+
+ifeq ($(CONFIG_BTBLECONTROLLER_LIB),all)
+LDFLAGS := $(filter-out $(addprefix -l$(BTBLECONTROLLER_LIB_PREFIX), $(filter-out $(BTBLECONTROLLER_LIB_DEFAULT), $(BTBLECONTROLLER_LIBS))), $(LDFLAGS))
+endif

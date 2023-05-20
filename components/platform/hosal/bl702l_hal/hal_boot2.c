@@ -105,8 +105,8 @@ uint32_t hal_boot2_get_flash_addr(void)
 {
     extern uint8_t __boot2_pt_addr_src;
 
-    return (uint32_t)(&__boot2_pt_addr_src + 4 + 
-                      sizeof(PtTable_Config) + sizeof(PtTable_Entry_Config) * boot2_partition_table.table.ptTable.entryCnt + 4);
+    return (uint32_t)&__boot2_pt_addr_src + 4 + 
+                     sizeof(PtTable_Config) + sizeof(PtTable_Entry_Config) * boot2_partition_table.table.ptTable.entryCnt + 4;
 }
 
 

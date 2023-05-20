@@ -1,7 +1,7 @@
 #ifndef __VOICE_H__
 #define __VOICE_H__
 
-#include "bl_audio_pdm.h"
+#include "bl_audio.h"
 #include "bl_port.h"
 
 #include "FreeRTOS.h"
@@ -19,8 +19,13 @@ typedef struct
 	uint32_t rptr;
 }buffer_t;
 
+#define VOICE_INTF                 1  // 1: PDM; 2: AMIC
+
 #define PDM_CLK_PIN                8
 #define PDM_IN_PIN                 3
+
+#define AMIC_POS_CH                1  // i.e. GPIO3
+#define AMIC_NEG_CH                3  // i.e. GPIO8
 
 #define VOICE_DATA_PATTER_SIZE     6
 #if defined (CONFIG_ATVV_SERVER_ENABLE)

@@ -66,6 +66,7 @@ typedef enum {
     HOSAL_IRQ_TRIG_POS_PULSE,        /**< @brief GPIO posedge pulse trigger interrupt */
     HOSAL_IRQ_TRIG_NEG_LEVEL,        /**< @brief  GPIO negedge level trigger interrupt (32k 3T)*/
     HOSAL_IRQ_TRIG_POS_LEVEL,        /**< @brief  GPIO posedge level trigger interrupt (32k 3T)*/
+    HOSAL_IRQ_TRIG_NEG_POS_PULSE,
 
     HOSAL_IRQ_TRIG_SYNC_FALLING_EDGE = 10,        /*!< GPIO interrupt sync mode, GPIO falling edge trigger interrupt */
     HOSAL_IRQ_TRIG_SYNC_RISING_EDGE = 11,         /*!< GPIO interrupt sync mode, GPIO rising edge trigger interrupt */

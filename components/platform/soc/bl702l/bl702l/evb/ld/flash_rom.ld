@@ -159,7 +159,7 @@ SECTIONS
     PROVIDE ( __boot2_flashCfg_start = . );
     *(.bss.boot2_flashCfg)
     PROVIDE ( __boot2_flashCfg_end = . );
-  } >tcm_ocram
+  } >hbnram
 
   .bss (NOLOAD) :
   {

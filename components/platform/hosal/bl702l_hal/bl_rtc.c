@@ -104,6 +104,23 @@ uint64_t bl_rtc_get_counter(void)
     return ((uint64_t)valHigh << 32) | valLow;
 }
 
+ATTR_TCM_SECTION
+uint64_t bl_rtc_get_aligned_counter(void)
+{
+#define RomDriver_HBN_Get_RTC_Timer_Async_Val ((BL_Err_Type (*)(uint32_t *valLow, uint32_t *valHigh))0x210186c2)
+
+    uint32_t valLow, valHigh;
+    uint32_t valLow_tmp;
+    
+    RomDriver_HBN_Get_RTC_Timer_Async_Val(&valLow_tmp, &valHigh);
+    
+    do {
+        RomDriver_HBN_Get_RTC_Timer_Async_Val(&valLow, &valHigh);
+    } while(valLow == valLow_tmp);
+    
+    return ((uint64_t)valHigh << 32) | valLow;
+}
+
 uint64_t bl_rtc_get_timestamp_ms(void)
 {
     uint64_t cnt;

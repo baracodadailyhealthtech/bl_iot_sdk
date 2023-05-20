@@ -41,6 +41,7 @@
 
 void bl_rtc_init(void);
 uint64_t bl_rtc_get_counter(void);
+uint64_t bl_rtc_get_aligned_counter(void);
 uint64_t bl_rtc_get_timestamp_ms(void);
 uint64_t bl_rtc_get_delta_counter(uint64_t ref_cnt);
 uint64_t bl_rtc_get_delta_time_ms(uint64_t ref_cnt);

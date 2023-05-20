@@ -135,8 +135,9 @@ static void gpio_interrupt_entry(hosal_gpio_ctx_t *pstnode)
 
 int hosal_gpio_irq_set(hosal_gpio_dev_t *gpio, hosal_gpio_irq_trigger_t trigger_type, hosal_gpio_irq_handler_t handler, void *arg)
 {
-    if (NULL == gpio || gpio->port > GLB_GPIO_PIN_MAX || trigger_type > 3 || trigger_type < 0) {
+    if (NULL == gpio || gpio->port > GLB_GPIO_PIN_MAX || trigger_type > 4) {
         printf("hosal irq register paraments is not correct! \r\n");
+        return -1;
     }
     hosal_gpio_ctx_t *node = NULL;
     hosal_gpio_ctx_t *node_f = NULL;

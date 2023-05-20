@@ -64,8 +64,6 @@ int32_t bflb_hash_start(bflb_hash_handle_t *hash_handle)
 {
     int32_t ret = BFLB_HASH_OK;
 
-
-  
     switch(hash_handle->type)
     {
         case BFLB_HASH_TYPE_SHA1:
@@ -85,10 +83,14 @@ int32_t bflb_hash_start(bflb_hash_handle_t *hash_handle)
             return BFLB_HASH_ERROR;
             
     }
+
+#if 0
     if(ret!=0){
     	bflb_hash_printe("hash start fail\r\n");
         ret=BFLB_HASH_ERROR;
     }
+#endif
+
     return ret;
 }
 
@@ -115,10 +117,13 @@ int32_t bflb_hash_update(bflb_hash_handle_t *hash_handle,const uint8_t *in,uint3
             return BFLB_HASH_ERROR;
             
     }
+
+#if 0
     if(ret!=0){
     	bflb_hash_printe("hash update fail\r\n");
         ret=BFLB_HASH_ERROR;
     }
+#endif
 
     return ret;
 }
@@ -146,10 +151,13 @@ int32_t bflb_hash_finish(bflb_hash_handle_t *hash_handle,uint8_t *out)
             return BFLB_HASH_ERROR;
             
     }
+
+#if 0
     if(ret!=0){
     	bflb_hash_printe("hash finish fail\r\n");
         ret=BFLB_HASH_ERROR;
     }
+#endif
 
     return ret;
 }

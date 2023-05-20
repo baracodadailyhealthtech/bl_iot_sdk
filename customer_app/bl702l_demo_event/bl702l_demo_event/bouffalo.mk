@@ -19,9 +19,7 @@ include $(PROJECT_PATH)/$(notdir $(PROJECT_PATH))/bouffalo_ext.mk
 endif
 
 ifeq ($(CONFIG_LINK_CUSTOMER),1)
-ifeq ($(CONFIG_PDS_CPU_PWROFF),1)
-LINKER_SCRIPTS := bl702l_demo_event_pds.ld
-endif
+LINKER_SCRIPTS := 
 
 COMPONENT_ADD_LDFLAGS += -L $(PROJECT_PATH)/$(notdir $(PROJECT_PATH)) $(addprefix -T ,$(LINKER_SCRIPTS))
 ##

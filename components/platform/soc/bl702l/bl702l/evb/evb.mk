@@ -38,12 +38,16 @@ else
 		ifeq ($(CONFIG_BUILD_ROM_CODE),1)
 			ifeq ($(CONFIG_USE_PSRAM),1)
 				LINKER_SCRIPTS := psram_flash.ld
+			else ifeq ($(CONFIG_PDS_ENABLE),1)
+				LINKER_SCRIPTS := flash_lp.ld
 			else
 				LINKER_SCRIPTS := flash.ld
 			endif
 		else
 			ifeq ($(CONFIG_USE_PSRAM),1)
 				LINKER_SCRIPTS := psram_flash_rom.ld
+			else ifeq ($(CONFIG_PDS_ENABLE),1)
+				LINKER_SCRIPTS := flash_rom_lp.ld
 			else
 				LINKER_SCRIPTS := flash_rom.ld
 			endif

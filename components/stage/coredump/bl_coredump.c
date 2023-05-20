@@ -32,11 +32,13 @@
 #include <stdio.h>
 #include <FreeRTOS.h>
 #include <task.h>
-#include <hosal_uart.h>
+#include <bl_uart.h>
 #include <utils_base64.h>
 #include <utils_crc.h>
 #include <utils_hex.h>
 #include <bl_coredump.h>
+
+#define COREDUMP_UART 0
 
 #define REVERSE(a) (((a)&0xff) << 24 | ((a)&0xff00) << 8 | ((a)&0xff0000) >> 8 | ((a)&0xff000000) >> 24)
 
@@ -212,33 +214,32 @@ static inline uintptr_t cd_getsp(void) {
   return sp;
 }
 
-/**
- * Coredump initialize.
- *
- * @return result
- */
-static int cd_getchar(char *inbuf) {
-  extern hosal_uart_dev_t uart_stdio;
-
-  return hosal_uart_receive(&uart_stdio, inbuf, 1);
+static void cd_flush(void) {
+  bl_uart_flush(COREDUMP_UART);
 }
 
-/**
- * Coredump initialize.
- *
- * @return result
- */
+static int cd_getchar(char *inbuf) {
+  int ret;
+  ret =  bl_uart_data_recv(COREDUMP_UART);
+  if (ret < 0) {
+    return 0;
+  }
+  *inbuf = (char)ret;
+  return 1;
+}
+
 static void cd_putchar(const char *buf, size_t len) {
-  extern hosal_uart_dev_t uart_stdio;
-  hosal_uart_send(&uart_stdio, buf, len);
+  int i;
+  for (i=0; i<len; i++) {
+    bl_uart_data_send(COREDUMP_UART, buf[i]);
+  }
 }
 
 static void cd_base64_wirte_block(const uint8_t buf[4], void *opaque) {
-  extern hosal_uart_dev_t uart_stdio;
   int *line_wrap = (int *)opaque;
-  hosal_uart_send(&uart_stdio, buf, 4);
+  cd_putchar((const char *)buf, 4);
   if (++(*line_wrap) > (BASE64_LINE_WRAP >> 2)) {
-    hosal_uart_send(&uart_stdio, "\r\n", 2);
+    cd_putchar("\r\n", 2);
     *line_wrap = 0;
   }
 }
@@ -542,6 +543,8 @@ static void bl_coredump_print(uintptr_t addr, uint32_t len, const char *desc, en
   dump_handler_list[DUMP_BASE64_WORD]((const void *)&crc, (ssize_t)sizeof(uint32_t), &crc_ctx);
 
   cd_putchar(COREDUMP_BLOCK_CLOSE_STR, sizeof(COREDUMP_BLOCK_CLOSE_STR));
+
+  cd_flush();
 }
 
 #ifndef BL_COREDUMP_PRINT_SEG_N_K

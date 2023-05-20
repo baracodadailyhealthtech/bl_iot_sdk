@@ -60,6 +60,7 @@ hosal_flash_dev_t *hosal_flash_open(const char *name, unsigned int flags)
 	p_dev = calloc(sizeof(hosal_flash_dev_t), 1);
 	if (p_dev == NULL) {
 		blog_error("no memory !!!\r\n");
+		return NULL;
 	}
 	p_dev->flash_dev = mtd;
 	return p_dev;
@@ -128,12 +129,12 @@ int hosal_flash_write(hosal_flash_dev_t *p_dev, uint32_t *off_set,
 {
     uint32_t addr = *off_set;
 
-    char *wbuf = (char *)in_buf;
-    uint32_t wlen = in_buf_size;
-
     if (in_buf == NULL) {
         return -1;
     }
+
+    char *wbuf = (char *)in_buf;
+    uint32_t wlen = in_buf_size;
 
     bl_mtd_write(p_dev->flash_dev, addr, wlen, (const uint8_t *)wbuf);
 

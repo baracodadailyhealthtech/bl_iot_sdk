@@ -23,7 +23,6 @@
 #include "ble_rc_app.h"
 #include "ble_atv_voice.h"
 
-#define BLE_RC_ADV_TIMER_IN_SEC    10 //10s
 volatile bool voice_start = false;
 volatile bool cont_start = false;//send release key value after key is released.
 volatile bool cont_release = false;
@@ -115,9 +114,6 @@ static void ble_rc_connected(struct bt_conn *conn, u8_t err)
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    if(conn->le.interval < BLE_RC_CONN_INTERVAL_MIN_PDS)
-        ble_rc_pds_enable(0); 
-
     if (err) {
         printf("Failed to connect to %s (%u) \r\n", addr, err);
         return;
@@ -191,18 +187,6 @@ static void ble_rc_conn_param_updated(struct bt_conn *conn, u16_t interval,
     if(conn == rc_default_conn)
     {
         printf("%s: int 0x%04x lat %d to %d \r\n", __func__, interval, latency, timeout);
-        if(interval < BLE_RC_CONN_INTERVAL_MIN_PDS)
-        {
-            ble_rc_pds_enable(0); 
-        }
-        else
-        {
-           if(!voice_start)
-           {
-              printf("pds start\r\n");
-              ble_rc_pds_enable(1);
-           }
-        }
 
         #if defined (CONFIG_ATVV_SERVER_ENABLE)
         if(ble_atvv_if_voice_start_pending())
@@ -478,14 +462,11 @@ static void ble_rc_key_scan_task(void *pvParameters)
                         printf("Report battery level\r\n");
                 }
                 break;
-                case RC_KYS_NEC_TX:
+                case RC_KYS_IR_TX:
                 {
-                    uint32_t test_data = 0xfffe;
-                    //gpio22:led0; gpio18:led1,not mounted on BL702L_DVK.
-                    bl_ir_led_drv_cfg(1, 0);
-                    bl_ir_nec_tx_cfg();
-                    printf("bl_ir_nec_tx\r\n");
-                    bl_ir_nec_tx(test_data);
+                    printf("ble_rc_ir_tx_demo\r\n");
+                    extern void ble_rc_ir_tx_demo(void);
+                    ble_rc_ir_tx_demo();
                 }
                 break;
 
@@ -497,8 +478,8 @@ static void ble_rc_key_scan_task(void *pvParameters)
 }
 
 static struct hids_remote_key *key_usage[4 /* row */][4 /* col */] = {
-    {NULL                  , &remote_kbd_map_tab[0],  &remote_kbd_map_tab[1], &remote_kbd_map_tab[2]  },
-    {&remote_kbd_map_tab[3], &remote_kbd_map_tab[4],  &remote_kbd_map_tab[5], &remote_kbd_map_tab[6]  },
+    {&remote_kbd_map_tab[4], &remote_kbd_map_tab[0],  &remote_kbd_map_tab[1], &remote_kbd_map_tab[2]  },
+    {&remote_kbd_map_tab[3], NULL ,                   &remote_kbd_map_tab[5], &remote_kbd_map_tab[6]  },
     {&remote_kbd_map_tab[7], &remote_kbd_map_tab[8],  &remote_kbd_map_tab[9], &remote_kbd_map_tab[10] },
     {&remote_kbd_map_tab[11], &remote_kbd_map_tab[12],&remote_kbd_map_tab[13],NULL                    },
 };
@@ -519,8 +500,9 @@ ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
     static bool pressed = false;
     static bool adv_key_pressed = false;
     static bool adv_key_released = false;
-    u8_t home_key_row_idx = 3, home_key_col_idx = 2;
-    u8_t back_key_row_idx = 3, back_key_col_idx = 3;
+    u8_t home_key_row_idx = 3, home_key_col_idx = 1;
+    u8_t back_key_row_idx = 1, back_key_col_idx = 3;
+    u8_t voice_key_row_idx = 1, voice_key_col_idx = 1;
     bool process = false;
     u8_t *evt_type_ptr = NULL;
 
@@ -599,7 +581,7 @@ ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
         else if(result->key_num == 1)
         {
             printf("key(%d, %d)\r\n", result->row_idx[0], result->col_idx[0]);
-            if(result->row_idx[0] == 0 && result->col_idx[0] == 0)
+            if(result->row_idx[0] == voice_key_row_idx && result->col_idx[0] == voice_key_col_idx)
             {
                 voice_start = true;
                 evt_type_ptr = k_malloc(1);
@@ -609,7 +591,7 @@ ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
             else if(result->row_idx[0] == 3 && result->col_idx[0] == 3)
             {
                 evt_type_ptr = k_malloc(1);
-                *evt_type_ptr = RC_KYS_NEC_TX;
+                *evt_type_ptr = RC_KYS_IR_TX;
                 k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
             }
             else
@@ -700,6 +682,8 @@ ATTR_PDS_SECTION void ble_rc_after_sleep_callback(void)
 {
     uint8_t key_row_idx = 0xff, key_col_idx = 0xff;
     uint8_t key_evt_type = 0;
+
+    uart_init(14, 15, 2000000);
     if(bl_pds_get_wakeup_source() == PDS_WAKEUP_BY_KEY)
     {
         key_evt_type = bl_pds_get_wakeup_key_index(&key_row_idx, &key_col_idx);
@@ -756,7 +740,7 @@ void bt_enable_cb(int err)
 
         bt_conn_auth_cb_register(&ble_rc_auth_cb_display);
         bt_conn_cb_register(&ble_rc_conn_callbacks);
-
+        
         if(ble_rc_start_adv() == 0)
         {
             printf("ble advertising is started\r\n");
@@ -771,10 +755,12 @@ void ble_stack_start(void)
     // Initialize BLE controller
     btble_controller_init(configMAX_PRIORITIES - 1);
     #if defined(CFG_BLE_PDS)
+    btble_controller_sleep_init();
     btble_set_before_sleep_callback(ble_rc_before_sleep_callback);
     btble_set_after_sleep_callback(ble_rc_after_sleep_callback);
     btble_set_sleep_aborted_callback(ble_rc_sleep_aborted_callback);
     #endif
+    
     // Initialize BLE Host stack
     hci_driver_init();
     bt_enable(bt_enable_cb);

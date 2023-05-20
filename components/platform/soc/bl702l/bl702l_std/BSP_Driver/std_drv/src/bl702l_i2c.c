@@ -312,7 +312,7 @@ void I2C_Init(I2C_ID_Type i2cNo, I2C_Direction_Type direct, I2C_Transfer_Cfg *cf
     CHECK_PARAM(IS_I2C_ID_TYPE(i2cNo));
 
     /* set i2c clk,default is 400000,max support clk is 400000 */
-    if (cfg->clk == 0 || cfg->clk > 400000){
+    if (cfg->clk == 0 || cfg->clk > 400000) {
         I2C_ClockSet(i2cNo, 400000);
     } else {
         I2C_ClockSet(i2cNo, cfg->clk);
@@ -380,11 +380,9 @@ BL_Err_Type I2C_SetDeglitchCount(I2C_ID_Type i2cNo, uint8_t cnt)
     if (cnt > 0) {
         /* enable de-glitch function */
         tmpVal = BL_SET_REG_BIT(tmpVal, I2C_CR_I2C_DEG_EN);
-    } else if (cnt == 0) {
+    } else {
         /* disable de-glitch function */
         tmpVal = BL_CLR_REG_BIT(tmpVal, I2C_CR_I2C_DEG_EN);
-    } else {
-        return ERROR;
     }
 
     /* Set count value */
@@ -447,7 +445,7 @@ void I2C_ClockSet(I2C_ID_Type i2cNo, uint32_t clk)
 
     /* Check the parameters */
     CHECK_PARAM(IS_I2C_ID_TYPE(i2cNo));
-    
+
     bclk = GLB_Get_BCLK_Div();
     if (clk >= 100000) {
         GLB_Set_I2C_CLK(1, GLB_I2C_CLK_SRC_BCLK, 0);
@@ -462,7 +460,6 @@ void I2C_ClockSet(I2C_ID_Type i2cNo, uint32_t clk)
         GLB_Set_I2C_CLK(1, GLB_I2C_CLK_SRC_BCLK, 255);
         I2C_SetPrd(i2cNo, bclk / 256 / (clk * 4) - 1);
     }
-    
 }
 
 /****************************************************************************/ /**
@@ -534,6 +531,26 @@ BL_Sts_Type I2C_TransferEndStatus(I2C_ID_Type i2cNo)
 }
 
 /****************************************************************************/ /**
+ * @brief  Get i2c transfer nack state
+ *
+ * @param  i2cNo: I2C ID type
+ *
+ * @return RESET or SET
+ *
+*******************************************************************************/
+BL_Sts_Type I2C_TransferNackStatus(I2C_ID_Type i2cNo)
+{
+    uint32_t tmpVal;
+    uint32_t I2Cx = I2C_BASE;
+
+    /* Check the parameters */
+    CHECK_PARAM(IS_I2C_ID_TYPE(i2cNo));
+
+    tmpVal = BL_RD_REG(I2Cx, I2C_INT_STS);
+    return ((BL_IS_REG_BIT_SET(tmpVal, I2C_NAK_INT)) ? SET : RESET);
+}
+
+/****************************************************************************/ /**
  * @brief  I2C master write block data
  *
  * @param  i2cNo: I2C ID type
@@ -572,7 +589,7 @@ BL_Err_Type I2C_MasterSendBlocking(I2C_ID_Type i2cNo, I2C_Transfer_Cfg *cfg)
             }
 
             BL_WR_REG(I2Cx, I2C_FIFO_WDATA, temp);
-            if(BL_GET_REG_BITS_VAL(BL_RD_REG(I2Cx, I2C_CONFIG), I2C_CR_I2C_M_EN) == 0) {
+            if (BL_GET_REG_BITS_VAL(BL_RD_REG(I2Cx, I2C_CONFIG), I2C_CR_I2C_M_EN) == 0) {
                 I2C_Enable(i2cNo);
             }
             temp = 0;
@@ -592,14 +609,14 @@ BL_Err_Type I2C_MasterSendBlocking(I2C_ID_Type i2cNo, I2C_Transfer_Cfg *cfg)
         }
 
         BL_WR_REG(I2Cx, I2C_FIFO_WDATA, temp);
-        if(BL_GET_REG_BITS_VAL(BL_RD_REG(I2Cx, I2C_CONFIG), I2C_CR_I2C_M_EN) == 0) {
+        if (BL_GET_REG_BITS_VAL(BL_RD_REG(I2Cx, I2C_CONFIG), I2C_CR_I2C_M_EN) == 0) {
             I2C_Enable(i2cNo);
         }
     }
 
     timeOut = I2C_FIFO_STATUS_TIMEOUT;
 
-    while (I2C_IsBusy(i2cNo) || !I2C_TransferEndStatus(i2cNo)) {
+    while (I2C_IsBusy(i2cNo) || !I2C_TransferEndStatus(i2cNo) || I2C_TransferNackStatus(i2cNo)) {
         timeOut--;
 
         if (timeOut == 0) {
@@ -865,7 +882,6 @@ void I2C0_IRQHandler(void)
     I2C_IntHandler(I2C0_ID);
 }
 #endif
-
 
 /*@} end of group I2C_Public_Functions */
 

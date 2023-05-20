@@ -82,6 +82,13 @@ void _dump_lib_info(void)
 
 }
 
+static void cmd_uart_boot(char *buf, int len, int argc, char **argv)
+{
+    HBN_Set_User_Boot_Config(1);
+
+    bl_sys_reset_system();
+}
+
 #if defined(CFG_BLE_PDS)
 extern uint8_t pds_start;
 static void cmd_start_pds(char *buf, int len, int argc, char **argv)
@@ -91,6 +98,7 @@ static void cmd_start_pds(char *buf, int len, int argc, char **argv)
 #endif
 
 const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
+    {"uart_boot", "enter uart boot mode", cmd_uart_boot},
     #if defined(CFG_BLE_PDS)
     {"pds_start", "enable pds", cmd_start_pds},
     #endif

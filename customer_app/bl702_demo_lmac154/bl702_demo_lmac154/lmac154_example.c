@@ -87,7 +87,7 @@ static uint32_t rx_cnt = 0;
 #endif
 
 #if LMAC154_CASE == 2
-SemaphoreHandle_t sem = NULL;
+static SemaphoreHandle_t sem = NULL;
 static uint8_t ack_ok = 0;
 static uint8_t app_retry = 0;
 #endif
@@ -117,7 +117,7 @@ void lmac154_example_task(void *pvParameters)
     
     lmac154_init();
     lmac154_enableCoex();
-    lmac154_setTxPower(LMAC154_TX_POWER_14dBm);
+    //lmac154_setTxPower(LMAC154_TX_POWER_14dBm);
     lmac154_setChannel(LMAC154_CHANNEL_12);
     lmac154_setPanId(pan_id);
     lmac154_setShortAddr(src_addr);
@@ -139,6 +139,7 @@ void lmac154_example_task(void *pvParameters)
     }
     
     printf("RF (channel %d) Init\r\n", 11 + lmac154_getChannel());
+    printf("Tx Power: %ddBm\r\n", (int8_t)lmac154_getTxPower());
     
     cca_result = lmac154_runCCA(&cca_rssi);
     printf("CCA: %d, RSSI: %ddBm\r\n\r\n", cca_result, cca_rssi);

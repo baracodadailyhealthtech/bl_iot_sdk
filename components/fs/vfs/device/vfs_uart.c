@@ -49,12 +49,23 @@ const struct file_ops uart_ops =
     .sync = vfs_uart_sync,
 };
 
+hosal_uart_dev_t *g_vfs_uart = NULL;
+
 #if defined(BL702L)
 #define CFG_VFS_UART_DMA_ENABLE
 
 extern int hosal_uart_dma_rx_init(hosal_uart_dev_t *uart);
 extern int hosal_uart_dma_rx_start(hosal_uart_dev_t *uart);
 extern int hosal_uart_dma_rx_get_data(hosal_uart_dev_t *uart, uint8_t *buf, uint32_t buf_size);
+
+void vfs_uart_restore(void)
+{
+    hosal_dma_finalize();
+
+    hosal_uart_init(g_vfs_uart);
+    hosal_uart_dma_rx_init(g_vfs_uart);
+    hosal_uart_dma_rx_start(g_vfs_uart);
+}
 #endif
 
 static int __uart_rx_irq(void *p_arg)
@@ -133,6 +144,7 @@ int vfs_uart_open(inode_t *inode, file_t *fp)
         if (fp->node->refs == 1) {
             /* get the device pointer. */
             uart_dev = (vfs_uart_dev_t *)(fp->node->i_arg);
+            g_vfs_uart = &uart_dev->uart;
 
             aos_mutex_new((aos_mutex_t*)&(uart_dev->mutex));
             uart_dev->rx_ringbuf_handle = xStreamBufferCreate(uart_dev->rx_buf_size, 1);

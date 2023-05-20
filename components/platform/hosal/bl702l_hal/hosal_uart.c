@@ -58,13 +58,8 @@ static void gpio_init(uint8_t id, uint8_t tx_pin, uint8_t rx_pin, uint8_t cts_pi
     GLB_GPIO_Init(&cfg);
 
     /* select uart gpio function */
-    if (id == 0) {
-        tx_sigfun = GLB_UART_SIG_FUN_UART0_TXD;
-        rx_sigfun = GLB_UART_SIG_FUN_UART0_RXD;
-    } else {
-        tx_sigfun = GLB_UART_SIG_FUN_UART0_TXD;
-        rx_sigfun = GLB_UART_SIG_FUN_UART0_RXD;
-    }
+    tx_sigfun = GLB_UART_SIG_FUN_UART0_TXD;
+    rx_sigfun = GLB_UART_SIG_FUN_UART0_RXD;
 
     // clk
     //GLB_Set_UART_CLK(1, HBN_UART_CLK_XCLK, 0);
@@ -165,7 +160,7 @@ static int __uart_dma_txcfg(hosal_uart_dev_t *uart, hosal_uart_dma_cfg_t *dma_cf
     UART_FifoConfig(uart->port, &fifoCfg);
 
 	txchCfg.ch = uart->dma_tx_chan;
-	txchCfg.dstPeriph = (uart->port == 0) ? DMA_REQ_UART0_TX : DMA_REQ_UART0_TX;
+	txchCfg.dstPeriph = DMA_REQ_UART0_TX;
 	DMA_Channel_Init(DMA0_ID, &txchCfg);
 	hosal_dma_irq_callback_set(uart->dma_tx_chan, __uart_tx_dma_irq, (void *)uart);
 
@@ -223,7 +218,7 @@ static int __uart_dma_rxcfg(hosal_uart_dev_t *uart, hosal_uart_dma_cfg_t *dma_cf
     UART_FifoConfig(uart->port, &fifoCfg);
 
 	rxchCfg.ch = uart->dma_rx_chan;
-	rxchCfg.srcPeriph = (uart->port == 0) ? DMA_REQ_UART0_RX : DMA_REQ_UART0_RX;
+	rxchCfg.srcPeriph = DMA_REQ_UART0_RX;
 
 	DMA_Channel_Init(DMA0_ID, &rxchCfg);
 	hosal_dma_irq_callback_set(uart->dma_rx_chan, __uart_rx_dma_irq, (void *)uart);
@@ -607,6 +602,7 @@ int hosal_uart_finalize(hosal_uart_dev_t *uart)
 
 
 // Support dma mode for cli
+__attribute__((section(".tcm_data")))
 static uint8_t uart_dma_rx_buf[128];
 
 int hosal_uart_dma_rx_init(hosal_uart_dev_t *uart)

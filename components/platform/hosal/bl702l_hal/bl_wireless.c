@@ -37,6 +37,7 @@
 #include "bl_efuse.h"
 #include "bl_wireless.h"
 #include "bl_irq.h"
+#include "bl_hbn.h"
 
 typedef struct _bl_wireless_env {
     uint8_t mac_addr[8];
@@ -46,6 +47,7 @@ typedef struct _bl_wireless_env {
     int8_t default_tx_power;
 } bl_wireless_env_t;
 
+ATTR_HBN_DATA_SECTION
 bl_wireless_env_t wireless_env;
 
 

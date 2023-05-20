@@ -91,18 +91,22 @@ char *btble_controller_get_lib_ver(void);
 
 void btble_controller_remaining_mem(uint8_t** addr, int* size);
 #if defined(BL702L)
+void btble_controller_sleep_init(void);
 typedef int (*btble_before_sleep_cb_t)(void);
-typedef int (*btble_after_sleep_cb_t)(void);
+typedef void (*btble_after_sleep_cb_t)(void);
 typedef void (*btble_sleep_aborted_cb_t)(void);
 void ble_controller_set_tx_pwr(int ble_tx_power);
+int8_t ble_controller_get_tx_pwr(void);
 void btble_set_before_sleep_callback(btble_before_sleep_cb_t cb);
 void btble_set_after_sleep_callback(btble_after_sleep_cb_t cb);
+#if !defined(CONFIG_BLE_MFG)
 /*
   If ble sleep preparation is aborted before sleep, this callback will be trigerred. Please be noticed, 
   this callback is triggerd after before_sleep_callback.
   e.g. Application disables something before sleep, application needs to enable these when sleep is aborted.
 */
 void btble_set_sleep_aborted_callback(btble_sleep_aborted_cb_t cb);
+#endif
 #endif
 
 #if defined (CONFIG_BLE_MFG) || defined (CONFIG_BT_MFG) 

@@ -1133,8 +1133,6 @@ BL_Err_Type Sec_Eng_MD5_Finish(SEC_Eng_MD5_Ctx *md5Ctx, SEC_ENG_SHA_ID_Type shaN
         }
     } while (BL_IS_REG_BIT_SET(tmpVal, SEC_ENG_SE_SHA_BUSY));
 
-    tmpVal = BL_RD_REG(SHAx, SEC_ENG_SE_SHA_CTRL);
-
     /* Copy SHA value */
     tmpVal = BL_RD_REG(SHAx, SEC_ENG_SE_SHA_HASH_L_0);
     *p++ = (tmpVal & 0xff);

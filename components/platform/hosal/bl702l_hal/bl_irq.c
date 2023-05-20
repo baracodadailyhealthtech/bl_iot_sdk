@@ -35,6 +35,7 @@
 #include <clic.h>
 #include <blog.h>
 #include "bl_irq.h"
+#include "bl_hbn.h"
 #include <panic.h>
 
 #ifdef SYS_ENABLE_COREDUMP
@@ -105,9 +106,13 @@ void bl_irq_default(void)
     }
 }
 
+ATTR_HBN_DATA_SECTION
 void (*handler_list[2][16 + 64])(void) = {
     
 };
+
+ATTR_HBN_DATA_SECTION
+uint32_t bl_irq_systick32 = 0;
 
 
 static inline void _irq_num_check(int irqnum)
@@ -179,6 +184,8 @@ void bl_irq_unregister(int irqnum, void *handler)
 
 void interrupt_entry(uint32_t mcause) 
 {
+    bl_irq_systick32 = *(volatile uint32_t *)0x0200BFF8;
+
     void *handler = NULL;
     mcause &= 0x7FFFFFF;
     if (mcause < sizeof(handler_list[0])/sizeof(handler_list[0][0])) {
@@ -325,6 +332,7 @@ struct{
 	uint32_t mcause;
 	uint32_t mepc;
 	uint32_t mtval;
+	uint32_t ra;
 }rval[4];
 int rval_idx;
 #endif /* DBG_RECORD_EXCEP_VAL */
@@ -391,6 +399,7 @@ void exception_entry(uint32_t mcause, uint32_t mepc, uint32_t mtval, uintptr_t *
 	rval[rval_idx&0x3].mcause = mcause;
 	rval[rval_idx&0x3].mepc = mepc;
 	rval[rval_idx&0x3].mtval = mtval;
+	rval[rval_idx&0x3].ra = (uint32_t)tasksp[REG_RA];
 	rval_idx++;
 #endif /* DBG_RECORD_EXCEP_VAL */
 	puts("Exception Entry--->>>\r\n");

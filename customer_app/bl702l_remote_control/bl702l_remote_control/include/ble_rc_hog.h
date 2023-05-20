@@ -25,20 +25,20 @@ struct hids_remote_key {
 } __packed;
 
 static struct hids_remote_key remote_kbd_map_tab[] = {
-    {HID_PAGE_KBD, KEY_CH_INS},
-    {HID_PAGE_KBD, KEY_CH_DES},  
-    {HID_PAGE_KBD, KEY_LEFT},
-    {HID_PAGE_KBD, KEY_RIGHT},   
-    {HID_PAGE_KBD, KEY_DOWN},
-    {HID_PAGE_KBD, KEY_UP},
     {HID_PAGE_KBD, KEY_MENU},
-    {HID_PAGE_KBD, KEY_PWR}, 
-    {HID_PAGE_CONS, KEY_PICK},
-    {HID_PAGE_CONS, KEY_MUTE},
+    {HID_PAGE_KBD, KEY_CH_INS},
+    {HID_PAGE_KBD, KEY_CH_DES},
     {HID_PAGE_CONS, KEY_VOL_INS},
     {HID_PAGE_CONS, KEY_VOL_DES},
-    {HID_PAGE_CONS, KEY_HOME},
+    {HID_PAGE_KBD, KEY_UP},
     {HID_PAGE_CONS, KEY_BACK},
+    {HID_PAGE_KBD, KEY_PWR},
+    {HID_PAGE_KBD, KEY_LEFT},
+    {HID_PAGE_CONS, KEY_PICK},
+    {HID_PAGE_KBD, KEY_RIGHT},
+    {HID_PAGE_CONS, KEY_MUTE},
+    {HID_PAGE_CONS, KEY_HOME},
+    {HID_PAGE_KBD, KEY_DOWN},
 };
     
 void hog_init(void);

@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "rom_hal_ext.h"
+#include "rom_btble_ext.h"
 #include "cli.h"
 #include "bl_kys.h"
 #include "bl_adc.h"
@@ -19,7 +20,7 @@ const struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
 void main(void)
 {
     #if defined(CFG_BLE_PDS)
-    bl_pds_init();
+    btble_pds_init(NULL);
     #endif
     ble_rc_kys_init();
     ble_stack_start();

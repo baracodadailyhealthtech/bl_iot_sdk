@@ -256,7 +256,7 @@ static void bredr_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, char 
 
 static void bredr_connected(struct bt_conn *conn, u8_t err)
 {
-    if(err || conn->type != BT_CONN_TYPE_BR)
+    if(conn->type != BT_CONN_TYPE_BR)
     {
         return;
     }

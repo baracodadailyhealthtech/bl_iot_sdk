@@ -1,4 +1,4 @@
-#include "bl_audio_pdm.h"
+#include "bl_audio.h"
 #include "bl_irq.h"
 #include "ble_rc_voice.h"
 #include "ble_rc_hog.h"
@@ -8,6 +8,10 @@
 #include "gatt.h"
 #include "ble_rc_app.h"
 #include "ble_atv_voice.h"
+#include "bl_uart.h"
+
+#define VOICE_TASK_DESTROY_ONCE_VOICE_STOP 1
+#define BLE_RC_VOICE_RAW_DATA_PRINT 0
 
 T_IMA_ADPCM_STATE encode_state;
 static int16_t pcm_buf[2][ORIG_VOICE_FRAME_SIZE];
@@ -36,9 +40,11 @@ void ble_rc_voice_frame_handle(int index)
         printf("voice_orig_data_queue full\r\n");
 }
 
-int ble_rc_voice_pdm_init(void)
+int ble_rc_voice_init(void)
 {
     u8_t ret = 0;
+
+#if VOICE_INTF == 1
     bl_audio_pdm_cfg_t cfg;
 
     cfg.pdm_clk_pin = PDM_CLK_PIN;
@@ -48,8 +54,24 @@ int ble_rc_voice_pdm_init(void)
     cfg.pcm_frame_buf[1] = pcm_buf[1];
     cfg.pcm_frame_event = ble_rc_voice_frame_handle;
 
-    printf("bl_audio_pdm_init\r\n"); 
+    printf("bl_audio_pdm_init\r\n");
     ret = bl_audio_pdm_init(&cfg);
+#endif
+
+#if VOICE_INTF == 2
+    bl_audio_amic_cfg_t cfg;
+
+    cfg.amic_pos_ch = AMIC_POS_CH;
+    cfg.amic_neg_ch = AMIC_NEG_CH;
+    cfg.pcm_frame_size = ORIG_VOICE_FRAME_SIZE;
+    cfg.pcm_frame_buf[0] = pcm_buf[0];
+    cfg.pcm_frame_buf[1] = pcm_buf[1];
+    cfg.pcm_frame_event = ble_rc_voice_frame_handle;
+
+    printf("bl_audio_amic_init\r\n");
+    ret = bl_audio_amic_init(&cfg);
+#endif
+
     return ret;
 }
 
@@ -63,6 +85,14 @@ static void ble_rc_encode_voice_task(void *pvParameters)
         int16_t * data = k_fifo_get(&voice_orig_data_queue, K_FOREVER);
         if(data)
         {
+            #if (BLE_RC_VOICE_RAW_DATA_PRINT)
+            //printf voice raw data
+            printf("\r\nrawdata start\r\n");
+            unsigned int key = irq_lock();
+            UART_SendData(0, (uint8_t *)data, ORIG_VOICE_FRAME_SIZE*sizeof(int16_t));
+            irq_unlock(key);
+            printf("\r\nrawdata end\r\n");
+            #endif
             memset(cbits[eIndex], 0, NOTIFY_VOICE_DATA_SIZE);
             block_seq++;
             cbits[eIndex][0] = block_seq >> 8;
@@ -121,6 +151,24 @@ static void ble_rc_tx_task(void *pvParameters)
     }
 }
 
+#if (VOICE_TASK_DESTROY_ONCE_VOICE_STOP)
+void ble_rc_voice_task_create(void)
+{
+    k_fifo_init(&voice_orig_data_queue, 2);
+    k_thread_create(&voice_encode_task, "encode_voice", 1536,(k_thread_entry_t)ble_rc_encode_voice_task,configMAX_PRIORITIES - 4);
+    k_fifo_init(&voice_encoded_data_queue, ENCODED_BUFFER_CNT);
+    k_thread_create(&voice_tx_task, "tx_voice", 1536,(k_thread_entry_t)ble_rc_tx_task, configMAX_PRIORITIES - 3);
+}
+
+void ble_rc_voice_task_destroy(void)
+{
+    k_queue_free(&voice_orig_data_queue._queue);
+    k_thread_delete(&voice_encode_task);
+    k_queue_free(&voice_encoded_data_queue._queue);
+    k_thread_delete(&voice_tx_task);
+}
+#endif
+
 int ble_rc_voice_start(void)
 {
     #if defined(CFG_BLE_PDS)
@@ -131,33 +179,42 @@ int ble_rc_voice_start(void)
     encode_state.index = 0;
     encode_state.valprev = 0;
     block_seq=0;
+    #if (VOICE_TASK_DESTROY_ONCE_VOICE_STOP)
+    ble_rc_voice_task_create();
+    #else
     while(k_queue_get_cnt(&voice_orig_data_queue) != 0)
     {
         k_queue_get(&voice_orig_data_queue, K_NO_WAIT);
     }
-
-    ble_rc_voice_pdm_init();
+    #endif
     
-    printf("audio_pdm_start\r\n");
-    return bl_audio_pdm_start();
+    ble_rc_voice_init();
+    
+    printf("bl_audio_start\r\n");
+    return bl_audio_start();
 }
 
 int ble_rc_voice_stop(void)
 {
-    int err = bl_audio_pdm_stop();
+    int err = bl_audio_stop();
     #if defined(CFG_BLE_PDS)
     GLB_Set_System_CLK(GLB_DLL_XTAL_32M, GLB_SYS_CLK_XTAL);
     arch_delay_ms(1);
     #endif
     printf("%s\r\n", __func__);
+    #if (VOICE_TASK_DESTROY_ONCE_VOICE_STOP)
+    ble_rc_voice_task_destroy();
+    #endif
     return err;
 }
 
 void ble_rc_voice_cfg(void)
 {
-    ble_rc_voice_pdm_init();
+    ble_rc_voice_init();
+    #if !(VOICE_TASK_DESTROY_ONCE_VOICE_STOP)
     k_fifo_init(&voice_orig_data_queue, 2);
     k_thread_create(&voice_encode_task, "encode_voice", 1536,(k_thread_entry_t)ble_rc_encode_voice_task,configMAX_PRIORITIES - 4);
     k_fifo_init(&voice_encoded_data_queue, ENCODED_BUFFER_CNT);
     k_thread_create(&voice_tx_task, "tx_voice", 1536,(k_thread_entry_t)ble_rc_tx_task, configMAX_PRIORITIES - 3);
+    #endif
 }

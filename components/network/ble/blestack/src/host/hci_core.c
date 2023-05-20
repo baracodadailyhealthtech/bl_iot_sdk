@@ -4443,9 +4443,16 @@ static void read_bdaddr_complete(struct net_buf *buf)
 		return;
 	}
 
-	bt_addr_copy(&bt_dev.id_addr[0].a, &rp->bdaddr);
-	bt_dev.id_addr[0].type = BT_ADDR_LE_PUBLIC;
-	bt_dev.id_count = 1U;
+	#if defined(BFLB_BLE)
+	bt_addr_copy(&bt_dev.public_addr.a,  &rp->bdaddr);
+	bt_dev.public_addr.type = BT_ADDR_LE_PUBLIC;
+	if (!atomic_test_bit(bt_dev.flags, BT_DEV_USER_ID_ADDR))
+	#endif
+	{
+		bt_addr_copy(&bt_dev.id_addr[0].a, &rp->bdaddr);
+		bt_dev.id_addr[0].type = BT_ADDR_LE_PUBLIC;
+		bt_dev.id_count = 1U;
+	}
 }
 
 static void read_le_features_complete(struct net_buf *buf)
@@ -4586,7 +4593,6 @@ static int common_init(void)
 		hci_reset_complete(rsp);
 		net_buf_unref(rsp);
 	}
-
 	/* Read Local Supported Features */
 	err = bt_hci_cmd_send_sync(BT_HCI_OP_READ_LOCAL_FEATURES, NULL, &rsp);
 	if (err) {
@@ -4605,7 +4611,10 @@ static int common_init(void)
 	net_buf_unref(rsp);
 
 	/* Read Bluetooth Address */
-	if (!atomic_test_bit(bt_dev.flags, BT_DEV_USER_ID_ADDR)) {
+    #if !defined(BFLB_BLE)
+	if (!atomic_test_bit(bt_dev.flags, BT_DEV_USER_ID_ADDR))
+    #endif
+    {
 		err = bt_hci_cmd_send_sync(BT_HCI_OP_READ_BD_ADDR, NULL, &rsp);
 		if (err) {
 			return err;
@@ -4614,6 +4623,10 @@ static int common_init(void)
 		net_buf_unref(rsp);
 	}
 
+    #if defined(BFLB_BLE)
+    if(atomic_test_bit(bt_dev.flags, BT_DEV_USER_ID_ADDR))
+        set_random_address((const bt_addr_t *)(&bt_dev.id_addr[BT_ID_DEFAULT].a));
+    #endif
 	/* Read Local Supported Commands */
 	err = bt_hci_cmd_send_sync(BT_HCI_OP_READ_SUPPORTED_COMMANDS, NULL,
 				   &rsp);
@@ -5907,6 +5920,7 @@ int bt_disable_action(void)
     #endif
 
     atomic_clear_bit(bt_dev.flags, BT_DEV_ENABLE);
+    atomic_clear_bit(bt_dev.flags, BT_DEV_READY);
     
     #if defined(BFLB_DYNAMIC_ALLOC_MEM)
     net_buf_deinit(&hci_cmd_pool);
@@ -5944,6 +5958,7 @@ int bt_disable_action(void)
     k_thread_delete(&tx_thread_data);
     k_thread_delete(&work_q_thread);
     k_thread_delete(&recv_thread_data);
+    memset(&bt_dev, 0, sizeof(bt_dev));
 
     return 0;
 }
@@ -6026,7 +6041,7 @@ int bt_set_name(const char *name)
 		return 0;
 	}
 
-	strncpy(bt_dev.name, name, sizeof(bt_dev.name));
+	memcpy(bt_dev.name, name, sizeof(bt_dev.name));
 
 	/* Update advertising name if in use */
 	if (atomic_test_bit(bt_dev.flags, BT_DEV_ADVERTISING_NAME)) {
@@ -6173,7 +6188,12 @@ int bt_id_create(bt_addr_le_t *addr, u8_t *irk)
 	}
 
 	if (bt_dev.id_count == ARRAY_SIZE(bt_dev.id_addr)) {
+        #if defined(BFLB_BLE)
+        //replace the old one by new static random address.
+        bt_dev.id_count--;
+        #else
 		return -ENOMEM;
+        #endif
 	}
 
 	new_id = bt_dev.id_count++;
@@ -6205,7 +6225,7 @@ int bt_id_reset(u8_t id, bt_addr_le_t *addr, u8_t *irk)
 		return -EINVAL;
 	}
 
-	if (id == BT_ID_DEFAULT || id >= bt_dev.id_count) {
+	if (id == BT_ID_DEFAULT || id >= CONFIG_BT_ID_MAX || id >= bt_dev.id_count) {
 		return -EINVAL;
 	}
 
@@ -6231,7 +6251,7 @@ int bt_id_reset(u8_t id, bt_addr_le_t *addr, u8_t *irk)
 
 int bt_id_delete(u8_t id)
 {
-	if (id == BT_ID_DEFAULT || id >= bt_dev.id_count) {
+	if (id == BT_ID_DEFAULT || id >= CONFIG_BT_ID_MAX || id >= bt_dev.id_count) {
 		return -EINVAL;
 	}
 
@@ -6919,7 +6939,6 @@ int set_adv_param(const struct bt_le_adv_param *param)
 int set_ad_and_rsp_d(u16_t hci_op, u8_t *data, u32_t ad_len)
 {
 	struct net_buf *buf;
-	u32_t len;
 	u8_t size;
 
 	if(BT_HCI_OP_LE_SET_ADV_DATA == hci_op){
@@ -6945,11 +6964,8 @@ int set_ad_and_rsp_d(u16_t hci_op, u8_t *data, u32_t ad_len)
 		set_data->len = ad_len;	
 
 		if (set_data->len > 30) {
-			len = 30 - (set_data->len);
-			if (!len) {
-				net_buf_unref(buf);
-				return -ENOBUFS;
-			}
+			net_buf_unref(buf);
+			return -ENOBUFS;
 		}
 
 		memcpy(set_data->data,data,set_data->len);
@@ -6962,11 +6978,8 @@ int set_ad_and_rsp_d(u16_t hci_op, u8_t *data, u32_t ad_len)
 		set_data->len = ad_len;	
 
 		if (set_data->len > 30) {
-			len = 30 - (set_data->len);
-			if (!len) {
-				net_buf_unref(buf);
-				return -ENOBUFS;
-			}
+			net_buf_unref(buf);
+			return -ENOBUFS;
 		}
 
 		memcpy(set_data->data,data,set_data->len);
@@ -6997,7 +7010,7 @@ int bt_get_local_public_address(bt_addr_le_t *adv_addr)
 {
 	int err = 0;
 
-	bt_addr_le_copy(adv_addr, bt_dev.id_addr);
+	bt_addr_le_copy(adv_addr,&bt_dev.public_addr);
 	return err;
 }
 
@@ -7348,9 +7361,13 @@ int bt_le_scan_stop(void)
 		return -EALREADY;
 	}
 
-	scan_dev_found_cb = NULL;
+	int ret = bt_le_scan_update(false);
 
-	return bt_le_scan_update(false);
+	if(ret == 0){
+		scan_dev_found_cb = NULL;
+	}
+
+	return ret;
 }
 #endif /* CONFIG_BT_OBSERVER */
 
@@ -7481,6 +7498,13 @@ int bt_set_tx_pwr(int8_t power)
     
 	return 0;
 }
+
+#if defined(BL702L) || defined(BL602) || defined(BL702)
+int8_t bt_get_tx_pwr(void)
+{
+    return ble_controller_get_tx_pwr();
+}
+#endif
 
 int bt_set_bd_addr(const bt_addr_t *addr)
 {

@@ -8,8 +8,7 @@ COMPONENT_PRIV_INCLUDEDIRS +=
 
 ## This component's src
 COMPONENT_SRCS := bl702l_hal/bl_adc.c \
-                  bl702l_hal/bl_audio_auadc.c \
-                  bl702l_hal/bl_audio_pdm.c \
+                  bl702l_hal/bl_audio.c \
                   bl702l_hal/bl_boot2.c \
                   bl702l_hal/bl_chip.c \
                   bl702l_hal/bl_dma.c \

@@ -35,6 +35,7 @@
 
 #include "bl_sec.h"
 #include "bl_irq.h"
+#include "bl_hbn.h"
 
 #include <blog.h>
 
@@ -47,10 +48,10 @@
 
 #define TRNG_SIZE_IN_WORD (8)
 #define TRNG_SIZE_IN_BYTES (32)
-static uint32_t trng_buffer[TRNG_SIZE_IN_WORD];
+ATTR_HBN_DATA_SECTION static uint32_t trng_buffer[TRNG_SIZE_IN_WORD];
 static unsigned int trng_idx = 0;
 
-static StaticSemaphore_t sha_mutex_buf;
+ATTR_HBN_DATA_SECTION static StaticSemaphore_t sha_mutex_buf;
 SemaphoreHandle_t g_bl_sec_sha_mutex = NULL;
 
 static inline void _trng_ht_disable()
@@ -193,6 +194,7 @@ int bl_sec_init(void)
     bl_sec_sha_init();
     bl_sec_pka_init();
     bl_sec_aes_init();
+
     /*Disable health test to fix se_trng_0_ht_error, but will reduce security*/
     _trng_ht_disable();
     _trng_trigger();

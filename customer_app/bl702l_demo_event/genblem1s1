@@ -1,3 +1,0 @@
-#!/bin/sh
-make CONFIG_BLUETOOTH=1 CONFIG_BTBLECONTROLLER_LIB=m1s1 -j4
-exit $?
