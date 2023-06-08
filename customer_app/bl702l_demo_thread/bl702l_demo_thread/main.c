@@ -1,32 +1,3 @@
-/*
- * Copyright (c) 2016-2023 Bouffalolab.
- *
- * This file is part of
- *     *** Bouffalolab Software Dev Kit ***
- *      (see www.bouffalolab.com).
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *   1. Redistributions of source code must retain the above copyright notice,
- *      this list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright notice,
- *      this list of conditions and the following disclaimer in the documentation
- *      and/or other materials provided with the distribution.
- *   3. Neither the name of Bouffalo Lab nor the names of its contributors
- *      may be used to endorse or promote products derived from this software
- *      without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 #include <stdio.h>
 
 #include <bl_rtc.h>
@@ -45,43 +16,6 @@ void _cli_init(int fd_console)
 }
 
 #endif
-
-ATTR_PDS_SECTION
-void interrupt_entry_app(uint32_t mcause)
-{
-    void *handler = NULL;
-
-    mcause &= 0x7FFFFFF;
-    handler = bl_irq_handler_list[mcause];
-
-    if (handler) {
-        ((void (*)(void))handler)();
-    } else {
-        ATTR_PDS_SECTION static const char dbg_str[] = "mcause = %ld\r\n";
-
-        uart_init(14, 15, 2000000);
-
-        printf_ram(dbg_str, mcause);
-        while (1) {
-            /*dead loop now*/
-        }
-    }
-}
-
-
-ATTR_PDS_SECTION
-void  exception_entry_app(uint32_t mcause, uint32_t mepc, uint32_t mtval, uintptr_t *regs, uintptr_t *tasksp)
-{
-    ATTR_PDS_SECTION static const char dbg_str[] = "Exception Entry--->>>\r\n mcause %08lx, mepc %08lx, mtval %08lx\r\n" ;
-
-    uart_init(14, 15, 2000000);
-
-    printf_ram(dbg_str, mcause, mepc, mtval);
-
-    while (1) {
-        /*dead loop now*/
-    }
-}
 
 #ifdef CFG_PDS_ENABLE
 
@@ -126,7 +60,7 @@ void otrInitUser(otInstance * instance)
 
     printf("Thread version     : %s\r\n", otGetVersionString());
 
-    uint8_t testNetworkkey[] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
+    uint8_t testNetworkkey[] = THREAD_NETWORK_KEY;
     otThreadSetNetworkKey(instance, (const otNetworkKey *)testNetworkkey);
     otLinkSetChannel(instance, THREAD_CHANNEL);
 
@@ -185,13 +119,6 @@ void otrAppProcess(ot_system_event_t sevent)
 int main(int argc, char *argv[])
 {
     otRadio_opt_t opt;
-
-    /** comment out for debug purpose */
-   // uint32_t tag = otrEnterCrit();
-
-   // interrupt_entry_ptr = interrupt_entry_app;
-   // exception_entry_ptr = exception_entry_app;
-   // otrExitCrit(tag);
 
 #ifdef CFG_PDS_ENABLE
     bl_pds_init();

@@ -9,6 +9,7 @@
 #include "bluetooth.h"
 #include "hci_driver.h"
 #include "hci_core.h"
+#include "hci_host.h"
 #include "log.h"
 #include "btble_lib_api.h"
 #include "bas.h"
@@ -28,7 +29,6 @@ volatile bool cont_start = false;//send release key value after key is released.
 volatile bool cont_release = false;
 volatile bool wait_for_unpair = false;
 volatile u8_t rc_battery_level = 80;
-
 struct k_fifo ble_rc_key_scan_queue;
 static struct bt_gatt_exchange_params exchange_params;
 struct bt_conn *rc_default_conn;
@@ -119,12 +119,33 @@ static void ble_rc_connected(struct bt_conn *conn, u8_t err)
         return;
     }
 
-    printf("Connected: %s \r\n", addr);
+    printf("Connected: %s,int 0x%04x lat %d to %d \r\n", addr,conn->le.interval,conn->le.latency,conn->le.timeout);
 
     if (!rc_default_conn) {
         rc_default_conn = conn;
     }
 
+#if 0
+    err = bt_conn_set_security(rc_default_conn, BT_SECURITY_L2);
+    if(err){
+        printf("Failed to start security, (err %d) \r\n", err);
+    }else{
+        printf("Start security successfully\r\n");
+    }
+#endif
+#if 0
+    struct bt_hci_rp_le_read_chan_map rsp;
+    int err_read = bt_le_read_chan_map(conn, &rsp);
+    if(!err_read)
+    {
+        printf("channel map:");
+        for(int i = 0; i < 5; i++)
+        {
+            printf("0x%02x ", rsp.ch_map[i]);
+        }
+        printf("\r\n");
+    }
+#endif 
     ble_rc_gatt_exchange_mtu();
     ble_rc_create_adc_sample_timer();
 }
@@ -150,30 +171,50 @@ static void ble_rc_disconnected(struct bt_conn *conn, u8_t reason)
 }
 
 static void ble_rc_auth_cancel(struct bt_conn *conn)
-{
+{  
+    if (rc_default_conn) {
+        conn = rc_default_conn;
+    }else {
+        conn = NULL;
+    }
     
-	if (rc_default_conn) {
-		conn = rc_default_conn;
-	}else {
-		conn = NULL;
-	}
-
-	if (!conn) {
+    if (!conn) {
         printf("Not connected\r\n");
-		return;
-	}
+        return;
+    }
+    
+    bt_conn_auth_cancel(conn);
+}
 
-	bt_conn_auth_cancel(conn);
+static void ble_rc_auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));    
+    printf("passkey_str is: %06u\r\n", passkey);
+}
+
+static void ble_rc_auth_passkey_entry(struct bt_conn *conn)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    printf("Enter passkey for %s\r\n", addr);
+}
+
+static void  ble_rc_auth_passkey_confirm(struct bt_conn *conn, unsigned int passkey)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    printf("Confirm passkey for %s: %06u\r\n", addr, passkey);
+    bt_conn_auth_passkey_confirm(rc_default_conn);
 }
 
 static void ble_rc_auth_pairing_confirm(struct bt_conn *conn)
 {
-	char addr[BT_ADDR_LE_STR_LEN];
-
-	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-
-	printf("Confirm pairing for %s\r\n", addr);
-         bt_conn_auth_pairing_confirm(conn);
+    char addr[BT_ADDR_LE_STR_LEN];
+    
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    printf("Confirm pairing for %s\r\n", addr);
+    bt_conn_auth_pairing_confirm(conn);
 }
 
 static void ble_rc_auth_pairing_complete(struct bt_conn *conn, bool bonded)
@@ -205,16 +246,37 @@ static void ble_rc_auth_pairing_failed(struct bt_conn *conn, enum bt_security_er
     printf("Pairing failed with %s\r\n", addr);
 }
 
+static void ble_rc_identity_resolved(struct bt_conn *conn, const bt_addr_le_t *rpa,
+			      const bt_addr_le_t *identity)
+{
+    char addr_identity[BT_ADDR_LE_STR_LEN];
+    char addr_rpa[BT_ADDR_LE_STR_LEN];
+
+    bt_addr_le_to_str(identity, addr_identity, sizeof(addr_identity));
+    bt_addr_le_to_str(rpa, addr_rpa, sizeof(addr_rpa));
+
+    printf("Identity resolved %s -> %s \r\n", addr_rpa, addr_identity);
+}
+
+static void ble_rc_security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    printf("Security changed: %s level %u \r\n", addr, level);
+}
+
 static struct bt_conn_cb ble_rc_conn_callbacks = {
     .connected = ble_rc_connected,
     .disconnected = ble_rc_disconnected,
     .le_param_updated = ble_rc_conn_param_updated,
+    .identity_resolved = ble_rc_identity_resolved,
+    .security_changed = ble_rc_security_changed,
 };
 
 static struct bt_conn_auth_cb ble_rc_auth_cb_display = {
-	.passkey_display = NULL,
-	.passkey_entry = NULL,
-	.passkey_confirm = NULL,
+	.passkey_display = NULL,//ble_rc_auth_passkey_display,
+	.passkey_entry = NULL,//ble_rc_auth_passkey_entry,
+	.passkey_confirm = NULL,//ble_rc_auth_passkey_confirm,
 	.cancel = ble_rc_auth_cancel,
 	.pairing_confirm = ble_rc_auth_pairing_confirm,
 	.pairing_failed = ble_rc_auth_pairing_failed,
@@ -388,7 +450,7 @@ static void ble_rc_key_scan_task(void *pvParameters)
             printf("evt_type=%d\r\n",evt_type);
             k_free(data);
             
-            if(!rc_default_conn && evt_type != RC_KYS_ADV)
+            if(!rc_default_conn && evt_type != RC_KYS_ADV && evt_type != RC_KYS_IR_TX)
             {
                 printf("rc is not connected\r\n");
                 continue;
@@ -503,6 +565,7 @@ ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
     u8_t home_key_row_idx = 3, home_key_col_idx = 1;
     u8_t back_key_row_idx = 1, back_key_col_idx = 3;
     u8_t voice_key_row_idx = 1, voice_key_col_idx = 1;
+    u8_t ir_row_idx = 3, ir_col_idx = 3;
     bool process = false;
     u8_t *evt_type_ptr = NULL;
 
@@ -588,7 +651,7 @@ ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
                 *evt_type_ptr = RC_KYS_VOICE_START;
                 k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
             }
-            else if(result->row_idx[0] == 3 && result->col_idx[0] == 3)
+            else if(result->row_idx[0] == ir_row_idx && result->col_idx[0] == ir_col_idx)
             {
                 evt_type_ptr = k_malloc(1);
                 *evt_type_ptr = RC_KYS_IR_TX;
@@ -606,6 +669,7 @@ ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
             }
         } 
     }
+   
     bl_kys_trigger_interrupt();
 }
 
@@ -669,13 +733,26 @@ ATTR_PDS_SECTION void ble_rc_kys_init(void)
 
 ATTR_PDS_SECTION int ble_rc_before_sleep_callback(void)
 {
-    rom_bl_irq_disable(KYS_IRQn);
+    taskENTER_CRITICAL();
+    //disable keyscan
+    bl_kys_abort();
+    //clear keyscan irq pending bit.
+    rom_bl_irq_pending_clear(KYS_IRQn);
+    taskEXIT_CRITICAL();
+
+#if 0
+    uint32_t pullup_bitmap = 1<<11;  // enable GPIO11 pull-up when entering pds, and still take effect after wakeup
+    uint32_t pulldown_bitmap = 1<<12;  // enable GPIO12 pull-down when entering pds, and still take effect after wakeup
+    bl_pds_gpio_pull_set(pullup_bitmap, pulldown_bitmap);
+#endif
+
     return 0;
 }
 
 ATTR_PDS_SECTION void ble_rc_sleep_aborted_callback(void)
 {
-    rom_bl_irq_enable(KYS_IRQn);
+    //enable keyscan
+    bl_kys_trigger_interrupt();
 }
 
 ATTR_PDS_SECTION void ble_rc_after_sleep_callback(void)
@@ -683,12 +760,16 @@ ATTR_PDS_SECTION void ble_rc_after_sleep_callback(void)
     uint8_t key_row_idx = 0xff, key_col_idx = 0xff;
     uint8_t key_evt_type = 0;
 
+    // disable GPIO pull-up/pull-down, better after GPIO reinitialization
+    bl_pds_gpio_pull_disable();
+
     uart_init(14, 15, 2000000);
     if(bl_pds_get_wakeup_source() == PDS_WAKEUP_BY_KEY)
     {
         key_evt_type = bl_pds_get_wakeup_key_index(&key_row_idx, &key_col_idx);
         printf("wakeup source: key -> (%d, %d),evt=%d\r\n", key_row_idx, key_col_idx, key_evt_type);
     }
+    //enable keyscan
     ble_rc_kys_init();
     bl_kys_trigger_interrupt();
 }
@@ -724,9 +805,20 @@ void ble_rc_pds_enable(uint8_t enable)
     pds_start = enable;
 }
 
+void ble_rc_foreach_bond_info_cb(const struct bt_bond_info *info, void *user_data)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
+    u8_t bonded_device_cnt = 0;
+    if(user_data)
+        (*(u8_t *)user_data)++;
+    bt_addr_le_to_str(&info->addr, addr, sizeof(addr));
+    printf("bonded device: %s\r\n", addr);
+}
+
 void bt_enable_cb(int err)
 {
     if (!err) {
+        u8_t bonded_device_cnt = 0;
         bt_addr_le_t bt_addr;
         bt_get_local_public_address(&bt_addr);
         printf("BD_ADDR:(MSB)%02x:%02x:%02x:%02x:%02x:%02x(LSB) \n",
@@ -740,6 +832,11 @@ void bt_enable_cb(int err)
 
         bt_conn_auth_cb_register(&ble_rc_auth_cb_display);
         bt_conn_cb_register(&ble_rc_conn_callbacks);
+
+        //If there is no bonded device, ble_rc_foreach_bond_info_cb will not be called.
+        //If there is N bonded devices, ble_rc_foreach_bond_info_cb will be called N times.
+        bt_foreach_bond(0, ble_rc_foreach_bond_info_cb, &bonded_device_cnt);
+        printf("%d peer device(s) bonded\r\n", bonded_device_cnt);
         
         if(ble_rc_start_adv() == 0)
         {

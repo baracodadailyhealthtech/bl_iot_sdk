@@ -13,6 +13,9 @@ CONFIG_FTD=1
 CONFIG_USB_CDC=0
 CONFIG_ENABLE_FP=0
 
+OPENTHREAD_RADIO=0
+CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=4
+
 jobs=4
 if (( $1 -eq "" )); then
 jobs=$1
@@ -22,14 +25,17 @@ if [ ! -d build_out ]; then
 mkdir build_out
 fi
 
-
 options="CONFIG_USB_CDC=$CONFIG_USB_CDC CONFIG_ENABLE_FP=$CONFIG_ENABLE_FP CONFIG_CPP_ENABLE=1 \
     CONFIG_NCP=$CONFIG_NCP"
 
 if [ "$CONFIG_NCP" == "1" ]; then
     options=$options" CONFIG_FTD=$CONFIG_FTD"
+else
+    OPENTHREAD_RADIO=1
 fi
 
+options=$options" CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=$CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION"
+options=$options" OPENTHREAD_RADIO=$OPENTHREAD_RADIO"
 options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
 
 make $options -j $jobs 2>&1 | tee build_out/make.log

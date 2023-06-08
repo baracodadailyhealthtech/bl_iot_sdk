@@ -39,7 +39,7 @@ else
 INCLUDE_COMPONENTS += bl702l_rom_ext
 endif
 
-ifeq ($(CONFIG_OPENTHREAD),1)
+ifeq ($(CONFIG_THREAD),1)
 INCLUDE_COMPONENTS += openthread_utils_bl702l
 endif
 
@@ -90,6 +90,10 @@ INCLUDE_COMPONENTS += $(PROJECT_NAME)
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk
 ifeq ($(CONFIG_ZIGBEE), 1)
 include $(BL60X_SDK_PATH)/components/network/zigbee/zigbee_def.mk
+endif
+
+ifeq ($(CONFIG_THREAD),1)
+include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
 endif
 
 ifdef CONFIG_CACHE_SIZE

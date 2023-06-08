@@ -38,9 +38,9 @@ static void cmd_hosal_pwm_stop(char *buf, int len, int argc, char **argv)
 }
 
 const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
-    {"demo_hosal_pwm_init", "demo_pwm_hosal_init", cmd_hosal_pwm_init},
-    {"demo_hosal_pwm_start", "demo_pwm_hosal_start", cmd_hosal_pwm_start},
-    {"demo_hosal_pwm_change_param", "demo_pwm_hosal_change_param", cmd_hosal_pwm_change_param},
+    {"demo_hosal_pwm_init", "demo_hosal_pwm_init", cmd_hosal_pwm_init},
+    {"demo_hosal_pwm_start", "demo_hosal_pwm_start", cmd_hosal_pwm_start},
+    {"demo_hosal_pwm_change_param", "demo_hosal_pwm_change_param", cmd_hosal_pwm_change_param},
     {"demo_hosal_pwm_stop", "demo_hosal_pwm_stop", cmd_hosal_pwm_stop},
 };
 

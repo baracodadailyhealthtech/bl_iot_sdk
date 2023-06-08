@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK启动链接及FreeRTOS简要分析 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1153-g86e950322 文档</title>
+  <title>BL IOT SDK启动链接及FreeRTOS简要分析 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1232-gfe2317b6b 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1153-g86e950322 文档" href="../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1232-gfe2317b6b 文档" href="../../index.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1153-g86e950322
+                release_bl_iot_sdk_1.6.40-1232-gfe2317b6b
               </div>
             
           
@@ -79,7 +79,7 @@
           
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="text" name="q" placeholder="搜索文档" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -165,10 +165,10 @@
            <div itemprop="articleBody">
             
   <div class="section" id="bl-iot-sdkfreertos">
-<h1>BL IOT SDK启动链接及FreeRTOS简要分析<a class="headerlink" href="#bl-iot-sdkfreertos" title="永久链接至标题">¶</a></h1>
+<h1>BL IOT SDK启动链接及FreeRTOS简要分析<a class="headerlink" href="#bl-iot-sdkfreertos" title="永久链接至标题"></a></h1>
 <p>本文简要分析bl iot SDK的start.S文件的初始化过程，FreeRTOS以及链接脚本。</p>
 <div class="section" id="start-s">
-<h2>start.S<a class="headerlink" href="#start-s" title="永久链接至标题">¶</a></h2>
+<h2>start.S<a class="headerlink" href="#start-s" title="永久链接至标题"></a></h2>
 <p>该文件路径：components/platform/soc/bl602/bl602/evb/src/boot/gcc/start.S</p>
 <ul class="simple">
 <li><p>关闭中断</p></li>
@@ -231,7 +231,7 @@ GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接�
 </div>
 </div>
 <div class="section" id="freertos">
-<h2>FreeRTOS<a class="headerlink" href="#freertos" title="永久链接至标题">¶</a></h2>
+<h2>FreeRTOS<a class="headerlink" href="#freertos" title="永久链接至标题"></a></h2>
 <p>FreeRTOS由Richard Barry开发，是一个开源的、可移植的、小型的嵌入式实时操作系统内核。FreeRTOS既支持抢占式多任务，也支持协作式多任务,SDK中源码路径：components/platform/soc/bl602/freertos_riscv_ram。</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -242,7 +242,7 @@ GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接�
 </ul>
 </div>
 <div class="section" id="flash-rom-ld">
-<h2>flash_rom.ld<a class="headerlink" href="#flash-rom-ld" title="永久链接至标题">¶</a></h2>
+<h2>flash_rom.ld<a class="headerlink" href="#flash-rom-ld" title="永久链接至标题"></a></h2>
 <p>该文件路径：components/platform/soc/bl602/bl602/evb/ld/flash_rom.ld</p>
 <ul class="simple">
 <li><p>设置输出文件的machine architecture(体系结构)</p></li>
@@ -366,7 +366,7 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1153-g86e950322',
+            VERSION:'release_bl_iot_sdk_1.6.40-1232-gfe2317b6b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -9,9 +9,6 @@ endif
 ifeq ($(CONFIG_BLUETOOTH),1)
 include $(BL60X_SDK_PATH)/components/network/ble/ble_common.mk
 endif
-ifeq ($(CONFIG_OPENTHREAD),1)
-include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
-endif
 
 EXT_MK := $(PROJECT_PATH)/$(notdir $(PROJECT_PATH))/bouffalo_ext.mk
 ifeq ($(EXT_MK), $(wildcard $(EXT_MK)))

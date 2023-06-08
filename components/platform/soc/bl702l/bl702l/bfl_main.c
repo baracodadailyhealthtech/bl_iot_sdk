@@ -69,7 +69,10 @@ static HeapRegion_t xHeapRegionsPsram[] =
 #endif
 
 #ifndef CFG_USE_ROM_CODE
-void __attribute__((weak)) vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName )
+void __attribute__((weak)) vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
+#else
+void __attribute__((weak)) user_vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
+#endif
 {
     puts("Stack Overflow checked\r\n");
     if(pcTaskName){
@@ -80,7 +83,11 @@ void __attribute__((weak)) vApplicationStackOverflowHook(TaskHandle_t xTask, cha
     }
 }
 
+#ifndef CFG_USE_ROM_CODE
 void __attribute__((weak)) vApplicationMallocFailedHook(void)
+#else
+void __attribute__((weak)) user_vApplicationMallocFailedHook(void)
+#endif
 {
     printf("Memory Allocate Failed. Current left size is %d bytes\r\n",
         xPortGetFreeHeapSize()
@@ -95,6 +102,7 @@ void __attribute__((weak)) vApplicationMallocFailedHook(void)
     }
 }
 
+#ifndef CFG_USE_ROM_CODE
 void __attribute__((weak)) vApplicationIdleHook(void)
 {
     __asm volatile(
@@ -161,19 +169,26 @@ void __attribute__((weak)) vApplicationGetTimerTaskMemory(StaticTask_t **ppxTime
     configTIMER_TASK_STACK_DEPTH is specified in words, not bytes. */
     *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
 }
+#endif
 
+#ifndef CFG_USE_ROM_CODE
 void user_vAssertCalled(void) __attribute__ ((weak, alias ("vAssertCalled")));
 void __attribute__((weak)) vAssertCalled(void)
-{
-    taskDISABLE_INTERRUPTS();
-    abort();
-}
 #else
 void __attribute__((weak)) user_vAssertCalled(void)
-{
-    vAssertCalled();
-}
 #endif
+{
+#if 0
+    taskDISABLE_INTERRUPTS();
+    abort();
+#else
+    taskDISABLE_INTERRUPTS();
+    printf("vAssertCalled, ra = %p\r\n", (void *)__builtin_return_address(0));
+    while (1) {
+        /*empty here*/
+    }
+#endif
+}
 
 void __attribute__((weak)) _cli_init(int fd_console)
 {

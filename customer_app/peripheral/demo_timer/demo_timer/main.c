@@ -27,8 +27,8 @@ static void cmd_hosal_timer_stop(char *buf, int len, int argc, char **argv)
 }
 
 const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
-    {"demo_hosal_timer_start", "demo_pwm_hosal_start", cmd_hosal_timer_start},
-    {"demo_hosal_timer_stop", "demo_pwm_hosal_stop", cmd_hosal_timer_stop},
+    {"demo_hosal_timer_start", "demo_hosal_timer_start", cmd_hosal_timer_start},
+    {"demo_hosal_timer_stop", "demo_hosal_timer_stop", cmd_hosal_timer_stop},
 };
 
 /**

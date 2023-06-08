@@ -30,7 +30,6 @@ INCLUDE_COMPONENTS += bl702 bl702_std newlibc bl702_rf hosal vfs yloop utils cli
 INCLUDE_COMPONENTS += blmtd blfdt
 INCLUDE_COMPONENTS += easyflash4 coredump
 INCLUDE_COMPONENTS += lmac154
-INCLUDE_COMPONENTS += openthread_utils_bl702
 
 ifeq ($(CONFIG_USB_CDC),1)
 INCLUDE_COMPONENTS += bl702_usb_cdc
@@ -73,8 +72,17 @@ INCLUDE_COMPONENTS += blemesh_model
 endif
 endif
 
+ifeq ($(CONFIG_THREAD), 1)
+INCLUDE_COMPONENTS += mbedtls_lts mdns openthread openthread_port 
+INCLUDE_COMPONENTS += openthread_utils_bl702 openthread_br 
+CONFIG_ETHERNET ?= 1
+endif
+
 ifeq ($(CONFIG_ETHERNET),1)
-INCLUDE_COMPONENTS += bl702_ethernet lwip lwip_dhcpd netutils blota
+# 706 release build needs LWIP_IPV6=1,
+# but lwip_dhcpd is not compatible with LWIP_IPV6=1 currently.
+# remove module lwip_dhcpd for release build
+INCLUDE_COMPONENTS += bl702_ethernet lwip netutils blota
 endif
 
 ifeq ($(CONFIG_EFLASH_LOADER),1)
@@ -104,11 +112,20 @@ INCLUDE_COMPONENTS += $(PROJECT_NAME)
 COMPONENT_COMMON := fs libc stage sys utils
 COMPONENT_PLATFORM := soc/bl702 hosal
 COMPONENT_NETWORK := ble lmac154 zigbee lwip lwip_dhcpd netutils
-COMPONENT_NETWORK += thread/openthread_utils_bl702
+ifeq ($(CONFIG_THREAD),1)
+COMPONENT_NETWORK += mdns thread/openthread thread/openthread_port 
+COMPONENT_NETWORK += thread/openthread_utils_bl702 thread/openthread_br
+COMPONENT_COMMON += security/mbedtls_lts
+endif
 COMPONENT_DIRS := $(PROJECT_PATH)/$(PROJECT_NAME)
 COMPONENT_DIRS += $(addprefix $(BL60X_SDK_PATH)/components/, $(COMPONENT_COMMON))
 COMPONENT_DIRS += $(addprefix $(BL60X_SDK_PATH)/components/platform/, $(COMPONENT_PLATFORM))
 COMPONENT_DIRS += $(addprefix $(BL60X_SDK_PATH)/components/network/, $(COMPONENT_NETWORK))
+
+ifeq ($(CONFIG_THREAD),1)
+include $(BL60X_SDK_PATH)/components/network/thread/openthread_br/otbr_config.mk
+include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
+endif
 
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk
 ifeq ($(CONFIG_ZIGBEE), 1)

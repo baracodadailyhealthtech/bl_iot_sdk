@@ -71,7 +71,7 @@ void vfs_uart_restore(void)
 static int __uart_rx_irq(void *p_arg)
 {
 #if defined(CFG_VFS_UART_DMA_ENABLE)
-    uint8_t tmp_buf[128];
+    uint8_t tmp_buf[256];
 #else
     uint8_t tmp_buf[64];
 #endif

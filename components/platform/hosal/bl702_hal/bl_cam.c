@@ -1,32 +1,3 @@
-/*
- * Copyright (c) 2016-2023 Bouffalolab.
- *
- * This file is part of
- *     *** Bouffalolab Software Dev Kit ***
- *      (see www.bouffalolab.com).
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *   1. Redistributions of source code must retain the above copyright notice,
- *      this list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright notice,
- *      this list of conditions and the following disclaimer in the documentation
- *      and/or other materials provided with the distribution.
- *   3. Neither the name of Bouffalo Lab nor the names of its contributors
- *      may be used to endorse or promote products derived from this software
- *      without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 #include <string.h>
 #include <stdio.h>
 #include <bl702_glb.h>
@@ -45,16 +16,17 @@
 #define DUMP_CAM  0
 
 static CAM_CFG_Type camera_dvp;
-static CAM_CFG_Type *context_cam;
 static MJPEG_CFG_Type mjpeg_engine;
 static EventGroupHandle_t camera_event;
 static const rt_camera_desc *m_desc;
 
-//static bl60x_mjpeg_t *context_mjpeg;
-//uint8_t  *buffer_cam;
-//uint32_t  buffer_cam_size;
-uint32_t frame_pos;
-uint32_t buffer_cam[10*1024];
+#if defined(CFG_USE_PSRAM)
+uint8_t  *buffer_cam = NULL;  // need pvPortMallocPsram
+uint32_t  buffer_cam_size = 1024*1024;
+#else
+uint32_t buffer_cam[15*1024];
+uint32_t buffer_cam_size = sizeof(buffer_cam);
+#endif
 
 #define CAMERA_RESOLUTION_X            m_desc->width
 #define CAMERA_RESOLUTION_Y            m_desc->height
@@ -63,11 +35,11 @@ uint32_t buffer_cam[10*1024];
 #define MJPEG_READ_SIZE                2                                                // one for CAM and one for MJPEG in turn
 #define CAMERA_BUFFER_SIZE_WHEN_MJPEG  (CAMERA_RESOLUTION_X * 2 * 8 * MJPEG_READ_SIZE)
 #define MJPEG_WRITE_ADDR               (MJPEG_READ_ADDR + CAMERA_BUFFER_SIZE_WHEN_MJPEG)
-#define MJPEG_WRITE_SIZE               (sizeof(buffer_cam) - CAMERA_BUFFER_SIZE_WHEN_MJPEG)
+#define MJPEG_WRITE_SIZE               (buffer_cam_size - CAMERA_BUFFER_SIZE_WHEN_MJPEG)
 
 #define CROP_WIDTH                     120
 #define CROP_HEIGHT                    120
-#define CROP_FRAME_SIZE                (CROP_WIDTH * CROP_HEIGHT)          // YUV400, 8 bits per pixel
+#define CROP_FRAME_SIZE                (CROP_WIDTH * 2 * CROP_HEIGHT)      // YUV422, 16 bits per pixel
 #define CROP_FRAME_CNT                 2                                   // make sure CROP_FRAME_CNT >= 2
 #define CROP_MEM_ADDR                  (uint32_t)buffer_cam
 #define CROP_MEM_SIZE                  (CROP_FRAME_SIZE * CROP_FRAME_CNT)  // make sure CROP_MEM_SIZE <= sizeof(buffer_cam)
@@ -207,6 +179,12 @@ static int cam_init_gpio(void)
 
 static int dvp_init(int useMjpeg, int frm_vld_high)
 {
+#if defined(CFG_USE_PSRAM)
+    if(buffer_cam == NULL) {
+        buffer_cam = pvPortMallocPsram(buffer_cam_size);
+    }
+#endif
+
     memset(&camera_dvp, 0, sizeof(camera_dvp));
 
     if (useMjpeg) {
@@ -232,7 +210,7 @@ static int dvp_init(int useMjpeg, int frm_vld_high)
         camera_dvp.swMode = CAM_SW_MODE_MANUAL;
 //        camera_dvp.swIntCnt = 0;
         camera_dvp.frameMode = CAM_INTERLEAVE_MODE;
-        camera_dvp.yuvMode = CAM_YUV400_ODD;
+        camera_dvp.yuvMode = CAM_YUV422;
         camera_dvp.linePol = CAM_LINE_ACTIVE_POLARITY_HIGH;
         camera_dvp.framePol = frm_vld_high;
         camera_dvp.camSensorMode = CAM_SENSOR_MODE_V_AND_H;
@@ -245,7 +223,7 @@ static int dvp_init(int useMjpeg, int frm_vld_high)
         camera_dvp.memSize1 = 0;
         camera_dvp.frameSize1 = 0;
     }
-    context_cam = &camera_dvp;
+
     CAM_Init(&camera_dvp);
     CAM_Enable();
 
@@ -468,6 +446,7 @@ int bl_cam_enable_24MRef(void)
     GLB_GPIO_Init(&cfg);
 #endif
 
+#if 0
     cfg.drive=1;
     cfg.smtCtrl=1;
     cfg.gpioPin = GLB_GPIO_PIN_10;
@@ -475,6 +454,19 @@ int bl_cam_enable_24MRef(void)
     cfg.gpioMode = GPIO_MODE_OUTPUT;
     cfg.pullType = GPIO_PULL_NONE;
     GLB_GPIO_Init(&cfg);
+#else
+    cfg.drive=1;
+    cfg.smtCtrl=1;
+    cfg.gpioPin = GLB_GPIO_PIN_9;
+    cfg.gpioFun = GPIO9_FUN_CLK_OUT_1;
+    cfg.gpioMode = GPIO_MODE_OUTPUT;
+    cfg.pullType = GPIO_PULL_NONE;
+    GLB_GPIO_Init(&cfg);
+
+    GLB_Set_I2S_CLK(ENABLE, GLB_I2S_OUT_REF_CLK_NONE);
+    PDS_Set_Audio_PLL_Freq(AUDIO_PLL_24576000_HZ);
+    GLB_Set_Chip_Out_1_CLK_Sel(GLB_CHIP_CLK_OUT_I2S_REF_CLK);
+#endif
 
     GLB_AHB_Slave1_Clock_Gate(DISABLE,0x1D);  // BL_AHB_SLAVE1_CAM
     GLB_AHB_Slave1_Clock_Gate(DISABLE,0x1E);  // BL_AHB_SLAVE1_MJPEG

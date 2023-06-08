@@ -22,6 +22,9 @@ CONFIG_LINK_METRICS=1
 
 CONFIG_USB_CDC=0
 
+OPENTHREAD_RADIO=0
+CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=4
+
 jobs=4
 if (( $1 -eq "" )); then
 jobs=$1
@@ -43,6 +46,8 @@ if [[ "$CONFIG_PREFIX" != "" ]]; then
 fi
 
 options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
+options=$options" CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=$CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION"
+options=$options" OPENTHREAD_RADIO=$OPENTHREAD_RADIO"
 
 make $options -j $jobs 2>&1 | tee build_out/make.log
 

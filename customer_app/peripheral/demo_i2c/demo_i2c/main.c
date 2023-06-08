@@ -26,8 +26,8 @@ static void cmd_hosal_i2c_master(char *buf, int len, int argc, char **argv)
 }
 
 const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
-    {"demo_hosal_i2c_mater_mem", "demo_hosal_i2c_mater_mem", cmd_hosal_i2c_master_mem},
-    {"demo_hosal_i2c_master", "demo_hosal_i2c_mater", cmd_hosal_i2c_master},
+    {"demo_hosal_i2c_master_mem", "demo_hosal_i2c_master_mem", cmd_hosal_i2c_master_mem},
+    {"demo_hosal_i2c_master", "demo_hosal_i2c_master", cmd_hosal_i2c_master},
 };
 
 /**

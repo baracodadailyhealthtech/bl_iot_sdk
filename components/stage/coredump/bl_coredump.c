@@ -1,32 +1,3 @@
-/*
- * Copyright (c) 2016-2023 Bouffalolab.
- *
- * This file is part of
- *     *** Bouffalolab Software Dev Kit ***
- *      (see www.bouffalolab.com).
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *   1. Redistributions of source code must retain the above copyright notice,
- *      this list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright notice,
- *      this list of conditions and the following disclaimer in the documentation
- *      and/or other materials provided with the distribution.
- *   3. Neither the name of Bouffalo Lab nor the names of its contributors
- *      may be used to endorse or promote products derived from this software
- *      without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -38,25 +9,34 @@
 #include <utils_hex.h>
 #include <bl_coredump.h>
 
+/* 1KB Block */
+#define BL_COREDUMP_PRINT_SEG_N_K 1
+
 #define COREDUMP_UART 0
 
 #define REVERSE(a) (((a)&0xff) << 24 | ((a)&0xff00) << 8 | ((a)&0xff0000) >> 8 | ((a)&0xff000000) >> 24)
 
+#undef read_const_csr
 #define read_const_csr(reg) ({ register uintptr_t __tmp; \
   asm ("csrr %0, " #reg : "=r"(__tmp)); __tmp; })
 
+#undef read_csr
 #define read_csr(reg) ({ register uintptr_t __tmp; \
   asm volatile ("csrr %0, " #reg : "=r"(__tmp)); __tmp; })
 
+#undef write_csr
 #define write_csr(reg, val) ({ \
   asm volatile ("csrw " #reg ", %0" :: "rK"(val)); })
 
+#undef swap_csr
 #define swap_csr(reg, val) ({ register uintptr_t __tmp; \
   asm volatile ("csrrw %0, " #reg ", %1" : "=r"(__tmp) : "rK"(val)); __tmp; })
 
+#undef set_csr
 #define set_csr(reg, bit) ({ register uintptr_t __tmp; \
   asm volatile ("csrrs %0, " #reg ", %1" : "=r"(__tmp) : "rK"(bit)); __tmp; })
 
+#undef clear_csr
 #define clear_csr(reg, bit) ({ register uintptr_t __tmp; \
   asm volatile ("csrrc %0, " #reg ", %1" : "=r"(__tmp) : "rK"(bit)); __tmp; })
 
@@ -229,7 +209,7 @@ static int cd_getchar(char *inbuf) {
 }
 
 static void cd_putchar(const char *buf, size_t len) {
-  int i;
+  size_t i;
   for (i=0; i<len; i++) {
     bl_uart_data_send(COREDUMP_UART, buf[i]);
   }
@@ -246,7 +226,7 @@ static void cd_base64_wirte_block(const uint8_t buf[4], void *opaque) {
 
 static void dump_ascii(const void *data, ssize_t len, struct crc32_stream_ctx *crc_ctx) {
   /* reuse len as index here, for calculate the crc */
-  for (len = 0; len < strlen((const char *)data); len++) {
+  for (len = 0; len < (ssize_t)strlen((const char *)data); len++) {
     utils_crc32_stream_feed(crc_ctx, *((const char *)data + len));
   }
 
@@ -553,7 +533,7 @@ static void bl_coredump_print(uintptr_t addr, uint32_t len, const char *desc, en
 static void bl_coredump_print_n_k(uintptr_t addr, uint32_t len, const char *desc, enum dump_type type)
 {
     uint32_t printed_len;
-    int seg;
+    uint32_t seg;
 
     for(seg = 0; seg * BL_COREDUMP_PRINT_SEG_N_K * 1024 < len; seg++) {
         printed_len = seg*BL_COREDUMP_PRINT_SEG_N_K*1024;
@@ -568,7 +548,7 @@ static void bl_coredump_print_n_k(uintptr_t addr, uint32_t len, const char *desc
  */
 void bl_coredump_parse(const uint8_t *buf, unsigned int len) {
   char command;
-  int i = 0;
+  unsigned int i = 0;
 
   command = buf[i++];
 

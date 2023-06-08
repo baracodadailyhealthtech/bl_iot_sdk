@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AES-GCM &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1153-g86e950322 文档</title>
+  <title>AES-GCM &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1232-gfe2317b6b 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1153-g86e950322 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1232-gfe2317b6b 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1153-g86e950322
+                release_bl_iot_sdk_1.6.40-1232-gfe2317b6b
               </div>
             
           
@@ -79,7 +79,7 @@
           
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="在文档中搜索" />
+    <input type="text" name="q" placeholder="搜索文档" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -165,15 +165,15 @@
            <div itemprop="articleBody">
             
   <div class="section" id="aes-gcm">
-<span id="aes-gcm-index"></span><h1>AES-GCM<a class="headerlink" href="#aes-gcm" title="永久链接至标题">¶</a></h1>
+<span id="aes-gcm-index"></span><h1>AES-GCM<a class="headerlink" href="#aes-gcm" title="永久链接至标题"></a></h1>
 <div class="section" id="id1">
-<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>AES是一种对称加密算法，它的相关概念在此不赘述，本文档主要介绍AES-GCM的原理和实现。</p>
 <p>GCM ( Galois/Counter Mode) 指的是该对称加密采用Counter模式，并带有GMAC消息认证码。
 在详细介绍AES-GCM之前，我们先了解一些相关概念。</p>
 </div>
 <div class="section" id="ctr-counter">
-<h2>CTR（CounTeR）<a class="headerlink" href="#ctr-counter" title="永久链接至标题">¶</a></h2>
+<h2>CTR（CounTeR）<a class="headerlink" href="#ctr-counter" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>在CTR模式下，我们对一个逐次累加的计数器进行加密，用加密后的比特序列与明文分组进行异或得到密文。过程如下图：</p>
 <blockquote>
@@ -190,7 +190,7 @@
 但是它不能提供密文消息完整性校验的功能。</p>
 </div>
 <div class="section" id="mac-message-authentication-code">
-<h2>MAC（Message Authentication Code）<a class="headerlink" href="#mac-message-authentication-code" title="永久链接至标题">¶</a></h2>
+<h2>MAC（Message Authentication Code）<a class="headerlink" href="#mac-message-authentication-code" title="永久链接至标题"></a></h2>
 <p>想要校验消息的完整性，必须引入另一个概念：消息验证码。消息验证码是一种与秘钥相关的单项散列函数，过程如下图所示：</p>
 <blockquote>
 <div><div class="figure align-default">
@@ -201,7 +201,7 @@
 这样就可以对收到的密文做完整性校验。当篡改者篡改密文后，没有共享秘钥，就无法计算出篡改后的密文的MAC值。</p>
 </div>
 <div class="section" id="gmac-galois-message-authentication-code-mode">
-<h2>GMAC（Galois message authentication code mode）<a class="headerlink" href="#gmac-galois-message-authentication-code-mode" title="永久链接至标题">¶</a></h2>
+<h2>GMAC（Galois message authentication code mode）<a class="headerlink" href="#gmac-galois-message-authentication-code-mode" title="永久链接至标题"></a></h2>
 <p>对应到上图中的消息认证码，GMAC就是利用伽罗华域(Galois Field，GF，有限域)乘法运算来计算消息的MAC值。
 假设秘钥长度为128bits, 当密文大于128bits时，需要将密文按128bits进行分组。应用流程如下图：</p>
 <blockquote>
@@ -213,7 +213,7 @@
 <p>在BL602中，我们可以直接使用硬件完成GMAC验证。</p>
 </div>
 <div class="section" id="gcm-galois-counter-mode">
-<h2>GCM（ Galois/Counter Mode )<a class="headerlink" href="#gcm-galois-counter-mode" title="永久链接至标题">¶</a></h2>
+<h2>GCM（ Galois/Counter Mode )<a class="headerlink" href="#gcm-galois-counter-mode" title="永久链接至标题"></a></h2>
 <p>GCM中的G就是指GMAC，C就是指CTR。于是将CTR算法加上GMAC验证就是AES-GCM模式了。过程如下图所示：</p>
 <blockquote>
 <div><div class="figure align-default">
@@ -222,7 +222,7 @@
 </div></blockquote>
 </div>
 <div class="section" id="id2">
-<h2>具体实现<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<h2>具体实现<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <p>具体代码实现大体如下图所示：</p>
 <blockquote>
 <div><div class="figure align-default">
@@ -264,7 +264,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1153-g86e950322',
+            VERSION:'release_bl_iot_sdk_1.6.40-1232-gfe2317b6b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
