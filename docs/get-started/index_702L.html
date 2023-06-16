@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1232-gfe2317b6b 文档</title>
+  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1232-gfe2317b6b 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档" href="../index.html"/>
         <link rel="next" title="API 参考" href="../api-reference/index.html"/>
         <link rel="prev" title="BL IOT SDK 开发指南" href="index_702.html"/> 
 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1232-gfe2317b6b
+                release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e
               </div>
             
           
@@ -248,22 +248,22 @@
 <blockquote>
 <div><p>本部分介绍如何编译 customer_app 目录下的 bl702l_demo_event 工程。</p>
 <ol class="arabic simple">
-<li><p>打开MSYS2平台，进入本地 <strong>bl_iot_sdk/customer_app/bl702l_demo_event</strong> 文件夹</p></li>
+<li><p>打开MSYS2平台，进入本地 <strong>bl_iot_sdk/customer_app/bl702l_demo_ble_peripheral</strong> 文件夹</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>命令：<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/d/bl_iot_sdk/customer_app/bl702l_demo_event/</span></code></p></li>
+<li><p>命令：<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/c/bl_iot_sdk/customer_app/bl702l_demo_ble_peripheral/</span></code></p></li>
 </ul>
 <div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image193.png"><img alt="../_images/image193.png" src="../_images/image193.png" style="width: 6in; height: 3.5in;" /></a>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="2">
-<li><p>执行脚本 <strong>genblem1s1</strong> 开始编译工程</p></li>
+<li><p>执行脚本 <strong>genblem1s1p</strong> 开始编译工程</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>命令： <code class="docutils literal notranslate"><span class="pre">./genblem1s1</span></code></p></li>
+<li><p>命令： <code class="docutils literal notranslate"><span class="pre">./genblem1s1p</span></code></p></li>
 </ul>
 <div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image204.png"><img alt="../_images/image204.png" src="../_images/image204.png" style="width: 6in; height: 3.5in;" /></a>
@@ -274,9 +274,9 @@
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>bl702l_demo_event.bin：</strong> 二进制固件，用于烧录入芯片</p></li>
-<li><p><strong>bl702l_demo_event.elf：</strong> 可执行与链接文件，用于调试软件</p></li>
-<li><p><strong>bl702l_demo_event.map：</strong> 映射文件，用于函数以及内存占用等分析</p></li>
+<li><p><strong>bl702l_demo_ble_peripheral.bin：</strong> 二进制固件，用于烧录入芯片</p></li>
+<li><p><strong>bl702l_demo_ble_peripheral.elf：</strong> 可执行与链接文件，用于调试软件</p></li>
+<li><p><strong>bl702l_demo_ble_peripheral.map：</strong> 映射文件，用于函数以及内存占用等分析</p></li>
 </ul>
 <p><a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab Parse Tool For Windows</a> 是博流团队提供的 map 文件解析软件，可用于内存文件分析</p>
 <div class="figure align-center">
@@ -335,7 +335,7 @@
 <li><p><strong>partition table</strong>：使用 Dev Cube 目录下对应芯片型号 partition 文件夹中的分区表，默认选择
 <code class="docutils literal notranslate"><span class="pre">...\chips\bl702l\partition\partition_cfg_1M.toml</span></code></p></li>
 <li><p><strong>firmware</strong>：用户编译生成的 bin 文件路径
-<code class="docutils literal notranslate"><span class="pre">...\bl_iot_sdk\customer_app\bl702l_demo_event\build_out\bl702l_demo_event.bin</span></code></p></li>
+<code class="docutils literal notranslate"><span class="pre">...\bl_iot_sdk\customer_app\bl702l_demo_ble_peripheral\build_out\bl702l_demo_ble_peripheral.bin</span></code></p></li>
 <li><p><strong>dts</strong>: 使用 Dev Cube 目录下对应芯片型号 device_tree 文件夹中的设备树，默认选择
 <code class="docutils literal notranslate"><span class="pre">...\chips\bl702l\device_tree\bl_factory_params_IoTKitA_32M.dts</span></code></p></li>
 </ul>
@@ -388,7 +388,7 @@
 <li><p><strong>IO7(J3.18) - TDO(J3.16)</strong></p></li>
 </ul>
 <div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image150.png"><img alt="../_images/image150.png" src="../_images/image150.png" style="width: 4in; height: 2in;" /></a>
+<a class="reference internal image-reference" href="../_images/image149.png"><img alt="../_images/image149.png" src="../_images/image149.png" style="width: 4in; height: 2in;" /></a>
 </div>
 </div></blockquote>
 </div></blockquote>
@@ -485,7 +485,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1232-gfe2317b6b',
+            VERSION:'release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

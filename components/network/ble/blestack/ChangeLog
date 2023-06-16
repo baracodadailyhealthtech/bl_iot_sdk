@@ -1,5 +1,8 @@
 # Changes
 
+## 2023-06-15
+1. Add ble auto clean le key when key missing.
+
 ## 2023-06-06
 1. Add the function for ble tx/rx throughput.
 

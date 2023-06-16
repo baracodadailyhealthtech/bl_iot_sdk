@@ -1,5 +1,11 @@
 # Changes
 
+## 2023-06-14
+1.[BL702L][BL616]Add API to set stack size of btblecontroller task.
+
+## 2023-06-13
+1.[BL702L]Enable ble privacy in btblecontroller_702l_m1s1p and btblecontroller_702l_m2s1p.
+
 ## 2023-06-06
 1.[BL616/BL702L]Add the function of calculating ble tx/rx throughput.
 

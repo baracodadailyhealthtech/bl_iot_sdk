@@ -79,10 +79,7 @@ CONFIG_ETHERNET ?= 1
 endif
 
 ifeq ($(CONFIG_ETHERNET),1)
-# 706 release build needs LWIP_IPV6=1,
-# but lwip_dhcpd is not compatible with LWIP_IPV6=1 currently.
-# remove module lwip_dhcpd for release build
-INCLUDE_COMPONENTS += bl702_ethernet lwip netutils blota
+INCLUDE_COMPONENTS += bl702_ethernet lwip lwip_dhcpd netutils blota
 endif
 
 ifeq ($(CONFIG_EFLASH_LOADER),1)

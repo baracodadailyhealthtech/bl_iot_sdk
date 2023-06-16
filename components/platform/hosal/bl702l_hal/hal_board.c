@@ -450,24 +450,65 @@ static void update_rf_temp_config(const void *fdt, int offset1)
     const uint8_t *addr_prop = 0;
     int lentmp = 0;
     int en_tcal;
-    int en_tsen_trim;
-    int16_t tsen_refcode;
 
     addr_prop = fdt_getprop(fdt, offset1, "en_tcal", &lentmp);
     if (addr_prop) {
         en_tcal = BL_FDT32_TO_U32(addr_prop, 0);
-        en_tsen_trim = !bl_efuse_read_tsen_refcode(&tsen_refcode);
-
-        if (en_tcal && en_tsen_trim) {
-            bl_wireless_tcal_en_set(1);
-            blog_info("en_tcal = %d, en_tsen_trim = %d, tcal enabled\r\n", en_tcal, en_tsen_trim);
+        if (en_tcal) {
+            bl_wireless_power_tcal_en_set(1);
+            blog_info("en_tcal = %d, power tcal enabled\r\n", en_tcal);
         } else {
-            bl_wireless_tcal_en_set(0);
-            blog_info("en_tcal = %d, en_tsen_trim = %d, tcal disabled\r\n", en_tcal, en_tsen_trim);
+            bl_wireless_power_tcal_en_set(0);
+            blog_info("en_tcal = %d, power tcal disabled\r\n", en_tcal);
         }
     } else {
         blog_info("en_tcal NULL.\r\n");
     }
+}
+
+
+static void update_cap_temp_config(const void *fdt, int offset1)
+{
+    const uint8_t *addr_prop = 0;
+    int lentmp = 0, i;
+    int8_t temp[MAX_CAPCODE_TABLE_SIZE] = {0};
+    int8_t capcode_offset[MAX_CAPCODE_TABLE_SIZE] = {0};
+    uint8_t table_size = 0;
+
+    addr_prop = fdt_getprop(fdt, offset1, "temp", &lentmp);
+    if (addr_prop) {
+        lentmp /= 4;
+        if (lentmp <= MAX_CAPCODE_TABLE_SIZE) {
+            table_size = lentmp;
+            for (i = 0; i < lentmp; i++) {
+                temp[i] = (int8_t)(uint8_t)BL_FDT32_TO_U32(addr_prop, 4*i);
+            }
+            blog_info("temp from dtb:\r\n");
+            log_buf_int8(temp, lentmp);
+        } else {
+            blog_error("temp table size > %d\r\n", MAX_CAPCODE_TABLE_SIZE);
+        }
+    } else {
+        blog_info("temp NULL.\r\n");
+    }
+
+    addr_prop = fdt_getprop(fdt, offset1, "capcode_offset", &lentmp);
+    if (addr_prop) {
+        lentmp /= 4;
+        if (lentmp <= MAX_CAPCODE_TABLE_SIZE) {
+            for (i = 0; i < lentmp; i++) {
+                capcode_offset[i] = (int8_t)(uint8_t)BL_FDT32_TO_U32(addr_prop, 4*i);
+            }
+            blog_info("capcode_offset from dtb:\r\n");
+            log_buf_int8(capcode_offset, lentmp);
+        } else {
+            blog_error("capcode_offset table size > %d\r\n", MAX_CAPCODE_TABLE_SIZE);
+        }
+    } else {
+        blog_info("capcode_offset NULL.\r\n");
+    }
+
+    bl_wireless_capcode_offset_table_set(temp, capcode_offset, table_size);
 }
 
 
@@ -516,6 +557,11 @@ static int hal_board_load_fdt_info(const void *dtb)
     offset1 = fdt_subnode_offset(fdt, wireless_offset, "rf_temp");
     if (offset1 > 0) {
         update_rf_temp_config(fdt, offset1);
+    }
+
+    offset1 = fdt_subnode_offset(fdt, wireless_offset, "cap_temp");
+    if (offset1 > 0) {
+        update_cap_temp_config(fdt, offset1);
     }
 
     return 0;

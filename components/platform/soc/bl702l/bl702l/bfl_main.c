@@ -20,6 +20,8 @@
 #include <bl_sec.h>
 #include <hal_boot2.h>
 #include <hal_board.h>
+#include <hal_hwtimer.h>
+#include <hal_tcal.h>
 #include <hosal_uart.h>
 #include <hosal_dma.h>
 
@@ -183,7 +185,8 @@ void __attribute__((weak)) user_vAssertCalled(void)
     abort();
 #else
     taskDISABLE_INTERRUPTS();
-    printf("vAssertCalled, ra = %p\r\n", (void *)__builtin_return_address(0));
+    printf("vAssertCalled, ra = %p, taskname %s\r\n", 
+        (void *)__builtin_return_address(0), pcTaskGetName(NULL));
     while (1) {
         /*empty here*/
     }
@@ -252,6 +255,11 @@ static void aos_loop_proc(void *pvParameters)
 #elif defined (CFG_OPENTHREAD_CLI_EN)
     extern void ot_cli_init(void);
     ot_cli_init();
+#endif
+
+#if defined(CFG_TCAL_ENABLE)
+    hal_hwtimer_init();
+    hal_tcal_init();
 #endif
 
     xTaskCreate(app_main_entry,
@@ -339,6 +347,17 @@ void setup_heap()
 
     // Invoked during system boot via start.S
     vPortDefineHeapRegions(xHeapRegions);
+
+
+#if defined(CFG_USE_PSRAM)
+    extern uint8_t _psram_start;
+    extern uint8_t _psram_end;
+    extern void bl_psram_init(void);
+
+    bl_psram_init();
+    memset(&_psram_start, 0, &_psram_end - &_psram_start);
+    vPortDefineHeapRegionsPsram(xHeapRegionsPsram);
+#endif /*CFG_USE_PSRAM*/
 }
 
 static void system_early_init(void)
@@ -366,7 +385,7 @@ void bl702_main()
     TaskHandle_t aos_loop_proc_task;
 
     bl_sys_early_init();
-
+    
 #ifdef CFG_USE_ROM_CODE
     rom_freertos_init(256, 400);
     rom_hal_init();
@@ -393,9 +412,6 @@ void bl702_main()
     );
 
 #if defined(CFG_USE_PSRAM)
-    extern void bl_psram_init(void);
-    bl_psram_init();
-    vPortDefineHeapRegionsPsram(xHeapRegionsPsram);
     printf("PSRAM Heap %u@%p\r\n",(unsigned int)&_heap3_size, &_heap3_start);
 #endif
 

@@ -6009,7 +6009,11 @@ int bt_disable_action(void)
     bl_onchiphci_interface_deinit();
 
     //delete task
+    #if defined(BL602) || defined(BL702)
     ble_controller_deinit();
+    #else
+    btble_controller_deinit();
+    #endif
     k_thread_delete(&tx_thread_data);
     k_thread_delete(&work_q_thread);
     k_thread_delete(&recv_thread_data);
@@ -6474,7 +6478,7 @@ static inline bool ad_has_name(const struct bt_data *ad, size_t ad_len)
 #if defined(BFLB_BLE_PATCH_FORCE_UPDATE_GAP_DEVICE_NAME)
 static inline int bt_le_name_update(const struct bt_data *ad, size_t ad_len)
 {
-	char name[CONFIG_BT_DEVICE_NAME_MAX] = { 0 };
+	char name[CONFIG_BT_DEVICE_NAME_MAX + 1] = { 0 };
 	int i,ret=-1;
 
 	if(ad_has_name(ad,ad_len)){
@@ -7039,8 +7043,7 @@ int set_ad_and_rsp_d(u16_t hci_op, u8_t *data, u32_t ad_len)
 
 		memcpy(set_data->data,data,set_data->len);
 
-	}else
-		return -ENOBUFS;
+	}
 
     return bt_hci_cmd_send_sync(hci_op,buf,NULL);
 }
@@ -7557,7 +7560,11 @@ int bt_set_tx_pwr(int8_t power)
 #if defined(BL702L) || defined(BL602) || defined(BL702)
 int8_t bt_get_tx_pwr(void)
 {
+    #if defined(BL602) || defined(BL702)
     return ble_controller_get_tx_pwr();
+    #else
+    return btble_controller_get_tx_pwr();
+    #endif
 }
 #endif
 

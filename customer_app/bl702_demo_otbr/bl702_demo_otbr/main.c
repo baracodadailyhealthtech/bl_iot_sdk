@@ -239,9 +239,10 @@ void main_task_resume(void)
     TaskHandle_t taskHandle = xTaskGetHandle( "main" );
 
     if (taskHandle) {
-
-        printf("Backbone link connectivity is ready. Resume main task.\r\n");
-        vTaskResume(taskHandle);
+        if (eSuspended == eTaskGetState(taskHandle)) {
+            printf("Backbone link connectivity is ready. Resume main task.\r\n");
+            vTaskResume(taskHandle);
+        }
     }
     else {
         printf("Backbone link connectivity is ready. Failed to resume main task.\r\n");

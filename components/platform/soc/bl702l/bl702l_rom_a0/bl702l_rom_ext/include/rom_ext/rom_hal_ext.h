@@ -43,6 +43,7 @@ typedef void (*bl_pds_cb_t)(void);
 // Public Functions
 void rom_hal_init(void);
 void bl_pds_init(void);
+void bl_pds_set_psram_retention(uint8_t enable);
 uint8_t bl_pds_get_gpio_group(uint8_t pin);
 void bl_pds_gpio_group_wakeup_cfg(uint8_t group, uint8_t pin_list[], uint8_t pin_num, uint8_t edge_sel);  // edge_sel: PDS_GPIO_EDGE_RISING, PDS_GPIO_EDGE_FALLING or PDS_GPIO_EDGE_BOTH
 void bl_pds_gpio_wakeup_cfg(uint8_t pin_list[], uint8_t pin_num, uint8_t edge_sel);  // edge_sel: PDS_GPIO_EDGE_RISING, PDS_GPIO_EDGE_FALLING or PDS_GPIO_EDGE_BOTH

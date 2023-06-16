@@ -718,8 +718,8 @@ int ble_rc_start_adv(void)
 ATTR_PDS_SECTION void ble_rc_kys_init(void)
 {
     static bool initiated = false;
-    //gpio 0 and 1 are JTAG pins 
-    uint8_t row_pins[] = {31, /*30, 10,*/25, 24, 23};
+    //gpio 0 and 1 are JTAG pins,gpio 30 and 32 are used by xtal32k if xtal32k exists on the board.
+    uint8_t row_pins[] = {/*31, 30*/ 10, 25, 24, 23};
     uint8_t col_pins[] = {9, /*1,0,*/ 28, 27, 26};
     bl_kys_init(sizeof(row_pins), sizeof(col_pins), row_pins, col_pins);
     #if defined(CFG_BLE_PDS)

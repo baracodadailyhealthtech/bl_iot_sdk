@@ -52,9 +52,7 @@ ifeq ($(CONFIG_USE_WIFI_BR), 1)
 INCLUDE_COMPONENTS += virt_net tpsync
 endif
 ifeq ($(CONFIG_ETHERNET),1)
-# lwip_dhcpd is not compatible with LWIP_IPV6=1 currently.
-# remove module lwip_dhcpd for this example
-INCLUDE_COMPONENTS += bl702_ethernet blota
+INCLUDE_COMPONENTS += bl702_ethernet lwip_dhcpd blota
 endif
 ifeq ($(CONFIG_GEN_ROM),1)
     INCLUDE_COMPONENTS += bl702_freertos_rom
