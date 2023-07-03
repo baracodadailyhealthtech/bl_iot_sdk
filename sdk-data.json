@@ -1,0 +1,860 @@
+{
+	"sdk": {
+		"version": "release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e",
+		"phy_ver": "a0_final-74-g478a1d5",
+		"rf_ver": "0a5bc1d",
+		"defaults": {
+			"components": [
+				"blestack",
+				"newlibc"
+			],
+			"defines": [
+				"CFG_FREERTOS",
+				"BFLB_USE_HAL_DRIVER",
+				"CFG_USE_ROM_CODE",
+				"PRINT_DEBUG=1",
+				"BFLB_BLE",
+				"BFLB_CRYPT_HARDWARE",
+				"BFLB_PKA_HARDWARE",
+				["CFG_COMPONENT_BLOG_ENABLE",0],
+				["CONFIG_LINK_CUSTOMER",1],
+				["CONFIG_BL702_USE_ROM_DRIVER",1],
+				["CONFIG_SYS_DMA_ENABLE",1],
+				["CONF_ENABLE_COREDUMP",1],
+				["CONFIG_SYS_APP_TASK_STACK_SIZE",2048],
+				["CONFIG_SYS_APP_TASK_PRIORITY",15],
+				["CONFIG_SYS_AOS_LOOP_TASK_PRIORITY",15],
+				["CONFIG_SYS_VFS_ENABLE",1],
+				["CONFIG_SYS_AOS_CLI_ENABLE",1],
+				["CONFIG_SYS_AOS_LOOP_ENABLE",1],
+				["CONFIG_SYS_VFS_UART_ENABLE",1],
+				["CONFIG_MBEDTLS_AES_USE_HW",1],
+				["CONFIG_MBEDTLS_SHA256_USE_HW",1],
+				["CONFIG_MBEDTLS_BIGNUM_USE_HW",1],
+				["CONFIG_MBEDTLS_ECC_USE_HW",1],
+				["CONFIG_EASYFLASH_ENABLE",1],
+				["CONFIG_BLUETOOTH",1],
+				["CONFIG_EM_SIZE",16],
+				["CONFIG_BLE_PDS",1],
+				["CONFIG_BT_CONN",1],
+				["CONFIG_BLE_TX_BUFF_DATA",2],
+				["CONFIG_BT_PERIPHERAL",1],
+				["CONFIG_BT_GATT_CACHING",1],
+				["CONFIG_BT_GATT_SERVICE_CHANGED",1],
+				["CONFIG_BT_GAP_PERIPHERAL_PREF_PARAMS",1],
+				["CONFIG_BT_GATT_CLIENT",1],
+				["CONFIG_BLE_TP_SERVER", 1],
+				["CONFIG_SYS_COMMON_MAIN_ENABLE", 1]
+			],
+			"ccflags_priv": [
+				"-Wno-unused-variable",
+				"-Wno-unused-function",
+				"-Wno-unused-but-set-variable",
+				"-Wno-misleading-indentation",
+				"-Wno-unused-const-variable",
+				"-Wno-enum-compare",
+				"-Wno-format",
+				"-Wno-incompatible-pointer-types",
+				"-Wno-implicit-function-declaration",
+				"-Wno-return-type",
+				"-Wno-int-conversion"
+			]
+		}
+	},
+	"components": {
+		"bl702l": {
+			"depends": [
+				"bl702l_std",
+				"bl702l_ble",
+				"blfdt",
+				"blmtd",
+				"easyflash4",
+				"yloop",
+				"vfs",
+				"cli"
+			],
+			"include_dirs": [
+				"components/platform/soc/bl702l/bl702l/evb/src",
+				"components/platform/soc/bl702l/bl702l/evb/src/boot/gcc",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/include/rom_ext",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/include/rom_freertos",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/include/rom_freertos/config",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/include/rom_freertos/panic",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/include/rom_freertos/portable/GCC/RISC-V",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/include/rom_lmac154/include",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/include/rom_thread_port",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/include/rom_zb_simple"
+			],
+			"source_dir": "components/platform/soc/bl702l/bl702l",
+			"source_filter": [
+				"-<*>",
+				"+<evb/src/boot/gcc/entry.S>",
+				"+<evb/src/boot/gcc/start.S>",
+				"+<evb/src/debug.c>",
+				"+<evb/src/sscanf.c>",
+				"+<evb/src/vsscanf.c>",
+				"+<evb/src/strntoumax.c>",
+				"+<evb/src/vprint.c>"
+			],
+			"library_dirs": [
+				"components/platform/soc/bl702l/bl702l/evb/ld",
+				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/lib"
+			],
+			"link_libraries": [
+				"bl702l_rom_ext"
+			],
+			"conditionals": {
+				"ifeq CONFIG_SYS_COMMON_MAIN_ENABLE 1": {
+					"source_filter": [	
+						"+<bfl_main.c>"
+					]
+				}
+			}
+		},
+		"bl702l_ble": {
+			"defines": [
+				["CONFIG_BLE_ACT_MAX",5],
+				["CONFIG_BT_ALLROLES",1],
+				["CONFIG_DISABLE_BT_HOST_PRIVACY",1],
+				["CONFIG_LONG_RANG",0],
+				["CONFIG_PHY_UPDATE",0],
+				["CONFIG_LE_PING",0],
+				["CONFIG_PHY_UPDATE",0]
+			],
+			"include_dirs": [
+				"components/network/ble/btblecontroller/btble_inc",
+				"components/platform/soc/bl702l/bl702l_rf/api"
+			],
+			"source_dir": "components/network/ble/btblecontroller_702l_m1s1p",
+			"library_dirs": [
+				"components/platform/soc/bl702l/bl702l_rf/lib",
+				"components/network/ble/btblecontroller_702l_m1s1p/lib"
+			],
+			"link_libraries": [
+				"btblecontroller_702l_m1s1p",
+				"bl702l_rf"
+			]
+		},
+		"bl702l_std": {
+			"include_dirs": [
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/es8388",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/ethernet",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/il9341",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/ili9881c",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/image_sensor",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/isp",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/lcd",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/lcd/disp_qspi",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/lcd/i2c",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/lcd/mipi_dbi",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/lcd/mipi_dpi",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/lcd/mipi_dsi",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/lcd/spi",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/lvgl",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/platform",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/psram",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/sd_card",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/spi_sd",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/touch",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/usb",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Common/wm8978",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Driver/hal_drv/default_config",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Driver/hal_drv/inc",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Driver/regs",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Driver/risc-v/Core/Include",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Driver/startup",
+				"components/platform/soc/bl702l/bl702l_std/BSP_Driver/std_drv/inc",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/bl_math",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/device",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/list",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/memheap",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/misc",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/misc/compiler",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/partition",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/pid",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/ring_buffer",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/scaling_down",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/soft_crc",
+				"components/platform/soc/bl702l/bl702l_std/MCU_Common/timestamp",
+				"components/platform/soc/bl702l/bl702l_std/cipher_suite/inc"
+			],
+			"source_dir": "components/platform/soc/bl702l/bl702l_std",
+			"source_filter": [
+				"-<*>",
+				"+<BSP_Driver/std_drv/src/bl702l_acomp.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_adc.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_auadc.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_cks.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_dma.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_i2c.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_pwm.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_pwm_sc.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_sec_dbg.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_sec_eng.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_spi.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_tzc_sec.c>",
+				"+<MCU_Common/ring_buffer/ring_buffer.c>",
+				"+<cipher_suite/src/bflb_crypt.c>",
+				"+<cipher_suite/src/bflb_dsa.c>",
+				"+<cipher_suite/src/bflb_ecdsa.c>",
+				"+<cipher_suite/src/bflb_hash.c>",
+				"+<bl702l_romapi_patch.c>"
+			],
+			"library_dirs": [
+				"components/platform/soc/bl702l/bl702l/evb/ld"
+			]
+		},
+		"bl702l_hosal": {
+			"depends": [
+				"bl702l",
+				"bl702l_std",
+				"coredump",
+				"newlibc",
+				"utils",
+				"blmtd"
+			],
+			"include_dirs": [
+				"components/platform/hosal/bl702l_hal",
+				"components/platform/hosal/include",
+				"components/platform/hosal/sec_common"
+			],
+			"source_dir": "components/platform/hosal",
+			"source_filter": [
+				"-<*>",
+				"+<bl702l_hal/bl_adc.c>",
+				"+<bl702l_hal/bl_boot2.c>",
+				"+<bl702l_hal/bl_chip.c>",
+				"+<bl702l_hal/bl_dma.c>",
+				"+<bl702l_hal/bl_efuse.c>",
+				"+<bl702l_hal/bl_flash.c>",
+				"+<bl702l_hal/bl_gpio.c>",
+				"+<bl702l_hal/bl_hbn.c>",
+				"+<bl702l_hal/bl_ir.c>",
+				"+<bl702l_hal/bl_irq.c>",
+				"+<bl702l_hal/bl_kys.c>",
+				"+<bl702l_hal/bl_pwm.c>",
+				"+<bl702l_hal/bl_rtc.c>",
+				"+<bl702l_hal/bl_sec.c>",
+				"+<bl702l_hal/bl_sec_aes.c>",
+				"+<bl702l_hal/bl_sys.c>",
+				"+<bl702l_hal/bl_timer.c>",
+				"+<bl702l_hal/bl_uart.c>",
+				"+<bl702l_hal/bl_wdt.c>",
+				"+<bl702l_hal/bl_wireless.c>",
+				"+<bl702l_hal/hal_board.c>",
+				"+<bl702l_hal/hal_boot2.c>",
+				"+<bl702l_hal/hal_button.c>",
+				"+<bl702l_hal/hal_gpio.c>",
+				"+<bl702l_hal/hal_hbn.c>",
+				"+<bl702l_hal/hal_hwtimer.c>",
+				"+<bl702l_hal/hal_sys.c>",
+				"+<bl702l_hal/hal_tcal.c>",
+				"+<bl702l_hal/hosal_adc.c>",
+				"+<bl702l_hal/hosal_dma.c>",
+				"+<bl702l_hal/hosal_flash.c>",
+				"+<bl702l_hal/hosal_gpio.c>",
+				"+<bl702l_hal/hosal_i2c.c>",
+				"+<bl702l_hal/hosal_ota.c>",
+				"+<bl702l_hal/hosal_pwm.c>",
+				"+<bl702l_hal/hosal_rng.c>",
+				"+<bl702l_hal/hosal_rtc.c>",
+				"+<bl702l_hal/hosal_spi.c>",
+				"+<bl702l_hal/hosal_timer.c>",
+				"+<bl702l_hal/hosal_uart.c>",
+				"+<bl702l_hal/hosal_wdg.c>",
+				"+<sec_common/bl_sec_pka.c>",
+				"+<sec_common/bl_sec_aes.c>",
+				"+<sec_common/bl_sec_common.c>",
+				"+<sec_common/bl_sec_pka.c>",
+				"+<sec_common/bl_sec_sha.c>",
+				"+<sec_common/bl_sec_psk.c>"
+			]
+		},
+		"blestack": {
+			"depends": [
+				"utils"
+			],
+			"defines": [
+				"CFG_BLE_ENABLE",
+				"BFLB_BLE",
+				"CFG_BLE",
+				["CFG_CON",1],
+				["CFG_BLE_TX_BUFF_DATA",2],
+				"CFG_BLE_STACK_DBG_PRINT",
+				"CONFIG_BT_GATT_DYNAMIC_DB"
+			],
+			"include_dirs": [
+				"components/network/ble/blestack/src",
+				"components/network/ble/blestack/src/bl_hci_wrapper",
+				"components/network/ble/blestack/src/cli_cmds",
+				"components/network/ble/blestack/src/common",
+				"components/network/ble/blestack/src/common/include",
+				"components/network/ble/blestack/src/common/include/misc",
+				"components/network/ble/blestack/src/common/include/net",
+				"components/network/ble/blestack/src/common/include/toolchain",
+				"components/network/ble/blestack/src/common/include/zephyr",
+				"components/network/ble/blestack/src/common/tinycrypt/include/tinycrypt",
+				"components/network/ble/blestack/src/hci_onchip",
+				"components/network/ble/blestack/src/host",
+				"components/network/ble/blestack/src/include",
+				"components/network/ble/blestack/src/include/bluetooth",
+				"components/network/ble/blestack/src/include/drivers",
+				"components/network/ble/blestack/src/include/drivers/bluetooth",
+				"components/network/ble/blestack/src/port/include",
+				"components/network/ble/blestack/src/sbc/dec",
+				"components/network/ble/blestack/src/sbc/enc",
+				"components/network/ble/blestack/src/services",
+				"components/network/ble/blestack/src/services/oad"
+			],
+			"source_dir": "components/network/ble/blestack",
+			"source_filter": [
+				"-<*>",
+				"+<src/port/bl_port.c>",
+				"+<src/common/atomic_c.c>",
+				"+<src/common/buf.c>",
+				"+<src/common/log.c>",
+				"+<src/common/poll.c>",
+				"+<src/common/rpa.c>",
+				"+<src/common/work_q.c>",
+				"+<src/common/utils.c>",
+				"+<src/common/dec.c>",
+				"+<src/common/dummy.c>",
+				"+<src/common/tinycrypt/source/aes_decrypt.c>",
+				"+<src/common/tinycrypt/source/aes_encrypt.c>",
+				"+<src/common/tinycrypt/source/cbc_mode.c>",
+				"+<src/common/tinycrypt/source/ccm_mode.c>",
+				"+<src/common/tinycrypt/source/cmac_mode.c>",
+				"+<src/common/tinycrypt/source/ctr_mode.c>",
+				"+<src/common/tinycrypt/source/ctr_prng.c>",
+				"+<src/common/tinycrypt/source/ecc.c>",
+				"+<src/common/tinycrypt/source/ecc_dh.c>",
+				"+<src/common/tinycrypt/source/ecc_dsa.c>",
+				"+<src/common/tinycrypt/source/ecc_platform_specific.c>",
+				"+<src/common/tinycrypt/source/hmac.c>",
+				"+<src/common/tinycrypt/source/hmac_prng.c>",
+				"+<src/common/tinycrypt/source/sha256.c>",
+				"+<src/common/tinycrypt/source/utils.c>",
+				"+<src/bl_hci_wrapper/bl_hci_wrapper.c>",
+				"+<src/hci_onchip/hci_driver.c>",
+				"+<src/host/crypto.c>",
+				"+<src/host/hci_core.c>",
+				"+<src/host/hci_ecc.c>",
+				"+<src/host/l2cap.c>",
+				"+<src/host/uuid.c>"
+			],
+			"conditionals": {
+				"ifeq CONFIG_BT_CONN 1": {
+					"source_filter": [	
+						"+<src/host/att.c>",
+						"+<src/host/conn.c>",
+						"+<src/host/gatt.c>"
+					]
+				},
+				"ifneq CONFIG_DISABLE_BT_SMP 1": {
+					"source_filter": [	
+						"+<src/host/smp.c>",
+						"+<src/host/keys.c>"
+					],
+					"defines": [
+						"CONFIG_BT_SMP",
+						"CONFIG_BT_SIGNING"
+					]
+				},
+				"ifneq CONFIG_DISABLE_BT_ECC 1": {
+					"source_filter": [	
+						"+<src/host/smp.c>",
+						"+<src/host/keys.c>"
+					],
+					"defines": [
+						"CONFIG_BT_ECC"
+					]
+				},
+				"ifeq CONFIG_BT_DEBUG_MONITOR 1": {
+					"source_filter": [	
+						"+<src/host/monitor.c>"
+					]
+				},
+				"ifeq CONFIG_BT_OAD_CLIENT 1": {
+					"source_filter": [	
+						"+<src/services/oad/oad_client.c>"
+					]
+				},
+				"ifneq CONFIG_DBG_RUN_ON_FPGA 1": {
+					"source_filter": [	
+						"+<src/host/settings.c>"
+					]
+				},
+				"ifeq CONFIG_BT_OAD_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/oad/oad_main.c>",
+						"+<src/services/oad/oad_service.c>"
+					]
+				},
+				"ifeq CONFIG_BT_SPP_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/spp.c>"
+					]
+				},
+				"ifeq CONFIG_BT_STACK_CLI 1": {
+					"source_filter": [	
+						"+<src/cli_cmds/ble_cli_cmds.c>",
+						"+<src/cli_cmds/bredr_cli_cmds.c>",
+						"+<src/cli_cmds/pts_cli_cmds.c>"
+					]
+				},
+				"ifeq CONFIG_BT_BAS_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/bas.c>"
+					]
+				},
+				"ifeq CONFIG_BT_SCPS_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/scps.c>"
+					]
+				},
+				"ifeq CONFIG_BT_DIS_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/dis.c>"
+					]
+				},
+				"ifeq CONFIG_BT_IAS_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/ias.c>"
+					]
+				},
+				"ifeq CONFIG_HOGP_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/hog.c>"
+					]
+				},
+				"ifeq CONFIG_ATVV_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/atvv.c>"
+					]
+				},
+				"ifeq CONFIG_BLE_TP_SERVER 1": {
+					"source_filter": [	
+						"+<src/services/ble_tp_svc.c>"
+					],
+					"defines": [
+						"CONFIG_BLE_TP_SERVER",
+						"CONFIG_BT_GATT_DYNAMIC_DB"
+					]
+				},
+				"ifeq CONFIG_BLE_MULTI_ADV 1": {
+					"source_filter": [	
+						"+<src/host/multi_adv.c>"
+					]
+				},
+				"ifeq CONFIG_BT_RESET 1": {
+					"source_filter": [	
+						"+<src/host/src/host/bl_host_assist.c>"
+					],
+					"defines": [
+						"CFG_BT_RESET"
+					]
+				},
+				"ifeq CONFIG_BUILD_ROM_CODE 1": {
+					"defines": [
+						"BUILD_ROM_CODE"
+					]
+				},
+				"ifeq CONFIG_SLEEP 1": {
+					"defines": [
+						"CFG_SLEEP"
+					]
+				},
+				"ifeq CONFIG_BLE_PDS 1": {
+					"defines": [
+						"CFG_BLE_PDS",
+						"CONFIG_HW_SEC_ENG_DISABLE"
+					]
+				},
+				"ifeq CONFIG_BLE_STACK_DBG_PRINT 1": {
+					"defines": [
+						"CFG_BLE_STACK_DBG_PRINT"
+					]
+				}
+			}
+		},
+		"blfdt": {
+			"include_dirs": [
+				"components/stage/blfdt/inc"
+			],
+			"source_dir": "components/stage/blfdt",
+			"source_filter": ""
+		},
+		"blmtd": {
+			"include_dirs": [
+				"components/sys/blmtd/include"
+			],
+			"source_dir": "components/sys/blmtd",
+			"source_filter": [
+				"-<*>",
+				"+<bl_mtd.c>"
+			]
+		},
+		"blog": {
+			"depends": [
+				"utils"
+			],
+			"include_dirs": [
+				"components/stage/blog"
+			],
+			"source_dir": "components/stage/blog",
+			"source_filter": ""
+		},
+		"cli": {
+			"depends": [
+				"yloop"
+			],
+			"include_dirs": [
+				"components/stage/cli/cli/include"
+			],
+			"source_dir": "components/stage/cli/cli",
+			"source_filter": ""
+		},
+		"coredump": {
+			"include_dirs": [
+				"components/stage/coredump/inc"
+			],
+			"source_dir": "components/stage/coredump",
+			"source_filter": ""
+		},
+		"easyflash4": {
+			"depends": [
+				"utils"
+			],
+			"defines": [
+				"EASYFLASH_ENABLE"
+			],
+			"include_dirs": [
+				"components/stage/easyflash4/inc"
+			],
+			"source_dir": "components/stage/easyflash4",
+			"source_filter": [
+				"-<*>",
+				"+<src/easyflash.c>",
+				"+<src/ef_env.c>",
+				"+<src/ef_env_legacy_wl.c>",
+				"+<src/ef_env_legacy.c>",
+				"+<src/ef_port.c>",
+				"+<src/ef_utils.c>",
+				"+<src/easyflash_cli.c>"
+			]
+		},
+		"newlibc": {
+			"depends": [
+				"vfs"
+			],
+			"include_dirs": [
+				"components/libc/newlibc"
+			],
+			"source_dir": "components/libc/newlibc",
+			"source_filter": [
+				"-<*>",
+				"+<syscalls.c>",
+				"+<assert.c>"
+			]
+		},
+		"utils": {
+			"include_dirs": [
+				"components/utils/include"
+			],
+			"source_dir": "components/utils/src",
+			"source_filter": [
+				"+<*>",
+				"-<utils_hmac.c>",
+				"-<time_statics.c>"
+			]
+		},
+		"vfs": {
+			"depends": [
+				"coredump",
+				"blog",
+				"blfdt"
+			],
+			"include_dirs": [
+				"components/fs/vfs/include",
+				"components/fs/vfs/include/device",
+				"components/fs/vfs/include/fs",
+				"components/fs/vfs/include/hal/soc"
+			],
+			"source_dir": "components/fs/vfs",
+			"source_filter": [
+				"-<*>",
+				"+<src/vfs.c>",
+				"+<src/vfs_file.c>",
+				"+<src/vfs_inode.c>",
+				"+<src/vfs_register.c>",
+				"+<device/vfs_uart.c>",
+				"+<device/vfs_adc.c>",
+				"+<device/vfs_spi.c>",
+				"+<device/vfs_gpio.c>",
+				"+<device/vfs_pwm.c>"
+			]
+		},
+		"yloop": {
+			"depends": [
+				"vfs"
+			],
+			"include_dirs": [
+				"components/stage/yloop/include"
+			],
+			"source_dir": "components/stage/yloop/src",
+			"source_filter": ""
+		},
+		"bl702": {
+			"depends": [
+				"bl702_std",
+				"bl702_ble",
+				"blfdt",
+				"blmtd",
+				"easyflash4",
+				"yloop",
+				"vfs",
+				"cli"
+			],
+			"include_dirs": [
+				"components/platform/soc/bl702/bl702/evb/src",
+				"components/platform/soc/bl702/bl702/evb/src/boot/gcc",
+				"components/platform/soc/bl702/bl702_rom_a0/bl702_rom_ext/include/rom_ext",
+				"components/platform/soc/bl702/bl702_rom_a0/bl702_rom_ext/include/rom_freertos",
+				"components/platform/soc/bl702/bl702_rom_a0/bl702_rom_ext/include/rom_freertos/config",
+				"components/platform/soc/bl702/bl702_rom_a0/bl702_rom_ext/include/rom_freertos/panic",
+				"components/platform/soc/bl702/bl702_rom_a0/bl702_rom_ext/include/rom_freertos/portable/GCC/RISC-V",
+				"components/platform/soc/bl702/bl702_rom_a0/bl702_rom_ext/include/rom_lmac154/include",
+				"components/platform/soc/bl702/bl702_rom_a0/bl702_rom_ext/include/rom_thread_port",
+				"components/platform/soc/bl702/bl702_rom_a0/bl702_rom_ext/include/rom_zb_simple"
+			],
+			"source_dir": "components/platform/soc/bl702/bl702",
+			"source_filter": [
+				"-<*>",
+				"+<evb/src/boot/gcc/entry.S>",
+				"+<evb/src/boot/gcc/start.S>",
+				"+<evb/src/debug.c>",
+				"+<evb/src/sscanf.c>",
+				"+<evb/src/vsscanf.c>",
+				"+<evb/src/strntoumax.c>",
+				"+<evb/src/vprint.c>"
+			],
+			"library_dirs": [
+				"components/platform/soc/bl702/bl702/evb/ld"
+			],
+			"conditionals": {
+				"ifeq CONFIG_SYS_COMMON_MAIN_ENABLE 1": {
+					"source_filter": [	
+						"+<bfl_main.c>"
+					]
+				}
+			}
+		},
+		"bl702_ble": {
+			"include_dirs": [
+				"components/network/ble/blecontroller/ble_inc",
+				"components/platform/soc/bl702/bl702_rf/include"
+			],
+			"source_dir": "components/network/ble/blecontroller_702_m1s1p",
+			"library_dirs": [
+				"components/platform/soc/bl702/bl702_rf/lib",
+				"components/network/ble/blecontroller_702_m1s1/lib"
+			],
+			"link_libraries": [
+				"blecontroller_702_m1s1",
+				"bl702_rf"
+			]
+		},
+		"bl702_freertos": {
+			"defines": [
+				["portasmHANDLE_INTERRUPT", "interrupt_entry"]
+			],
+			"include_dirs": [
+				"components/platform/soc/bl702/bl702_freertos/config",
+				"components/platform/soc/bl702/bl702_freertos/misaligned",
+				"components/platform/soc/bl702/bl702_freertos/panic",
+				"components/platform/soc/bl702/bl702_freertos/portable/GCC/RISC-V",
+				"components/platform/soc/bl702/bl702_freertos/portable/GCC/RISC-V/chip_specific_extensions/RV32F_float_abi_single"
+			],
+			"source_dir": "components/platform/soc/bl702/bl702_freertos",
+			"source_filter": [
+				"-<*>",
+				"+<event_groups.c>",
+				"+<list.c>",
+				"+<queue.c>",
+				"+<stream_buffer.c>",
+				"+<tasks.c>",
+				"+<timers.c>",
+				"+<misaligned/misaligned_ldst.c>",
+				"+<misaligned/fp_asm.S>",
+				"+<panic/panic_c.c>",
+				"+<portable/GCC/RISC-V/port.c>",
+				"+<portable/GCC/RISC-V/portASM.S>",
+				"+<portable/MemMang/heap_5.c>",
+				"+<portable/MemMang/heap_5_psram.c>"
+			]
+		},
+		"bl702_usb_cdc": {
+			"defines": [
+				"CFG_USB_CDC_ENABLE",
+				["CONFIG_BL702_USE_USB_DRIVER", 1]
+			],
+			"include_dirs": [					
+				"components/platform/soc/bl702/bl702_usb_cdc/Inc"
+			],
+			"source_dir": "components/platform/soc/bl702/bl702_usb_cdc/Src"
+		},
+		"bl702_std": {
+			"include_dirs": [
+				"components/platform/soc/bl702/bl702_std/BSP_Board",
+				"components/platform/soc/bl702/bl702_std/BSP_Board/bl702_boot2",
+				"components/platform/soc/bl702/bl702_std/BSP_Board/bl702_debugger",
+				"components/platform/soc/bl702/bl702_std/BSP_Board/bl702_evb",
+				"components/platform/soc/bl702/bl702_std/BSP_Board/bl706_avb",
+				"components/platform/soc/bl702/bl702_std/BSP_Board/bl706_emac",
+				"components/platform/soc/bl702/bl702_std/BSP_Board/bl706_hwc",
+				"components/platform/soc/bl702/bl702_std/BSP_Board/bl706_iot",
+				"components/platform/soc/bl702/bl702_std/BSP_Board/bl706_lp",
+				"components/platform/soc/bl702/bl702_std/BSP_Common/platform",
+				"components/platform/soc/bl702/bl702_std/BSP_Driver/hal_drv/default_config",
+				"components/platform/soc/bl702/bl702_std/BSP_Driver/hal_drv/inc",
+				"components/platform/soc/bl702/bl702_std/BSP_Driver/regs",
+				"components/platform/soc/bl702/bl702_std/BSP_Driver/risc-v/Core/Include",
+				"components/platform/soc/bl702/bl702_std/BSP_Driver/startup",
+				"components/platform/soc/bl702/bl702_std/BSP_Driver/std_drv/inc",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/bl_math",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/device",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/list",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/memheap",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/misc",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/misc/compiler",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/partition",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/pid",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/ring_buffer",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/soft_crc",
+				"components/platform/soc/bl702/bl702_std/MCU_Common/timestamp",
+				"components/platform/soc/bl702/bl702_std/cipher_suite/inc"
+			],
+			"source_dir": "components/platform/soc/bl702/bl702_std",
+			"source_filter": [
+				"-<*>",
+				"BSP_Driver/std_drv/src/bl702_acomp.c>",
+				"+<BSP_Driver/std_drv/src/bl702_adc.c>",
+				"+<BSP_Driver/std_drv/src/bl702_aon.c>",
+				"+<BSP_Driver/std_drv/src/bl702_cam.c>",
+				"+<BSP_Driver/std_drv/src/bl702_clock.c>",
+				"+<BSP_Driver/std_drv/src/bl702_common.c>",
+				"+<BSP_Driver/std_drv/src/bl702_dac.c>",
+				"+<BSP_Driver/std_drv/src/bl702_dma.c>",
+				"+<BSP_Driver/std_drv/src/bl702_ef_ctrl.c>",
+				"+<BSP_Driver/std_drv/src/bl702_glb.c>",
+				"+<BSP_Driver/std_drv/src/bl702_hbn.c>",
+				"+<BSP_Driver/std_drv/src/bl702_i2c.c>",
+				"+<BSP_Driver/std_drv/src/bl702_i2s.c>",
+				"+<BSP_Driver/std_drv/src/bl702_ir.c>",
+				"+<BSP_Driver/std_drv/src/bl702_l1c.c>",
+				"+<BSP_Driver/std_drv/src/bl702_mjpeg.c>",
+				"+<BSP_Driver/std_drv/src/bl702_pds.c>",
+				"+<BSP_Driver/std_drv/src/bl702_psram.c>",
+				"+<BSP_Driver/std_drv/src/bl702_pwm.c>",
+				"+<BSP_Driver/std_drv/src/bl702_qdec.c>",
+				"+<BSP_Driver/std_drv/src/bl702_sec_dbg.c>",
+				"+<BSP_Driver/std_drv/src/bl702_sec_eng.c>",
+				"+<BSP_Driver/std_drv/src/bl702_sf_cfg.c>",
+				"+<BSP_Driver/std_drv/src/bl702_sf_cfg_ext.c>",
+				"+<BSP_Driver/std_drv/src/bl702_sf_ctrl.c>",
+				"+<BSP_Driver/std_drv/src/bl702_sflash.c>",
+				"+<BSP_Driver/std_drv/src/bl702_sflash_ext.c>",
+				"+<BSP_Driver/std_drv/src/bl702_spi.c>",
+				"+<BSP_Driver/std_drv/src/bl702_timer.c>",
+				"+<BSP_Driver/std_drv/src/bl702_uart.c>",
+				"+<BSP_Driver/std_drv/src/bl702_xip_sflash.c>",
+				"+<BSP_Driver/std_drv/src/bl702_xip_sflash_ext.c>",
+				"+<MCU_Common/misc/misc.c>",
+				"+<MCU_Common/ring_buffer/ring_buffer.c>",
+				"+<MCU_Common/soft_crc/softcrc.c>",
+				"+<cipher_suite/src/bflb_crypt.c>",
+				"+<cipher_suite/src/bflb_dsa.c>",
+				"+<cipher_suite/src/bflb_ecdsa.c>",
+				"+<cipher_suite/src/bflb_hash.c>"
+			],
+			"library_dirs": [
+				"components/platform/soc/bl702/bl702/evb/ld"
+			],
+			"conditionals": {
+				"ifeq CONFIG_BL702_USE_USB_DRIVER 1": {
+					"source_filter": [	
+						"+<BSP_Driver/std_drv/src/bl702_usb.c>"
+					]
+				}
+			}
+		},
+		"bl702_hosal": {
+			"depends": [
+				"bl702",
+				"bl702_freertos",
+				"bl702_usb_cdc",
+				"bl702_std",
+				"coredump",
+				"newlibc",
+				"utils",
+				"blmtd"
+			],
+			"include_dirs": [
+				"components/platform/hosal/bl702_hal",
+				"components/platform/hosal/include",
+				"components/platform/hosal/sec_common"
+			],
+			"source_dir": "components/platform/hosal",
+			"source_filter": [
+				"-<*>",
+				"+<bl702_hal/bl_adc.c>",
+				"+<bl702_hal/bl_boot2.c>",
+				"+<bl702_hal/bl_chip.c>",
+				"+<bl702_hal/bl_dma.c>",
+				"+<bl702_hal/bl_efuse.c>",
+				"+<bl702_hal/bl_flash.c>",
+				"+<bl702_hal/bl_gpio.c>",
+				"+<bl702_hal/bl_hbn.c>",
+				"+<bl702_hal/bl_ir.c>",
+				"+<bl702_hal/bl_irq.c>",
+				"+<bl702_hal/bl_kys.c>",
+				"+<bl702_hal/bl_pwm.c>",
+				"+<bl702_hal/bl_rtc.c>",
+				"+<bl702_hal/bl_sec.c>",
+				"+<bl702_hal/bl_sec_aes.c>",
+				"+<bl702_hal/bl_sys.c>",
+				"+<bl702_hal/bl_timer.c>",
+				"+<bl702_hal/bl_uart.c>",
+				"+<bl702_hal/bl_wdt.c>",
+				"+<bl702_hal/bl_wireless.c>",
+				"+<bl702_hal/hal_board.c>",
+				"+<bl702_hal/hal_boot2.c>",
+				"+<bl702_hal/hal_button.c>",
+				"+<bl702_hal/hal_gpio.c>",
+				"+<bl702_hal/hal_hbn.c>",
+				"+<bl702_hal/hal_hwtimer.c>",
+				"+<bl702_hal/hal_sys.c>",
+				"+<bl702_hal/hal_tcal.c>",
+				"+<bl702_hal/hosal_adc.c>",
+				"+<bl702_hal/hosal_dma.c>",
+				"+<bl702_hal/hosal_flash.c>",
+				"+<bl702_hal/hosal_gpio.c>",
+				"+<bl702_hal/hosal_i2c.c>",
+				"+<bl702_hal/hosal_ota.c>",
+				"+<bl702_hal/hosal_pwm.c>",
+				"+<bl702_hal/hosal_rng.c>",
+				"+<bl702_hal/hosal_rtc.c>",
+				"+<bl702_hal/hosal_spi.c>",
+				"+<bl702_hal/hosal_timer.c>",
+				"+<bl702_hal/hosal_uart.c>",
+				"+<bl702_hal/hosal_wdg.c>",
+				"+<sec_common/bl_sec_pka.c>",
+				"+<sec_common/bl_sec_aes.c>",
+				"+<sec_common/bl_sec_common.c>",
+				"+<sec_common/bl_sec_pka.c>",
+				"+<sec_common/bl_sec_sha.c>",
+				"+<sec_common/bl_sec_psk.c>"
+			]
+		}
+	}
+}
