@@ -12,38 +12,37 @@
 				"CFG_FREERTOS",
 				"BFLB_USE_HAL_DRIVER",
 				"CFG_USE_ROM_CODE",
-				"PRINT_DEBUG=1",
 				"BFLB_BLE",
 				"BFLB_CRYPT_HARDWARE",
 				"BFLB_PKA_HARDWARE",
-				["CFG_COMPONENT_BLOG_ENABLE", 0],
-				["CONFIG_LINK_CUSTOMER", 1],
-				["CONFIG_BL702_USE_ROM_DRIVER", 1],
-				["CONFIG_SYS_DMA_ENABLE", 1],
-				["CONF_ENABLE_COREDUMP", 1],
-				["CONFIG_SYS_APP_TASK_STACK_SIZE", 2048],
-				["CONFIG_SYS_APP_TASK_PRIORITY", 15],
-				["CONFIG_SYS_AOS_LOOP_TASK_PRIORITY", 15],
-				["CONFIG_SYS_VFS_ENABLE", 1],
-				["CONFIG_SYS_AOS_CLI_ENABLE", 1],
-				["CONFIG_SYS_AOS_LOOP_ENABLE", 1],
-				["CONFIG_SYS_VFS_UART_ENABLE", 1],
-				["CONFIG_MBEDTLS_AES_USE_HW", 1],
-				["CONFIG_MBEDTLS_SHA256_USE_HW", 1],
-				["CONFIG_MBEDTLS_BIGNUM_USE_HW", 1],
-				["CONFIG_MBEDTLS_ECC_USE_HW", 1],
-				["CONFIG_EASYFLASH_ENABLE", 1],
-				["CONFIG_BLUETOOTH", 1],
-				["CONFIG_EM_SIZE", 16],
-				["CONFIG_BLE_PDS", 1],
-				["CONFIG_BT_CONN", 1],
-				["CONFIG_BLE_TX_BUFF_DATA", 2],
-				["CONFIG_BT_PERIPHERAL", 1],
-				["CONFIG_BT_GATT_SERVICE_CHANGED", 1],
-				["CONFIG_BT_GAP_PERIPHERAL_PREF_PARAMS", 1],
-				["CONFIG_BT_GATT_CLIENT", 1],
+				["PRINT_DEBUG", 0],
+				["CFG_COMPONENT_BLOG_ENABLE",0],
+				["CONFIG_LINK_CUSTOMER",1],
+				["CONFIG_BL702_USE_ROM_DRIVER",1],
+				["CONFIG_SYS_DMA_ENABLE",1],
+				["CONF_ENABLE_COREDUMP",1],
+				["CONFIG_SYS_VFS_ENABLE",1],
+				["CONFIG_SYS_AOS_CLI_ENABLE",1],
+				["CONFIG_SYS_AOS_LOOP_ENABLE",1],
+				["CONFIG_SYS_VFS_UART_ENABLE",1],
+				["CONFIG_MBEDTLS_AES_USE_HW",1],
+				["CONFIG_MBEDTLS_SHA256_USE_HW",1],
+				["CONFIG_MBEDTLS_BIGNUM_USE_HW",1],
+				["CONFIG_MBEDTLS_ECC_USE_HW",1],
+				["CONFIG_EASYFLASH_ENABLE",1],
+				["CONFIG_BLUETOOTH",1],
+				["CONFIG_EM_SIZE",16],
+				["CONFIG_BLE_PDS",1],
+				["CONFIG_BT_CONN",1],
+				["CONFIG_BLE_TX_BUFF_DATA",2],
+				["CONFIG_BT_PERIPHERAL",1],
+				["CONFIG_BT_GATT_CACHING",1],
+				["CONFIG_BT_GATT_SERVICE_CHANGED",1],
+				["CONFIG_BT_GAP_PERIPHERAL_PREF_PARAMS",1],
+				["CONFIG_BT_GATT_CLIENT",1],
 				["CONFIG_BLE_TP_SERVER", 1],
-				["CONFIG_SYS_COMMON_MAIN_ENABLE", 1]
+				["CONFIG_SYS_COMMON_MAIN_ENABLE", 1],
+				["CONFIG_PDS_ENABLE", 1]
 			],
 			"ccflags_priv": [
 				"-Wno-unused-variable",
@@ -71,6 +70,10 @@
 				"yloop",
 				"vfs",
 				"cli"
+			],
+			"defines": [
+				["CONFIG_SYS_APP_TASK_STACK_SIZE", 2048],
+				["CONFIG_SYS_APP_TASK_PRIORITY", 15]
 			],
 			"include_dirs": [
 				"components/platform/soc/bl702l/bl702l/evb/src",
@@ -106,6 +109,14 @@
 				"ifeq CONFIG_SYS_COMMON_MAIN_ENABLE 1": {
 					"source_filter": [	
 						"+<bfl_main.c>"
+					]
+				},
+				"ifeq CONFIG_PDS_ENABLE 1": {
+					"defines": [
+						"CFG_PDS_ENABLE",
+						"CONFIG_HW_SEC_ENG_DISABLE",
+						"CFG_PDS_OPTIMIZE",
+						["CFG_PDS_LEVEL",31]
 					]
 				}
 			}
@@ -387,6 +398,10 @@
 				"ifneq CONFIG_DBG_RUN_ON_FPGA 1": {
 					"source_filter": [	
 						"+<src/host/settings.c>"
+					],
+					"defines": [
+						"CONFIG_BT_SETTINGS_CCC_LAZY_LOADING",
+						"CONFIG_BT_SETTINGS_USE_PRINTK"
 					]
 				},
 				"ifeq CONFIG_BT_OAD_SERVER 1": {
@@ -398,6 +413,16 @@
 				"ifeq CONFIG_BT_SPP_SERVER 1": {
 					"source_filter": [	
 						"+<src/services/spp.c>"
+					]
+				},
+				"ifeq CONFIG_CLI_DISABLE 1": {
+					"defines": [	
+						"CFG_CLI_DISABLE"
+					]
+				},
+				"ifneq CONFIG_CLI_DISABLE 1": {
+					"defines": [	
+						["CONFIG_BT_STACK_CLI", 1]
 					]
 				},
 				"ifeq CONFIG_BT_STACK_CLI 1": {
@@ -619,6 +644,10 @@
 				"yloop",
 				"vfs",
 				"cli"
+			],
+			"defines": [
+				["CONFIG_SYS_APP_TASK_STACK_SIZE", 2048],
+				["CONFIG_SYS_AOS_LOOP_TASK_PRIORITY", 15]
 			],
 			"include_dirs": [
 				"components/platform/soc/bl702/bl702/evb/src",
