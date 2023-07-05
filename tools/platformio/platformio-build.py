@@ -32,6 +32,11 @@ bl_chipname = board_config.get("build.chipname")
 bl_stack_size = board_config.get("build.stack_size")
 bl_cache_size = board_config.get("build.cache_size")
 bl_mcu = board_config.get("build.mcu")
+bl_debug_print = board_config.get("build.debug_print", False)
+
+def debug_print(*argv):
+    if bl_debug_print == True:
+        print(argv)
 
 def get_list(data):
     if isinstance(data, list):
@@ -114,7 +119,7 @@ def eval_conditionals(branch):
         if first_statement == 'ifeq':
             svalue = define_val(statement[1])
             if svalue == type(svalue)(statement[2]):
-                print("CONDITION MET (" + statement[1] + "):" + str(svalue))
+                debug_print("CONDITION MET (" + statement[1] + "):" + str(svalue))
                 if 'include_dirs' in branch[eval]:
                     include_dirs.append(join(FRAMEWORK_DIR, branch[eval]['include_dirs'][x]))
                 if 'defines' in branch[eval]:
@@ -122,7 +127,7 @@ def eval_conditionals(branch):
         elif first_statement == 'ifneq':
             svalue = define_val(statement[1])
             if svalue != type(svalue)(statement[2]):
-                print("CONDITION MET (" + statement[1] + "):" + str(svalue))
+                debug_print("CONDITION MET (" + statement[1] + "):" + str(svalue))
                 if 'include_dirs' in branch[eval]:
                     include_dirs.append(join(FRAMEWORK_DIR, branch[eval]['include_dirs'][x]))
                 if 'defines' in branch[eval]:
@@ -130,7 +135,7 @@ def eval_conditionals(branch):
         elif first_statement == 'ifdef':
             svalue = define_val(statement[1])
             if svalue != type(svalue)(False):
-                print("CONDITION MET (" + statement[1] + "):" + str(svalue))
+                debug_print("CONDITION MET (" + statement[1] + "):" + str(svalue))
                 if 'include_dirs' in branch[eval]:
                     include_dirs.append(join(FRAMEWORK_DIR, branch[eval]['include_dirs'][x]))
                 if 'defines' in branch[eval]:
@@ -138,7 +143,7 @@ def eval_conditionals(branch):
         elif first_statement == 'ifndef':
             svalue = define_val(statement[1])
             if svalue == type(svalue)(False):
-                print("CONDITION MET (" + statement[1] + "):" + str(svalue))
+                debug_print("CONDITION MET (" + statement[1] + "):" + str(svalue))
                 if 'include_dirs' in branch[eval]:
                     include_dirs.append(join(FRAMEWORK_DIR, branch[eval]['include_dirs'][x]))
                 if 'defines' in branch[eval]:
@@ -276,7 +281,7 @@ def component_conditional_source_filter(branch):
         if first_statement == 'ifeq':
             svalue = define_val(statement[1])
             if svalue == type(svalue)(statement[2]):
-                print("CONDITION MET (" + statement[1] + "):" + str(svalue))
+                debug_print("CONDITION MET (" + statement[1] + "):" + str(svalue))
                 if 'source_filter' in branch[eval]:
                     if isinstance(branch[eval]['source_filter'], list):
                         res.append(" ".join(branch[eval]['source_filter']))
@@ -285,7 +290,7 @@ def component_conditional_source_filter(branch):
         elif first_statement == 'ifneq':
             svalue = define_val(statement[1])
             if svalue != type(svalue)(statement[2]):
-                print("CONDITION MET (" + statement[1] + "):" + str(svalue))
+                debug_print("CONDITION MET (" + statement[1] + "):" + str(svalue))
                 if 'source_filter' in branch[eval]:
                     if isinstance(branch[eval]['source_filter'], list):
                         res.append(" ".join(branch[eval]['source_filter']))
@@ -294,7 +299,7 @@ def component_conditional_source_filter(branch):
         elif first_statement == 'ifdef':
             svalue = define_val(statement[1])
             if svalue != type(svalue)(False):
-                print("CONDITION MET (" + statement[1] + "):" + str(svalue))
+                debug_print("CONDITION MET (" + statement[1] + "):" + str(svalue))
                 if 'source_filter' in branch[eval]:
                     if isinstance(branch[eval]['source_filter'], list):
                         res.append(" ".join(branch[eval]['source_filter']))
@@ -303,7 +308,7 @@ def component_conditional_source_filter(branch):
         elif first_statement == 'ifndef':
             svalue = define_val(statement[1])
             if svalue == type(svalue)(False):
-                print("CONDITION MET (" + statement[1] + "):" + str(svalue))
+                debug_print("CONDITION MET (" + statement[1] + "):" + str(svalue))
                 if 'source_filter' in branch[eval]:
                     if isinstance(branch[eval]['source_filter'], list):
                         res.append(" ".join(branch[eval]['source_filter']))
