@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>blog &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档</title>
+  <title>blog &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1323-gf695192bb 文档</title>
   
 
   
@@ -28,18 +29,22 @@
   
 
   
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
     <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于这些文档"
+        <link rel="author" title="关于此文档"
               href="../../about.html"/>
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档" href="../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1323-gf695192bb 文档" href="../../index.html"/>
         <link rel="up" title="&lt;no title&gt;" href="index.html"/>
         <link rel="next" title="&lt;no title&gt;" href="../BLE/index.html"/>
         <link rel="prev" title="device tree" href="devicetree_702.html"/> 
@@ -65,16 +70,13 @@
           
 
           
-            
-            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
-          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e
+                release_bl_iot_sdk_1.6.40-1323-gf695192bb
               </div>
             
           
@@ -185,14 +187,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="blog">
-<h1>blog<a class="headerlink" href="#blog" title="永久链接至标题"></a></h1>
-<div class="section" id="id1">
-<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+  <section id="blog">
+<h1>blog<a class="headerlink" href="#blog" title="此标题的永久链接"></a></h1>
+<section id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
 <p>blog 是一款超轻量级的日志组件，非常适合对资源敏感的软件项目.</p>
-</div>
-<div class="section" id="id2">
-<h2>功能介绍<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+</section>
+<section id="id2">
+<h2>功能介绍<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
 <p>blog
 将log简化成3类，分别是组件、文件、私有log，且分别支持软件动态修改、宏彻底关闭方案（不占用rom）。下文统称动态修改为软开关，宏彻底关闭方案为静态开关。</p>
 <ul class="simple">
@@ -201,9 +203,9 @@
 该log优先级中，如下的私有log均受此开关的束缚，且文件log受到组件log的管理。</p></li>
 <li><p>私有log管理 该log优先级最低，受组件log和文件log管理</p></li>
 </ul>
-</div>
-<div class="section" id="log">
-<h2>log等级说明<a class="headerlink" href="#log" title="永久链接至标题"></a></h2>
+</section>
+<section id="log">
+<h2>log等级说明<a class="headerlink" href="#log" title="此标题的永久链接"></a></h2>
 <p>按照等级高低分别如下，其中all最低，即所有log均输出</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>all : 所有log均输出，其实等同于all
 debug : debug及以上
@@ -214,28 +216,28 @@ assert : assert及以上
 never: 所有log均不输出，其实等同于assert
 </pre></div>
 </div>
-</div>
-<div class="section" id="id3">
-<h2>使用方法<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+</section>
+<section id="id3">
+<h2>使用方法<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
 <p>包含必要的头文件
 <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&lt;blog.h&gt;</span></code>然后分别设置组件log、文件log、私有log。</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;blog.h&gt;</span><span class="cp"></span>
-<span class="n">BLOG_DECLARE</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;blog.h&gt;</span>
+<span class="n">BLOG_DECLARE</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">);</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_debug</span><span class="p">(</span><span class="s">&quot;blog_testc2 debug</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_info</span><span class="p">(</span><span class="s">&quot;blog_testc2 info</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_warn</span><span class="p">(</span><span class="s">&quot;blog_testc2 warn</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_error</span><span class="p">(</span><span class="s">&quot;blog_testc2 error</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_assert</span><span class="p">(</span><span class="s">&quot;blog_testc2 assert</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">blog_debug</span><span class="p">(</span><span class="s">&quot;blog_testc2 debug</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">blog_info</span><span class="p">(</span><span class="s">&quot;blog_testc2 info</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">blog_warn</span><span class="p">(</span><span class="s">&quot;blog_testc2 warn</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">blog_error</span><span class="p">(</span><span class="s">&quot;blog_testc2 error</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">blog_assert</span><span class="p">(</span><span class="s">&quot;blog_testc2 assert</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
 
-<span class="w">    </span><span class="n">blog_debug_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 debug user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_info_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 info user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_warn_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 warn user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_error_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 error user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">blog_assert_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 assert user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">blog_debug_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 debug user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">blog_info_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 info user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">blog_warn_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 warn user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">blog_error_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 error user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">blog_assert_user</span><span class="p">(</span><span class="n">blog_testc2</span><span class="p">,</span><span class="s">&quot;blog_testc2 assert user</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -270,11 +272,11 @@ component_name.file_name.pri_name例如：
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="id4">
-<h2>总结<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
-</div>
-</div>
+</section>
+<section id="id4">
+<h2>总结<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h2>
+</section>
+</section>
 
 
            </div>
@@ -317,7 +319,7 @@ component_name.file_name.pri_name例如：
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e',
+            VERSION:'release_bl_iot_sdk_1.6.40-1323-gf695192bb',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -325,9 +327,10 @@ component_name.file_name.pri_name例如：
         };
     </script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
 
   
 

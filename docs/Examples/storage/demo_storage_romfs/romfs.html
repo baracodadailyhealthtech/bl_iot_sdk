@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Romfs &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档</title>
+  <title>Romfs &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1323-gf695192bb 文档</title>
   
 
   
@@ -28,18 +29,22 @@
   
 
   
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
     <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于这些文档"
+        <link rel="author" title="关于此文档"
               href="../../../about.html"/>
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1323-gf695192bb 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -62,16 +67,13 @@
           
 
           
-            
-            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
-          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e
+                release_bl_iot_sdk_1.6.40-1323-gf695192bb
               </div>
             
           
@@ -164,46 +166,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="romfs">
-<span id="romfs-index"></span><h1>Romfs<a class="headerlink" href="#romfs" title="永久链接至标题"></a></h1>
-<div class="section" id="id1">
-<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+  <section id="romfs">
+<span id="romfs-index"></span><h1>Romfs<a class="headerlink" href="#romfs" title="此标题的永久链接"></a></h1>
+<section id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
 <p>本示例主要介绍如何使用Romfs分区。</p>
-</div>
-<div class="section" id="id2">
-<h2>准备和使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+</section>
+<section id="id2">
+<h2>准备和使用步骤<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
 <ul>
 <li><p>使用之前新建目录 <code class="docutils literal notranslate"><span class="pre">test/child</span></code> 准备名为 <code class="docutils literal notranslate"><span class="pre">aa.bin</span></code> 的文件，将其放入新建的目录下。</p>
 <blockquote>
-<div><div class="figure align-center">
+<div><figure class="align-center">
 <img alt="../../../_images/image133.png" src="../../../_images/image133.png" />
-</div>
+</figure>
 </div></blockquote>
 </li>
 <li><p>使用步骤：</p>
 <ul>
 <li><p>下载时将烧写工具上的 <code class="docutils literal notranslate"><span class="pre">Romfs</span></code> 选项勾选起来，路径选择如下图一所示，烧写完后可以使用 <code class="docutils literal notranslate"><span class="pre">ls</span></code> 命令查看romfs分区中的内容。</p>
-<div class="figure align-center">
+<figure class="align-center">
 <img alt="../../../_images/image229.png" src="../../../_images/image229.png" />
-</div>
-<div class="figure align-center">
+</figure>
+<figure class="align-center">
 <img alt="../../../_images/image323.png" src="../../../_images/image323.png" />
-</div>
+</figure>
 </li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">romfs</span></code> 命令可以对Romfs进行读写等操作，对比可以看到读到的数据与下载的文件数据一致。</p>
-<div class="figure align-center">
+<figure class="align-center">
 <img alt="../../../_images/image419.png" src="../../../_images/image419.png" />
-</div>
-<div class="figure align-center">
+</figure>
+<figure class="align-center">
 <img alt="../../../_images/image58.png" src="../../../_images/image58.png" />
-</div>
+</figure>
 </li>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="id3">
-<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+</section>
+<section id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
 <ul class="simple">
 <li><p>打开文件操作：</p></li>
 </ul>
@@ -241,8 +243,8 @@
 <span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;filebuf.bufsize = </span><span class="si">%lu</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filebuf</span><span class="o">.</span><span class="n">bufsize</span><span class="p">);</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -276,7 +278,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e',
+            VERSION:'release_bl_iot_sdk_1.6.40-1323-gf695192bb',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -284,9 +286,10 @@
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
 
   
 

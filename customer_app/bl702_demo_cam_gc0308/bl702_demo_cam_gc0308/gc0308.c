@@ -104,8 +104,8 @@ static const uint8_t gc0308_reglist[][2] =
         {0x09 , 0x01},
         {0x0a , 0xe8},                                    
         //{0x0a , 0x70},  /* change win_height from 488 to 368 */
-        {0x0b , 0x02},
-        {0x0c , 0x88},  /* win_width 648 */
+        {0x0b , 0x01},
+        {0x0c , 0xe8},  /* win_width 648 */
         {0x0d , 0x02},
         {0x0e , 0x02},
         {0x10 , 0x22},
@@ -381,7 +381,7 @@ static const uint8_t gc0308_reglist[][2] =
         {0xf1 , 0x01},                                  
         {0xf2 , 0x01},                                  
         {0xf3 , 0x30},                                  
-        {0xf9 , 0x9f},                                  
+        {0xf9 , 0x77},                                  
         {0xfa , 0x78},                                    
         //{0xfa , 0x58},  // Change measure window Y1 from 480 to 352
         
@@ -558,6 +558,6 @@ const rt_camera_desc __rt_camera_gc0308_desc __attribute__((section(".camera_des
     .frm_vld_high = 1,
     .probe = gc0308_probe,
     .reset = gc0308_reset,
-    .width = 640,
+    .width = 480,
     .height = 480,
 };

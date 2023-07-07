@@ -113,6 +113,9 @@ void cam_task_entry(void *pvParameters)
     }
 
     while (1) {
+        #if defined (CFG_BLE_ENABLE)
+        goto done;
+        #else
         /*获取图片，图片的格式(YUV422 YUV420等)取决于sensor的配置*/
         app_pic_jpg_get(&pic_addr, &pic_size, 1);
 
@@ -121,15 +124,10 @@ void cam_task_entry(void *pvParameters)
 
         /*释放图片所占用的内存资源，以便硬件可以继续采集图片*/
         app_pic_jpg_release();
-
+        #endif
         vTaskDelay(5);
     }
-
-
-
 done:
     puts("[THREAD] cam task is done\r\n");
-    while (1) {
-        vTaskDelay(2);
-    }
+    vTaskDelete(NULL);
 }

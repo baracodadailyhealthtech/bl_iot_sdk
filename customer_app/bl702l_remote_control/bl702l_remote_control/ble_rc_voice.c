@@ -10,7 +10,6 @@
 #include "ble_atv_voice.h"
 #include "bl_uart.h"
 
-#define VOICE_TASK_DESTROY_ONCE_VOICE_STOP 1
 #define BLE_RC_VOICE_RAW_DATA_PRINT 0
 
 T_IMA_ADPCM_STATE encode_state;
@@ -30,6 +29,11 @@ extern struct bt_conn *rc_default_conn;
 void ble_rc_voice_frame_handle(int index)
 {
     uint8_t queue_cnt = 0;
+    #if BLE_RC_VOICE_RAW_DATA_PRINT
+    printf("\r\nrawdata start\r\n");
+    UART_SendData(0, (uint8_t *)pcm_buf[index], ORIG_VOICE_FRAME_SIZE*sizeof(int16_t));
+    printf("\r\nrawdata end\r\n");
+    #endif
     if(rc_default_conn == NULL)
         return;
     //printf("[%lu]f\r\n",bl_timer_now_us());
@@ -43,7 +47,6 @@ void ble_rc_voice_frame_handle(int index)
 int ble_rc_voice_init(void)
 {
     u8_t ret = 0;
-
 #if VOICE_INTF == 1
     bl_audio_pdm_cfg_t cfg;
 
@@ -85,14 +88,6 @@ static void ble_rc_encode_voice_task(void *pvParameters)
         int16_t * data = k_fifo_get(&voice_orig_data_queue, K_FOREVER);
         if(data)
         {
-            #if (BLE_RC_VOICE_RAW_DATA_PRINT)
-            //printf voice raw data
-            printf("\r\nrawdata start\r\n");
-            unsigned int key = irq_lock();
-            UART_SendData(0, (uint8_t *)data, ORIG_VOICE_FRAME_SIZE*sizeof(int16_t));
-            irq_unlock(key);
-            printf("\r\nrawdata end\r\n");
-            #endif
             memset(cbits[eIndex], 0, NOTIFY_VOICE_DATA_SIZE);
             block_seq++;
             cbits[eIndex][0] = block_seq >> 8;
@@ -176,18 +171,20 @@ int ble_rc_voice_start(void)
     HBN_Set_XCLK_CLK_Sel(HBN_XCLK_CLK_XTAL);
     arch_delay_ms(1);
     #endif
-    encode_state.index = 0;
-    encode_state.valprev = 0;
-    block_seq=0;
-    #if (VOICE_TASK_DESTROY_ONCE_VOICE_STOP)
-    ble_rc_voice_task_create();
-    #else
-    while(k_queue_get_cnt(&voice_orig_data_queue) != 0)
+    if(rc_default_conn)
     {
-        k_queue_get(&voice_orig_data_queue, K_NO_WAIT);
+        encode_state.index = 0;
+        encode_state.valprev = 0;
+        block_seq=0;
+        #if (VOICE_TASK_DESTROY_ONCE_VOICE_STOP)
+        ble_rc_voice_task_create();
+        #else
+        while(k_queue_get_cnt(&voice_orig_data_queue) != 0)
+        {
+            k_queue_get(&voice_orig_data_queue, K_NO_WAIT);
+        }
+        #endif
     }
-    #endif
-    
     ble_rc_voice_init();
     
     printf("bl_audio_start\r\n");
@@ -202,9 +199,6 @@ int ble_rc_voice_stop(void)
     arch_delay_ms(1);
     #endif
     printf("%s\r\n", __func__);
-    #if (VOICE_TASK_DESTROY_ONCE_VOICE_STOP)
-    ble_rc_voice_task_destroy();
-    #endif
     return err;
 }
 

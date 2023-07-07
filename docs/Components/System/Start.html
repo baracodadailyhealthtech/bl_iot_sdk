@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK启动链接及FreeRTOS简要分析 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档</title>
+  <title>BL IOT SDK启动链接及FreeRTOS简要分析 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1323-gf695192bb 文档</title>
   
 
   
@@ -28,18 +29,22 @@
   
 
   
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
     <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于这些文档"
+        <link rel="author" title="关于此文档"
               href="../../about.html"/>
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档" href="../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1323-gf695192bb 文档" href="../../index.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -62,16 +67,13 @@
           
 
           
-            
-            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
-          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e
+                release_bl_iot_sdk_1.6.40-1323-gf695192bb
               </div>
             
           
@@ -164,11 +166,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="bl-iot-sdkfreertos">
-<h1>BL IOT SDK启动链接及FreeRTOS简要分析<a class="headerlink" href="#bl-iot-sdkfreertos" title="永久链接至标题"></a></h1>
+  <section id="bl-iot-sdkfreertos">
+<h1>BL IOT SDK启动链接及FreeRTOS简要分析<a class="headerlink" href="#bl-iot-sdkfreertos" title="此标题的永久链接"></a></h1>
 <p>本文简要分析bl iot SDK的start.S文件的初始化过程，FreeRTOS以及链接脚本。</p>
-<div class="section" id="start-s">
-<h2>start.S<a class="headerlink" href="#start-s" title="永久链接至标题"></a></h2>
+<section id="start-s">
+<h2>start.S<a class="headerlink" href="#start-s" title="此标题的永久链接"></a></h2>
 <p>该文件路径：components/platform/soc/bl602/bl602/evb/src/boot/gcc/start.S</p>
 <ul class="simple">
 <li><p>关闭中断</p></li>
@@ -229,9 +231,9 @@ GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接�
 <span class="n">call</span> <span class="n">bfl_main</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="freertos">
-<h2>FreeRTOS<a class="headerlink" href="#freertos" title="永久链接至标题"></a></h2>
+</section>
+<section id="freertos">
+<h2>FreeRTOS<a class="headerlink" href="#freertos" title="此标题的永久链接"></a></h2>
 <p>FreeRTOS由Richard Barry开发，是一个开源的、可移植的、小型的嵌入式实时操作系统内核。FreeRTOS既支持抢占式多任务，也支持协作式多任务,SDK中源码路径：components/platform/soc/bl602/freertos_riscv_ram。</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -240,9 +242,9 @@ GP附近的数据会通过GP寄存器相对寻址来访问，GP的值在链接�
 </dl>
 </li>
 </ul>
-</div>
-<div class="section" id="flash-rom-ld">
-<h2>flash_rom.ld<a class="headerlink" href="#flash-rom-ld" title="永久链接至标题"></a></h2>
+</section>
+<section id="flash-rom-ld">
+<h2>flash_rom.ld<a class="headerlink" href="#flash-rom-ld" title="此标题的永久链接"></a></h2>
 <p>该文件路径：components/platform/soc/bl602/bl602/evb/ld/flash_rom.ld</p>
 <ul class="simple">
 <li><p>设置输出文件的machine architecture(体系结构)</p></li>
@@ -331,8 +333,8 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
 </pre></div>
 </div>
 <p>_ld_bl_static_cli_cmds_start和_ld_bl_static_cli_cmds_end在sdk中的aos_cli_init()函数中被引用。_bl_static_cli_cmds_start和_bl_static_cli_cmds_end在上文中已经定义了。</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -366,7 +368,7 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e',
+            VERSION:'release_bl_iot_sdk_1.6.40-1323-gf695192bb',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -374,9 +376,10 @@ LENGTH ：关键字，区域的大小，可简写成len或l</p>
         };
     </script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
 
   
 

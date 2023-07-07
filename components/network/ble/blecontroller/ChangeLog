@@ -1,5 +1,8 @@
 # Changes
 
+## 2023-06-29
+1.[BL702L]Add blecontroller_602_m8s1 library.
+
 ## 2023-04-19
 1. Fixed the crash problem when the code calls ble_stack_start after restarting by calling the hal_sys_reset function.
 

@@ -15,6 +15,7 @@
 #include <bl702l_clock.h>
 #include <bl_sys.h>
 #include <bl_chip.h>
+#include <bl_wireless.h>
 #include <bl_irq.h>
 #include <bl_rtc.h>
 #include <bl_sec.h>
@@ -260,6 +261,7 @@ static void aos_loop_proc(void *pvParameters)
 #if defined(CFG_TCAL_ENABLE)
     hal_hwtimer_init();
     hal_tcal_init();
+    bl_wireless_capcode_tcal_en_set(1);
 #endif
 
     xTaskCreate(app_main_entry,

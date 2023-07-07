@@ -413,7 +413,7 @@ otError otPlatRadioSleep(otInstance *aInstance)
 {
     lmac154_disableRx();
 
-#if OPENTHREAD_FTD || OPENTHREAD_MTD
+#if !defined(CONFIG_NCP) || CONFIG_NCP == 0
     lmac154_setRxStateWhenIdle(otThreadGetLinkMode(aInstance).mRxOnWhenIdle);
 #endif
 
@@ -423,11 +423,16 @@ otError otPlatRadioReceive(otInstance *aInstance, uint8_t aChannel)
 {
     uint8_t ch = aChannel - OT_RADIO_2P4GHZ_OQPSK_CHANNEL_MIN;
 
-    lmac154_enableRx();
+#ifdef BL702L
+    extern bool bz_phy_optimize_tx_channel(uint32_t channel);
+    bz_phy_optimize_tx_channel(2405 + 5 * ch);
+#endif
+
     lmac154_setChannel((lmac154_channel_t)ch);
-#if OPENTHREAD_FTD || OPENTHREAD_MTD
+#if !defined(CONFIG_NCP) || CONFIG_NCP == 0
     lmac154_setRxStateWhenIdle(otThreadGetLinkMode(aInstance).mRxOnWhenIdle);
 #endif
+    lmac154_enableRx();
 
     return OT_ERROR_NONE;
 }

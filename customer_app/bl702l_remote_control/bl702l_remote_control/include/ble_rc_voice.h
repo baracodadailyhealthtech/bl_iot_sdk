@@ -1,6 +1,10 @@
 #ifndef __VOICE_H__
 #define __VOICE_H__
 
+#if defined (CONFIG_ATVV_SERVER_ENABLE)
+#include "ble_atv_voice.h"
+#endif
+
 #include "bl_audio.h"
 #include "bl_port.h"
 
@@ -29,16 +33,18 @@ typedef struct
 
 #define VOICE_DATA_PATTER_SIZE     6
 #if defined (CONFIG_ATVV_SERVER_ENABLE)
-#define ENCODED_VOICE_FRAME_SIZE   ATVV_AUDIO_FRAME_SIZE - VOICE_DATA_PATTER_SIZE
-#define ORIG_VOICE_FRAME_SIZE      2 * ENCODED_VOICE_FRAME_SIZE
+#define ENCODED_VOICE_FRAME_SIZE   (ATVV_AUDIO_FRAME_SIZE - VOICE_DATA_PATTER_SIZE)
+#define ORIG_VOICE_FRAME_SIZE      (2 * ENCODED_VOICE_FRAME_SIZE)
 #else
 #define ORIG_VOICE_FRAME_SIZE      256//320  //320 int16 = 640bytes
 #define ENCODED_VOICE_FRAME_SIZE   128//160 //160bytes
 #endif
 #define NOTIFY_VOICE_DATA_SIZE     VOICE_DATA_PATTER_SIZE + ENCODED_VOICE_FRAME_SIZE 
 #define ENCODED_BUFFER_CNT         15
+#define VOICE_TASK_DESTROY_ONCE_VOICE_STOP 1
 
 int ble_rc_voice_start(void);
 int ble_rc_voice_stop(void);
 void ble_rc_voice_cfg(void);
+void ble_rc_voice_task_destroy(void);
 #endif

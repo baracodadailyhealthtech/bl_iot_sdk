@@ -220,11 +220,6 @@ NAME
 void indicate_rsp(struct bt_conn *conn, const struct bt_gatt_attr *attr,	u8_t err)
 {
     BT_INFO("receive confirm, err:%d", err);
-    struct bt_gatt_indicate_params *ind_params = bt_att_get_att_req(conn);
-    if(ind_params)
-    {
-        k_free(ind_params);
-    }
 }
 
 /*************************************************************************
@@ -366,18 +361,18 @@ static int bl_tp_send_indicate(struct bt_conn *conn, const struct bt_gatt_attr *
 				                    const void *data, u16_t len)
 {
     //indicate paramete must be allocated statically
-    struct bt_gatt_indicate_params *ind_params = k_malloc(sizeof(struct bt_gatt_indicate_params));
-    ind_params->attr = attr;
-    ind_params->data = data;
-    ind_params->len = len;
-    ind_params->func = indicate_rsp;
-    ind_params->uuid = NULL;
+    static struct bt_gatt_indicate_params ind_params;
+    ind_params.attr = attr;
+    ind_params.data = data;
+    ind_params.len = len;
+    ind_params.func = indicate_rsp;
+    ind_params.uuid = NULL;
     /*it is possible to indicate by UUID by setting it on the
       parameters, when using this method the attribute given is used as the
       start range when looking up for possible matches.In this case,set uuid as follows.*/
     //ind_params->uuid = attrs[6].uuid;
 
-    return bt_gatt_indicate(conn, ind_params);
+    return bt_gatt_indicate(conn, &ind_params);
 }
 
 /*************************************************************************

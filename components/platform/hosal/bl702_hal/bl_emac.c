@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2016-2023 Bouffalolab.
+ *
+ * This file is part of
+ *     *** Bouffalolab Software Dev Kit ***
+ *      (see www.bouffalolab.com).
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *   1. Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *   3. Neither the name of Bouffalo Lab nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 
 #include "bl702.h"
@@ -9,6 +38,11 @@
 #include <aos/yloop.h>
 
 #define PHY_MAX_RETRY      (0x3F0)
+
+#if defined(DISABLE_PRINT) && DISABLE_PRINT
+#undef log_info
+#define log_info(...)
+#endif
 
 /****************************************************************************//**
  * @brief  Set MAC Address
@@ -132,7 +166,9 @@ int emac_phy_reset(void)
     uint16_t regval = PHY_RESET;
 
     log_info("emac_phy_reset start\r\n");
+#if !defined(DISABLE_PRINT) || DISABLE_PRINT == 0
     phy_lan8720_dump_registers();
+#endif
     if(emac_phy_write(PHY_BCR, PHY_RESET) != SUCCESS){
         return ERROR;
     }
@@ -769,7 +805,6 @@ int emac_sethash(uint32_t hash0,uint32_t hash1)
     
     return SUCCESS;
 }
-
 
 /*@} end of group EMAC_Public_Functions */
 

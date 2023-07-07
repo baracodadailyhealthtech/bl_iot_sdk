@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>UART_ABR &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档</title>
+  <title>UART_ABR &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1323-gf695192bb 文档</title>
   
 
   
@@ -28,18 +29,22 @@
   
 
   
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
     <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于这些文档"
+        <link rel="author" title="关于此文档"
               href="../../../about.html"/>
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1323-gf695192bb 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -62,16 +67,13 @@
           
 
           
-            
-            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
-          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e
+                release_bl_iot_sdk_1.6.40-1323-gf695192bb
               </div>
             
           
@@ -164,14 +166,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="uart-abr">
-<span id="uart-abr-index"></span><h1>UART_ABR<a class="headerlink" href="#uart-abr" title="永久链接至标题"></a></h1>
-<div class="section" id="id1">
-<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+  <section id="uart-abr">
+<span id="uart-abr-index"></span><h1>UART_ABR<a class="headerlink" href="#uart-abr" title="此标题的永久链接"></a></h1>
+<section id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
 <p>本示例主要介绍通过UART1自动时别波特率(注意cli将不能使用)。</p>
-</div>
-<div class="section" id="id2">
-<h2>准备及使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+</section>
+<section id="id2">
+<h2>准备及使用步骤<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
 <ul class="simple">
 <li><p>使用步骤：</p></li>
 </ul>
@@ -185,12 +187,12 @@
 <li><p>打开另外一个连接uart1串口的终端，设置任意波特率（如115200）发送16进制 <code class="docutils literal notranslate"><span class="pre">0x55</span></code> ，log口能够打印识别的波特率信息，并且在uart1串口终端可以接收到 <code class="docutils literal notranslate"><span class="pre">OK</span></code> ，表示说明演示成功。</p></li>
 </ul>
 </div></blockquote>
-<div class="figure align-default">
+<figure class="align-default">
 <img alt="" src="../../../_images/image415.png" />
-</div>
-</div>
-<div class="section" id="id3">
-<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
+</figure>
+</section>
+<section id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
 <ul class="simple">
 <li><p>通过 <code class="docutils literal notranslate"><span class="pre">HOSAL_UART_DEV_DECL</span></code> 接口定义一个uart_dev的uart设备</p></li>
 </ul>
@@ -227,8 +229,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hosal_uart_send</span><span class="p">(</span><span class="o">&amp;</span><span class="n">uart_dev_abr</span><span class="p">,</span> <span class="n">wData</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -262,7 +264,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1269-g12e5b0b0e',
+            VERSION:'release_bl_iot_sdk_1.6.40-1323-gf695192bb',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -270,9 +272,10 @@
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
 
   
 

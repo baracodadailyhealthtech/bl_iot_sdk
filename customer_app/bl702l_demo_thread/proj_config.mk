@@ -35,6 +35,9 @@ CONFIG_USE_PSRAM := 0
 # use internal RC32K by default; may set to 1 for better accuracy if there is XTAL32K on the board
 CONFIG_USE_XTAL32K := 1 
 
+# disable temperature calibration by default; you can enable it if you have capcode burned in efuse
+CONFIG_TCAL := 0
+
 ifeq ($(CONFIG_PDS_ENABLE),1)
 CONFIG_PDS_LEVEL ?= 31
 ifeq ($(CONFIG_PDS_LEVEL),31)

@@ -1,5 +1,12 @@
 # Changes
 
+## 2023-06-21
+1. Fix an illegal memory access issue in bt_gatt_indicate().
+2. Solve the problem that the next bt_gatt_discover cannot be initiated in the callback function when the first bt_gatt_discover is completed.
+   
+## 2023-06-16
+1. Optimize error log.
+
 ## 2023-06-15
 1. Add ble auto clean le key when key missing.
 

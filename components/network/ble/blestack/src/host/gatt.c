@@ -2552,10 +2552,10 @@ discover:
 	}
 
 done:
-	params->func(conn, NULL, params);
 #if defined(BFLB_BLE_DISCOVER_ONGOING)
 	discover_ongoing = BT_GATT_ITER_STOP;
 #endif
+	params->func(conn, NULL, params);
 }
 
 static void gatt_find_type_rsp(struct bt_conn *conn, u8_t err,
@@ -2622,10 +2622,10 @@ static void gatt_find_type_rsp(struct bt_conn *conn, u8_t err,
 
 	return;
 done:
-	params->func(conn, NULL, params);
 #if defined(BFLB_BLE_DISCOVER_ONGOING)
 	discover_ongoing = BT_GATT_ITER_STOP;
 #endif
+	params->func(conn, NULL, params);
 }
 
 static int gatt_find_type(struct bt_conn *conn,
@@ -3248,10 +3248,10 @@ static void gatt_find_info_rsp(struct bt_conn *conn, u8_t err,
 	return;
 
 done:
-	params->func(conn, NULL, params);
 #if defined(BFLB_BLE_DISCOVER_ONGOING)
 	discover_ongoing = BT_GATT_ITER_STOP;
 #endif
+	params->func(conn, NULL, params);
 }
 
 static int gatt_find_info(struct bt_conn *conn,
@@ -4447,6 +4447,11 @@ int bt_gatt_store_ccc(u8_t id, const bt_addr_le_t *addr)
 		/* No entries to encode, just clear */
 		str = NULL;
 		len = 0;
+		err = settings_delete(key);
+		if (err) {
+			BT_DBG("bt_gatt_store_ccc delete %s(err %d)", key, err);
+		}
+		return 0;
 	}
 
 	err = settings_save_one(key, (const u8_t *)str, len);

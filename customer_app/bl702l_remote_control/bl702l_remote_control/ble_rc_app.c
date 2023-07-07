@@ -19,6 +19,7 @@
 #include "bl_port.h"
 #include "cli.h"
 #include "rom_hal_ext.h"
+#include "rom_btble_ext.h"
 #include "ble_rc_hog.h"
 #include "ble_rc_voice.h"
 #include "ble_rc_app.h"
@@ -450,7 +451,7 @@ static void ble_rc_key_scan_task(void *pvParameters)
             printf("evt_type=%d\r\n",evt_type);
             k_free(data);
             
-            if(!rc_default_conn && evt_type != RC_KYS_ADV && evt_type != RC_KYS_IR_TX)
+            if(!rc_default_conn && evt_type != RC_KYS_ADV && evt_type != RC_KYS_IR_TX && evt_type!= RC_KYS_VOICE_START && evt_type!= RC_KYS_VOICE_STOP)
             {
                 printf("rc is not connected\r\n");
                 continue;
@@ -499,9 +500,11 @@ static void ble_rc_key_scan_task(void *pvParameters)
                 case RC_KYS_VOICE_START:
                 {
                     printf("RC_KYS_VOICE_START\r\n");
-                    ble_rc_pds_enable(0);
                     #if defined (CONFIG_ATVV_SERVER_ENABLE)
-                    ble_atvv_voice_start();
+                    if(rc_default_conn)
+                        ble_atvv_voice_start();
+                    else
+                        ble_rc_voice_start();    
                     #else
                     ble_rc_voice_start();
                     #endif
@@ -511,8 +514,13 @@ static void ble_rc_key_scan_task(void *pvParameters)
                 {
                     printf("RC_KYS_VOICE_STOP\r\n");
                     #if defined (CONFIG_ATVV_SERVER_ENABLE)
-                    ble_atvv_voice_stop();
-                    #endif 
+                    if(rc_default_conn)
+                        ble_atvv_voice_stop();
+                    #endif
+                    #if (VOICE_TASK_DESTROY_ONCE_VOICE_STOP)
+                    if(rc_default_conn)
+                        ble_rc_voice_task_destroy();
+                    #endif
                 }
                 break;
                 case RC_KYS_REPORT_BATTERY_LEVEL:
@@ -612,9 +620,10 @@ ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
         if(voice_start)
         {   
             #if defined (CONFIG_ATVV_SERVER_ENABLE)
-            if(ble_atvv_get_assist_mode() == ATVV_ASSIS_MODEL_HTT)
+            if(!rc_default_conn || ble_atvv_get_assist_mode() == ATVV_ASSIS_MODEL_HTT)
             #endif
             {
+                ble_rc_pds_enable(1);
                 ble_rc_voice_stop();
                 voice_start = false;
                 evt_type_ptr = k_malloc(1);
@@ -647,6 +656,7 @@ ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
             if(result->row_idx[0] == voice_key_row_idx && result->col_idx[0] == voice_key_col_idx)
             {
                 voice_start = true;
+                ble_rc_pds_enable(0);
                 evt_type_ptr = k_malloc(1);
                 *evt_type_ptr = RC_KYS_VOICE_START;
                 k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
@@ -801,8 +811,7 @@ static void ble_rc_create_adc_sample_timer(void)
 
 void ble_rc_pds_enable(uint8_t enable)
 {
-    extern uint8_t pds_start;
-    pds_start = enable;
+    btble_pds_enable(enable);
 }
 
 void ble_rc_foreach_bond_info_cb(const struct bt_bond_info *info, void *user_data)

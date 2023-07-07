@@ -159,7 +159,7 @@ SECTIONS
     PROVIDE ( __boot2_flashCfg_start = . );
     *(.bss.boot2_flashCfg)
     PROVIDE ( __boot2_flashCfg_end = . );
-  } >tcm_ocram
+  } >hbnram
 
   .bss (NOLOAD) :
   {
@@ -171,6 +171,11 @@ SECTIONS
     *(.bss .bss.*)
     *(.gnu.linkonce.b.*)
     *(COMMON)
+  } >tcm_ocram
+
+  .sha_ocram (NOLOAD) :
+  {
+    *(.sha_ocram*)
   } >tcm_ocram
 
   .stack (NOLOAD) : ALIGN(8)

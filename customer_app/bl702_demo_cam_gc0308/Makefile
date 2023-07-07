@@ -41,5 +41,10 @@ endif
 INCLUDE_COMPONENTS += blestack
 endif
 
+ifdef CONFIG_CACHE_SIZE
+EXTRA_LDFLAGS += -Wl,--defsym=__CACHE_SIZE=$(CONFIG_CACHE_SIZE)
+endif
+
 INCLUDE_COMPONENTS += $(PROJECT_NAME)
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk
+

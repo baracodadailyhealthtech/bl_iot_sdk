@@ -3,16 +3,12 @@ OUTPUT_ARCH( "riscv" )
 ENTRY( bl702_start )
 
 __EM_SIZE = DEFINED(ble_controller_init) ? (DEFINED(em_16k_init) ? 16K : 8K) : 0K;
-__SHA_LINK_CFG_SIZE = DEFINED(mbedtls_sha256_init) ? 72 : 0;
 __CACHE_SIZE = DEFINED(__CACHE_SIZE) ? __CACHE_SIZE : 4K;
-__stack_size = DEFINED(__stack_size) ? __stack_size : 2K;
 
 MEMORY
 {
   flash  (rxai!w) : ORIGIN = 0x23000000, LENGTH = (2M)
-  tcm_ocram (wxa) : ORIGIN = 0x42010000 + __CACHE_SIZE, LENGTH = (64K - __CACHE_SIZE + 64K - __EM_SIZE - __stack_size - __SHA_LINK_CFG_SIZE)
-  sha_ocram (wxa) : ORIGIN = ORIGIN(tcm_ocram) + LENGTH(tcm_ocram), LENGTH = __SHA_LINK_CFG_SIZE
-  sys_stack (wxa) : ORIGIN = ORIGIN(tcm_ocram) + LENGTH(tcm_ocram) + __SHA_LINK_CFG_SIZE, LENGTH = __stack_size
+  tcm_ocram (wxa) : ORIGIN = 0x42010000 + __CACHE_SIZE, LENGTH = (64K - __CACHE_SIZE + 64K - __EM_SIZE)
   hbnram    (wxa) : ORIGIN = 0x40010000, LENGTH = (4K)
 }
 
@@ -100,7 +96,7 @@ SECTIONS
   {
     PROVIDE( _hbn_load = LOADADDR(.hbn) );
     PROVIDE( _hbn_run = ADDR(.hbn) );
-    PROVIDE( _hbn_run_end = ADDR(.hbn) + SIZEOF(.hbn));
+    PROVIDE( _hbn_run_end = ADDR(.hbn) + SIZEOF(.hbn) );
 
     /* put bl702_rf_private.o in hbnram to avoid ocram conflict during rf calibration */
     *libbl702_rf.a:bl702_rf_private.o(.retention .retention_noinit)
@@ -127,7 +123,7 @@ SECTIONS
     *(.hbn_code.*)
     *(.hbn_data)
     *(.retention)
-  } >hbnram AT > flash
+  } >hbnram AT >flash
 
   .hbn_noinit (NOLOAD) :
   {
@@ -150,26 +146,26 @@ SECTIONS
   {
     PROVIDE( _tcm_load = LOADADDR(.tcmcode) );
     PROVIDE( _tcm_run = ADDR(.tcmcode) );
-    PROVIDE( _tcm_run_end = ADDR(.tcmcode) + SIZEOF(.tcmcode));
+    PROVIDE( _tcm_run_end = ADDR(.tcmcode) + SIZEOF(.tcmcode) );
 
     *(.tcm_code.*)
     *(.tcm_const.*)
     *(.sclock_rlt_code.*)
     *(.sclock_rlt_const.*)
-  } >tcm_ocram AT > flash
+  } >tcm_ocram AT >flash
 
   .data : ALIGN(4)
   {
     PROVIDE( _data_load = LOADADDR(.data) );
     PROVIDE( _data_run = ADDR(.data) );
-    PROVIDE( _data_run_end = ADDR(.data) + SIZEOF(.data));
+    PROVIDE( _data_run_end = ADDR(.data) + SIZEOF(.data) );
 
     *(.pds_code.*)
     *(.data .data.*)
     *(.gnu.linkonce.d.*)
 
     . = ALIGN(8);
-    /*always put freetos under global_pointer with the following order. No change!*/
+    /*always put freertos under global_pointer with the following order. No change!*/
     PROVIDE( __global_pointer$ = . + 0x7F0 );
     KEEP(*libbl702_freertos.a:*(.sdata.*))
     KEEP(*libbl702_freertos.a:*(.sbss.*))
@@ -195,7 +191,7 @@ SECTIONS
     _bt_l2cap_fixed_chan_list_start = .;
     KEEP(*(SORT_BY_NAME("._bt_l2cap_fixed_chan.static.*")))
     _bt_l2cap_fixed_chan_list_end = .;
-  } >tcm_ocram AT > flash
+  } >tcm_ocram AT >flash
 
   .boot2 (NOLOAD) :
   {
@@ -220,25 +216,25 @@ SECTIONS
     *(COMMON)
   } >tcm_ocram
 
+  .sha_ocram (NOLOAD) :
+  {
+    *(.sha_ocram*)
+  } >tcm_ocram
+
+  .stack (NOLOAD) : ALIGN(8)
+  {
+    PROVIDE ( _sp_base = . );
+    . = . + __stack_size;
+    PROVIDE( _sp_main = . );
+    __freertos_irq_stack_top = .;
+  } >tcm_ocram
+
   . = ALIGN(8);
   PROVIDE( _heap_start = . );
   PROVIDE( _heap_size = ORIGIN(tcm_ocram) + LENGTH(tcm_ocram) - _heap_start );
 
   PROVIDE( _heap2_start = 0 );
   PROVIDE( _heap2_size = 0 );
-
-  .sha_ocram (NOLOAD) :
-  {
-    *(.sha_ocram*)
-  } > sha_ocram
-
-  .stack (NOLOAD) :
-  {
-    PROVIDE ( _sp_base = . );
-    . = . + __stack_size;
-    PROVIDE( _sp_main = . );
-    __freertos_irq_stack_top = .;
-  } > sys_stack
 
 
   /* camera driver */
