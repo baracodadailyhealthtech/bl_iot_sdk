@@ -33,7 +33,6 @@
 				["CONFIG_EASYFLASH_ENABLE",1],
 				["CONFIG_BLUETOOTH",1],
 				["CONFIG_EM_SIZE",16],
-				["CONFIG_BLE_PDS",1],
 				["CONFIG_BT_CONN",1],
 				["CONFIG_BLE_TX_BUFF_DATA",2],
 				["CONFIG_BT_PERIPHERAL",1],
@@ -42,8 +41,7 @@
 				["CONFIG_BT_GAP_PERIPHERAL_PREF_PARAMS",1],
 				["CONFIG_BT_GATT_CLIENT",1],
 				["CONFIG_BLE_TP_SERVER", 1],
-				["CONFIG_SYS_COMMON_MAIN_ENABLE", 1],
-				["CONFIG_PDS_ENABLE", 1]
+				["CONFIG_SYS_COMMON_MAIN_ENABLE", 1]
 			],
 			"ccflags_priv": [
 				"-Wno-unused-variable",
