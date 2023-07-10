@@ -511,7 +511,10 @@
 				"components/stage/blfdt/inc"
 			],
 			"source_dir": "components/stage/blfdt",
-			"source_filter": ""
+			"source_filter": [
+				"+<*>",
+				"-<test>"
+			]
 		},
 		"blmtd": {
 			"include_dirs": [
@@ -593,6 +596,7 @@
 			"source_dir": "components/utils/src",
 			"source_filter": [
 				"+<*>",
+				"-<test>",
 				"-<utils_hmac.c>",
 				"-<time_statics.c>"
 			]
