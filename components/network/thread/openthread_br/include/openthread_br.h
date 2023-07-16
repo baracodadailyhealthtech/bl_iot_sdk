@@ -17,7 +17,7 @@ extern otInstance *otrGetInstance();
 void otbr_instance_init(void * aBackboneNetif);
 void otbrInstance_addStateChangedCallback(statChangedCallback_t callback);
 
-void otbr_netif_init(void *aContext);
+void otbr_netif_init(void);
 err_t otbr_netif_output6(uint8_t *aBuffer, uint32_t aLength);
 
 #ifdef __cplusplus

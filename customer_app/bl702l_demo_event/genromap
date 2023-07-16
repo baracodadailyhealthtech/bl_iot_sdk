@@ -1,15 +1,22 @@
 #!/bin/sh
 
-CONFIG_THREAD=1
-if [ $CONFIG_THREAD -eq "1" ]; then
-thread_options="CONFIG_THREAD=1"
-thread_options=$thread_options" CONFIG_FTD=0"
-thread_options=$thread_options" CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=4"
-thread_options=$thread_options" OPENTHREAD_RADIO=0"
-thread_options=$thread_options" CONFIG_LINK_METRICS=1"
-thread_options=$thread_options" CONFIG_CSL_RX=1"
-thread_options=$thread_options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
+if [ "$3" = "no_thread" ]; then
+
+	# parameter 3 is to disable Thread release
+	make CONFIG_ZIGBEE=$2 CONFIG_BLUETOOTH=1 CONFIG_BTBLECONTROLLER_LIB=all CONFIG_ZBSTACK_LIB=all -j
+else
+	CONFIG_THREAD=1
+	if [ $CONFIG_THREAD -eq "1" ]; then
+	thread_options="CONFIG_THREAD=1"
+	thread_options=$thread_options" CONFIG_FTD=0"
+	thread_options=$thread_options" CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=4"
+	thread_options=$thread_options" OPENTHREAD_RADIO=0"
+	thread_options=$thread_options" CONFIG_LINK_METRICS=1"
+	thread_options=$thread_options" CONFIG_CSL_RX=1"
+	thread_options=$thread_options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
+	fi
+
+	make $thread_options CONFIG_ZIGBEE=$2 CONFIG_BLUETOOTH=1 CONFIG_BTBLECONTROLLER_LIB=all CONFIG_ZBSTACK_LIB=all -j
 fi
 
-make $thread_options CONFIG_ZIGBEE=$2 CONFIG_BLUETOOTH=1 CONFIG_BTBLECONTROLLER_LIB=all CONFIG_ZBSTACK_LIB=all -j
 exit $?

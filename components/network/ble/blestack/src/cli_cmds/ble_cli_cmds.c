@@ -138,6 +138,10 @@ static void blecli_gatts_get_desp(char *pcWriteBuffer, int xWriteBufferLen, int 
 #endif
 #endif
 
+static void blecli_le_enh_tx_test(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+static void blecli_le_enh_rx_test(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+static void blecli_le_test_end(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+
 const struct cli_command btStackCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
 #if 1
     /*1.The cmd string to type, 2.Cmd description, 3.The function to run, 4.Number of parameters*/
@@ -293,6 +297,9 @@ const struct cli_command btStackCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
     {"ble_get_svc_desp","",blecli_gatts_get_desp},
 #endif
 #endif
+    {"ble_tx_test","LE tx test\r\nparameter [tx channel, 1 octet, test data length, 1 octet, packet payload, 1 octet, phy, 1 octet]",blecli_le_enh_tx_test},
+    {"ble_rx_test","LE tx test\r\nparameter [rx channel, 1 octet, phy, 1 octet, modulation index, 1 octet]",blecli_le_enh_rx_test},
+    {"ble_test_end","",blecli_le_test_end},
 #else
     {"ble_init", "", blecli_init},
 #if defined(CONFIG_BLE_TP_SERVER)
@@ -600,6 +607,77 @@ static void blecli_set_default_phy(char *pcWriteBuffer, int xWriteBufferLen, int
 }
 #endif
 #endif
+
+static void blecli_le_enh_tx_test(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+{
+    int err;
+    u8_t tx_ch;
+    u8_t test_data_len;
+    u8_t pkt_payload;
+    u8_t phy;
+
+    if(argc != 5){
+       vOutputString("Number of Parameters is not correct\r\n");
+       return;
+    }
+    get_uint8_from_string(&argv[1], &tx_ch); 
+    get_uint8_from_string(&argv[2], &test_data_len); 
+    get_uint8_from_string(&argv[3], &pkt_payload); 
+    get_uint8_from_string(&argv[4], &phy); 
+    
+    err = bt_le_enh_tx_test(tx_ch, test_data_len, pkt_payload, phy);
+    if(err)
+    {
+        vOutputString("le tx test failed (err %d)\r\n", err); 
+    }
+    else
+    {
+        vOutputString("le tx test success\r\n");
+    }
+
+}
+
+static void blecli_le_enh_rx_test(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+{
+    int err;
+    u8_t rx_ch;
+    u8_t phy;
+    u8_t mod_index;
+
+    if(argc != 4){
+       vOutputString("Number of Parameters is not correct\r\n");
+       return;
+    }
+    get_uint8_from_string(&argv[1], &rx_ch); 
+    get_uint8_from_string(&argv[2], &phy); 
+    get_uint8_from_string(&argv[3], &mod_index); 
+    
+    err = bt_le_enh_rx_test(rx_ch, phy, mod_index);
+    if(err)
+    {
+        vOutputString("le rx test failed (err %d)\r\n", err); 
+    }
+    else
+    {
+        vOutputString("le rx test success\r\n");
+    }
+}
+
+static void blecli_le_test_end(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+{
+    int err;
+    err = bt_le_test_end();
+    if(err)
+    {
+        vOutputString("set le test end failed (err %d)\r\n", err); 
+    }
+    else
+    {
+        vOutputString("set le test end success\r\n");
+    }  
+}
+
+
 
 static void blecli_get_device_name(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
 {

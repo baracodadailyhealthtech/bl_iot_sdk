@@ -281,7 +281,7 @@ static void adc_init(hosal_adc_dev_t *adc)
 
     /* one shot mode */
     adccfg.gain1=ADC_PGA_GAIN_1;
-    adccfg.gain2=ADC_PGA_GAIN_1;
+    adccfg.gain2=ADC_PGA_GAIN_NONE;
     adccfg.chopMode=ADC_CHOP_MOD_AZ_PGA_ON;
 
     adccfg.biasSel=ADC_BIAS_SEL_MAIN_BANDGAP;

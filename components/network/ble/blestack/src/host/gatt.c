@@ -2572,9 +2572,7 @@ static void gatt_find_type_rsp(struct bt_conn *conn, u8_t err,
 	BT_DBG("err 0x%02x", err);
 
 	#if defined(BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK)
-	if(params){
-		params->err = err;
-	}
+	params->err = err;
 	#endif /* BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK */
 
 	if (err) {
@@ -2925,9 +2923,7 @@ static void gatt_read_type_rsp(struct bt_conn *conn, u8_t err,
 	u16_t handle;
 
 	#if defined(BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK)
-	if(params){
-		params->err = err;
-	}
+	params->err = err;
 	#endif /* BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK */
 
 	BT_DBG("err 0x%02x", err);
@@ -3075,9 +3071,7 @@ static void gatt_read_group_rsp(struct bt_conn *conn, u8_t err,
 	u16_t handle;
 
 	#if defined(BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK)
-	if(params){
-		params->err = err;
-	}
+	params->err = err;
 	#endif /* BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK */
 
 	BT_DBG("err 0x%02x", err);
@@ -3152,9 +3146,7 @@ static void gatt_find_info_rsp(struct bt_conn *conn, u8_t err,
 	BT_DBG("err 0x%02x", err);
 
 	#if defined(BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK)
-	if(params){
-		params->err = err;
-	}
+	params->err = err;
 	#endif /* BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK */
 
 	if (err) {

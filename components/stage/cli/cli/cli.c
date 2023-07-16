@@ -690,6 +690,7 @@ static void echo_cmd(char *buf, int len, int argc, char **argv);
 static void exit_cmd(char *buf, int len, int argc, char **argv);
 static void devname_cmd(char *buf, int len, int argc, char **argv);
 static void pmem_cmd(char *buf, int len, int argc, char **argv);
+static void gdbmem_cmd(char *buf, int len, int argc, char **argv);
 static void mmem_cmd(char *buf, int len, int argc, char **argv);
 
 #endif
@@ -710,6 +711,7 @@ const struct cli_command built_ins[] STATIC_CLI_CMD_ATTRIBUTE = {
 #if (AOS_CLI_MINI_SIZE <= 0)
 
     { "p", "print memory", pmem_cmd },
+    { "gdbm", "print memory for gdb", gdbmem_cmd },
     { "m", "modify memory", mmem_cmd },
     { "echo", "echo for command", echo_cmd },
     { "exit", "close CLI", exit_cmd },
@@ -832,14 +834,14 @@ static void pmem_cmd(char *buf, int len, int argc, char **argv)
 
     switch (argc) {
         case 4:
-            width = strtol(argv[3], NULL, 0);
+            width = strtoul(argv[3], NULL, 0);
             __attribute__ ((fallthrough));
         case 3:
-            nunits = strtol(argv[2], NULL, 0);
+            nunits = strtoul(argv[2], NULL, 0);
             nunits = nunits > 0x400 ? 0x400 : nunits;
             __attribute__ ((fallthrough));
         case 2:
-            addr = (char *)strtol(argv[1], &pos, 0);
+            addr = (char *)strtoul(argv[1], &pos, 0);
             break;
         default:
             break;
@@ -893,6 +895,43 @@ static void pmem_cmd(char *buf, int len, int argc, char **argv)
     }
 }
 
+static void gdbmem_cmd(char *buf, int len, int argc, char **argv)
+{
+    int   i;
+    char *pos    = NULL;
+    char *addr   = NULL;
+    int   nunits = 16;
+    uint8_t xor_code = 0;
+
+    switch (argc) {
+        case 3:
+            nunits = strtoul(argv[2], NULL, 0);
+            __attribute__ ((fallthrough));
+        case 2:
+            addr = (char *)strtoul(argv[1], &pos, 0);
+            break;
+        default:
+            addr = NULL;
+            break;
+    }
+
+    if (pos == NULL || pos == argv[1]) {
+        aos_cli_printf("gdm <addr> <nunits> \r\n"
+                       "addr  : address to display\r\n"
+                       "nunits: number of units to display (default is 16)\r\n"
+                       );
+        return;
+    }
+
+    aos_cli_printf("0x%08x:", (unsigned int)addr);
+    for (i = 0; i < nunits; i++) {
+        xor_code ^= *(unsigned char *)addr;
+        aos_cli_printf(" %02x", *(unsigned char *)addr);
+        addr += 1;
+    }
+    aos_cli_printf(" XOR:%02x\r\n", xor_code);
+}
+
 static void mmem_cmd(char *buf, int len, int argc, char **argv)
 {
     void        *addr  = NULL;
@@ -903,13 +942,13 @@ static void mmem_cmd(char *buf, int len, int argc, char **argv)
 
     switch (argc) {
         case 4:
-            width = strtol(argv[3], NULL, 0);
+            width = strtoul(argv[3], NULL, 0);
             __attribute__ ((fallthrough));
         case 3:
-            value = strtol(argv[2], NULL, 0);
+            value = strtoul(argv[2], NULL, 0);
             __attribute__ ((fallthrough));
         case 2:
-            addr = (void *)strtol(argv[1], NULL, 0);
+            addr = (void *)strtoul(argv[1], NULL, 0);
             break;
         default:
             addr = NULL;

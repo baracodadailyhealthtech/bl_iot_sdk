@@ -72,13 +72,8 @@ static void gpio_init(uint8_t id, uint8_t tx_pin, uint8_t rx_pin, uint8_t cts_pi
     GLB_GPIO_Init(&cfg);
 
     /* select uart gpio function */
-    if (id == 0) {
-        tx_sigfun = GLB_UART_SIG_FUN_UART0_TXD;
-        rx_sigfun = GLB_UART_SIG_FUN_UART0_RXD;
-    } else {
-        tx_sigfun = GLB_UART_SIG_FUN_UART0_TXD;
-        rx_sigfun = GLB_UART_SIG_FUN_UART0_RXD;
-    }
+    tx_sigfun = GLB_UART_SIG_FUN_UART0_TXD;
+    rx_sigfun = GLB_UART_SIG_FUN_UART0_RXD;
 
     // clk
     //GLB_Set_UART_CLK(1, HBN_UART_CLK_XCLK, 0);

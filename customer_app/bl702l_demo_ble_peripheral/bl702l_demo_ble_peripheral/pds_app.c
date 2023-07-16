@@ -5,9 +5,13 @@
 #include "hosal_uart.h"
 #include "pds_app.h"
 
-#define APP_UART_TX_PIN       14
-#define APP_UART_RX_PIN       15
-#define APP_UART_BAUDRATE     2000000
+extern uint8_t g_uart0_tx_pin;
+extern uint8_t g_uart0_rx_pin;
+extern uint32_t g_uart0_baudrate;
+
+#define APP_UART_TX_PIN       g_uart0_tx_pin   //14
+#define APP_UART_RX_PIN       g_uart0_rx_pin   //15
+#define APP_UART_BAUDRATE     g_uart0_baudrate //2000000
 
 btble_app_conf_t app_conf = 
 {

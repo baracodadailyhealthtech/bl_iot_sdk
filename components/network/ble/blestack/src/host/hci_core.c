@@ -7535,7 +7535,7 @@ int bt_set_tx_pwr(int8_t power)
 	int err;
 
     if(power < 0 || power > 20)
-        return BT_HCI_ERR_INVALID_PARAM;
+        return -EINVAL ;
     
 	memset(&set_param, 0, sizeof(set_param));
 
@@ -7577,7 +7577,7 @@ int bt_le_throughput_calc(bool enable, u8_t interval)
 	int err;
 
     if(enable && interval < 1)
-        return BT_HCI_ERR_INVALID_PARAM;
+        return -EINVAL ;
     
 	memset(&set_param, 0, sizeof(set_param));
 
@@ -8161,6 +8161,88 @@ int bt_le_oob_get_sc_data(struct bt_conn *conn,
 	return bt_smp_le_oob_get_sc_data(conn, oobd_local, oobd_remote);
 }
 #endif
+
+int bt_le_enh_tx_test(u8_t tx_ch, u8_t test_data_len, u8_t pkt_payload, u8_t phy)
+{
+    struct bt_hci_cp_le_enh_tx_test set_param;
+    struct net_buf *buf;
+    int err;
+    if( (tx_ch > 39) || (pkt_payload > 7) || (phy < 1) || (phy > 4))
+        return -EINVAL ;
+    memset(&set_param, 0, sizeof(set_param));
+
+    set_param.tx_ch = tx_ch;
+    set_param.test_data_len = test_data_len;
+    set_param.pkt_payload = pkt_payload;
+    set_param.phy = phy;
+    buf = bt_hci_cmd_create(BT_HCI_OP_LE_ENH_TX_TEST, sizeof(set_param));
+    if (!buf) {
+		return -ENOBUFS;   
+    }
+
+    net_buf_add_mem(buf, &set_param, sizeof(set_param));
+
+    err = bt_hci_cmd_send_sync(BT_HCI_OP_LE_ENH_TX_TEST, buf, NULL);
+ 
+    if (err) {
+		return err;
+	}
+    
+	return 0;
+}
+
+int bt_le_enh_rx_test(u8_t rx_ch, u8_t phy, u8_t mod_index)
+{
+    struct bt_hci_cp_le_enh_rx_test set_param;
+    struct net_buf *buf;
+    int err;
+    if( (rx_ch > 39) || (mod_index > 1) || (phy < 1) || (phy > 3)) 
+        return -EINVAL ;
+    memset(&set_param, 0, sizeof(set_param));
+
+    set_param.rx_ch = rx_ch;
+    set_param.mod_index = mod_index;
+    set_param.phy = phy;
+    buf = bt_hci_cmd_create(BT_HCI_OP_LE_ENH_RX_TEST, sizeof(set_param));
+    if (!buf) {
+		return -ENOBUFS;   
+    }
+
+    net_buf_add_mem(buf, &set_param, sizeof(set_param));
+
+    err = bt_hci_cmd_send_sync(BT_HCI_OP_LE_ENH_RX_TEST, buf, NULL);
+ 
+    if (err) {
+		return err;
+	}
+    
+	return 0;
+}
+
+int bt_le_test_end(void)
+{
+    struct bt_hci_rp_le_test_end *rp;
+    struct net_buf *rsp;
+    int err;
+
+    err = bt_hci_cmd_send_sync(BT_HCI_OP_LE_TEST_END, NULL, &rsp);
+   	if (err) {
+		return err;
+	}
+    rp = (void *)rsp->data;
+
+    err = rp->status;
+    if(err == 0)
+    {
+        printf("packet number:%d\r\n",rp->rx_pkt_count);
+    }
+
+    net_buf_unref(rsp);
+    return err;
+}
+
+
+
 
 #if defined(BFLB_RELEASE_CMD_SEM_IF_CONN_DISC)
 void hci_release_conn_related_cmd(void)

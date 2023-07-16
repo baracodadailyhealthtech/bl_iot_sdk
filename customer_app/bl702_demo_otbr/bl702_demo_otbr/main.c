@@ -222,19 +222,6 @@ const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
     {"ipaddr", "ipaddr operation", cmd_ipaddr},
 };
 
-void otrInitUser(otInstance * instance)
-{
-    otAppCliInit((otInstance * )instance);
-}
-
-void otrAppProcess(ot_system_event_t sevent) 
-{
-    /** for application code */
-    /** Note,   NO heavy execution, no delay and semaphore pending here.
-     *          do NOT stop/suspend this task */
-
-}
-
 #ifdef CFG_THREAD_AUTO_START
 void otr_start_default(void) 
 {
@@ -263,6 +250,19 @@ void otr_start_default(void)
     otThreadSetEnabled(otrGetInstance(), true);
 }
 #endif
+
+void otrInitUser(otInstance * instance)
+{
+    otAppCliInit((otInstance * )instance);
+}
+
+void otrAppProcess(ot_system_event_t sevent) 
+{
+    /** for application code */
+    /** Note,   NO heavy execution, no delay and semaphore pending here.
+     *          do NOT stop/suspend this task */
+
+}
 
 void main_task_resume(void) 
 {
@@ -317,11 +317,10 @@ int main(int argc, char *argv[])
 
     vTaskSuspend(NULL);
 
-    otbr_netif_init(otrGetInstance());
-
+    otbr_netif_init();
+    
 #ifdef CFG_THREAD_AUTO_START
     otr_start_default();
 #endif
-
     return 0;
 }

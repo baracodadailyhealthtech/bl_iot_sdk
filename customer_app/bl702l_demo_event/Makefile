@@ -40,7 +40,7 @@ INCLUDE_COMPONENTS += bl702l_rom_ext
 endif
 
 ifeq ($(CONFIG_THREAD),1)
-INCLUDE_COMPONENTS += openthread_utils_bl702l
+INCLUDE_COMPONENTS += openthread_utils_bl702l mbedtls_lts openthread openthread_port 
 endif
 
 ifeq ($(CONFIG_ZIGBEE),1)

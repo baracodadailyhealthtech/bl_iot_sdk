@@ -773,7 +773,11 @@ ATTR_PDS_SECTION void ble_rc_after_sleep_callback(void)
     // disable GPIO pull-up/pull-down, better after GPIO reinitialization
     bl_pds_gpio_pull_disable();
 
-    uart_init(14, 15, 2000000);
+    extern uint8_t g_uart0_tx_pin;
+    extern uint8_t g_uart0_rx_pin;
+    extern uint32_t g_uart0_baudrate;
+    uart_init(g_uart0_tx_pin, g_uart0_rx_pin, g_uart0_baudrate);
+
     if(bl_pds_get_wakeup_source() == PDS_WAKEUP_BY_KEY)
     {
         key_evt_type = bl_pds_get_wakeup_key_index(&key_row_idx, &key_col_idx);

@@ -246,6 +246,11 @@
 #define CONFIG_BT_SMP_SC_ONLY 1
 #endif
 
+#ifdef CONFIG_BT_FIXED_PASSKEY
+#undef CONFIG_BT_FIXED_PASSKEY
+#define CONFIG_BT_FIXED_PASSKEY 1
+#endif
+
 /**
 *  CONFIG_BT_USE_DEBUG_KEYS:This option places Security Manager in
 *  a Debug Mode. In this mode predefined
@@ -263,6 +268,8 @@
 #define CONFIG_BT_USE_DEBUG_KEYS 1
 #endif
 
+#endif //#ifdef CONFIG_BT_SMP
+
 /**
 *  CONFIG_BT_L2CAP_DYNAMIC_CHANNEL:enables support for LE Connection
 *  oriented Channels,allowing the creation of dynamic L2CAP Channels
@@ -270,8 +277,6 @@
 #ifdef CONFIG_BT_L2CAP_DYNAMIC_CHANNEL
 #undef CONFIG_BT_L2CAP_DYNAMIC_CHANNEL
 #define CONFIG_BT_L2CAP_DYNAMIC_CHANNEL 1
-#endif
-
 #endif
 
 /**

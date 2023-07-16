@@ -36,6 +36,10 @@
 #include "bl702l_dma.h"
 #include "blog.h"
 
+uint8_t g_uart0_tx_pin = 14;
+uint8_t g_uart0_rx_pin = 15;
+uint32_t g_uart0_baudrate = 2000000;
+
 static const uint32_t g_uart_addr[] = {UART0_BASE};
 
 static void gpio_init(uint8_t id, uint8_t tx_pin, uint8_t rx_pin, uint8_t cts_pin, uint8_t rts_pin)
@@ -377,6 +381,12 @@ int hosal_uart_init(hosal_uart_dev_t *uart)
         .txFifoDmaEnable        = DISABLE,
         .rxFifoDmaEnable        = DISABLE,
     };
+
+    if(cfg->uart_id == 0){
+        g_uart0_tx_pin = cfg->tx_pin;
+        g_uart0_rx_pin = cfg->rx_pin;
+        g_uart0_baudrate = cfg->baud_rate;
+    }
 
     /* enable clk */
     GLB_Set_UART_CLK(1, HBN_UART_CLK_XCLK, uart_div);

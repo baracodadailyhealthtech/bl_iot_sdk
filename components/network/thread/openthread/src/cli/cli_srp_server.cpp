@@ -75,24 +75,18 @@ template <> otError SrpServer::Process<Cmd("addrmode")>(Arg aArgs[])
 }
 
 #if OPENTHREAD_CONFIG_BORDER_ROUTING_ENABLE
+/**
+ * @cli srp server auto
+ * @code
+ * srp server auto
+ * Disabled
+ * Done
+ * @endcode
+ * @par api_copy
+ * #otSrpServerIsAutoEnableMode
+ */
 template <> otError SrpServer::Process<Cmd("auto")>(Arg aArgs[])
 {
-    otError error = OT_ERROR_NONE;
-
-    /**
-     * @cli srp server auto
-     * @code
-     * srp server auto
-     * Disabled
-     * Done
-     * @endcode
-     * @par api_copy
-     * #otSrpServerIsAutoEnableMode
-     */
-    if (aArgs[0].IsEmpty())
-    {
-        OutputEnabledDisabledStatus(otSrpServerIsAutoEnableMode(GetInstancePtr()));
-    }
     /**
      * @cli srp server auto enable
      * @code
@@ -102,16 +96,8 @@ template <> otError SrpServer::Process<Cmd("auto")>(Arg aArgs[])
      * @par api_copy
      * #otSrpServerSetAutoEnableMode
      */
-    else
-    {
-        bool enable;
-
-        SuccessOrExit(error = Interpreter::ParseEnableOrDisable(aArgs[0], enable));
-        otSrpServerSetAutoEnableMode(GetInstancePtr(), enable);
-    }
-
-exit:
-    return error;
+    return Interpreter::GetInterpreter().ProcessEnableDisable(aArgs, otSrpServerIsAutoEnableMode,
+                                                              otSrpServerSetAutoEnableMode);
 }
 #endif
 
@@ -176,8 +162,8 @@ template <> otError SrpServer::Process<Cmd("ttl")>(Arg aArgs[])
     if (aArgs[0].IsEmpty())
     {
         otSrpServerGetTtlConfig(GetInstancePtr(), &ttlConfig);
-        OutputLine("min ttl: %u", ttlConfig.mMinTtl);
-        OutputLine("max ttl: %u", ttlConfig.mMaxTtl);
+        OutputLine("min ttl: %lu", ToUlong(ttlConfig.mMinTtl));
+        OutputLine("max ttl: %lu", ToUlong(ttlConfig.mMaxTtl));
     }
     else
     {
@@ -200,10 +186,10 @@ template <> otError SrpServer::Process<Cmd("lease")>(Arg aArgs[])
     if (aArgs[0].IsEmpty())
     {
         otSrpServerGetLeaseConfig(GetInstancePtr(), &leaseConfig);
-        OutputLine("min lease: %u", leaseConfig.mMinLease);
-        OutputLine("max lease: %u", leaseConfig.mMaxLease);
-        OutputLine("min key-lease: %u", leaseConfig.mMinKeyLease);
-        OutputLine("max key-lease: %u", leaseConfig.mMaxKeyLease);
+        OutputLine("min lease: %lu", ToUlong(leaseConfig.mMinLease));
+        OutputLine("max lease: %lu", ToUlong(leaseConfig.mMaxLease));
+        OutputLine("min key-lease: %lu", ToUlong(leaseConfig.mMinKeyLease));
+        OutputLine("max key-lease: %lu", ToUlong(leaseConfig.mMaxKeyLease));
     }
     else
     {
@@ -300,9 +286,9 @@ template <> otError SrpServer::Process<Cmd("service")>(Arg aArgs[])
                                                          kAnyServiceName, kAnyInstanceName)) != nullptr)
         {
             bool                      isDeleted    = otSrpServerServiceIsDeleted(service);
-            const char *              instanceName = otSrpServerServiceGetInstanceName(service);
+            const char               *instanceName = otSrpServerServiceGetInstanceName(service);
             const otSrpServerService *subService   = nullptr;
-            const uint8_t *           txtData;
+            const uint8_t            *txtData;
             uint16_t                  txtDataLength;
             bool                      hasSubType = false;
             otSrpServerLeaseInfo      leaseInfo;
@@ -332,23 +318,23 @@ template <> otError SrpServer::Process<Cmd("service")>(Arg aArgs[])
 
             OutputLine(hasSubType ? "" : "(null)");
 
-            OutputLine(kIndentSize, "port: %hu", otSrpServerServiceGetPort(service));
-            OutputLine(kIndentSize, "priority: %hu", otSrpServerServiceGetPriority(service));
-            OutputLine(kIndentSize, "weight: %hu", otSrpServerServiceGetWeight(service));
-            OutputLine(kIndentSize, "ttl: %u", otSrpServerServiceGetTtl(service));
-            OutputLine(kIndentSize, "lease: %u", leaseInfo.mLease / 1000);
-            OutputLine(kIndentSize, "key-lease: %u", leaseInfo.mKeyLease / 1000);
+            OutputLine(kIndentSize, "port: %u", otSrpServerServiceGetPort(service));
+            OutputLine(kIndentSize, "priority: %u", otSrpServerServiceGetPriority(service));
+            OutputLine(kIndentSize, "weight: %u", otSrpServerServiceGetWeight(service));
+            OutputLine(kIndentSize, "ttl: %lu", ToUlong(otSrpServerServiceGetTtl(service)));
+            OutputLine(kIndentSize, "lease: %lu", ToUlong(leaseInfo.mLease / 1000));
+            OutputLine(kIndentSize, "key-lease: %lu", ToUlong(leaseInfo.mKeyLease / 1000));
 
             txtData = otSrpServerServiceGetTxtData(service, &txtDataLength);
             OutputFormat(kIndentSize, "TXT: ");
             OutputDnsTxtData(txtData, txtDataLength);
-            OutputLine("");
+            OutputNewLine();
 
             OutputLine(kIndentSize, "host: %s", otSrpServerHostGetFullName(host));
 
             OutputFormat(kIndentSize, "addresses: ");
             OutputHostAddresses(host);
-            OutputLine("");
+            OutputNewLine();
         }
     }
 

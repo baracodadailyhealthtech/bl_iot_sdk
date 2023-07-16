@@ -17,11 +17,10 @@ const struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
 };
 
 void main(void)
-{
+{ 
+    ble_stack_start();
     #if defined(CFG_BLE_PDS)
     pdsapp_init();
     #endif
- 
-    ble_stack_start();
 }
 

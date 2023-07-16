@@ -93,10 +93,7 @@ CPPFLAGS += -DCFG_TCPIP_STACKSIZE=1536
 CPPFLAGS += -DOTRADIO_RX_FRAME_BUFFER_NUM=12
 CPPFLAGS += -DINCLUDE_xTaskGetHandle=1
 
-#CPPFLAGS += -DOTBR_VENDOR_NAME="BouffaloLab"
-# CPPFLAGS += -DOTBR_VENDOR_NAME=\"OpenThread\"
-# CPPFLAGS += -DOTBR_PRODUCT_NAME=\"Border\" \"Router\"
-# CPPFLAGS += -DOTBR_MESHCOP_SERVICE_INSTANCE_NAME=\"OpenThread\" \"Border\" \"Router\"
+#CPPFLAGS += -DOPENTHREAD_CONFIG_LOG_LEVEL=OT_LOG_LEVEL_DEBG
 
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_br/otbr_config.mk
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk

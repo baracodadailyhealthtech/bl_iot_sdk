@@ -47,7 +47,6 @@ void _cli_init(int fd_console)
 #endif
 
 #ifdef CFG_PDS_ENABLE
-
 static void ot_stateChangeCallback(uint32_t flags, void * p_context) 
 {
     char states[5][10] = {"disabled", "detached", "child", "router", "leader"};
