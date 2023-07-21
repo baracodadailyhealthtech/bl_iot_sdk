@@ -439,6 +439,7 @@ static void spi_irq_process(void *p_arg)
                 }
             }
         } else {
+            (void)(BL_RD_REG(SPIx, SPI_FIFO_RDATA));
             spi_priv->rx_index++;
             if (spi_priv->rx_index == spi_priv->length) {
                 /* spi callback */
