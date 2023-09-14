@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于此文档"
+              href="../about.html"/>
+        <link rel="index" title="索引"
+              href="../genindex.html"/>
+        <link rel="search" title="搜索" href="../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../index.html"/>
+        <link rel="next" title="API 参考" href="../api-reference/index.html"/>
+        <link rel="prev" title="BL IOT SDK Development Guide" href="index_702.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_702.html">702快速入门</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">702L快速入门</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preparation">Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hardware-connection">Hardware Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#software-installation">Software Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-compilation">Project Compilation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#firmware-programming">Firmware Programming</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#let-the-chip-enter-programming-mode">1. Let the chip enter programming mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-firmware-using-bldevcube">2. Download firmware using BLDevCube</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-firmware">3. Run firmware</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#debug-software">Debug Software</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">1. Hardware connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-and-configure-cklink">2. Install and configure CKLink</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-and-use-freedom-studio">3. Install and use Freedom Studio</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">相关资源</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>BL IOT SDK Development Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/get-started/index_702L.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="bl-iot-sdk-development-guide">
+<h1>BL IOT SDK Development Guide<a class="headerlink" href="#bl-iot-sdk-development-guide" title="此标题的永久链接"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="此标题的永久链接"></a></h2>
+<blockquote>
+<div><p>The BL702L/704L series chip is a general purpose microcontroller which is developed by Bouffalo Lab Technology, and based on <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> processor. It has a main frequency of up to 128MHz and rich peripherals. It also supports BLE 5.0, Zigbee 3.0 and other functions, and can be widely used in IoT and other low-power fields.</p>
+<p>The <a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> is an IOT software development kit specially provided by Bouffalo Lab team for BL60X, BL70X and subsequent chips.</p>
+<p>This article uses a simple example to show how to build a development environment, compile example code, burn firmware and view output in a Windows environment, aiming to guide users to build a complete BL70X IOT application development environment.</p>
+</div></blockquote>
+</section>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="此标题的永久链接"></a></h2>
+<blockquote>
+<div><p>Before starting this example, the required development environment includes:</p>
+<ul>
+<li><p>Hardware</p>
+<ul class="simple">
+<li><p><strong>BL702L/704L DVK board</strong></p></li>
+<li><p><strong>USB cable</strong></p></li>
+<li><p><strong>PC</strong> (Windows OS)</p></li>
+</ul>
+</li>
+<li><p>Software</p>
+<ul class="simple">
+<li><p><strong>MSYS2</strong>           (Windows compilation tool)</p></li>
+<li><p><strong>Freedom Studio</strong>  (Windows debug tool)</p></li>
+<li><p><strong>BLDevCube</strong>       (Firmware programming tool)</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/bl702l_iot.png"><img alt="../_images/bl702l_iot.png" src="../_images/bl702l_iot.png" style="width: 4.5in; height: 5in;" /></a>
+</figure>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="hardware-connection">
+<h2>Hardware Connection<a class="headerlink" href="#hardware-connection" title="此标题的永久链接"></a></h2>
+<blockquote>
+<div><p>The BL702L/704L DVK board reserves rich communication interfaces for the chip, and supports programming firmware and debugging software through UART, JTAG and other connection methods.</p>
+<p>The BL702L/704L DVK board integrates a BL702 chip, which is used to realize the conversion between USB-CDC (UART) and USB-CKLink (JTAG), and can easily realize software programming, serial communication and online debugging and other functions.</p>
+</div></blockquote>
+</section>
+<section id="software-installation">
+<h2>Software Installation<a class="headerlink" href="#software-installation" title="此标题的永久链接"></a></h2>
+<blockquote>
+<div><p>Before starting to compile the project, please complete the installation of all the following tools correctly. The specific steps and environment variable settings are as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>MSYS2</strong>  <a class="reference external" href="./Developer_Environment_BL702/Windows-BL702/Quickstart_Windows_msys.html">MSYS32 Windows Platform Installation and Compilation</a></p></li>
+<li><p><strong>BLDevCube</strong> <a class="reference external" href="./Developer_Environment_BL702/BLFlashEnv/Burning_process.html">BLDevCube Firmare Programming</a></p></li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>Please pay attention to the settings of environment variables, drivers and other information in the document, which will avoid abnormal errors in subsequent operations.</p>
+</div>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="project-compilation">
+<h2>Project Compilation<a class="headerlink" href="#project-compilation" title="此标题的永久链接"></a></h2>
+<blockquote>
+<div><p>This section describes how to compile the bl702l_demo_event project under the customer_app directory.</p>
+<ol class="arabic simple">
+<li><p>Open the MSYS2 platform and enter the local <strong>bl_iot_sdk/customer_app/bl702l_demo_ble_peripheral</strong> folder</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Command: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/c/bl_iot_sdk/customer_app/bl702l_demo_ble_peripheral/</span></code></p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image193.png"><img alt="../_images/image193.png" src="../_images/image193.png" style="width: 6in; height: 3.5in;" /></a>
+</figure>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Execute the script <strong>genblem1s1p</strong> to start compiling the project</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Command: <code class="docutils literal notranslate"><span class="pre">./genblem1s1p</span></code></p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image204.png"><img alt="../_images/image204.png" src="../_images/image204.png" style="width: 6in; height: 3.5in;" /></a>
+</figure>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>After the compilation is complete, a <code class="docutils literal notranslate"><span class="pre">build_out</span></code> folder with the following files are added to the current directory:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><a href="#id1"><span class="problematic" id="id2">**</span></a>bl702l_demo_ble_peripheral.bin: ** Binary firmware for programming into the chip</p></li>
+<li><p><a href="#id3"><span class="problematic" id="id4">**</span></a>bl702l_demo_ble_peripheral.elf: ** Executable file for debugging software</p></li>
+<li><p><a href="#id5"><span class="problematic" id="id6">**</span></a>bl702l_demo_ble_peripheral.map: ** Map file for analysis of functions and memory usage</p></li>
+</ul>
+<p><a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab Parse Tool For Windows</a> is a map file analysis software provided by Bouffalo Lab team, which can be used for memory analysis</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image2112.png"><img alt="../_images/image2112.png" src="../_images/image2112.png" style="width: 6in; height: 3.8in;" /></a>
+</figure>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="firmware-programming">
+<h2>Firmware Programming<a class="headerlink" href="#firmware-programming" title="此标题的永久链接"></a></h2>
+<blockquote>
+<div><p>This section introduces how to use <strong>BLDevCube</strong> integrated development tool to program firmware into BL702L/704L DVK board.</p>
+</div></blockquote>
+<section id="let-the-chip-enter-programming-mode">
+<h3>1. Let the chip enter programming mode<a class="headerlink" href="#let-the-chip-enter-programming-mode" title="此标题的永久链接"></a></h3>
+<blockquote>
+<div><p>1.1 After connecting to BL702L/704L DVK board with <code class="docutils literal notranslate"><span class="pre">USB</span> <span class="pre">cable</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>First press the <code class="docutils literal notranslate"><span class="pre">Boot</span></code> key on the board, do not release</p></li>
+<li><p>Then press the <code class="docutils literal notranslate"><span class="pre">RST</span></code> key on the board and release it; at this time the chip enters <code class="docutils literal notranslate"><span class="pre">UART</span> <span class="pre">programming</span> <span class="pre">mode</span></code></p></li>
+<li><p>Finally release the <code class="docutils literal notranslate"><span class="pre">Boot</span></code> key</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="download-firmware-using-bldevcube">
+<h3>2. Download firmware using BLDevCube<a class="headerlink" href="#download-firmware-using-bldevcube" title="此标题的永久链接"></a></h3>
+<blockquote>
+<div><p>2.1 Open <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>, select <code class="docutils literal notranslate"><span class="pre">BL702L/704L</span></code> in the drop-down box of <code class="docutils literal notranslate"><span class="pre">Chip</span></code>, click <code class="docutils literal notranslate"><span class="pre">Finish</span></code> and enter the main interface of <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Cube</span></code></p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/chipselection_bl702l.png"><img alt="../_images/chipselection_bl702l.png" src="../_images/chipselection_bl702l.png" style="width: 2.5in; height: 4in;" /></a>
+</figure>
+</div></blockquote>
+<p>2.2 After entering the main interface, enter the <code class="docutils literal notranslate"><span class="pre">IOT</span></code> download interface by default</p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image243.png"><img alt="../_images/image243.png" src="../_images/image243.png" style="width: 9in; height: 4.8in;" /></a>
+</figure>
+</div></blockquote>
+<p>2.3  Configure BLDevCube</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Configuration information includes:</p>
+<ul>
+<li><p><strong>Interface</strong>: It is used to select the communication interface for downloading, here select Uart.</p></li>
+<li><p><strong>Port/SN</strong>: When Uart is selected for downloading, here select the COM port connected to the chip, you can click the Refresh button below to refresh the COM port.</p></li>
+<li><p><strong>Uart Rate</strong>: When Uart is selected for downloading, fill in the baud rate, the default value is 2000000 bps.</p></li>
+<li><p><strong>Chip Erase</strong>: Choose whether to erase the entire Flash before downloading, the default setting is False.</p></li>
+<li><p><strong>Xtal</strong>: Select the crystal oscillator frequency when downloading, if the circuit board does not have a soldered crystal oscillator, select the internal RC32M.</p></li>
+</ul>
+</li>
+<li><p>Firmware information includes:</p>
+<ul>
+<li><p><strong>partition table</strong>: Use the partition table in the partition folder of the corresponding chip type under the Dev Cube folder, default select
+<code class="docutils literal notranslate"><span class="pre">...\chips\bl702l\partition\partition_cfg_1M.toml</span></code></p></li>
+<li><p><strong>firmware</strong>: The path of bin file generated by user compilation
+<code class="docutils literal notranslate"><span class="pre">...\bl_iot_sdk\customer_app\bl702l_demo_ble_peripheral\build_out\bl702l_demo_ble_peripheral.bin</span></code></p></li>
+<li><p><strong>dts</strong>: Use the device tree in the device_tree folder of the corresponding chip type under the Dev Cube folder, default select
+<code class="docutils literal notranslate"><span class="pre">...\chips\bl702l\device_tree\bl_factory_params_IoTKitA_32M.dts</span></code></p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image253.png"><img alt="../_images/image253.png" src="../_images/image253.png" style="width: 9in; height: 4.8in;" /></a>
+</figure>
+</div></blockquote>
+<p>2.4  After completing the above configuraiton correctly, click <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">&amp;</span> <span class="pre">Download</span></code> for downloading，after the successful download, you can see the status bar turns green</p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image263.png"><img alt="../_images/image263.png" src="../_images/image263.png" style="width: 9in; height: 4.8in;" /></a>
+</figure>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="run-firmware">
+<h3>3. Run firmware<a class="headerlink" href="#run-firmware" title="此标题的永久链接"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Open the serial port tool installed on the PC, select 2000000 baud rate</p></li>
+<li><p>Press the <code class="docutils literal notranslate"><span class="pre">RST</span></code> key on the DVK board</p></li>
+<li><p>The program is executed correctly, and the PC-side serial port tool will see the following print</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image272.png"><img alt="../_images/image272.png" src="../_images/image272.png" style="width: 6in; height: 4in;" /></a>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>During the burning, if there are abnormalities such as unable to burn, burning failed, and no printing after burning successfully, refer to <a class="reference external" href="https://dev.bouffalolab.com/media/doc/faq/702/html/content/FAQ.html#bl702">BL702 FAQ Summary</a> .</p>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="debug-software">
+<h2>Debug Software<a class="headerlink" href="#debug-software" title="此标题的永久链接"></a></h2>
+<blockquote>
+<div><p>This section describes how to use Freedom Studio to debug code.</p>
+</div></blockquote>
+<section id="id7">
+<h3>1. Hardware connection<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
+<blockquote>
+<div><p>1.1 Use jumper caps to connect the following 4 groups of JTAG signals of the <code class="docutils literal notranslate"><span class="pre">J3</span></code> connector on the BL702L/704L DVK board:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>IO0(J3.10) - TMS(J3.12)</strong></p></li>
+<li><p><strong>IO1(J3.09) - TDI(J3.11)</strong></p></li>
+<li><p><strong>IO2(J3.13) - TCK(J3.15)</strong></p></li>
+<li><p><strong>IO7(J3.18) - TDO(J3.16)</strong></p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image149.png"><img alt="../_images/image149.png" src="../_images/image149.png" style="width: 4in; height: 2in;" /></a>
+</figure>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="install-and-configure-cklink">
+<h3>2. Install and configure CKLink<a class="headerlink" href="#install-and-configure-cklink" title="此标题的永久链接"></a></h3>
+<blockquote>
+<div><p>2.1 Download the latest version <a class="reference external" href="https://occ.t-head.cn/community/download?id=4103855596351066112">CKLink driver from T-HEAD official website</a></p>
+<p>2.2 Unzip the downloaded CKLink installation package, double-click Setup, and click next all the way. After the installation is complete, there will be a T-HeadDebugServer icon on the desktop</p>
+<p>2.3 After connecting the JTAG pins of the board with the CKLink debugger, click the <code class="docutils literal notranslate"><span class="pre">triangle</span></code> button, if it turns into a <code class="docutils literal notranslate"><span class="pre">circle</span></code>, it means that the JTAG connection is successful. If it fails, you need to check if the JTAG connection is correct</p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image240.png"><img alt="../_images/image240.png" src="../_images/image240.png" style="width: 6in; height: 4in;" /></a>
+</figure>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="install-and-use-freedom-studio">
+<h3>3. Install and use Freedom Studio<a class="headerlink" href="#install-and-use-freedom-studio" title="此标题的永久链接"></a></h3>
+<blockquote>
+<div><p>3.1 Download and unzip Freedom Studio, download website <code class="docutils literal notranslate"><span class="pre">https://github.com/sifive/freedom-studio/releases</span></code>, version <code class="docutils literal notranslate"><span class="pre">FreedomStudio-2019-08-2</span></code></p>
+<p>3.2 Run <code class="docutils literal notranslate"><span class="pre">FreedomStudio.exe</span></code></p>
+<p>3.3 Click <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">|</span> <span class="pre">Import</span></code> menu and open Import dialog box, import project <code class="docutils literal notranslate"><span class="pre">C/C++</span> <span class="pre">Existing</span> <span class="pre">Code</span> <span class="pre">as</span> <span class="pre">Makefile</span> <span class="pre">Project</span></code></p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image330.png"><img alt="../_images/image330.png" src="../_images/image330.png" style="width: 4in; height: 6in;" /></a>
+</figure>
+</div></blockquote>
+<p>3.4 Click <code class="docutils literal notranslate"><span class="pre">Browse</span></code> button and select project folder, make sure the <code class="docutils literal notranslate"><span class="pre">Project</span> <span class="pre">Name</span></code> is bl_iot_sdk</p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image425.png"><img alt="../_images/image425.png" src="../_images/image425.png" style="width: 4in; height: 6in;" /></a>
+</figure>
+</div></blockquote>
+<p>3.5 Open the <code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Configurations</span></code> dialog box as shown below</p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image516.png"><img alt="../_images/image516.png" src="../_images/image516.png" style="width: 4in; height: 2in;" /></a>
+</figure>
+</div></blockquote>
+<p>3.6 If you want to see the current code running status, please select <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch</span></code>; If you want to execute the code from scratch, please select <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_bl702l.launch</span></code></p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/image65.png"><img alt="../_images/image65.png" src="../_images/image65.png" style="width: 9in; height: 4.8in;" /></a>
+</figure>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>Before using bl_iot_sdk_debug_freedom_studio_win_bl702l.launch, the chip needs to enter the UART programming mode.</p>
+</div>
+</div></blockquote>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../api-reference/index.html" class="btn btn-neutral float-right" title="API 参考" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index_702.html" class="btn btn-neutral" title="BL IOT SDK Development Guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

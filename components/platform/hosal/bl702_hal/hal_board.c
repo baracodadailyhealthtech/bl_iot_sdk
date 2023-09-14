@@ -189,11 +189,11 @@ static void update_mac_config(const void *fdt, int offset1)
     countindex = fdt_stringlist_count(fdt, offset1, "mode");
     if (1 == countindex) {
         result = fdt_stringlist_get(fdt, offset1, "mode", 0, &lentmp);
-        blog_print("MAC address mode length %d\r\n", lentmp);
+        blog_info("MAC address mode length %d\r\n", lentmp);
         if (lentmp <= MAC_ORDER_ADDR_LEN_MAX) {
             memcpy(mac_mode, result, lentmp);
             mac_mode[3] = '\0';
-            blog_print("MAC address mode is %s\r\n", mac_mode);
+            blog_info("MAC address mode is %s\r\n", mac_mode);
             update_mac_config_with_order(fdt, offset1, mac_mode);
         }
     }

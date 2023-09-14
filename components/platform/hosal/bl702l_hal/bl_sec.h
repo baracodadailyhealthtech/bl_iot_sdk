@@ -52,7 +52,7 @@ int bl_sec_aes_init(void);
 int bl_sec_aes_enc(uint8_t *key, int keysize, uint8_t *input, uint8_t *output);
 int bl_sec_aes_test(void);
 uint32_t bl_sec_get_random_word(void);
-void bl_rand_stream(uint8_t *buf, int len);
+int bl_rand_stream(uint8_t *buf, int len);
 int bl_rand(void);
 /*SHA Engine API*/
 int bl_sec_sha_init();

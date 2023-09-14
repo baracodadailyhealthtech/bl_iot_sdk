@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于此文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../../../index.html"/>
+        <link rel="up" title="BLE" href="../index.html"/>
+        <link rel="next" title="Mesh" href="../demo_mesh/mesh.html"/>
+        <link rel="prev" title="Ble Introduction" href="../demo_ble/ble.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API 参考</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">BLE</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../demo_ble/ble.html">Introduction</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Low_Power_Mode_BL702L</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">低功耗模式</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../demo_mesh/mesh.html">Mesh</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../zigbee/index.html">Zigbee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Example</a> &raquo;</li>
+        
+          <li><a href="../index.html">BLE</a> &raquo;</li>
+        
+      <li>Low_Power_Mode_BL702L</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/ble/demo_low_power_mode/low_power_mode.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="low-power-mode-bl702l">
+<span id="ble-index"></span><h1>Low_Power_Mode_BL702L<a class="headerlink" href="#low-power-mode-bl702l" title="此标题的永久链接"></a></h1>
+<section id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<p>本示例主要介绍如何使用低功耗模式。</p>
+</section>
+<section id="id2">
+<h2>低功耗模式<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<ul>
+<li><p>系统进入低功耗流程</p>
+<p>系统低功耗模式简称 PDS (Power Down Sleep)。
+SDK中使用了Freertos。Freertos的idle task会检查当前BL702L是否处于无任务处理状态，是否能进入到低功耗模式。</p>
+<ol class="arabic simple">
+<li><p>如果Freertos处于idle状态，能睡眠，继续检查当前BLE是否能睡眠。如果Ble不能睡眠，则BL702L不能进入低功耗模式。如果BLE能睡眠，获取Ble的睡眠时间。</p></li>
+<li><p>最终BL702L的睡眠时间将取Freertos能睡眠的时间和BLE能睡眠的时间中的较小值。如果最终的睡眠时间小于一个阈值，例如5ms，BL702L将不进入低功耗模式。</p></li>
+</ol>
+<blockquote>
+<div><p>如果BLE的睡眠时间大于Freertos的睡眠时间，当BL702L醒来时，Ble仍然处理睡眠状态。在这种情况下，Ble会在以下两种情况醒来。</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Ble的睡眠时间结束。</p></li>
+<li><p>如果有Ble的行为要发生，例如应用层要做Ble advertising，软件会唤醒Ble。</p></li>
+</ol>
+</div></blockquote>
+<p>如果Ble的睡眠时间小于等于Freertos的睡眠时间, BL702L先从PDS醒来，然后Ble醒。</p>
+</div></blockquote>
+</li>
+<li><p>低功耗API</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">btble_pds_enable</span> <span class="pre">(uint8_t</span> <span class="pre">enable)</span></code></p></li>
+</ol>
+<blockquote>
+<div><p>该API用来使能或者禁用低功耗功能。</p>
+<p>当enable=1时，使能低功耗功能。BL702L在idle状态下进入低功耗模式。</p>
+<p>当enable=0时，禁用低功耗功能。BL702L在idle状态下不进入低功耗模式。</p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">btble_set_before_sleep_callback</span> <span class="pre">(btble_before_sleep_cb_t</span> <span class="pre">cb)</span></code></p></li>
+</ol>
+<blockquote>
+<div><p>如果应用层在Ble睡眠前有事情要做，需要调用该API来注册callback函数。应用层在该callback函数中做需要做的事情。例如应用层有key scan的相关应用，在Ble睡眠前需要disable key scan中断，就可以在该callback函数中完成。</p>
+<p>Ble可能因为睡眠条件不满足而不能进入睡眠，这种情况下，应用层需要在btble_set_sleep_aborted_callback注册的callback函数中重新enable key scan中断。</p>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">btble_set_sleep_aborted_callback</span> <span class="pre">(btble_sleep_aborted_cb_t</span> <span class="pre">cb)</span></code></p></li>
+</ol>
+<blockquote>
+<div><p>在Freertos idle task中，当BL702L不能进入低功耗模式的时候, 通过btble_set_sleep_aborted_callback注册的callback函数将会被调用。</p>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">btble_set_after_sleep_callback</span> <span class="pre">(btble_after_sleep_cb_t</span> <span class="pre">cb)</span></code></p></li>
+</ol>
+<blockquote>
+<div><p>当BL702L醒来后，该函数注册的callback函数会被调用到。应用层可以在该callback函数中做需要做的事情。</p>
+<p>例如，应用层使用了key scan功能，则需要在该callback函数中恢复key scan的配置因为该配置在低功耗模式下会丢掉。</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../demo_mesh/mesh.html" class="btn btn-neutral float-right" title="Mesh" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../demo_ble/ble.html" class="btn btn-neutral" title="Ble Introduction" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

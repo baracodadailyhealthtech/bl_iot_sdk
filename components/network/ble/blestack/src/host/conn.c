@@ -2396,9 +2396,15 @@ struct bt_conn *bt_conn_create_le(const bt_addr_le_t *peer,
 		switch (conn->state) {
 		case BT_CONN_CONNECT_SCAN:
 			bt_conn_set_param_le(conn, param);
+			//fix by bouffalo:not ref if conn of this peer has existed.
+			bt_conn_unref(conn);
+			//fix end
 			return conn;
 		case BT_CONN_CONNECT:
 		case BT_CONN_CONNECTED:
+			//fix by bouffalo:not ref if conn of this peer has existed.
+			bt_conn_unref(conn);
+			//fix end
 			return conn;
 		case BT_CONN_DISCONNECTED:
 			BT_WARN("Found valid but disconnected conn object");

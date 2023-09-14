@@ -49,6 +49,11 @@
 #include <bl808_sec_eng.h>
 #define SHA512_CAPABLE
 #define MD5_CAPABLE
+#elif defined BL606P
+#include <bl606p_glb.h>
+#include <bl606p_sec_eng.h>
+#define SHA512_CAPABLE
+#define MD5_CAPABLE
 #else
 #warn "Chip not ported"
 #endif

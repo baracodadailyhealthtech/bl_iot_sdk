@@ -29,6 +29,7 @@
  */
 #include <bl702l_ef_cfg.h>
 #include <bl702l_ef_ctrl.h>
+#include <blog.h>
 #include "bl_efuse.h"
 
 int bl_efuse_read_mac(uint8_t mac[8])
@@ -38,6 +39,7 @@ int bl_efuse_read_mac(uint8_t mac[8])
     empty = EF_Ctrl_Is_MAC_Address_Slot_Empty(2, 0);
     if(!empty){
         if(EF_Ctrl_Read_MAC_Address_Opt(2, mac, 0) == 0){
+            blog_info("Read mac from slot 2\r\n");
             return 0;
         }
     }
@@ -45,6 +47,7 @@ int bl_efuse_read_mac(uint8_t mac[8])
     empty = EF_Ctrl_Is_MAC_Address_Slot_Empty(1, 0);
     if(!empty){
         if(EF_Ctrl_Read_MAC_Address_Opt(1, mac, 0) == 0){
+            blog_info("Read mac from slot 1\r\n");
             return 0;
         }
     }
@@ -52,10 +55,12 @@ int bl_efuse_read_mac(uint8_t mac[8])
     empty = EF_Ctrl_Is_MAC_Address_Slot_Empty(0, 0);
     if(!empty){
         if(EF_Ctrl_Read_MAC_Address_Opt(0, mac, 0) == 0){
+            blog_info("Read mac from slot 0\r\n");
             return 0;
         }
     }
 
+    blog_info("Read mac from slot N/A\r\n");
     return -1;
 }
 
@@ -71,6 +76,7 @@ int bl_efuse_read_capcode(uint8_t *capcode)
     empty = EF_Ctrl_Is_CapCode_Empty(2, 0);
     if(!empty){
         if(EF_Ctrl_Read_CapCode_Opt(2, capcode, 0) == 0){
+            blog_info("Read cap code from slot 2\r\n");
             return 0;
         }
     }
@@ -78,6 +84,7 @@ int bl_efuse_read_capcode(uint8_t *capcode)
     empty = EF_Ctrl_Is_CapCode_Empty(1, 0);
     if(!empty){
         if(EF_Ctrl_Read_CapCode_Opt(1, capcode, 0) == 0){
+            blog_info("Read cap code from slot 1\r\n");
             return 0;
         }
     }
@@ -85,10 +92,12 @@ int bl_efuse_read_capcode(uint8_t *capcode)
     empty = EF_Ctrl_Is_CapCode_Empty(0, 0);
     if(!empty){
         if(EF_Ctrl_Read_CapCode_Opt(0, capcode, 0) == 0){
+            blog_info("Read cap code from slot 0\r\n");
             return 0;
         }
     }
 
+    blog_info("Read cap code from slot N/A\r\n");
     return -1;
 }
 
@@ -99,6 +108,7 @@ int bl_efuse_read_pwroft(int8_t poweroffset[4])
     empty = EF_Ctrl_Is_PowerOffset_Slot_Empty(2, 0);
     if(!empty){
         if(EF_Ctrl_Read_PowerOffset_Opt(2, poweroffset, 0) == 0){
+            blog_info("Read power offset from slot 2\r\n");
             return 0;
         }
     }
@@ -106,6 +116,7 @@ int bl_efuse_read_pwroft(int8_t poweroffset[4])
     empty = EF_Ctrl_Is_PowerOffset_Slot_Empty(1, 0);
     if(!empty){
         if(EF_Ctrl_Read_PowerOffset_Opt(1, poweroffset, 0) == 0){
+            blog_info("Read power offset from slot 1\r\n");
             return 0;
         }
     }
@@ -113,10 +124,12 @@ int bl_efuse_read_pwroft(int8_t poweroffset[4])
     empty = EF_Ctrl_Is_PowerOffset_Slot_Empty(0, 0);
     if(!empty){
         if(EF_Ctrl_Read_PowerOffset_Opt(0, poweroffset, 0) == 0){
+            blog_info("Read power offset from slot 0\r\n");
             return 0;
         }
     }
 
+    blog_info("Read power offset from slot N/A\r\n");
     return -1;
 }
 

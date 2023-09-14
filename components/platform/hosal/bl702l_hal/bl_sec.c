@@ -128,7 +128,7 @@ uint32_t bl_sec_get_random_word(void)
     return trng_buffer[trng_idx++];
 }
 
-void bl_rand_stream(uint8_t *buf, int len)
+int bl_rand_stream(uint8_t *buf, int len)
 {
     int i = 0;
 
@@ -140,6 +140,8 @@ void bl_rand_stream(uint8_t *buf, int len)
             _trng_trigger();
         }
     }
+
+    return 0;
 }
 
 int bl_rand()

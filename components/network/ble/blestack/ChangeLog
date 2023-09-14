@@ -1,5 +1,8 @@
 # Changes
 
+## 2023-07-26
+1. Fix the problem that repeated calls to bt_conn_create_le causes subsequent connection failure.
+
 ## 2023-07-14
 1. Add ble direct test mode feature.
 

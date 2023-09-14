@@ -254,6 +254,11 @@ uint8_t hal_boot2_get_active_partition(void)
     return boot2_partition_table.partition_active_idx;
 }
 
+uint32_t hal_boot2_get_active_partition_age(void)
+{
+    return boot2_partition_table.table.ptTable.age;
+}
+
 int hal_boot2_get_active_entries_byname(uint8_t *name, HALPartition_Entry_Config *ptEntry_hal) 
 {
     PtTable_Entry_Config *ptEntry = (PtTable_Entry_Config*)ptEntry_hal;

@@ -61,6 +61,7 @@ typedef struct {
     uint8_t pin_clk;        /**< spi clk pin */
     uint8_t pin_mosi;       /**< spi mosi pin */
     uint8_t pin_miso;       /**< spi miso pin */
+    uint8_t pin_cs;       /**< spi cs pin */
 } hosal_spi_config_t;
 
 /** 

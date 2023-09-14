@@ -99,9 +99,11 @@ uint32_t bl_sec_get_random_word(void)
 
 int bl_sec_trng_init(void)
 {
-#ifdef BL616
+#if defined(BL616) || defined(BL808) || defined(BL606P)
     Sec_Eng_Group0_Request_Trng_Access();
 #endif
     Sec_Eng_Trng_Enable();
-    return feed_trng_buffer();
+
+    trng_idx = TRNG_SIZE_IN_BYTES;
+    return 0;
 }

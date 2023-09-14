@@ -533,7 +533,7 @@ static void hosal_spi_gpio_init(hosal_spi_dev_t *arg)
     }
 
     GLB_GPIO_Type gpiopins[4];
-    gpiopins[0] = arg->config.pin_mosi + 1; //pin cs
+    gpiopins[0] = arg->config.pin_cs;
     gpiopins[1] = arg->config.pin_clk;
     gpiopins[2] = arg->config.pin_mosi;
     gpiopins[3] = arg->config.pin_miso;

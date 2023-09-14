@@ -477,7 +477,9 @@ int bt_hci_cmd_send_sync(u16_t opcode, struct net_buf *buf,
   			    struct cmd_state_set *update = cmd(buf)->state;
   			    atomic_set_bit_to(update->target, update->bit, update->val);
 			}
+            #if defined(BFLB_HOST_ASSISTANT)
 		    blhast_bt_reset();
+            #endif
 			#else
             BT_ASSERT(err == 0);
 			#endif

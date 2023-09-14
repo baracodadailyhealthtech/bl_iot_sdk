@@ -1,5 +1,8 @@
 # Changes
 
+## 2023-07-20
+1.[BL702L]Add btblecontroller_702l_m8s1p, and remove btblecontroller_702l_m8s1.
+
 ## 2023-06-14
 1.[BL702L][BL616]Add API to set stack size of btblecontroller task.
 

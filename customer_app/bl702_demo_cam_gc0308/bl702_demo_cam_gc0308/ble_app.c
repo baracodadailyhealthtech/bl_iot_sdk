@@ -7,7 +7,7 @@
 #include "hci_core.h"
 #include "log.h"
 #include "ble_app.h"
-#if defined(CFG_BLE_ENABLE_STACK_CLI) 
+#if defined(CONFIG_BT_STACK_CLI) 
 #include "ble_cli_cmds.h"
 #endif
 

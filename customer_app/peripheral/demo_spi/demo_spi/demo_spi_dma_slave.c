@@ -53,7 +53,9 @@ void demo_hosal_spi_dma_slave(void)
     spi.config.polar_phase= 0;               
     spi.config.freq= 100000;
     spi.config.pin_clk = 3;
-    /* pin cs now must be pin 2 */
+    #if defined(CONF_USER_BL702L) || defined(CONF_USER_BL702)
+    spi.config.pin_cs= 2;
+    #endif
     spi.config.pin_mosi= 0;
     spi.config.pin_miso= 1;
     /* init spi device */

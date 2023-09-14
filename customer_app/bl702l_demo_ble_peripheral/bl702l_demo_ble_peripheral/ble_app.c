@@ -35,7 +35,7 @@ static void bleapp_connected(struct bt_conn *conn, u8_t err)
         return;
     }
 
-    printf("Connected: %s \r\n", addr);
+    printf("Connected: %s, int 0x%04x lat %d to %d\r\n", addr, conn->le.interval, conn->le.latency, conn->le.timeout);
 
     if (!bleapp_default_conn) {
         bleapp_default_conn = conn;
@@ -227,7 +227,6 @@ void bt_enable_cb(int err)
         {
             printf("ble advertising is started\r\n");
         }
-        btble_pds_enable(1);
     }
 }
 

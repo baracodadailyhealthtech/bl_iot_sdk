@@ -33,6 +33,8 @@
 #if defined(CFG_BLE_ENABLE)
 #include "ble_app.h"
 #endif
+
+
 HOSAL_UART_DEV_DECL(uart_stdio, 0, 14, 15, 2000000);
 
 
@@ -201,6 +203,10 @@ static void aos_loop_proc(void *pvParameters)
         _cli_init();
     }
 
+#if defined(CFG_BLE_ENABLE)
+    ble_stack_start();
+#endif
+
 #if defined(CFG_USB_CDC_ENABLE)
     extern void usb_cdc_start(int fd_console);
     usb_cdc_start(fd_console);
@@ -318,9 +324,7 @@ void bl702_main()
 
     system_init();
     system_thread_init();
-    #if defined(CFG_BLE_ENABLE)
-    ble_stack_start();
-    #endif
+
     puts("[OS] Starting aos_loop_proc task...\r\n");
     xTaskCreateStatic(aos_loop_proc, (char*)"event_loop", sizeof(aos_loop_proc_stack)/4, NULL, 15, aos_loop_proc_stack, &aos_loop_proc_task);
     puts("[OS] Starting cam_task_entry task...\r\n");

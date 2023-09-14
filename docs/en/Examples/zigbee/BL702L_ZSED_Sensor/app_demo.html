@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zsed_demo &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于此文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../../../index.html"/>
+        <link rel="up" title="Zigbee" href="../index.html"/>
+        <link rel="next" title="Ethernet" href="../../network/index.html"/>
+        <link rel="prev" title="Zigbee" href="../demo_zigbee/zigbee.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API 参考</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../ble/index.html">BLE</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Zigbee</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../demo_zigbee/zigbee.html">Zigbee</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ZSED_Demo</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#demo">Demo介绍</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#zsed">ZSED工作模式</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">低功耗流程</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">测试准备</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">测试流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Example</a> &raquo;</li>
+        
+          <li><a href="../index.html">Zigbee</a> &raquo;</li>
+        
+      <li>zsed_demo</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/zigbee/BL702L_ZSED_Sensor/app_demo.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="zsed-demo">
+<span id="zigbee-index"></span><h1>zsed_demo<a class="headerlink" href="#zsed-demo" title="此标题的永久链接"></a></h1>
+<section id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<p>本示例主要介绍如何使用BL702L ZSED Sensor Demo。</p>
+</section>
+<section id="demo">
+<h2>Demo介绍<a class="headerlink" href="#demo" title="此标题的永久链接"></a></h2>
+<ul class="simple">
+<li><p>ZSED Sensor Demo主要是ZigBee Sleepy End device作为sensor的简单应用例子，供应用参考。在该Demo中，低功耗模式是PDS31。
+ZSED上电后依次执行如下流程：</p>
+<ol class="arabic simple">
+<li><p>初始化ZigBee。</p></li>
+<li><p>注册cluster</p></li>
+<li><p>使能低功耗模式。使能后，在idle task中会检查各模块是否同意系统进入pds31低功耗模式，以及sleep的时间。如果可以进低功耗，则在idle task中进pds31低功耗模式。</p></li>
+<li><p>Network discovery。</p></li>
+<li><p>当扫到permit join打开的网络，会自动加入网络中</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="zsed">
+<h2>ZSED工作模式<a class="headerlink" href="#zsed" title="此标题的永久链接"></a></h2>
+<ul>
+<li><p>ZSED唤醒后，可以工作在以下2种模式。</p>
+<ol class="arabic simple">
+<li><p>Simple模式: 该模式跑在rom中。 ZSED通过LMAC154与其Parent通信。</p></li>
+<li><p>Full Stack模式: 该模式跑在Flash上。ZSED通过ZigBee协议栈与其Parent通信。</p></li>
+</ol>
+<p>ZSED唤醒后，首先进入Simple模式，在Simple模式下判断是否需要回到Full Stack模式，如果不需要回到Full Stack模式，ZSED与其parent通信完后直接在Simple模式下进入PDS31。
+目前，该Demo在Simple模式下，如果以下任一条件满足，则ZSED需要回到Full Stack模式。</p>
+<ol class="arabic simple">
+<li><p>Freertos睡眠时间结束。</p></li>
+<li><p>ZigBee stack睡眠时间结束。例如Parent给ZSED配置了周期性的attribute report，report时间点到了，会恢复Full Stack发attribute report。</p></li>
+<li><p>ZSED收到了其Parent发来的数据包。</p></li>
+<li><p>ZSED给Parent发了Data Request后，没有收到Parent的Mac Ack。</p></li>
+<li><p>PDS31被GPIO唤醒。</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h2>低功耗流程<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<ul>
+<li><p>打开低功耗功能</p>
+<p>通过zb_pds_enable API来打开ZSED低功耗的功能。</p>
+<p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">zb_pds_enable</span> <span class="pre">(uint8_t</span> <span class="pre">enable)</span></code></p>
+<p>其中enable = 1，表示打开低功耗功能，ZSED在空闲的时候可以进入PDS31低功耗模式；enable = 0，表示ZSED空闲的时候不进入低功耗模式。</p>
+</li>
+<li><p>ZSED进入低功耗的流程</p>
+<p>SDK使用了Freertos。在Freertos的idle task中检查各模块能否进入低功耗模式。</p>
+<ol class="arabic">
+<li><p>若Freertos可以睡眠，则继续判断ZigBee是否可以睡眠。若ZigBee可以睡眠，则获取ZigBee可以睡眠的时间。</p></li>
+<li><p>最终系统睡眠的时间在Freertos可睡眠得时间与ZigBee可睡眠时间两者间取较小值。进入PDS31后，ocRam不掉电。</p>
+<p>如果应用层在系统进入pds31前有事情要做，可以在如下函数中实现。</p>
+<p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">zbapp_action_before_sleep_callback</span> <span class="pre">(void)</span></code></p>
+</li>
+</ol>
+</li>
+<li><p>ZSED唤醒后的流程</p>
+<p>目前Demo中，pds31在睡眠时间结束后，自动唤醒。</p>
+<ol class="arabic">
+<li><p>醒来后，系统进入Fast Boot模式，该模式下没有恢复Freertos，ZSED工作在Simple模式。在Simple模式下，判断是否要恢复Full Stack。详情见1.1章节。</p></li>
+<li><p>如不需要恢复Full Stack，ZSED与其Parent通信完后直接在Simple模式下进入PDS31。如需要恢复Full Stack，则恢复Freertos，系统回到idle task中接着跑。待下一次从Full Stack模式下进入PDS31。</p>
+<p>如果应用层在系统从pds31醒来后有事情做，可以在如下函数中实现.</p>
+<p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">zbapp_action_after_wakeup_callback</span> <span class="pre">(void)</span></code></p>
+</li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="id3">
+<h2>测试准备<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<ul>
+<li><p>BL702L ZSED</p>
+<p>使用SDK customer_app/bl702l_demo_product/bl702l_demo_sensor_zsed目录下的genromapzsedstartupwithpds31脚本编译出ZSED固件。</p>
+<p>然后用BL702L烧录工具将生成的bl702l_demo_sensor_zsed.bin烧录到ZSED。</p>
+<p>注意，初次烧录，flash tool上Chip Erase选择true。后续烧录，如需擦除ZigBee网络信息，Chip Erase选true，否则选false。</p>
+<p>烧写完后，按ZSED上的reset键。</p>
+</li>
+<li><p>BL702 ZC</p>
+<p>使用SDK customer_app/bl702_demo_event目录下的genzcstartup脚本编译出ZC固件。</p>
+<p>然后用BL702烧录工具将生成的bl702_demo_event.bin烧录到ZC。</p>
+<p>注意，初次烧录，flash tool上Chip Erase选择true。后续烧录，如需擦除ZigBee网络信息，Chip Erase选true，否则选false。</p>
+<p>烧写完后，按ZC上的reset键。</p>
+</li>
+</ul>
+</section>
+<section id="id4">
+<h2>测试流程<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h2>
+<ul>
+<li><p>ZSED加入到ZC网络中</p>
+<ul>
+<li><p>ZC建立ZigBee网络</p>
+<p>在ZC端输入如下CLI命令，参数1表示网络的channel，参数2表示网络pan id。</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_form</span> <span class="pre">16</span> <span class="pre">0x1234</span></code></p>
+<p>网络建立成功后，ZC会有如下打印：</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_startup_complete_cb:</span> <span class="pre">0x0,</span> <span class="pre">0x0</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">as</span> <span class="pre">ZC:</span> <span class="pre">0x</span> <span class="pre">0</span></code></p>
+</li>
+<li><p>打开ZC的permit join</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span> <span class="pre">200</span></code></p>
+</li>
+<li><p>ZSED上电后会自动做network discovery，发现有开放的网络会自动加入。</p>
+<p>这时ZSED发现ZC的网络permit join已打开，会加入到ZC网络中。加入到网络中后，ZSED会有如下打印：</p>
+<p><code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">as</span> <span class="pre">ZSED:</span> <span class="pre">0x81c4</span></code></p>
+</li>
+<li><p>ZSED成功加入到ZC网络后，可以在ZC端使用如下CLI命令关掉ZC的permit join，禁止其他节点加入网络。</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span> <span class="pre">0</span></code></p>
+</li>
+</ul>
+</li>
+<li><p>IAS ZONE Enroll</p>
+<p>ZC端输入如下命令，使ZC将其IEEE Address写到ZSED端IAS Zone cluster的IAS_CIE_Address attribute。ZC将发送IAS Zone: Write Attribute包给ZSED。</p>
+<p>请参考SDK中zb_zcl_write命令的介绍。</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_zcl_write</span> <span class="pre">0x81c4</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">0x0500</span> <span class="pre">0x0010</span> <span class="pre">0xf0</span> <span class="pre">00007c090042e8b4</span></code></p>
+<p>ZSED端在收到ZC的IAS Zone: Write Attribute包去写IAS_CIE_Address attribute后，回复IAS Zone: Write Attribute Response。</p>
+<p>ZSED会自动发送IAS Zone: Zone Enroll Request给ZC。</p>
+<p>ZSED收到ZC回复的IAS Zone: Zone Enroll Response，若payload中status是success，ZSED端应用层会起一个timer，定期向ZC report IAS Zone Status。参考如下函数。</p>
+<p><code class="docutils literal notranslate"><span class="pre">static</span> <span class="pre">void</span> <span class="pre">zb_createIASReportTimer(void)</span></code></p>
+</li>
+<li><p>ZC给ZSED配置attribute report</p>
+<p>例如，配置ZSED的General Power Configuration Cluster每32s report一次battery voltage attribute的值。在ZC端输入如下CLI命令，</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_zdp_bind</span> <span class="pre">0x81c4</span> <span class="pre">0x0001</span> <span class="pre">1</span> <span class="pre">00004789de05b918</span> <span class="pre">3</span> <span class="pre">1</span> <span class="pre">0000dc070042e8b4</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_zcl_cfg_report</span> <span class="pre">0x81c4</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">0x0001</span> <span class="pre">0</span> <span class="pre">0x0020</span> <span class="pre">0x20</span> <span class="pre">0x0020</span> <span class="pre">0x0020</span> <span class="pre">0</span></code></p>
+<p>请参考SDK中对zb_zdp_bind及zb_zcl_cfg_report命令的详细介绍。</p>
+<p>配置成功后，ZSED会32s 向ZC report一次battery voltage。</p>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../network/index.html" class="btn btn-neutral float-right" title="Ethernet" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../demo_zigbee/zigbee.html" class="btn btn-neutral" title="Zigbee" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

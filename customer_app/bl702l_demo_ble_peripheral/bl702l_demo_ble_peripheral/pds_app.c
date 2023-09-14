@@ -15,7 +15,7 @@ extern uint32_t g_uart0_baudrate;
 
 btble_app_conf_t app_conf = 
 {
-    .print_enable = 1,//1: enable uart print in library; 0: disable uart print in library
+    .print_enable = 0,//1: enable uart print in library; 0: disable uart print in library
     .gpio_irq_restore = 1, //1: restore gpio irq after pds wakeup; 0: do not restore gpio irq after pds wakeup
     .gpio_num = 1, //3,
     .gpio_index = {16, 20, 24},
@@ -101,7 +101,7 @@ void pdsapp_after_sleep_callback(void)
     extern void vfs_uart_restore(void);
     vfs_uart_restore();
 #endif
-    printf("[%lu]wakeup\r\n", (uint32_t)rom_hal_mtimer_now_us64() / 1000);
+    //printf("[%lu]wakeup\r\n", (uint32_t)rom_hal_mtimer_now_us64() / 1000);
     if(bl_pds_get_wakeup_source() == PDS_WAKEUP_BY_GPIO)
     {
         wakeupGpioPinMask = bl_pds_get_wakeup_gpio();

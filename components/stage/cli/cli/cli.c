@@ -924,10 +924,29 @@ static void gdbmem_cmd(char *buf, int len, int argc, char **argv)
     }
 
     aos_cli_printf("0x%08x:", (unsigned int)addr);
-    for (i = 0; i < nunits; i++) {
-        xor_code ^= *(unsigned char *)addr;
-        aos_cli_printf(" %02x", *(unsigned char *)addr);
-        addr += 1;
+    if (0 == (nunits & 0x3) && 0 == (((uintptr_t)addr) & 0x3)) {
+        nunits = (nunits >> 2);
+        for (i = 0; i < nunits; i++) {
+            uint32_t val = *(uint32_t*)(addr + (i << 2));
+            xor_code ^= ((val >> 0) & 0xFF);
+            xor_code ^= ((val >> 8) & 0xFF);
+            xor_code ^= ((val >> 16) & 0xFF);
+            xor_code ^= ((val >> 24) & 0xFF);
+            aos_cli_printf(" %02x %02x %02x %02x",
+                (val >> 0) & 0xFF,
+                (val >> 8) & 0xFF,
+                (val >> 16) & 0xFF,
+                (val >> 24) & 0xFF
+            );
+        }
+    } else {
+        for (i = 0; i < nunits; i++) {
+            uint8_t val;
+            val = *(unsigned char *)addr;
+            xor_code ^= val;
+            aos_cli_printf(" %02x", val);
+            addr += 1;
+        }
     }
     aos_cli_printf(" XOR:%02x\r\n", xor_code);
 }

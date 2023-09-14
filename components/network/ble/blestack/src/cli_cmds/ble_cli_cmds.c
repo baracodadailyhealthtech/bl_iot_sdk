@@ -1078,7 +1078,7 @@ static void blecli_connect(char *pcWriteBuffer, int xWriteBufferLen, int argc, c
 
 	(void)memset(addr_val,0,6);
 
-    if(argc != 3){
+    if(argc != 3 && argc != 6){
         vOutputString("Number of Parameters is not correct\r\n");
         return;
     }
@@ -1094,13 +1094,22 @@ static void blecli_connect(char *pcWriteBuffer, int xWriteBufferLen, int argc, c
     }
 	
     reverse_bytearray(addr_val, addr.a.val, 6);
-   
+    if(argc == 6)
+    {
+        get_uint16_from_string(&argv[3], &param.interval_min);
+        get_uint16_from_string(&argv[4], &param.interval_max);
+        get_uint16_from_string(&argv[5], &param.timeout);
+    }
+
     conn = bt_conn_create_le(&addr, /*BT_LE_CONN_PARAM_DEFAULT*/&param);
 
     if(!conn){
         vOutputString("Connection failed\r\n");
     }else{
-        vOutputString("Connection pending\r\n");
+        if(conn->state == BT_CONN_CONNECTED)
+            vOutputString("Le link with this peer device has existed\r\n");
+        else
+            vOutputString("Connection pending\r\n");
     }
 }
 

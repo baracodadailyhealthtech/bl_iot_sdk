@@ -104,18 +104,18 @@ static void app_pic_encoder(uint8_t *pic, int size)
 /*此任务的STACK，目前是16K*/
 void cam_task_entry(void *pvParameters)
 {
+#if !defined(CFG_BLE_ENABLE)
     uint8_t *pic_addr = 0; //获取到的图片的所在的内存地址
     int pic_size = 0; //获取到的图片大小
+#endif
 
     if (app_pic_hardware_init()) {
         printf("[APP] PIC harware init failed\r\n");
         goto done;
     }
 
+#if !defined(CFG_BLE_ENABLE)
     while (1) {
-        #if defined (CFG_BLE_ENABLE)
-        goto done;
-        #else
         /*获取图片，图片的格式(YUV422 YUV420等)取决于sensor的配置*/
         app_pic_jpg_get(&pic_addr, &pic_size, 1);
 
@@ -124,9 +124,12 @@ void cam_task_entry(void *pvParameters)
 
         /*释放图片所占用的内存资源，以便硬件可以继续采集图片*/
         app_pic_jpg_release();
-        #endif
+
         vTaskDelay(5);
     }
+#endif
+
+
 done:
     puts("[THREAD] cam task is done\r\n");
     vTaskDelete(NULL);
