@@ -16,7 +16,6 @@
 				"BFLB_CRYPT_HARDWARE",
 				"BFLB_PKA_HARDWARE",
 				["PRINT_DEBUG", 0],
-				["DISABLE_PRINT", 1],
 				["CFG_CLI_DISABLE", 1],
 				["CFG_COMPONENT_BLOG_ENABLE",0],
 				["CONFIG_LINK_CUSTOMER",1],
@@ -29,7 +28,7 @@
 				["CONFIG_MBEDTLS_ECC_USE_HW",1],
 				["CONFIG_EASYFLASH_ENABLE",1],
 				["CONFIG_BLUETOOTH",1],
-				["CONFIG_EM_SIZE",16],
+				["CONFIG_EM_SIZE",8],
 				["CONFIG_BT_CONN",1],
 				["CONFIG_BLE_TX_BUFF_DATA",2],
 				["CONFIG_BT_PERIPHERAL",1],
@@ -38,7 +37,11 @@
 				["CONFIG_BT_GAP_PERIPHERAL_PREF_PARAMS",1],
 				["CONFIG_BT_GATT_CLIENT",1],
 				["CONFIG_BLE_TP_SERVER", 1],
-				["CONFIG_SYS_COMMON_MAIN_ENABLE", 1]
+				["CONFIG_SYS_COMMON_MAIN_ENABLE", 1],
+				["CONFIG_SYS_AOS_LOOP_ENABLE", 0],
+				["CONFIG_SYS_AOS_CLI_ENABLE", 0],
+				["CONFIG_SYS_VFS_UART_ENABLE", 0],
+				["CONFIG_PDS_ENABLE", 1]
 			],
 			"ccflags_priv": [
 				"-Wno-unused-variable",
@@ -68,6 +71,7 @@
 				"cli"
 			],
 			"defines": [
+				"SYS_VFS_ENABLE",
 				["CONFIG_SYS_APP_TASK_STACK_SIZE", 2048],
 				["CONFIG_SYS_APP_TASK_PRIORITY", 15]
 			],
@@ -88,6 +92,7 @@
 				"-<*>",
 				"+<evb/src/boot/gcc/entry.S>",
 				"+<evb/src/boot/gcc/start.S>",
+				"+<evb/src/debug.c>",
 				"+<evb/src/sscanf.c>",
 				"+<evb/src/vsscanf.c>",
 				"+<evb/src/strntoumax.c>",
@@ -109,9 +114,25 @@
 				"ifeq CONFIG_PDS_ENABLE 1": {
 					"defines": [
 						"CFG_PDS_ENABLE",
+						"CFG_BLE_PDS",
 						"CONFIG_HW_SEC_ENG_DISABLE",
 						"CFG_PDS_OPTIMIZE",
 						["CFG_PDS_LEVEL",31]
+					]
+				},
+				"ifeq CONFIG_SYS_AOS_LOOP_ENABLE 1": {
+					"defines": [
+						"SYS_AOS_LOOP_ENABLE"
+					]
+				},
+				"ifeq CONFIG_SYS_AOS_CLI_ENABLE 1": {
+					"defines": [
+						"SYS_AOS_CLI_ENABLE"
+					]
+				},
+				"ifeq CONFIG_SYS_VFS_UART_ENABLE 1": {
+					"defines": [
+						"SYS_VFS_UART_ENABLE"
 					]
 				}
 			}
