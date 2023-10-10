@@ -290,6 +290,15 @@ int bl_sys_default_active_config(void)
             continue;
         }
 
+#if defined(CFG_USE_PSRAM)
+        // psram cs pin
+        if(dev_info.psram_cfg != 1){
+            if(i == 17){
+                continue;
+            }
+        }
+#endif
+
         // flash or psram pins
         if(i >= 23 && i <= 28){
             continue;

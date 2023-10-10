@@ -20,6 +20,7 @@ static struct bt_conn_cb ble_oad_conn_callbacks = {
 static void ble_oad_tx_mtu_size(struct bt_conn *conn, u8_t err,
 			  struct bt_gatt_exchange_params *params)
 {
+   k_free(params);
    if(!err)
    {
         BT_WARN("ble oad echange mtu size success, mtu size: %d\n", bt_gatt_get_mtu(ble_oad_conn));
@@ -64,6 +65,7 @@ static void ble_oad_connected(struct bt_conn *conn, u8_t err)
 	if (!ret) {
 		BT_WARN("ble oad exchange mtu size pending.\n");
 	} else {
+		k_free(exchg_mtu);
 		BT_WARN("ble oad exchange mtu size failure, err: %d\n", ret);
 	}
 }

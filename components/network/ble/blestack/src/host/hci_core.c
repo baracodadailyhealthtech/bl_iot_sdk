@@ -164,7 +164,7 @@ static void bt_ble_throughput_evt (struct net_buf *buf)
     u16_t conn_handle = sys_le16_to_cpu(evt->conhdl);
     u32_t tx_throughput = sys_le32_to_cpu(evt->tx_throughput);
     u32_t rx_throughput = sys_le32_to_cpu(evt->rx_throughput);
-    BT_WARN("connection handler=%d ble tx throughput=%dB ble rx throughput=%dB\r\n",conn_handle,tx_throughput,rx_throughput);    
+    BT_WARN("connection handler=%d ble tx throughput=%lu dB ble rx throughput=%lu dB\r\n",conn_handle,tx_throughput,rx_throughput);
     
 }
 
@@ -700,6 +700,23 @@ static void rpa_timeout(struct k_work *work)
 	}
 }
 
+#else
+static int le_set_private_addr(u8_t id)
+{
+	bt_addr_t nrpa;
+	int err;
+
+	err = bt_rand(nrpa.val, sizeof(nrpa.val));
+	if (err) {
+		return err;
+	}
+
+	nrpa.val[5] &= 0x3f;
+
+	return set_random_address(&nrpa);
+}
+#endif
+
 #if defined(CONFIG_BT_STACK_PTS) || defined(CONFIG_AUTO_PTS)
 static int le_set_non_resolv_private_addr(u8_t id)
 {
@@ -734,23 +751,6 @@ int le_set_non_resolv_private_addr_ext(u8_t id, bt_addr_t *addr)
 	nrpa->val[5] &= 0x3f;
 	atomic_clear_bit(bt_dev.flags, BT_DEV_RPA_VALID);
 	return set_random_address(nrpa);
-}
-#endif
-
-#else
-static int le_set_private_addr(u8_t id)
-{
-	bt_addr_t nrpa;
-	int err;
-
-	err = bt_rand(nrpa.val, sizeof(nrpa.val));
-	if (err) {
-		return err;
-	}
-
-	nrpa.val[5] &= 0x3f;
-
-	return set_random_address(&nrpa);
 }
 #endif
 

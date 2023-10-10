@@ -25,6 +25,7 @@
 #include "ble_rc_app.h"
 #include "ble_atv_voice.h"
 
+//#define BLE_RC_PDS_SECTION_ENABLE
 volatile bool voice_start = false;
 volatile bool cont_start = false;//send release key value after key is released.
 volatile bool cont_release = false;
@@ -37,6 +38,21 @@ struct hids_remote_key *m_key_usage;
 static TaskHandle_t ble_rc_Key_Scan_task_hdl;
 k_timer_t ble_rc_adv_timer;//restart adv
 k_timer_t ble_rc_adc_sample_timer;//adv sample
+extern struct hids_remote_key remote_kbd_map_tab[];
+extern uint8_t KEY_CH_INS[8]; //Keyboard Pageup
+extern uint8_t KEY_CH_DES[8]; //Keyboard Pagedown
+extern uint8_t KEY_LEFT[8]; //keyboard RightArrow
+extern uint8_t KEY_RIGHT[8]; //keyboard LeftArrow
+extern uint8_t KEY_DOWN[8]; //keyboard DownArrow
+extern uint8_t KEY_UP[8]; //keyboard UpArrow
+extern uint8_t KEY_MENU[8]; //keyboard Application
+extern uint8_t KEY_PWR[8]; //keyboard power
+extern uint8_t KEY_PICK[2]; //Menu Pick  
+extern uint8_t KEY_MUTE[2]; //MUTE
+extern uint8_t KEY_VOL_INS[2]; //Volume Increment
+extern uint8_t KEY_VOL_DES[2]; //Volume Decrement
+extern uint8_t KEY_HOME[2]; //AC Home
+extern uint8_t KEY_BACK[2]; //AC Back
 
 static int ble_rc_start_adv(void);
 static void ble_rc_key_notify_process(u8_t hid_page, u8_t *hid_usage, bool press, bool auto_release);
@@ -66,11 +82,15 @@ int ble_rc_connection_update(u16_t interval_min, u16_t interval_max, u16_t laten
 {
     int err = 0;
     struct bt_le_conn_param param;
+
+    if(!rc_default_conn)
+        return -1;
+
     param.interval_min = interval_min;
     param.interval_max = interval_max;
     param.latency = latency;
     param.timeout = timeout;
-    
+
     err = bt_conn_le_param_update(rc_default_conn, &param);
     return err;
 }
@@ -554,7 +574,11 @@ static struct hids_remote_key *key_usage[4 /* row */][4 /* col */] = {
     {&remote_kbd_map_tab[11], &remote_kbd_map_tab[12],&remote_kbd_map_tab[13],NULL                    },
 };
 
-ATTR_PDS_SECTION bool bl_kys_check_existed(const kys_result_t *result, u8_t row_idx, u8_t col_idx)
+
+#if defined(BLE_RC_PDS_SECTION_ENABLE)
+ATTR_PDS_SECTION
+#endif
+bool bl_kys_check_existed(const kys_result_t *result, u8_t row_idx, u8_t col_idx)
 {
     for(int i = 0; i < result->key_num; i++)
     {
@@ -565,7 +589,10 @@ ATTR_PDS_SECTION bool bl_kys_check_existed(const kys_result_t *result, u8_t row_
     return false;
 }
 
-ATTR_PDS_SECTION void bl_kys_interrupt_callback(const kys_result_t *result)
+#if defined(BLE_RC_PDS_SECTION_ENABLE)
+ATTR_PDS_SECTION
+#endif
+void bl_kys_interrupt_callback(const kys_result_t *result)
 {  
     static bool pressed = false;
     static bool adv_key_pressed = false;
@@ -725,7 +752,10 @@ int ble_rc_start_adv(void)
     return bt_le_adv_start(&adv_param, adv_data, ARRAY_SIZE(adv_data), NULL, 0);
 }
 
-ATTR_PDS_SECTION void ble_rc_kys_init(void)
+#if defined(BLE_RC_PDS_SECTION_ENABLE)
+ATTR_PDS_SECTION
+#endif
+void ble_rc_kys_init(void)
 {
     static bool initiated = false;
     //gpio 0 and 1 are JTAG pins,gpio 30 and 32 are used by xtal32k if xtal32k exists on the board.
@@ -741,7 +771,10 @@ ATTR_PDS_SECTION void ble_rc_kys_init(void)
     #endif
 }
 
-ATTR_PDS_SECTION int ble_rc_before_sleep_callback(void)
+#if defined(BLE_RC_PDS_SECTION_ENABLE)
+ATTR_PDS_SECTION
+#endif
+int ble_rc_before_sleep_callback(void)
 {
     taskENTER_CRITICAL();
     //disable keyscan
@@ -759,13 +792,19 @@ ATTR_PDS_SECTION int ble_rc_before_sleep_callback(void)
     return 0;
 }
 
-ATTR_PDS_SECTION void ble_rc_sleep_aborted_callback(void)
+#if defined(BLE_RC_PDS_SECTION_ENABLE)
+ATTR_PDS_SECTION
+#endif
+void ble_rc_sleep_aborted_callback(void)
 {
     //enable keyscan
     bl_kys_trigger_interrupt();
 }
 
-ATTR_PDS_SECTION void ble_rc_after_sleep_callback(void)
+#if defined(BLE_RC_PDS_SECTION_ENABLE)
+ATTR_PDS_SECTION
+#endif
+void ble_rc_after_sleep_callback(void)
 {
     uint8_t key_row_idx = 0xff, key_col_idx = 0xff;
     uint8_t key_evt_type = 0;
@@ -821,7 +860,6 @@ void ble_rc_pds_enable(uint8_t enable)
 void ble_rc_foreach_bond_info_cb(const struct bt_bond_info *info, void *user_data)
 {
     char addr[BT_ADDR_LE_STR_LEN];
-    u8_t bonded_device_cnt = 0;
     if(user_data)
         (*(u8_t *)user_data)++;
     bt_addr_le_to_str(&info->addr, addr, sizeof(addr));

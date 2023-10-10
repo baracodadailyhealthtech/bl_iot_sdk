@@ -5,12 +5,14 @@ ENTRY( bl702_start )
 __EM_SIZE = DEFINED(ble_controller_init) ? (DEFINED(em_16k_init) ? 16K : 8K) : 0K;
 __CACHE_SIZE = DEFINED(__CACHE_SIZE) ? __CACHE_SIZE : 16K;
 __stack_size = DEFINED(__stack_size) ? __stack_size : 2K;
+__sha_ocram_size = DEFINED(__sha_ocram_size) ? __sha_ocram_size : 128;
 
 MEMORY
 {
   flash  (rxai!w) : ORIGIN = 0x23000000, LENGTH = (2M)
-  tcm_ocram (wxa) : ORIGIN = 0x42010000 + __CACHE_SIZE, LENGTH = (64K - __CACHE_SIZE + 64K - __EM_SIZE - __stack_size)
-  sys_stack (wxa) : ORIGIN = 0x42030000 - __EM_SIZE - __stack_size, LENGTH = __stack_size
+  tcm_ocram (wxa) : ORIGIN = 0x42010000 + __CACHE_SIZE, LENGTH = (64K - __CACHE_SIZE + 64K - __EM_SIZE - __stack_size - __sha_ocram_size)
+  sys_stack (wxa) : ORIGIN = 0x42030000 - __EM_SIZE - __stack_size - __sha_ocram_size, LENGTH = __stack_size
+  sha_ocram (wxa) : ORIGIN = 0x42030000 - __EM_SIZE - __sha_ocram_size, LENGTH = __sha_ocram_size
   hbnram    (wxa) : ORIGIN = 0x40010000, LENGTH = (4K)
   psram     (wxa) : ORIGIN = 0x26000000, LENGTH = (2M)
 }
@@ -218,11 +220,6 @@ SECTIONS
     *(COMMON)
   } >tcm_ocram
 
-  .sha_ocram (NOLOAD) :
-  {
-    *(.sha_ocram*)
-  } >tcm_ocram
-
   . = ALIGN(8);
   PROVIDE( _heap_start = . );
   PROVIDE( _heap_size = ORIGIN(tcm_ocram) + LENGTH(tcm_ocram) - _heap_start );
@@ -237,6 +234,11 @@ SECTIONS
     PROVIDE( _sp_main = . );
     __freertos_irq_stack_top = .;
   } >sys_stack
+
+  .sha_ocram (NOLOAD) :
+  {
+    *(.sha_ocram*)
+  } >sha_ocram
 
   .psram (NOLOAD) :
   {

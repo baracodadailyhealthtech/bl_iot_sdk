@@ -51,6 +51,7 @@ uint8_t rx_buf[ETH_RXNB][ETH_MAX_BUFFER_SIZE + 64] __ALIGNED__(4)={0}; /* Ethern
 #endif
 
 static eth_callback p_eth_callback = NULL;
+static bool is_link_up = false;
 
 int EMAC_DMABDListInit(EMAC_Handle_Type *handle,uint8_t *txBuff, uint32_t txBuffCount,uint8_t *rxBuff, uint32_t rxBuffCount)
 {
@@ -97,7 +98,7 @@ static void EMAC_GPIO_Init(void)
 
     GLB_SWAP_EMAC_CAM_Pin(GLB_EMAC_CAM_PIN_EMAC);
 
-    GLB_GPIO_Func_Init(GPIO_FUN_ETHER_MAC,(GLB_GPIO_Type *)emacPins,sizeof(emacPins));
+    GLB_GPIO_Func_Init(GPIO_FUN_ETHER_MAC,(GLB_GPIO_Type *)emacPins,sizeof(emacPins) / sizeof(GLB_GPIO_Type));
 }
 
 int EMAC_BD_Init(void)
@@ -115,6 +116,29 @@ int EMAC_BD_Init(void)
     return err;
 }
 
+static inline uint8_t emac_bd_get_cur_rx_buffer_active(void)
+{
+    uint32_t bd = 0;
+
+    bd = BL_RD_REG(EMAC_BASE, EMAC_TX_BD_NUM);
+
+    bd &= EMAC_RXBDPTR_MSK;
+    bd >>= EMAC_RXBDPTR_POS;
+
+    return (uint8_t)(bd & 0xff);
+}
+
+static inline uint8_t emac_bd_get_cur_tx_buffer_active(void)
+{
+    uint32_t bd = 0;
+
+    bd = BL_RD_REG(EMAC_BASE, EMAC_TX_BD_NUM);
+    bd &= EMAC_TXBDPTR_MSK;
+    bd >>= EMAC_TXBDPTR_POS;
+
+    return (uint8_t)(bd & 0xff);
+}
+
 void EMAC_TX_Done_Callback(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -127,9 +151,34 @@ void EMAC_TX_Done_Callback(void)
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-void EMAC_TX_Error_Callback(void)
+void EMAC_TX_Error_Callback(int index)
 {
-    MSG("Tx error\r\n");
+    /* handle error */
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(TX_UR)) {
+        printf("TX error EMAC_BD_TX_UR_MASK @%d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(TX_RTRY)) {
+        printf("TX error EMAC_BD_TX_RTRY_MASK @%d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(TX_RL)) {
+        printf("TX error EMAC_BD_TX_RL_MASK @%d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(TX_LC)) {
+        printf("TX error EMAC_BD_TX_LC_MASK @%d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(TX_DF)) {
+        printf("TX error EMAC_BD_TX_DF_MASK @%d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(TX_CS)) {
+        printf("TX error EMAC_BD_TX_CS_MASK @%d\r\n", index);
+    }
+
+    thiz->bd[index].C_S_L &= ~0xff;
 }
 
 #if 0
@@ -171,7 +220,7 @@ static struct pbuf *low_level_input(struct netif *netif)
     //uint8_t *payload;
     EMAC_BD_Desc_Type *bd;
     bd = &thiz->bd[thiz->rxIndexCPU];
-    printf("low level input idx %d\r\n", thiz->rxIndexCPU);
+
     if(bd->C_S_L & EMAC_BD_FIELD_MSK(RX_E)){
         printf("RX BD is empty\r\n");
         h = NULL;
@@ -207,10 +256,16 @@ static struct pbuf *low_level_input(struct netif *netif)
             thiz->rxIndexCPU = thiz->txBuffLimit + 1;
         }
 #else
+
+#if PBUF_POOL_SIZE
         h = pbuf_alloc(PBUF_RAW, pkt_len, PBUF_POOL);
+#else
+        h = pbuf_alloc(PBUF_RAW, pkt_len, PBUF_RAM);
+#endif
         if (h) {
             pbuf_take(h, (const void*)bd->Buffer, pkt_len);
         }
+
         if ((++thiz->rxIndexCPU) > thiz->rxBuffLimit) {
             /* wrap back */
             thiz->rxIndexCPU = thiz->txBuffLimit + 1;
@@ -233,8 +288,24 @@ static inline err_t bl702ethernetif_input(struct netif *netif)
 
     /* move received packet into a new pbuf */
     do {
-        p = low_level_input(netif);
+
         bd = &thiz->bd[thiz->rxIndexCPU];
+        if(bd->C_S_L & EMAC_BD_FIELD_MSK(RX_E)) {
+
+            printf("low level input idx %d, empty\r\n", thiz->rxIndexCPU);
+
+            if (thiz->rxIndexCPU == thiz->rxBuffLimit) {
+                thiz->rxIndexCPU = thiz->txBuffLimit + 1;
+                bd->C_S_L = (EMAC_BD_FIELD_MSK(RX_IRQ) | EMAC_BD_FIELD_MSK(RX_E) | (ETH_MAX_BUFFER_SIZE << 16) | EMAC_BD_FIELD_MSK(RX_WR));
+            } else {
+                bd->C_S_L = (EMAC_BD_FIELD_MSK(RX_IRQ) | EMAC_BD_FIELD_MSK(RX_E) | (ETH_MAX_BUFFER_SIZE << 16));
+                thiz->rxIndexCPU ++;
+            }
+            continue;
+        }
+
+        printf("low level input idx %d\r\n", thiz->rxIndexCPU);
+        p = low_level_input(netif);
 
         rx_counter++;
         /* no packet could be read, silently ignore this */
@@ -245,11 +316,11 @@ static inline err_t bl702ethernetif_input(struct netif *netif)
 
         if (err != ERR_OK)
         {
-            LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
             printf("ethernetif_input: IP input error\n");
             pbuf_free(p);
         }
-    } while (!(bd->C_S_L & EMAC_BD_FIELD_MSK(RX_E)));
+    } while (emac_bd_get_cur_rx_buffer_active() != thiz->rxIndexCPU);
+
     return err;
 }
 
@@ -266,13 +337,51 @@ void EMAC_RX_Done_Callback(void)
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-void EMAC_RX_Error_Callback(void)
+void EMAC_RX_Error_Callback(int index)
 {
-    MSG("Rx error\r\n");
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(RX_OR)) {
+        printf("EMAC RX OR Error @ %d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(RX_RE)) {
+        printf("EMAC RX_RE Error @ %d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(RX_DN)) {
+        printf("EMAC RX_DN Error @ %d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(RX_TL)) {
+        printf("EMAC RX_TL Error @ %d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(RX_CRC)) {
+        printf("EMAC RX_CRC Error @ %d\r\n", index);
+    }
+
+    if (thiz->bd[index].C_S_L & EMAC_BD_FIELD_MSK(RX_LC)) {
+        printf("EMAC RX_LC Error @ %d\r\n", index);
+    }
+
+    if (index == thiz->rxBuffLimit) {
+        thiz->bd[index].C_S_L = (EMAC_BD_FIELD_MSK(RX_IRQ) | EMAC_BD_FIELD_MSK(RX_E) | (ETH_MAX_BUFFER_SIZE << 16) | EMAC_BD_FIELD_MSK(RX_WR));
+    } else {
+        thiz->bd[index].C_S_L = (EMAC_BD_FIELD_MSK(RX_IRQ) | EMAC_BD_FIELD_MSK(RX_E) | (ETH_MAX_BUFFER_SIZE << 16));
+    }
 }
+
 void EMAC_RX_Busy_Callback(void)
 {
-    MSG("RX busy %u\r\n", rx_counter);
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    
+    if (NULL == DequeueTaskHandle) {
+        return;
+    }
+
+    xTaskNotifyFromISR(DequeueTaskHandle, 0x02, eSetBits, &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+
+    printf("RX busy %u @ %d\r\n", rx_counter, emac_bd_get_cur_rx_buffer_active());
 }
 
 void emac_irq_process(void)
@@ -283,34 +392,32 @@ void emac_irq_process(void)
 
     if (SET == emac_getintstatus(EMAC_INT_TX_DONE) && !BL_IS_REG_BIT_SET(tmpVal,EMAC_TXB_M)) {
         //printf("EMAC_INT_TX_DONE\r\n");
-        emac_clrintstatus(EMAC_INT_TX_DONE);
-        emac_intmask(EMAC_INT_TX_DONE, MASK);
         EMAC_TX_Done_Callback();
+        emac_clrintstatus(EMAC_INT_TX_DONE);
     }
 
     if (SET == emac_getintstatus(EMAC_INT_TX_ERROR) && !BL_IS_REG_BIT_SET(tmpVal,EMAC_TXE_M)) {
         //printf("EMAC_INT_TX_ERROR\r\n");
+        EMAC_TX_Error_Callback(thiz->txIndexCPU);
         emac_clrintstatus(EMAC_INT_TX_ERROR);
-        EMAC_TX_Error_Callback();
     }
 
     if (SET == emac_getintstatus(EMAC_INT_RX_DONE) && !BL_IS_REG_BIT_SET(tmpVal,EMAC_RXB_M)) {
         //printf("EMAC_INT_RX_DONE\r\n");
-        emac_clrintstatus(EMAC_INT_RX_DONE);
-        emac_intmask(EMAC_INT_RX_DONE, MASK);
         EMAC_RX_Done_Callback();
+        emac_clrintstatus(EMAC_INT_RX_DONE);
     }
 
     if (SET == emac_getintstatus(EMAC_INT_RX_ERROR) && !BL_IS_REG_BIT_SET(tmpVal,EMAC_RXE_M)) {
         //printf("EMAC_INT_RX_ERROR\r\n");
+        EMAC_RX_Error_Callback(thiz->rxIndexCPU);
         emac_clrintstatus(EMAC_INT_RX_ERROR);
-        EMAC_RX_Error_Callback();
     }
 
     if (SET == emac_getintstatus(EMAC_INT_RX_BUSY) && !BL_IS_REG_BIT_SET(tmpVal,EMAC_BUSY_M)) {
         //printf("EMAC_INT_RX_BUSY\r\n");
-        emac_clrintstatus(EMAC_INT_RX_BUSY);
         EMAC_RX_Busy_Callback();
+        emac_clrintstatus(EMAC_INT_RX_BUSY);
     }
 
     if (SET == emac_getintstatus(EMAC_INT_TX_CTRL) && !BL_IS_REG_BIT_SET(tmpVal,EMAC_TXC_M)) {
@@ -366,6 +473,10 @@ static int _emac_phy_autonegotiation(ETHPHY_CFG_Type *cfg)
         uint16_t advertise = 0;
         uint16_t lpa = 0;
         uint32_t timeout = 0x3F0;
+
+        if (SUCCESS != emac_phy_read(PHY_BSR, &regval) || !(PHY_LINKED_STATUS & regval)) {
+            return ERROR;
+        }
 
         if (SUCCESS != emac_phy_read(PHY_PHYID1, &regval)) {
             return ERROR;
@@ -504,6 +615,21 @@ static int _emac_phy_linkup(ETHPHY_CFG_Type *cfg)
     return SUCCESS;
 }
 
+static void _emac_phy_is_link_up(void) 
+{
+    uint16_t phy_bsr = 0;
+
+    if(NULL == p_eth_callback || is_link_up){
+        return;
+    }
+
+    if (SUCCESS != emac_phy_read(PHY_BSR, &phy_bsr) || !(PHY_LINKED_STATUS & phy_bsr)) {
+        return;
+    }
+    p_eth_callback(ETH_INIT_STEP_LINKUP);
+    is_link_up = true;
+}
+
 static int _emac_phy_linkstatus(void)
 {
     uint16_t phy_bsr = 0;
@@ -516,9 +642,19 @@ static int _emac_phy_linkstatus(void)
 
     if (!(PHY_LINKED_STATUS & phy_bsr)) {
         printf("%s:%d\r\n", __func__, __LINE__);
+
+        if(p_eth_callback && is_link_up){
+            p_eth_callback(ETH_INIT_STEP_LINKDOWN);
+            is_link_up = false;
+        }
+
         return ERROR;
     }
 
+    if(p_eth_callback && false == is_link_up){
+        p_eth_callback(ETH_INIT_STEP_LINKUP);
+    }
+    is_link_up = true;
 
     return SUCCESS;
 }
@@ -556,11 +692,17 @@ static void _emac_phy_if_init(void)
                 aos_msleep(10);
 #endif
             }
+
+            bool isAutoNegotiation = phyCfg.autoNegotiation;
+            
+            /** set phyCfg.autoNegotiation to false to skip negotiation in emac_phyinit */
+            phyCfg.autoNegotiation = false;
             err = emac_phyinit(&phyCfg);
             if(err != SUCCESS)
             {
                 log_info("emac_phyinit init err[%d].\r\n", err);
             }
+            phyCfg.autoNegotiation = isAutoNegotiation;
             internal_status++;
         }
         break;
@@ -679,9 +821,9 @@ void borad_eth_init(uint8_t*addr)
     //bflb_platform_start_time();
 }
 
-void eth_get_mac(uint8_t mac[6]) 
+void __attribute__((weak)) eth_user_init(struct netif *netif) 
 {
-    uint8_t addr[8];
+    uint8_t *mac = netif->hwaddr, addr[8];
 
     extern int bl_wireless_mac_addr_get(uint8_t mac[8]);
     bl_wireless_mac_addr_get(addr);
@@ -706,13 +848,13 @@ static void low_level_init(struct netif *netif)
     netif->hwaddr_len = ETHARP_HWADDR_LEN;
     netif->mtu = 1500;
     netif->flags = NETIF_FLAG_BROADCAST|NETIF_FLAG_ETHARP|NETIF_FLAG_LINK_UP|NETIF_FLAG_IGMP;
-    eth_get_mac(netif->hwaddr);
+    eth_user_init(netif);
 
     printf("low level init\r\n");
 
 #if LWIP_IPV6
-      netif->flags |= (NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6);
-      netif->output_ip6 = ethip6_output;
+    netif->flags |= (NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6);
+    netif->output_ip6 = ethip6_output;
 #endif
 }
 
@@ -751,6 +893,10 @@ static inline void bl702ethernetif_output(struct netif *netif)
         }
         pbuf_free(p);
 
+        if (offset >= ETH_MAX_BUFFER_SIZE) {
+            printf ("bl702ethernetif_output %d >= %d\r\n", offset, ETH_MAX_BUFFER_SIZE);
+        }
+
         bd->C_S_L = (wrap_found ? EMAC_BD_FIELD_MSK(TX_WR) : 0) | EMAC_TX_COMMON_FLAGS | p->tot_len << BD_TX_LEN_POS;
         bd = &thiz->bd[thiz->txIndexCPU];
     }
@@ -769,13 +915,13 @@ void unsent_recv_task(void *pvParameters)
         NotifyValue = 0;
         recv = xTaskNotifyWait(0, ULONG_MAX, &NotifyValue, 200);
         if (recv == pdTRUE) {
+
+            _emac_phy_is_link_up();
             if (NotifyValue & (1 << 0)) {
                 bl702ethernetif_output(netif);
-                emac_intmask(EMAC_INT_TX_DONE, UNMASK);
             }
             if (NotifyValue & (1 << 1)) {
                 bl702ethernetif_input(netif);
-                emac_intmask(EMAC_INT_RX_DONE, UNMASK);
             }
         } else {
             /*XXX only work when we has no EVENT. Maybe buggy here??*/
@@ -795,11 +941,11 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
     item = (struct unsent_item *)(((uintptr_t)(p->payload + 3))&(~3));
     item->p = p;
 
-    pbuf_ref(p);
-
     if (NULL == DequeueTaskHandle) {
         return ERR_IF;
-    } 
+    }
+    
+    pbuf_ref(p);
 
     __disable_irq();
     utils_list_push_back(&ctx->unsent, (struct utils_list_hdr *)&(item->hdr));

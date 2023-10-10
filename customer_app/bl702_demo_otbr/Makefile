@@ -50,8 +50,7 @@ endif
 
 ifeq ($(CONFIG_USE_WIFI_BR), 1)
 INCLUDE_COMPONENTS += virt_net tpsync
-endif
-ifeq ($(CONFIG_ETHERNET),1)
+else
 INCLUDE_COMPONENTS += bl702_ethernet lwip_dhcpd blota
 endif
 ifeq ($(CONFIG_GEN_ROM),1)

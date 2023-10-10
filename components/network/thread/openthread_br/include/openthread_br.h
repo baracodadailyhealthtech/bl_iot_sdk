@@ -1,6 +1,8 @@
 #ifndef __OPENTHREAD_BR_H__
 #define __OPENTHREAD_BR_H__
 
+#include "otbr_err.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -15,6 +17,7 @@ struct netif * otbr_getThreadNetif(void);
 extern otInstance *otrGetInstance();
 
 void otbr_instance_init(void * aBackboneNetif);
+void otbr_instance_routing_init(void);
 void otbrInstance_addStateChangedCallback(statChangedCallback_t callback);
 
 void otbr_netif_init(void);

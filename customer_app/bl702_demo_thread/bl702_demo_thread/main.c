@@ -86,6 +86,17 @@ void usb_cdc_update_serial_number(uint32_t * pdeviceserial0, uint32_t * pdevices
 }
 #endif
 
+#ifndef CONFIG_OTDEMO
+void otrInitUser(otInstance * instance)
+{
+#ifdef CONFIG_NCP
+    otAppNcpInit((otInstance * )instance);
+#else
+    otAppCliInit((otInstance * )instance);
+#endif
+}
+#endif
+
 int main(int argc, char *argv[])
 {
     otRadio_opt_t opt;

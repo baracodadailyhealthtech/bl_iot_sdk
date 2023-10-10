@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1554-g971a32c6a 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../about.html"/>
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1554-g971a32c6a 文档" href="../index.html"/>
         <link rel="next" title="API 参考" href="../api-reference/index.html"/>
         <link rel="prev" title="BL IOT SDK 开发指南" href="index_702.html"/> 
 
@@ -69,13 +65,16 @@
           
 
           
+            
+            <img src="../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+                release_bl_iot_sdk_1.6.40-1554-g971a32c6a
               </div>
             
           
@@ -99,19 +98,19 @@
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index_702.html">702快速入门</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">702L快速入门</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">概述</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">准备工作</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">硬件连接</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">软件安装</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">编译工程</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">烧录固件</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id8">1. 芯片进入烧写模式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-1">概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-2">准备工作</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-3">硬件连接</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-4">软件安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-5">编译工程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-6">烧录固件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#section-7">1. 芯片进入烧写模式</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#bldevcube">2. 使用 BLDevCube 下载固件</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id9">3. 运行固件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#section-8">3. 运行固件</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id10">调试软件</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id11">1. 硬件跳线</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-9">调试软件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#section-10">1. 硬件跳线</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cklink">2. 安装和配置 CKLink</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#freedom-studio">3. 安装和使用 Freedom Studio</a></li>
 </ul>
@@ -188,17 +187,17 @@
            <div itemprop="articleBody">
             
   <section id="bl-iot-sdk">
-<h1>BL IOT SDK 开发指南<a class="headerlink" href="#bl-iot-sdk" title="此标题的永久链接"></a></h1>
-<section id="id1">
-<h2>概述<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<h1>BL IOT SDK 开发指南<a class="headerlink" href="#bl-iot-sdk" title="永久链接至标题"></a></h1>
+<section id="section-1">
+<h2>概述<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>BL702L/704L 系列芯片是博流智能科技有限公司开发的，基于 <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> 处理器的通用微控制器，具有高达128M Hz的主频以及丰富的外设，同时支持 BLE 5.0、Zigbee 3.0 等功能，可被广泛应用于 IoT 和其他低功耗领域中。</p>
 <p><a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> 是博流团队专为 BL60X、BL70X 以及后续芯片提供的 IOT 软件开发包。</p>
 <p>本文通过一个简单的示例展示如何在 Windows 环境下，搭建开发环境，编译示例代码，烧录固件以及查看输出，旨在指导用户搭建一套完整的 BL70X IOT 应用开发环境。</p>
 </div></blockquote>
 </section>
-<section id="id3">
-<h2>准备工作<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<section id="section-2">
+<h2>准备工作<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>在开始本示例前，必须具备的开发环境包括：</p>
 <ul>
@@ -222,15 +221,15 @@
 </ul>
 </div></blockquote>
 </section>
-<section id="id4">
-<h2>硬件连接<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h2>
+<section id="section-3">
+<h2>硬件连接<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>BL702L/704L DVK 开发板为芯片保留了丰富的通信接口，支持通过 UART、JTAG 等多种连接方式烧录固件以及调试软件。</p>
 <p>BL702L/704L DVK 开发板集成了一颗 BL702 芯片，用于实现 USB-CDC(UART) 和 USB-CKLink(JTAG) 的转换，可方便的通过开发板上的 USB 接口实现软件烧录、串口通信以及在线调试等功能。</p>
 </div></blockquote>
 </section>
-<section id="id5">
-<h2>软件安装<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h2>
+<section id="section-4">
+<h2>软件安装<a class="headerlink" href="#section-4" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>在正式开始编译工程前，请先正确完成以下所有工具的安装，具体步骤以及环境变量设置如下:</p>
 <blockquote>
@@ -241,12 +240,12 @@
 <div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>请您留意文档中，关于环境变量、驱动等信息的设置，这将避免后续操作的异常错误</p>
-</div>
+</aside>
 </div></blockquote>
 </div></blockquote>
 </section>
-<section id="id6">
-<h2>编译工程<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h2>
+<section id="section-5">
+<h2>编译工程<a class="headerlink" href="#section-5" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>本部分介绍如何编译 customer_app 目录下的 bl702l_demo_event 工程。</p>
 <ol class="arabic simple">
@@ -282,18 +281,18 @@
 </ul>
 <p><a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab Parse Tool For Windows</a> 是博流团队提供的 map 文件解析软件，可用于内存文件分析</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_images/image2112.png"><img alt="../_images/image2112.png" src="../_images/image2112.png" style="width: 6in; height: 3.8in;" /></a>
+<a class="reference internal image-reference" href="../_images/image2113.png"><img alt="../_images/image2113.png" src="../_images/image2113.png" style="width: 6in; height: 3.8in;" /></a>
 </figure>
 </div></blockquote>
 </div></blockquote>
 </section>
-<section id="id7">
-<h2>烧录固件<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
+<section id="section-6">
+<h2>烧录固件<a class="headerlink" href="#section-6" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>本部分介绍如何使用 <strong>BLDevCube</strong> 集成开发工具将固件烧写入 BL702L/704L DVK 开发板。</p>
 </div></blockquote>
-<section id="id8">
-<h3>1. 芯片进入烧写模式<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h3>
+<section id="section-7">
+<h3>1. 芯片进入烧写模式<a class="headerlink" href="#section-7" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>1.1 使用 <code class="docutils literal notranslate"><span class="pre">USB</span> <span class="pre">数据线</span></code> 连接 BL702L/704L DVK 开发板以后</p>
 <blockquote>
@@ -306,7 +305,7 @@
 </div></blockquote>
 </section>
 <section id="bldevcube">
-<h3>2. 使用 BLDevCube 下载固件<a class="headerlink" href="#bldevcube" title="此标题的永久链接"></a></h3>
+<h3>2. 使用 BLDevCube 下载固件<a class="headerlink" href="#bldevcube" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>2.1 打开 <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>，在 <code class="docutils literal notranslate"><span class="pre">Chip</span></code> 的下拉框中选择 <code class="docutils literal notranslate"><span class="pre">BL702L/704L</span></code>，点击 <code class="docutils literal notranslate"><span class="pre">Finish</span></code> 进入 <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Cube</span></code> 主界面</p>
 <blockquote>
@@ -355,8 +354,8 @@
 </div></blockquote>
 </div></blockquote>
 </section>
-<section id="id9">
-<h3>3. 运行固件<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
+<section id="section-8">
+<h3>3. 运行固件<a class="headerlink" href="#section-8" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>打开 PC 上安装的串口工具，选择 2000000 波特率</p></li>
@@ -367,19 +366,19 @@
 <a class="reference internal image-reference" href="../_images/image272.png"><img alt="../_images/image272.png" src="../_images/image272.png" style="width: 6in; height: 4in;" /></a>
 </figure>
 <div class="admonition note">
-<p class="admonition-title">备注</p>
+<p class="admonition-title">注解</p>
 <p>烧录中如出现无法烧录、烧录失败、烧录成功以后无打印等异常，可查看 <a class="reference external" href="https://dev.bouffalolab.com/media/doc/faq/702/html/content/FAQ.html#bl702">BL702常见问题汇总</a></p>
-</div>
+</aside>
 </div></blockquote>
 </section>
 </section>
-<section id="id10">
-<h2>调试软件<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
+<section id="section-9">
+<h2>调试软件<a class="headerlink" href="#section-9" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>本部分介绍如何使用Freedom Studio进行代码的调试。</p>
 </div></blockquote>
-<section id="id11">
-<h3>1. 硬件跳线<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
+<section id="section-10">
+<h3>1. 硬件跳线<a class="headerlink" href="#section-10" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>1.1 分别用跳线帽连接 BL702L/704L DVK 开发板上 <code class="docutils literal notranslate"><span class="pre">J3</span></code> 接插件的以下4组 JTAG 信号：</p>
 <blockquote>
@@ -390,13 +389,13 @@
 <li><p><strong>IO7(J3.18) - TDO(J3.16)</strong></p></li>
 </ul>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_images/image149.png"><img alt="../_images/image149.png" src="../_images/image149.png" style="width: 4in; height: 2in;" /></a>
+<a class="reference internal image-reference" href="../_images/image150.png"><img alt="../_images/image150.png" src="../_images/image150.png" style="width: 4in; height: 2in;" /></a>
 </figure>
 </div></blockquote>
 </div></blockquote>
 </section>
 <section id="cklink">
-<h3>2. 安装和配置 CKLink<a class="headerlink" href="#cklink" title="此标题的永久链接"></a></h3>
+<h3>2. 安装和配置 CKLink<a class="headerlink" href="#cklink" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>2.1 从 T-HEAD 官网下载最新版本 <a class="reference external" href="https://occ.t-head.cn/community/download?id=4103855596351066112">CKLink 驱动</a></p>
 <p>2.2 将下载的 CKLink 安装包解压，并双击 Setup，一路 next 即可，安装完成以后，桌面会有一个 T-HeadDebugServer 图标</p>
@@ -409,7 +408,7 @@
 </div></blockquote>
 </section>
 <section id="freedom-studio">
-<h3>3. 安装和使用 Freedom Studio<a class="headerlink" href="#freedom-studio" title="此标题的永久链接"></a></h3>
+<h3>3. 安装和使用 Freedom Studio<a class="headerlink" href="#freedom-studio" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>3.1 下载并解压缩 Freedom Studio，下载地址<code class="docutils literal notranslate"><span class="pre">https://github.com/sifive/freedom-studio/releases</span></code>，版本 <code class="docutils literal notranslate"><span class="pre">FreedomStudio-2019-08-2</span></code></p>
 <p>3.2 运行 <code class="docutils literal notranslate"><span class="pre">FreedomStudio.exe</span></code></p>
@@ -439,7 +438,7 @@
 <div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>使用 bl_iot_sdk_debug_freedom_studio_win_bl702l.launch 前需要让芯片进入烧写模式</p>
-</div>
+</aside>
 </div></blockquote>
 </div></blockquote>
 </section>
@@ -487,7 +486,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            VERSION:'release_bl_iot_sdk_1.6.40-1554-g971a32c6a',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -495,10 +494,9 @@
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 

@@ -36,9 +36,11 @@
 
 typedef void (*bl_audio_callback_t)(int buf_idx);
 
+// amic_single_ended: 0 - differential mode (pos + neg), 1 - single ended mode (pos only)
 // amic_pos_ch/amic_neg_ch: 0 - 7, corresponding to gpio {2, 3, 7, 8, 10, 11, 14, 15}
 // pcm_frame_size: 1 - 4095
 typedef struct {
+    uint8_t amic_single_ended;
     uint8_t amic_pos_ch;
     uint8_t amic_neg_ch;
     uint16_t pcm_frame_size;

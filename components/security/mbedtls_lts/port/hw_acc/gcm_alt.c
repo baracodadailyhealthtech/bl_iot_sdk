@@ -12,6 +12,8 @@
  *      First version.
  *  Jul 7, 2023: qwang
  *      Optimize further.
+ *  Aug 14, 202: qwang
+ *      Add data protection.
  */
 #include "common.h"
 
@@ -41,7 +43,8 @@
         bl_aes_acquire_hw();                             \
         if (op) {                                        \
             bl_aes_release_hw();                         \
-            return MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED; \
+            ret = MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED;  \
+            goto cleanup;                                \
         }                                                \
         bl_aes_release_hw();                             \
     } while (0)
@@ -50,7 +53,8 @@
         bl_ghash_acquire_hw();                           \
         if (op) {                                        \
             bl_ghash_release_hw();                       \
-            return MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED; \
+            ret = MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED;  \
+            goto cleanup;                                \
         }                                                \
         bl_ghash_release_hw();                           \
     } while (0)
@@ -70,6 +74,7 @@ int mbedtls_gcm_setkey(mbedtls_gcm_context *ctx,
                        unsigned int keybits)
 {
     unsigned char work_buf[16];
+    int ret = 0;
 
     GCM_VALIDATE_RET(ctx != NULL);
     GCM_VALIDATE_RET(key != NULL);
@@ -86,7 +91,8 @@ int mbedtls_gcm_setkey(mbedtls_gcm_context *ctx,
     AES_CHECK_OP(bl_aes_transform(&ctx->aes, BL_AES_ENCRYPT, work_buf, work_buf));
     bl_ghash_init(&ctx->ghash, work_buf);
 
-    return 0;
+cleanup:
+    return ret;
 }
 
 static inline void ctr_inc(uint8_t ctr[16], uint32_t value)
@@ -110,6 +116,7 @@ int mbedtls_gcm_starts(mbedtls_gcm_context *ctx,
                        const unsigned char *add,
                        size_t add_len)
 {
+    int ret = 0;
     GCM_VALIDATE_RET(ctx != NULL);
     GCM_VALIDATE_RET(iv != NULL);
     GCM_VALIDATE_RET(add_len == 0 || add != NULL);
@@ -144,7 +151,8 @@ int mbedtls_gcm_starts(mbedtls_gcm_context *ctx,
         GHASH_CHECK_OP(bl_ghash_update(&ctx->ghash, add, add_len));
     }
 
-    return 0;
+cleanup:
+    return ret;
 }
 
 enum {
@@ -347,6 +355,7 @@ int mbedtls_gcm_update(mbedtls_gcm_context *ctx,
     const unsigned char *p;
     unsigned char *out_p = output;
     size_t blocks, rem;
+    int ret = 0;
 
     GCM_VALIDATE_RET(ctx != NULL);
     GCM_VALIDATE_RET(length == 0 || input != NULL);
@@ -374,6 +383,7 @@ int mbedtls_gcm_update(mbedtls_gcm_context *ctx,
 
     p = input;
 #ifdef BL616
+    unsigned long crit_flag = bl_sec_enter_critical();
     if (bl_sec_is_cache_addr(input)) {
         L1C_DCache_Clean_Invalid_By_Addr((uintptr_t)input, length);
     }
@@ -387,7 +397,7 @@ int mbedtls_gcm_update(mbedtls_gcm_context *ctx,
         size_t last_step_len;
         struct mbedtls_gcm_alt_tj_ctx *tj = &ctx->tj;
         size_t idx1, idx2;
-        int ret;
+        int tj_ret;
 
         memset(tj, 0, sizeof(*tj));
 
@@ -432,11 +442,12 @@ int mbedtls_gcm_update(mbedtls_gcm_context *ctx,
         tj->check[idx2] = ctr_check;
 
         gcm_hw_init(ctx);
-        ret = task_join(gcm_task, tj);
+        tj_ret = task_join(gcm_task, tj);
         gcm_hw_cleanup();
 
-        if (ret == TJ_ERROR) {
-            return MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED;
+        if (tj_ret == TJ_ERROR) {
+            ret = MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED;
+            goto cleanup;
         }
     }
     if (rem > 0) {
@@ -459,7 +470,11 @@ int mbedtls_gcm_update(mbedtls_gcm_context *ctx,
         }
     }
 
-    return 0;
+cleanup:
+#ifdef BL616
+    bl_sec_exit_critical(crit_flag);
+#endif
+    return ret;
 }
 
 int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
@@ -470,6 +485,7 @@ int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
     size_t i;
     uint64_t orig_len;
     uint64_t orig_add_len;
+    int ret = 0;
 
     GCM_VALIDATE_RET(ctx != NULL);
     GCM_VALIDATE_RET(tag != NULL);
@@ -501,7 +517,8 @@ int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
         }
     }
 
-    return 0;
+cleanup:
+    return ret;
 }
 
 int mbedtls_gcm_crypt_and_tag(mbedtls_gcm_context *ctx,

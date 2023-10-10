@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Freedom Studio &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  <title>Freedom Studio &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1554-g971a32c6a 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../../../about.html"/>
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1554-g971a32c6a 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -67,13 +63,16 @@
           
 
           
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+                release_bl_iot_sdk_1.6.40-1554-g971a32c6a
               </div>
             
           
@@ -167,10 +166,10 @@
            <div itemprop="articleBody">
             
   <section id="freedom-studio">
-<h1>Freedom Studio<a class="headerlink" href="#freedom-studio" title="此标题的永久链接"></a></h1>
+<h1>Freedom Studio<a class="headerlink" href="#freedom-studio" title="永久链接至标题"></a></h1>
 <p>本文档介绍Freedom Studio的使用。下载地址<code class="docutils literal notranslate"><span class="pre">https://github.com/sifive/freedom-studio/releases</span></code>，版本为 <code class="docutils literal notranslate"><span class="pre">FreedomStudio-2019-08-2</span></code> ；Freedom Studio使用需要先安装JDK环境。</p>
 <section id="jdk">
-<h2>安装JDK环境<a class="headerlink" href="#jdk" title="此标题的永久链接"></a></h2>
+<h2>安装JDK环境<a class="headerlink" href="#jdk" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>JDK下载地址<code class="docutils literal notranslate"><span class="pre">https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html</span></code>,JDK安装，如图所示；</p></li>
 </ul>
@@ -187,8 +186,8 @@
 <img alt="" src="../../../_images/image329.png" />
 </figure>
 </section>
-<section id="id1">
-<h2>导入工程<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<section id="section-1">
+<h2>导入工程<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>首先启动 <code class="docutils literal notranslate"><span class="pre">Freedom</span> <span class="pre">Studio</span></code> ，打开工具栏上的<code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">import</span></code>，选择<code class="docutils literal notranslate"><span class="pre">General</span></code>菜单下的<code class="docutils literal notranslate"><span class="pre">Existing</span> <span class="pre">Projects</span> <span class="pre">into</span> <span class="pre">Workspace</span></code>选项导入工程。</p></li>
 </ul>
@@ -200,7 +199,7 @@
 </figure>
 </section>
 <section id="launch">
-<h2>配置工程launch文件<a class="headerlink" href="#launch" title="此标题的永久链接"></a></h2>
+<h2>配置工程launch文件<a class="headerlink" href="#launch" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>在工程中选择Debug Configurations，如果导入工程中有如下bl_iot_sdk_debug_freedom_studio_win_bl702等配置，那么该章节可以略过；</p></li>
@@ -233,7 +232,7 @@
 <img alt="" src="../../../_images/image192.png" />
 </figure>
 <ul class="simple">
-<li><p>Debugger选项中设置如下，其中if_bflb_link.cfg、tgt_702_xip.cfg、702.init文件，默认在工程的debug目录下；</p></li>
+<li><p>Debugger选项中设置如下，其中if_rv_dbg_plus.cfg、tgt_702_xip.cfg、702.init文件，默认在工程的debug目录下；</p></li>
 </ul>
 <figure class="align-default">
 <img alt="" src="../../../_images/image202.png" />
@@ -274,7 +273,7 @@
 </div></blockquote>
 </section>
 <section id="debug">
-<h2>Debug<a class="headerlink" href="#debug" title="此标题的永久链接"></a></h2>
+<h2>Debug<a class="headerlink" href="#debug" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>需要将Sipeed RV-Debugger Plus调试板子通过JTAG 连接上设备，调试板与设备通过USB连上电脑, 如图所示：</p></li>
 </ul>
@@ -339,7 +338,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            VERSION:'release_bl_iot_sdk_1.6.40-1554-g971a32c6a',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -347,10 +346,9 @@
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

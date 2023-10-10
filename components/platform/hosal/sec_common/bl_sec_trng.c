@@ -29,6 +29,7 @@
  */
 #include <bl_sec.h>
 #include <stdint.h>
+#include "bl_sec_common.h"
 #include "bl_sec_hw_common.h"
 
 #define TRNG_SIZE_IN_WORD (8)
@@ -58,7 +59,7 @@ static int feed_trng_buffer()
 int bl_rand_stream(uint8_t *buf, int len)
 {
     int ret = 0;
-    taskENTER_CRITICAL();
+    bl_sec_enter_critical();
     while (len > 0) {
         int left = TRNG_BUF_LEFT;
         int this_len = len;
@@ -76,7 +77,7 @@ int bl_rand_stream(uint8_t *buf, int len)
         }
     }
 exit:
-    taskEXIT_CRITICAL();
+    bl_sec_exit_critical(0);
 
     return ret;
 }

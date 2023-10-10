@@ -64,6 +64,7 @@ int ble_rc_voice_init(void)
 #if VOICE_INTF == 2
     bl_audio_amic_cfg_t cfg;
 
+    cfg.amic_single_ended = 0;
     cfg.amic_pos_ch = AMIC_POS_CH;
     cfg.amic_neg_ch = AMIC_NEG_CH;
     cfg.pcm_frame_size = ORIG_VOICE_FRAME_SIZE;

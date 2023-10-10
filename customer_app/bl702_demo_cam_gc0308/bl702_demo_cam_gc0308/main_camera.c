@@ -76,6 +76,7 @@ static int app_pic_hardware_init()
         return -1;
     }
     printf("camera resolution: %d x %d\r\n", desc->width, desc->height);
+    bl_cam_config_update(50);
     /*enable CAM module*/
     bl_cam_init(1, desc);
 

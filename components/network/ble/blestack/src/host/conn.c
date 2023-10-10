@@ -445,8 +445,8 @@ static void conn_update_timeout(struct k_work *work)
 	if (atomic_test_and_clear_bit(conn->flags, BT_CONN_SLAVE_PARAM_SET)) {
 		param = BT_LE_CONN_PARAM(conn->le.interval_min,
 					 conn->le.interval_max,
-					 conn->le.latency,
-					 conn->le.timeout);
+					 conn->le.pending_latency,
+					 conn->le.pending_timeout);
 
 		send_conn_le_param_update(conn, param);
 	}
@@ -986,16 +986,31 @@ void bt_conn_ssp_auth(struct bt_conn *conn, u32_t passkey)
 
 	switch (conn->br.pairing_method) {
 	case PASSKEY_CONFIRM:
-		atomic_set_bit(conn->flags, BT_CONN_USER);
-		bt_auth->passkey_confirm(conn, passkey);
+		if (bt_auth && bt_auth->passkey_confirm){
+			atomic_set_bit(conn->flags, BT_CONN_USER);
+			bt_auth->passkey_confirm(conn, passkey);
+		}else{
+			BT_ERR("passkey_confirm cb is NULL");
+			return;
+		}
 		break;
 	case PASSKEY_DISPLAY:
-		atomic_set_bit(conn->flags, BT_CONN_USER);
-		bt_auth->passkey_display(conn, passkey);
+		if (bt_auth && bt_auth->passkey_display){
+			atomic_set_bit(conn->flags, BT_CONN_USER);
+			bt_auth->passkey_display(conn, passkey);
+		}else{
+			BT_ERR("passkey_display cb is NULL");
+			return;
+		}
 		break;
 	case PASSKEY_INPUT:
-		atomic_set_bit(conn->flags, BT_CONN_USER);
-		bt_auth->passkey_entry(conn);
+		if (bt_auth && bt_auth->passkey_entry){
+			atomic_set_bit(conn->flags, BT_CONN_USER);
+			bt_auth->passkey_entry(conn);
+		}else{
+			BT_ERR("passkey_entry cb is NULL");
+			return;
+		}
 		break;
 	case JUST_WORKS:
 		/*
@@ -1292,6 +1307,14 @@ bt_security_t bt_conn_get_security(struct bt_conn *conn)
 
 void bt_conn_cb_register(struct bt_conn_cb *cb)
 {
+	struct bt_conn_cb *ucb;
+
+	for (ucb = callback_list;ucb;ucb = ucb->_next) {
+		if (ucb==cb)
+		{
+			return;
+		}
+	}
 	cb->_next = callback_list;
 	callback_list = cb;
 }
@@ -2247,6 +2270,9 @@ int bt_conn_disconnect(struct bt_conn *conn, u8_t reason)
 		bt_conn_set_state(conn, BT_CONN_DISCONNECTED);
 		if (IS_ENABLED(CONFIG_BT_CENTRAL)) {
 			bt_le_scan_update(false);
+			#if defined(BFLB_BLE_FREE_CONN_UPDATE_WORK_WHEN_DISCONNECT_IN_CONN_SCAN_STATE)
+			k_delayed_work_free(&conn->update_work);
+			#endif
 		}
 		return 0;
 	case BT_CONN_CONNECT_DIR_ADV:
@@ -2606,7 +2632,7 @@ struct net_buf *bt_conn_create_pdu_timeout(struct net_buf_pool *pool,
 	}
 
 	if (!buf) {
-		BT_WARN("Unable to allocate buffer: timeout %d", timeout);
+		BT_WARN("Unable to allocate buffer: timeout %ld", timeout);
 		return NULL;
 	}
 

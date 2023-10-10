@@ -51,9 +51,11 @@ typedef struct {
 } __attribute__((aligned(4))) bl_SEC_Eng_GMAC_Link_Config_Type;
 
 typedef struct {
+    uint32_t guard0_[7];
     bl_SEC_Eng_GMAC_Link_Config_Type link_cfg;
     uint32_t dummy_;
     uint8_t tmp_buf[16];
+    uint32_t guard1_[7];
 } bl_sec_ghash_t;
 
 int bl_sec_ghash_init();

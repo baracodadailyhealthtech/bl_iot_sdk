@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Components &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  <title>Components &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1554-g971a32c6a 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../about.html"/>
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1554-g971a32c6a 文档" href="../index.html"/>
         <link rel="next" title="&lt;no title&gt;" href="Middleware/index.html"/>
         <link rel="prev" title="Ethernet OTA" href="../Examples/network/demo_ethernet_ota/ota.html"/> 
 
@@ -69,13 +65,16 @@
           
 
           
+            
+            <img src="../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+                release_bl_iot_sdk_1.6.40-1554-g971a32c6a
               </div>
             
           
@@ -176,46 +175,46 @@
            <div itemprop="articleBody">
             
   <section id="components">
-<h1>Components<a class="headerlink" href="#components" title="此标题的永久链接"></a></h1>
+<h1>Components<a class="headerlink" href="#components" title="永久链接至标题"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Middleware/yloop.html">yloop</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#id1">Yloop概要</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#id2">Yloop上下文</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#id3">Yloop调度</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#id4">Yloop实现原理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#yloop-1">Yloop概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#yloop-2">Yloop上下文</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#yloop-3">Yloop调度</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#yloop-4">Yloop实现原理</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#api">主要api介绍</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#id5">示例代码</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#id8">注意事项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#section-1">示例代码</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/yloop.html#section-4">注意事项</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware/vfs.html">vfs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#id1">概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#section-1">概要</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#vfs">VFS提供的标准接口</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#id2">VFS的数据结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#vfs-1">VFS的数据结构</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#aos-open">以aos_open为例介绍其文件打开方式</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#id3">将驱动文件或者文件系统加载到VFS当中</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#id4">示例代码</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#id5">总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#vfs-2">将驱动文件或者文件系统加载到VFS当中</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#section-2">示例代码</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/vfs.html#section-3">总结</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware/devicetree_702.html">dts</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/devicetree_702.html#id1">device tree 语法格式</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/devicetree_702.html#id2">device tree 模块配置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/devicetree_702.html#device-tree-1">device tree 语法格式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/devicetree_702.html#device-tree-2">device tree 模块配置</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware/blog.html">blog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#id1">概述</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#id2">功能介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#section-1">概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#section-2">功能介绍</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#log">log等级说明</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#id3">使用方法</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#id4">总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#section-3">使用方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Middleware/blog.html#section-4">总结</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="BLE/ble_stack.html">ble_stack</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="BLE/ble_stack.html#id1">概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BLE/ble_stack.html#section-1">概述</a></li>
 <li class="toctree-l2"><a class="reference internal" href="BLE/ble_stack.html#api">API参考</a></li>
-<li class="toctree-l2"><a class="reference internal" href="BLE/ble_stack.html#id2">数据结构参考</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BLE/ble_stack.html#section-2">数据结构参考</a></li>
 </ul>
 </li>
 </ul>
@@ -263,7 +262,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            VERSION:'release_bl_iot_sdk_1.6.40-1554-g971a32c6a',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -271,10 +270,9 @@
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 

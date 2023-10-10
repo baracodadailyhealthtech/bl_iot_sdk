@@ -34,12 +34,27 @@ Type following command to build:
   - After IPv6 address is assigned, Thread network will automatically start if `CONFIG_THREAD_AUTO_START=1`.
 
 # Wi-Fi OTBR
-  
+
+  - Development board hardware setup
+    - Please refer to [BL702 SPI Wi-Fi guide](../sdk_app_throughput/bl702_master/ReadMe.md) for BL702 + BL602 development board setup.
+    - Connect GPIO 11 of BL702 to **RESET PIN** of BL602 to do BL602 reset after BL706 startup.
+
   - Power up OTBR.
+    - There may have some initial process block comnand link interactive during startup. Please try command when command line is available.
+
   - Open OTBR UART or USB CDC command line with serial port tool. And type following command to connect a AP.
     ```shell
     wifi_connect <wifi_ssid> <wifi_password>
     ```
+    - When it connects AP succesfully, it will save SSID and password in flash and automatically connect this AP after power cycle.
+    - Command `otc factory reset` is used to do factory reset.
+
   - After connected and IPv6 address assigned. The IP information will be printed out.
+
   - Then Thread network will automatically start if `CONFIG_THREAD_AUTO_START=1`. 
-  - And Wi-Fi AP credention and Thread network information will saved in flash. Power cycle will resume connection to AP and Thread network.
+  
+# Some helpful commands:
+  - Command `ipinfo`: to get assigned IP address.
+  - Command `otc state`: to get Thread state. 
+  - Command `otc br state`: to get Border Router state. 
+    - state `running` means border router is running after it attached and IP address is assigned.

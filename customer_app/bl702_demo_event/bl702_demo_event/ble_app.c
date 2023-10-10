@@ -150,7 +150,7 @@ static void example_ble_mesh_generic_server_cb(bfl_ble_mesh_generic_server_cb_ev
                                                bfl_ble_mesh_generic_server_cb_param_t *param)
 {
     bfl_ble_mesh_gen_onoff_srv_t *srv;
-    printf("event 0x%02x, opcode 0x%04x, src 0x%04x, dst 0x%04x\n",
+    printf("event 0x%02x, opcode 0x%04lx, src 0x%04x, dst 0x%04x\n",
         event, param->ctx.recv_op, param->ctx.addr, param->ctx.recv_dst);
 
     switch (event) {
@@ -225,7 +225,7 @@ static void example_handle_light_lgn_msg(bfl_ble_mesh_model_t *model,
 static void example_ble_mesh_lighting_server_cb(bfl_ble_mesh_lighting_server_cb_event_t event,
 			bfl_ble_mesh_lighting_server_cb_param_t *param)
 {
-    printf("event 0x%02x, opcode 0x%04x, src 0x%04x, dst 0x%04x\n",
+    printf("event 0x%02x, opcode 0x%04lx, src 0x%04x, dst 0x%04x\n",
         event, param->ctx.recv_op, param->ctx.addr, param->ctx.recv_dst);
 
     switch (event) {
@@ -313,7 +313,7 @@ static void example_ble_mesh_lighting_server_cb(bfl_ble_mesh_lighting_server_cb_
         }
         break;
     default:
-        printf( "Unknown Server event opcode[%x] 0x%02x", param->ctx.recv_op, event);
+        printf( "Unknown Server event opcode[%lx] 0x%02x", param->ctx.recv_op, event);
         break;
     }
 }

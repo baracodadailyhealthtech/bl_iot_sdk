@@ -25,4 +25,5 @@ BL616:
 libbtblecontroller_bl616_ble1m0s1bredr0:  BLE only mode. 1 BLE connection is supported, BL616 can only be slave in this connection.
 libbtblecontroller_bl616_ble1m0s1sbredr0: Based on libbtblecontroller_bl616_ble1m0s1bredr0, add BLE scan feature.
 libbtblecontroller_bl616_ble1m0s1sbredr1: Based on libbtblecontroller_bl616_ble1m0s1sbredr0, support bredr with 2 acl connections and 2 sco(or esco) links.
-libbtblecontroller_bl616_ble1m10s1bredr0：BLE only mode.16 BLE connections are suppprted, BL616 can be master or slave in each connection.
+libbtblecontroller_bl616_ble1m10s1bredr0：BLE only mode. 10 BLE connections are suppprted, BL616 can be master or slave in each connection.
+libbtblecontroller_bl616_ble1m2s1bredr0：BLE only mode. 2 BLE connections are suppprted, BL616 can be master or slave in each connection.

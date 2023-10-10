@@ -2542,6 +2542,11 @@ void bt_att_req_cancel(struct bt_conn *conn, struct bt_att_req *req)
 		return;
 	}
 
+	#if defined(BFLB_BLE_PATCH_CANCEL_ATT_TIMEOUT_TIMER_WHEN_ATT_REQ_CANCELLED)
+	/* Cancel timeout if ongoing */
+	k_delayed_work_cancel(&att->timeout_work);
+	#endif
+
 	/* Check if request is outstanding */
 	if (att->req == req) {
 		att->req = &cancel;

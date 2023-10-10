@@ -98,15 +98,15 @@ int bl_flash_write(uint32_t addr, uint8_t *src, int len)
     }
 #ifdef CFG_USE_PSRAM
     if(IS_PSARAM((uint32_t)src)){
+        if (0 == len) {
+            return 0;
+        }
         _data = (uint8_t*)pvPortMalloc(len);
         if (NULL == _data) {
             return -1;
         }
         memcpy(_data, src, len);
     }
-    // if (IS_PSARAM((uint32_t)&_data)) {
-    //     BL702_MemSet4(__spn, 0xa5a5a5a5, PSRAM_TEMP_STACK_SIZE);
-    // }
 #endif
 
     unsigned long mstatus_tmp;
@@ -134,14 +134,14 @@ int bl_flash_read(uint32_t addr, uint8_t *dst, int len)
 
 #ifdef CFG_USE_PSRAM
     if(IS_PSARAM((uint32_t)dst)){
+        if (0 == len) {
+            return 0;
+        }
         _data = (uint8_t*)pvPortMalloc(len);
         if (NULL == _data) {
             return -1;
         }
     }
-    // if (IS_PSARAM((uint32_t)&_data)) {
-    //     BL702_MemSet4(__spn, 0xa5a5a5a5, PSRAM_TEMP_STACK_SIZE);
-    // }
 #endif
 
     unsigned long mstatus_tmp;
@@ -420,6 +420,9 @@ int bl_flash_read_byxip(uint32_t addr, uint8_t *dst, int len)
     int iret;
 
     if(IS_PSARAM((uint32_t)dst)){
+        if (0 == len) {
+            return 0;
+        }
         _data = (uint8_t*)pvPortMalloc(len);
         if (NULL == _data) {
             return -1;

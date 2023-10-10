@@ -710,7 +710,7 @@ static void sensor_get(struct bt_mesh_model *model,
         return;
     }
     default:
-        BT_WARN("%s, Unknown Sensor Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Sensor Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 }

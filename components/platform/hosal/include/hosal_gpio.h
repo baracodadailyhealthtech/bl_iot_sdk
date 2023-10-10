@@ -160,11 +160,10 @@ int hosal_gpio_input_get(hosal_gpio_dev_t *gpio, uint8_t *value);
 int hosal_gpio_irq_set(hosal_gpio_dev_t *gpio, hosal_gpio_irq_trigger_t trigger_type, hosal_gpio_irq_handler_t handler, void *arg);
 
 /**
- * @brief Clear an interrupt status for an input GPIO pin.
- * Using this function on a gpio pin which has generated a interrupt.
+ * @brief Mask or unmask an interrupt for an input GPIO pin.
  *
  * @param[in]  gpio  the gpio pin which provided the interrupt trigger
- * @param[in]  mask  0 : mask | 1 : umask
+ * @param[in]  mask  0 : unmask (enable interrupt) | 1 : mask (disable interrupt)
  *
  * @return  
  *	- 0    on success

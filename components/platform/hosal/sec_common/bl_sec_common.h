@@ -32,6 +32,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include <FreeRTOS.h>
+#include <task.h>
+
 typedef enum {
     BL_SHA1,
     BL_SHA224,
@@ -60,11 +63,13 @@ typedef struct {
 } __attribute__ ((aligned(4))) bl_SEC_Eng_SHA_Link_Config_Type;
 
 typedef struct bl_sha_ctx {
+    uint32_t guard0_[7];
     bl_sha_type_t type;
     bl_SEC_Eng_SHA256_Link_Ctx ctx;
     bl_SEC_Eng_SHA_Link_Config_Type link_cfg;
     uint32_t tmp[16];
     uint32_t pad[16];
+    uint32_t guard1_[7];
 } bl_sha_ctx_t;
 
 
@@ -81,11 +86,13 @@ typedef struct
 } bl_SEC_Eng_SHA512_Link_Ctx;
 
 typedef struct bl_sha512_ctx {
+    uint32_t guard0_[7];
     bl_sha_type_t type;
     bl_SEC_Eng_SHA512_Link_Ctx ctx;
     bl_SEC_Eng_SHA_Link_Config_Type link_cfg;
     uint64_t tmp[16];
     uint64_t pad[16];
+    uint32_t guard1_[7];
 } bl_sha512_ctx_t;
 
 /*
@@ -95,3 +102,14 @@ typedef struct bl_sha512_ctx {
 int bl_sec_psk(const char *password, const void *ssid, size_t ssid_len, void *output);
 /// Test PSK
 int bl_sec_psk_test(void);
+
+static inline unsigned long bl_sec_enter_critical()
+{
+    taskENTER_CRITICAL();
+    return 0;
+}
+
+static inline void bl_sec_exit_critical(unsigned long prev_level)
+{
+    taskEXIT_CRITICAL();
+}

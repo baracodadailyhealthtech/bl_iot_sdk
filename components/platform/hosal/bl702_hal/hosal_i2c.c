@@ -46,6 +46,9 @@ int hosal_i2c_init(hosal_i2c_dev_t *i2c)
         return -1;
     }
 
+    GLB_PER_Clock_UnGate(GLB_AHB_CLOCK_I2C);
+    GLB_Set_I2C_CLK(1, 0);
+
     gpiopins[0] = i2c->config.scl;
     gpiopins[1] = i2c->config.sda;
 

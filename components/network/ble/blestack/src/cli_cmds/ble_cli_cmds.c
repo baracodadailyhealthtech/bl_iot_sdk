@@ -526,17 +526,10 @@ static void blecli_enable(char *pcWriteBuffer, int xWriteBufferLen, int argc, ch
 
 static void blecli_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
 {
-    if(ble_inited){
-        vOutputString("Has initialized \r\n");
-        return;
-    }
-
     #if defined(CONFIG_BT_CONN)
     default_conn = NULL;
     bt_conn_cb_register(&conn_callbacks);
     #endif
-    ble_inited = true;
-    vOutputString("Init successfully \r\n");
 }
 
 #if defined(BL702)
@@ -901,7 +894,7 @@ static void blecli_start_advertise(char *pcWriteBuffer, int xWriteBufferLen, int
     uint8_t non_disc = BT_LE_AD_NO_BREDR;
     uint8_t gen_disc = BT_LE_AD_NO_BREDR | BT_LE_AD_GENERAL;
     uint8_t lim_disc = BT_LE_AD_NO_BREDR | BT_LE_AD_LIMITED;
-    char *adv_name = bt_get_name();
+    char *adv_name = (char*)bt_get_name();
     struct bt_data ad_discov[2] = {
         BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR | BT_LE_AD_GENERAL),
         BT_DATA(BT_DATA_NAME_COMPLETE, adv_name, strlen(adv_name)),
@@ -1352,8 +1345,7 @@ static void blecli_l2cap_send_test_data(char *p_write_buffer, int write_buffer_l
     uint8_t test_data[10] = {0x01, 0x02, 0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a};
     uint8_t large_test_data[30];
     uint16_t cid;
-    bool isLarge;
-    struct bt_l2cap_chan *chan;
+    uint8_t isLarge;
 
     if(argc != 3){
         vOutputString("Number of Parameters is not correct\r\n");
@@ -1470,13 +1462,13 @@ static void blecli_read_rssi(char *pcWriteBuffer, int xWriteBufferLen, int argc,
 static void blecli_ble_throughput_calc(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
 {  
     int err;
-    bool enable;
+    u8_t enable;
     u8_t interval;
     if(argc != 3){
        vOutputString("Number of Parameters is not correct\r\n");
        return;
     }
-    get_uint8_from_string(&argv[1], &enable); 
+    get_uint8_from_string(&argv[1], (uint8_t *)&enable); 
     get_uint8_from_string(&argv[2], &interval); 
     extern int bt_le_throughput_calc(bool enable, u8_t interval);
     err = bt_le_throughput_calc(enable,interval);

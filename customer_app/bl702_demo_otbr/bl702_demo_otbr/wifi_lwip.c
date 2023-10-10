@@ -39,8 +39,9 @@
 #include <pkg_protocol.h>
 
 #include <easyflash.h>
-
+#ifdef CFG_BLE_ENABLE
 #include <blsync_ble_app.h>
+#endif
 #include "main.h"
 
 #define WIFI_INFO_EASYFLASH_KEY "blf-otbr-wifi-cred"
@@ -65,16 +66,10 @@ void wifi_lwip_hw_reset(void)
     hosal_gpio_init(&gpio_led);
     
     hosal_gpio_output_set(&gpio_led, 0);
-    uint32_t lt = bl_timer_now_us();
-    while(bl_timer_now_us() - lt < 1000){
-        __NOP();
-    };
+    vTaskDelay(100);
 
     hosal_gpio_output_set(&gpio_led, 1);
-    lt = bl_timer_now_us();
-    while(bl_timer_now_us() - lt < 150000){
-        __NOP();
-    };
+    vTaskDelay(300);
 }
 #endif
 
@@ -103,6 +98,7 @@ static int virt_net_spi_event_cb(virt_net_t obj, enum virt_net_event_code code,
             printf("AP disconnect !\r\n");
             break;
         case VIRT_NET_EV_ON_SCAN_DONE: {
+#ifdef CFG_BLE_ENABLE
             netbus_wifi_mgmr_msg_cmd_t *pkg_data;
             netbus_fs_scan_ind_cmd_msg_t *msg;
 
@@ -110,6 +106,7 @@ static int virt_net_spi_event_cb(virt_net_t obj, enum virt_net_event_code code,
             msg = (netbus_fs_scan_ind_cmd_msg_t*)((netbus_fs_scan_ind_cmd_msg_t*)pkg_data);
 
             blesync_wifi_scan_done(msg);
+#endif
 
             break;
         }
@@ -166,13 +163,15 @@ static int virt_net_spi_event_cb(virt_net_t obj, enum virt_net_event_code code,
             }
 
             if (isIPv6AddressAssigend) {
-                main_task_resume();
+                otbr_instance_routing_init();
 
                 if (!wifi_info.is_wifi_info_saved) {
                     ef_set_env_blob(WIFI_INFO_EASYFLASH_KEY, (void*)&wifi_info, sizeof(wifi_info));
                     wifi_info.is_wifi_info_saved = true;
                 }
+#ifdef CFG_BLE_ENABLE
                 blsync_ble_stop();
+#endif
             }
 
 			break;
@@ -238,13 +237,16 @@ void wifi_lwip_init(void)
 
         if (strlen(wifi_info.wifi_ssid) > 0 && strlen(wifi_info.wifi_ssid) < sizeof(wifi_info.wifi_ssid) &&
             strlen(wifi_info.wifi_pwd) >= 8 && strlen(wifi_info.wifi_pwd) < sizeof(wifi_info.wifi_ssid)) {
-            wifi_info.is_wifi_info_saved = true;
 
+            printf("Connect to previous Wi-Fi network SSID %s, password %s.\r\n", wifi_info.wifi_ssid, wifi_info.wifi_pwd);
+            wifi_info.is_wifi_info_saved = true;
             virt_net_connect_ap(vnet_spi, wifi_info.wifi_ssid, wifi_info.wifi_pwd);
             return;
         }
     }
 
+#ifdef CFG_BLE_ENABLE
     blsync_ble_start();
+#endif
     memset(&wifi_info, 0, sizeof(wifi_info));
 }

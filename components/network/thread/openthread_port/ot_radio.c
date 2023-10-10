@@ -248,13 +248,21 @@ int8_t otPlatRadioGetReceiveSensitivity(otInstance *aInstance)
 }
 void otPlatRadioGetIeeeEui64(otInstance *aInstance, uint8_t *aIeeeEui64) 
 {
-    int index = 0;
+    uint8_t temp;
 
-    // Set the MAC Address Block Larger (MA-L) formerly called OUI.
-    aIeeeEui64[index++] = (OPENTHREAD_CONFIG_STACK_VENDOR_OUI >> 16) & 0xff;
-    aIeeeEui64[index++] = (OPENTHREAD_CONFIG_STACK_VENDOR_OUI >> 8) & 0xff;
-    aIeeeEui64[index++] = OPENTHREAD_CONFIG_STACK_VENDOR_OUI & 0xff;
     bl_wireless_mac_addr_get(aIeeeEui64);
+
+    for (int i = 0; i < OT_EXT_ADDRESS_SIZE / 2; i ++) {
+        temp = aIeeeEui64[OT_EXT_ADDRESS_SIZE - i - 1];
+        aIeeeEui64[OT_EXT_ADDRESS_SIZE - i - 1] = aIeeeEui64[i];
+        aIeeeEui64[i] = temp;
+    }
+
+    if (aIeeeEui64[OT_EXT_ADDRESS_SIZE - 1] == 0 && aIeeeEui64[OT_EXT_ADDRESS_SIZE - 2] == 0) {
+        aIeeeEui64[OT_EXT_ADDRESS_SIZE - 1] = aIeeeEui64[OT_EXT_ADDRESS_SIZE - 3];
+        aIeeeEui64[OT_EXT_ADDRESS_SIZE - 2] = aIeeeEui64[OT_EXT_ADDRESS_SIZE - 4];
+        aIeeeEui64[OT_EXT_ADDRESS_SIZE - 3] = aIeeeEui64[OT_EXT_ADDRESS_SIZE - 5];
+    }
 }
 
 void otPlatRadioSetPanId(otInstance *aInstance, otPanId aPanId) 
@@ -413,7 +421,8 @@ otError otPlatRadioSleep(otInstance *aInstance)
 {
     lmac154_disableRx();
 
-#if !defined(CONFIG_NCP) || CONFIG_NCP == 0
+#if !defined(CONFIG_NCP) || CONFIG_NCP == 1
+    /** RCP dones't need this */
     lmac154_setRxStateWhenIdle(otThreadGetLinkMode(aInstance).mRxOnWhenIdle);
 #endif
 
@@ -429,7 +438,8 @@ otError otPlatRadioReceive(otInstance *aInstance, uint8_t aChannel)
 #endif
 
     lmac154_setChannel((lmac154_channel_t)ch);
-#if !defined(CONFIG_NCP) || CONFIG_NCP == 0
+#if !defined(CONFIG_NCP) || CONFIG_NCP == 1
+    /** RCP dones't need this */
     lmac154_setRxStateWhenIdle(otThreadGetLinkMode(aInstance).mRxOnWhenIdle);
 #endif
     lmac154_enableRx();

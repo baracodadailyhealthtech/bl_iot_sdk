@@ -43,7 +43,7 @@
 
 #define CODE_CLI_START_THREAD  0x04
 
-// #define WIFI_LWIP_RESET_PIN 11
+#define WIFI_LWIP_RESET_PIN 11
 
 void app_cli_cdc_monitor(void);
 void app_cli_task(void);
@@ -61,7 +61,5 @@ void blsync_ble_start (void);
 void blsync_ble_stop (void);
 
 void eth_lwip_init(void);
-
-void main_task_resume(void);
 
 #endif // __DEMO_GPIO_H

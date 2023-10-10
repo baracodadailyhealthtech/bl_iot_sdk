@@ -494,10 +494,6 @@ int bl_adc_voice_init(bl_adc_voice_cfg_t *cfg)
         return -1;
     }
     
-    if(cfg->adc_pos_ch == cfg->adc_neg_ch){
-        return -1;
-    }
-    
     if(cfg->pcm_frame_size < 1 || cfg->pcm_frame_size > 4095){
         return -1;
     }

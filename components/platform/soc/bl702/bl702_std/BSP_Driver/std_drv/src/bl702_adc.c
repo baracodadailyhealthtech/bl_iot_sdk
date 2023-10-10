@@ -1146,8 +1146,10 @@ void ADC_Tsen_Init(ADC_TSEN_MOD_Type tsenMod)
     tmpVal = BL_SET_REG_BIT(tmpVal, AON_GPADC_TS_EN);
     /*select tsen ext or inner*/
     tmpVal = BL_SET_REG_BITS_VAL(tmpVal, AON_GPADC_TSEXT_SEL, tsenMod);
+    /*chopper mode = 1*/
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, AON_GPADC_CHOP_MODE, 1);
 
-    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, AON_GPADC_PGA_VCM, 2);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, AON_GPADC_PGA_VCM, 1);
     /*pga vcmi enable*/
     tmpVal = BL_CLR_REG_BIT(tmpVal, AON_GPADC_PGA_VCMI_EN);
     /*0:512uS;1:16mS;2:32mS;3:64mS*/

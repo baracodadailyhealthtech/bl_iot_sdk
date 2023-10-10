@@ -394,10 +394,10 @@ NAME
 */
 void ble_tp_init()
 {
+    bt_conn_cb_register(&ble_tp_conn_callbacks);
     if( !isRegister )
     {
         isRegister = 1;
-        bt_conn_cb_register(&ble_tp_conn_callbacks);
         bt_gatt_service_register(&ble_tp_server);
     }
 }

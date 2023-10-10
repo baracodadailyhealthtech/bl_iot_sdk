@@ -276,7 +276,7 @@ static u8_t oad_image_data_handler(struct bt_conn *conn,const u8_t *data, u16_t 
 			ef_info.upgrd_crc32 = oad_env.upgrd_crc32;
 
 			bt_settings_set_bin(NV_IMG_info, (uint8_t*)&ef_info, sizeof(struct oad_ef_info));
-			BT_WARN("ef_info: file ver(%d) manu code(0x%x) file offset(0x%x) last_adder (0x%x)\r\n",ef_info.file_info.file_ver,ef_info.file_info.manu_code,
+			BT_WARN("ef_info: file ver(%lu) manu code(0x%x) file offset(0x%lx) last_adder (0x%lx)\r\n",ef_info.file_info.file_ver,ef_info.file_info.manu_code,
 																					   ef_info.file_offset,ef_info.last_wflash_addr);
 #endif
 			wData.index = 0;
@@ -364,7 +364,7 @@ static void oad_image_identity_handler(struct bt_conn *conn, const u8_t *data, u
     struct oad_image_identity_t *identity = (struct oad_image_identity_t *)(data);
 	int err = 0;
 
-    BT_WARN("File size=[0x%x] [0x%x] [0x%x] [0x%x]\r\n",identity->file_size,identity->file_info.file_ver,
+    BT_WARN("File size=[0x%lx] [0x%lx] [0x%x] [0x%lx]\r\n",identity->file_size,identity->file_info.file_ver,
                                                 identity->file_info.manu_code,identity->crc32);
 #if defined(CONFIG_BT_SETTINGS)
     size_t  llen = 0;
@@ -372,7 +372,7 @@ static void oad_image_identity_handler(struct bt_conn *conn, const u8_t *data, u
 
     memset(&ef_info,0,sizeof(struct oad_ef_info));
     bt_settings_get_bin(NV_IMG_info, (uint8_t*)&ef_info,sizeof(struct oad_ef_info),&llen);
-    BT_WARN("ef_info: file ver(%d) manu code(0x%x) file offset(0x%x) last_adder (0x%x)\r\n",ef_info.file_info.file_ver,ef_info.file_info.manu_code,
+    BT_WARN("ef_info: file ver(%lu) manu code(0x%x) file offset(0x%lx) last_adder (0x%lx)\r\n",ef_info.file_info.file_ver,ef_info.file_info.manu_code,
                                                                                            ef_info.file_offset,ef_info.last_wflash_addr);
 #else
     oad_env.new_img_addr = 0;

@@ -94,16 +94,24 @@ Error RoutingManager::Init(uint32_t aInfraIfIndex, bool aInfraIfIsRunning)
 {
     Error error;
 
-    LogInfo("Initializing - InfraIfIndex:%lu", ToUlong(aInfraIfIndex));
+    VerifyOrExit(GetState() == kStateUninitialized || GetState() == kStateDisabled, error = kErrorInvalidState);
 
-    SuccessOrExit(error = mInfraIf.Init(aInfraIfIndex));
-
-    SuccessOrExit(error = LoadOrGenerateRandomBrUlaPrefix());
-    mOmrPrefixManager.Init(mBrUlaPrefix);
+    if (!mInfraIf.IsInitialized())
+    {
+        LogInfo("Initializing - InfraIfIndex:%lu", ToUlong(aInfraIfIndex));
+        SuccessOrExit(error = mInfraIf.Init(aInfraIfIndex));
+        SuccessOrExit(error = LoadOrGenerateRandomBrUlaPrefix());
+        mOmrPrefixManager.Init(mBrUlaPrefix);
 #if OPENTHREAD_CONFIG_NAT64_BORDER_ROUTING_ENABLE
-    mNat64PrefixManager.GenerateLocalPrefix(mBrUlaPrefix);
+        mNat64PrefixManager.GenerateLocalPrefix(mBrUlaPrefix);
 #endif
-    mOnLinkPrefixManager.Init();
+        mOnLinkPrefixManager.Init();
+    }
+    else if (aInfraIfIndex != mInfraIf.GetIfIndex())
+    {
+        LogInfo("Reinitializing - InfraIfIndex:%lu -> %lu", ToUlong(mInfraIf.GetIfIndex()), ToUlong(aInfraIfIndex));
+        mInfraIf.SetIfIndex(aInfraIfIndex);
+    }
 
     error = mInfraIf.HandleStateChanged(mInfraIf.GetIfIndex(), aInfraIfIsRunning);
 
@@ -2166,6 +2174,24 @@ RoutingManager::OnLinkPrefixManager::OnLinkPrefixManager(Instance &aInstance)
     mOldLocalPrefixes.Clear();
 }
 
+void RoutingManager::OnLinkPrefixManager::SetState(State aState)
+{
+    VerifyOrExit(mState != aState);
+
+    LogInfo("Local on-link prefix state: %s -> %s (%s)", StateToString(mState), StateToString(aState),
+            mLocalPrefix.ToString().AsCString());
+    mState = aState;
+
+    // Mark the Advertising PIO (AP) flag in the published route, when
+    // the local on-link prefix is being published, advertised, or
+    // deprecated.
+
+    Get<RoutingManager>().mRoutePublisher.UpdateAdvPioFlags(aState != kIdle);
+
+exit:
+    return;
+}
+
 void RoutingManager::OnLinkPrefixManager::Init(void)
 {
     TimeMilli                now = TimerMilli::GetNow();
@@ -2249,19 +2275,19 @@ void RoutingManager::OnLinkPrefixManager::GenerateLocalPrefix(void)
     LogNote("Local on-link prefix: %s", mLocalPrefix.ToString().AsCString());
 
     // Check if the new local prefix happens to be in `mOldLocalPrefixes` array.
-    // If so, we remove it from the array and set `mState` accordingly.
+    // If so, we remove it from the array and update the state accordingly.
 
     entry = mOldLocalPrefixes.FindMatching(mLocalPrefix);
 
     if (entry != nullptr)
     {
-        mState      = kDeprecating;
+        SetState(kDeprecating);
         mExpireTime = entry->mExpireTime;
         mOldLocalPrefixes.Remove(*entry);
     }
     else
     {
-        mState = kIdle;
+        SetState(kIdle);
     }
 
 exit:
@@ -2274,7 +2300,7 @@ void RoutingManager::OnLinkPrefixManager::Stop(void)
 {
     mFavoredDiscoveredPrefix.Clear();
 
-    switch (mState)
+    switch (GetState())
     {
     case kIdle:
         break;
@@ -2282,7 +2308,7 @@ void RoutingManager::OnLinkPrefixManager::Stop(void)
     case kPublishing:
     case kAdvertising:
     case kDeprecating:
-        mState = kDeprecating;
+        SetState(kDeprecating);
         break;
     }
 }
@@ -2372,7 +2398,7 @@ void RoutingManager::OnLinkPrefixManager::PublishAndAdvertise(void)
     // Start publishing and advertising the local on-link prefix if
     // not already.
 
-    switch (mState)
+    switch (GetState())
     {
     case kIdle:
     case kDeprecating:
@@ -2383,10 +2409,8 @@ void RoutingManager::OnLinkPrefixManager::PublishAndAdvertise(void)
         ExitNow();
     }
 
-    mState = kPublishing;
+    SetState(kPublishing);
     ResetExpireTime(TimerMilli::GetNow());
-
-    LogInfo("Publishing route for local on-link prefix %s", mLocalPrefix.ToString().AsCString());
 
     // We wait for the ULA `fc00::/7` route or a sub-prefix of it (e.g.,
     // default route) to be added in Network Data before
@@ -2397,7 +2421,7 @@ void RoutingManager::OnLinkPrefixManager::PublishAndAdvertise(void)
 
     if (Get<RoutingManager>().NetworkDataContainsUlaRoute())
     {
-        EnterAdvertisingState();
+        SetState(kAdvertising);
     }
 
 exit:
@@ -2413,12 +2437,11 @@ void RoutingManager::OnLinkPrefixManager::Deprecate(void)
     // with zero preferred lifetime and the remaining valid lifetime
     // until the timer expires.
 
-    switch (mState)
+    switch (GetState())
     {
     case kPublishing:
     case kAdvertising:
-        mState = kDeprecating;
-        LogInfo("Deprecating local on-link prefix %s", mLocalPrefix.ToString().AsCString());
+        SetState(kDeprecating);
         break;
 
     case kIdle:
@@ -2434,7 +2457,7 @@ bool RoutingManager::OnLinkPrefixManager::ShouldPublishUlaRoute(void) const
     // or `kDeprecating` states, or if there is at least one old local
     // prefix being deprecated.
 
-    return (mState != kIdle) || !mOldLocalPrefixes.IsEmpty();
+    return (GetState() != kIdle) || !mOldLocalPrefixes.IsEmpty();
 }
 
 void RoutingManager::OnLinkPrefixManager::ResetExpireTime(TimeMilli aNow)
@@ -2444,15 +2467,9 @@ void RoutingManager::OnLinkPrefixManager::ResetExpireTime(TimeMilli aNow)
     SavePrefix(mLocalPrefix, mExpireTime);
 }
 
-void RoutingManager::OnLinkPrefixManager::EnterAdvertisingState(void)
-{
-    mState = kAdvertising;
-    LogInfo("Advertising local on-link prefix %s", mLocalPrefix.ToString().AsCString());
-}
-
 bool RoutingManager::OnLinkPrefixManager::IsPublishingOrAdvertising(void) const
 {
-    return (mState == kPublishing) || (mState == kAdvertising);
+    return (GetState() == kPublishing) || (GetState() == kAdvertising);
 }
 
 void RoutingManager::OnLinkPrefixManager::AppendAsPiosTo(Ip6::Nd::RouterAdvertMessage &aRaMessage)
@@ -2474,7 +2491,7 @@ void RoutingManager::OnLinkPrefixManager::AppendCurPrefix(Ip6::Nd::RouterAdvertM
     uint32_t  preferredLifetime = kDefaultOnLinkPrefixLifetime;
     TimeMilli now               = TimerMilli::GetNow();
 
-    switch (mState)
+    switch (GetState())
     {
     case kAdvertising:
         ResetExpireTime(now);
@@ -2520,11 +2537,11 @@ void RoutingManager::OnLinkPrefixManager::AppendOldPrefixes(Ip6::Nd::RouterAdver
 
 void RoutingManager::OnLinkPrefixManager::HandleNetDataChange(void)
 {
-    VerifyOrExit(mState == kPublishing);
+    VerifyOrExit(GetState() == kPublishing);
 
     if (Get<RoutingManager>().NetworkDataContainsUlaRoute())
     {
-        EnterAdvertisingState();
+        SetState(kAdvertising);
         Get<RoutingManager>().ScheduleRoutingPolicyEvaluation(kAfterRandomDelay);
     }
 
@@ -2541,7 +2558,7 @@ void RoutingManager::OnLinkPrefixManager::HandleExtPanIdChange(void)
     // so to allow Thread nodes to continue to communicate with `InfraIf`
     // device using addresses based on this prefix.
 
-    uint16_t    oldState  = mState;
+    uint16_t    oldState  = GetState();
     Ip6::Prefix oldPrefix = mLocalPrefix;
 
     GenerateLocalPrefix();
@@ -2630,7 +2647,7 @@ void RoutingManager::OnLinkPrefixManager::HandleTimer(void)
     TimeMilli                           nextExpireTime = now.GetDistantFuture();
     Array<Ip6::Prefix, kMaxOldPrefixes> expiredPrefixes;
 
-    switch (mState)
+    switch (GetState())
     {
     case kIdle:
         break;
@@ -2639,9 +2656,8 @@ void RoutingManager::OnLinkPrefixManager::HandleTimer(void)
     case kDeprecating:
         if (now >= mExpireTime)
         {
-            LogInfo("Removing expired local on-link prefix %s", mLocalPrefix.ToString().AsCString());
             IgnoreError(Get<Settings>().RemoveBrOnLinkPrefix(mLocalPrefix));
-            mState = kIdle;
+            SetState(kIdle);
         }
         else
         {
@@ -2675,6 +2691,23 @@ void RoutingManager::OnLinkPrefixManager::HandleTimer(void)
     }
 
     Get<RoutingManager>().mRoutePublisher.Evaluate();
+}
+
+const char *RoutingManager::OnLinkPrefixManager::StateToString(State aState)
+{
+    static const char *const kStateStrings[] = {
+        "Removed",     // (0) kIdle
+        "Publishing",  // (1) kPublishing
+        "Advertising", // (2) kAdvertising
+        "Deprecating", // (3) kDeprecating
+    };
+
+    static_assert(0 == kIdle, "kIdle value is incorrect");
+    static_assert(1 == kPublishing, "kPublishing value is incorrect");
+    static_assert(2 == kAdvertising, "kAdvertising value is incorrect");
+    static_assert(3 == kDeprecating, "kDeprecating value is incorrect");
+
+    return kStateStrings[aState];
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2726,6 +2759,7 @@ RoutingManager::RoutePublisher::RoutePublisher(Instance &aInstance)
     , mState(kDoNotPublish)
     , mPreference(NetworkData::kRoutePreferenceMedium)
     , mUserSetPreference(false)
+    , mAdvPioFlag(false)
     , mTimer(aInstance)
 {
 }
@@ -2780,7 +2814,8 @@ void RoutingManager::RoutePublisher::UpdatePublishedRoute(State aNewState)
 {
     // Updates the published route entry in Network Data, transitioning
     // from current `mState` to new `aNewState`. This method can be used
-    // when there is no change to `mState` but a change to `mPreference`.
+    // when there is no change to `mState` but a change to `mPreference`
+    // or `mAdvPioFlag`.
 
     Ip6::Prefix                      oldPrefix;
     NetworkData::ExternalRouteConfig routeConfig;
@@ -2796,6 +2831,7 @@ void RoutingManager::RoutePublisher::UpdatePublishedRoute(State aNewState)
 
     routeConfig.Clear();
     routeConfig.mPreference = mPreference;
+    routeConfig.mAdvPio     = mAdvPioFlag;
     routeConfig.mStable     = true;
     DeterminePrefixFor(aNewState, routeConfig.GetPrefix());
 
@@ -2831,6 +2867,16 @@ void RoutingManager::RoutePublisher::Unpublish(void)
     DeterminePrefixFor(mState, prefix);
     IgnoreError(Get<NetworkData::Publisher>().UnpublishPrefix(prefix));
     mState = kDoNotPublish;
+
+exit:
+    return;
+}
+
+void RoutingManager::RoutePublisher::UpdateAdvPioFlags(bool aAdvPioFlag)
+{
+    VerifyOrExit(mAdvPioFlag != aAdvPioFlag);
+    mAdvPioFlag = aAdvPioFlag;
+    UpdatePublishedRoute(mState);
 
 exit:
     return;

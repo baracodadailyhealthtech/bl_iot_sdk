@@ -207,7 +207,7 @@ static void cmd_ipaddr(char *buf, int len, int argc, char **argv)
         netif_ip6_addr_set(otbr_getBackboneNetif(), index, &ip6addr);
         netif_ip6_addr_set_state(otbr_getBackboneNetif(), index, IP6_ADDR_PREFERRED);
 
-        main_task_resume();
+        otbr_instance_routing_init();
     }
 }
 
@@ -221,6 +221,14 @@ const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
     {"ipinfo", "eth ipaddr", cmd_ipinfo},
     {"ipaddr", "ipaddr operation", cmd_ipaddr},
 };
+
+void otrAppProcess(ot_system_event_t sevent) 
+{
+    /** for application code */
+    /** Note,   NO heavy execution, no delay and semaphore pending here.
+     *          do NOT stop/suspend this task */
+
+}
 
 #ifdef CFG_THREAD_AUTO_START
 void otr_start_default(void) 
@@ -254,29 +262,12 @@ void otr_start_default(void)
 void otrInitUser(otInstance * instance)
 {
     otAppCliInit((otInstance * )instance);
-}
 
-void otrAppProcess(ot_system_event_t sevent) 
-{
-    /** for application code */
-    /** Note,   NO heavy execution, no delay and semaphore pending here.
-     *          do NOT stop/suspend this task */
-
-}
-
-void main_task_resume(void) 
-{
-    TaskHandle_t taskHandle = xTaskGetHandle( "main" );
-
-    if (taskHandle) {
-        if (eSuspended == eTaskGetState(taskHandle)) {
-            printf("Backbone link connectivity is ready. Resume main task.\r\n");
-            vTaskResume(taskHandle);
-        }
-    }
-    else {
-        printf("Backbone link connectivity is ready. Failed to resume main task.\r\n");
-    }
+#ifdef CFG_THREAD_AUTO_START
+    otr_start_default();
+#endif
+    
+    otbr_netif_init();
 }
 
 int main(int argc, char *argv[])
@@ -315,12 +306,5 @@ int main(int argc, char *argv[])
 
     otrStart(opt);
 
-    vTaskSuspend(NULL);
-
-    otbr_netif_init();
-    
-#ifdef CFG_THREAD_AUTO_START
-    otr_start_default();
-#endif
     return 0;
 }

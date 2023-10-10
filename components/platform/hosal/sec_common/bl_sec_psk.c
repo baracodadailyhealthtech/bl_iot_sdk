@@ -140,10 +140,12 @@ static inline int sha1_(void *sha_buf, void *output)
     return 0;
 }
 
+#define SHA_INPUT_BUF_USED_LEN (256 + SHA1_LEN)
+
 static void F_(const char *password, const void *ssid, size_t ssid_len, size_t block_idx, void *output)
 {
     size_t password_len = strlen(password);
-    uint32_t sha_input_buf[(256 + SHA1_LEN) / 4];
+    uint32_t sha_input_buf[(SHA_INPUT_BUF_USED_LEN + 28 * 2) / 4];
     const size_t iterations = 4096;
     void *sha_buf = sha_input_buf;
     void *p;
@@ -153,13 +155,13 @@ static void F_(const char *password, const void *ssid, size_t ssid_len, size_t b
 #ifdef BL616
     if (bl_sec_is_cache_addr(sha_input_buf)) {
         L1C_DCache_Clean_Invalid_By_Addr((uintptr_t)sha_input_buf, sizeof(sha_input_buf));
-        sha_buf = bl_sec_get_no_cache_addr(sha_input_buf);
+        sha_buf = (uint8_t *)bl_sec_get_no_cache_addr(sha_input_buf) + 28;
     }
 #endif
     void *sha_buf2 = sha_buf + 128;
     void *sha_out = sha_buf + 256;
 
-    memset(sha_buf, 0, sizeof(sha_input_buf));
+    memset(sha_buf, 0, SHA_INPUT_BUF_USED_LEN);
     memcpy(sha_buf, password, password_len);
     memcpy(sha_buf2, password, password_len);
     pw = (uint32_t *)sha_buf;
@@ -203,7 +205,7 @@ static void F_(const char *password, const void *ssid, size_t ssid_len, size_t b
     }
 
     sha_hw_deinit();
-    memset(sha_buf, 0, sizeof(sha_input_buf));
+    memset(sha_buf, 0, SHA_INPUT_BUF_USED_LEN);
 }
 
 int bl_sec_psk(const char *password, const void *ssid, size_t ssid_len, void *output)
