@@ -216,7 +216,14 @@ env.Append(
         "-fstrict-volatile-bitfields",
         "-fcommon",
         "-fno-omit-frame-pointer",
-        "-gdwarf"
+        "-gdwarf",
+        
+        "-Wno-unused-variable",
+        "-Wno-unused-function",
+        "-Wno-format",
+        "-Wno-discarded-qualifiers",
+        "-Wno-strict-aliasing"
+
     ],
     CPPDEFINES = defines + redefines + [
         "ARCH_RISCV",
