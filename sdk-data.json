@@ -667,8 +667,9 @@
 				"cli"
 			],
 			"defines": [
-				["CONFIG_SYS_APP_TASK_STACK_SIZE", 2048],
-				["CONFIG_SYS_AOS_LOOP_TASK_PRIORITY", 15]
+				["SYS_APP_TASK_STACK_SIZE", 2048],
+				["SYS_AOS_LOOP_TASK_PRIORITY", 15],
+				["SYS_APP_TASK_PRIORITY", 15]
 			],
 			"include_dirs": [
 				"components/platform/soc/bl702/bl702/evb/src",

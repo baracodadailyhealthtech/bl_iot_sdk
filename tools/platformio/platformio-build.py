@@ -60,8 +60,8 @@ def resolve_component_dependencies(COMPONENTS, component):
 COMPONENTS = SDKDATA['sdk']['defaults']['components']
 
 # automatically add chip low level compoments
-COMPONENTS.append(bl_mcu)
-COMPONENTS.append(f"{bl_mcu}_hosal")
+COMPONENTS.append(bl_mcu.lower())
+COMPONENTS.append(f"{bl_mcu.lower()}_hosal")
 
 # scan compoments
 for component in COMPONENTS:
@@ -232,11 +232,11 @@ env.Append(
         ("BL_SDK_STDDRV_VER", "\\\"" + f"{SDKDATA['sdk']['version']}" + "\\\""),
         ("BL_SDK_STDCOM_VER", "\\\"" + f"{SDKDATA['sdk']['version']}" + "\\\""),
         ("BL_SDK_RF_VER", "\\\"" + f"{SDKDATA['sdk']['rf_ver']}" + "\\\""),
-        bl_chipname,
-        ("BL_CHIP_NAME", bl_chipname),
+        bl_chipname.upper(),
+        ("BL_CHIP_NAME", bl_chipname.upper()),
         ("BFLB_COREDUMP_BINARY_ID", time.time() // 86400 * 86400), # round by day so we don't rebuild every time
         '__FILENAME__=(__builtin_strrchr(\\"/\\"__FILE__, \'/\') + 1)',
-        "CONF_USER_"+bl_chipname
+        "CONF_USER_"+bl_chipname.upper()
     ],
     CPPPATH = include_dirs + [
     ],
