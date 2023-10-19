@@ -603,6 +603,7 @@
 			"source_filter": [
 				"-<*>",
 				"+<syscalls.c>",
+				"+<stdatomic.c>",
 				"+<assert.c>"
 			]
 		},
