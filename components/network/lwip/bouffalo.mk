@@ -61,3 +61,7 @@ endif
 ifeq ($(CONFIG_LWIP_PE_OPT),1)
 CFLAGS += -msave-restore
 endif
+
+ifeq ($(CONFIG_MATTER_SUPPORT),1)
+CPPFLAGS += -DMATTER_SUPPORT
+endif

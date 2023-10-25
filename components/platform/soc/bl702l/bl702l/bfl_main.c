@@ -395,7 +395,7 @@ void bl702_main()
     rom_freertos_init(256, 400);
 #endif
     rom_hal_init();
-    rom_lmac154_hook_init();
+    //rom_lmac154_hook_init();
 #endif
 
 #if defined(GPIO_SIM_PRINT)

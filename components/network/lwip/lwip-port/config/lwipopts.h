@@ -380,6 +380,12 @@ a lot of data that needs to be copied, this should be set high. */
 
 #define LWIP_RAW                        1
 
+#ifdef MATTER_SUPPORT
+#include "lwip/arch.h"
+#include <lwip/mem.h>
+#define LWIP_PBUF_CUSTOM_DATA           mem_size_t pool;
+#endif
+
 /*
    ---------------------------------
    ---------- MISC. options ----------

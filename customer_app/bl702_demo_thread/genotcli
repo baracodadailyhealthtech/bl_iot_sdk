@@ -31,7 +31,7 @@ if (( $1 -eq "" )); then
 jobs=$1
 fi
 
-CONFIG_ENABLE_FP=1
+CONFIG_ENABLE_FP=0
 if [ ! -d build_out ]; then
 mkdir build_out
 fi

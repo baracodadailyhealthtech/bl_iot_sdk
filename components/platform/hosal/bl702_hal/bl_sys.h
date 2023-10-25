@@ -57,6 +57,6 @@ int bl_sys_default_active_config(void);
 int bl_sys_early_init(void);
 int bl_sys_init(void);
 int bl_sys_wdt_rst_count_get();
-
+void bl_function_call_with_stack(void (*f)(void *data), void *data, void *stacktop);
 
 #endif

@@ -99,9 +99,13 @@ exit:
 
 void Server::Stop(void)
 {
-    for (ProxyQuery &query : mProxyQueries)
+    // Abort all query transactions
+    for (QueryTransaction &query : mQueryTransactions)
     {
-        Finalize(query, Header::kResponseServerFailure);
+        if (query.IsValid())
+        {
+            query.Finalize(kErrorFailed);
+        }
     }
 
 #if OPENTHREAD_CONFIG_DNS_UPSTREAM_QUERY_ENABLE
@@ -157,21 +161,25 @@ exit:
 
 void Server::ProcessQuery(Request &aRequest)
 {
-    ResponseCode rcode = Header::kResponseSuccess;
-    Response     response(GetInstance());
+    Error        error = kErrorNone;
+    Response     response;
+    bool         shouldSendResponse = true;
+    ResponseCode rcode              = Header::kResponseSuccess;
 
 #if OPENTHREAD_CONFIG_DNS_UPSTREAM_QUERY_ENABLE
     if (mEnableUpstreamQuery && ShouldForwardToUpstream(aRequest))
     {
-        Error error = ResolveByUpstream(aRequest);
+        error = ResolveByUpstream(aRequest);
 
         if (error == kErrorNone)
         {
+            shouldSendResponse = false;
             ExitNow();
         }
 
         LogWarn("Error forwarding to upstream: %s", ErrorToString(error));
 
+        error = kErrorNone;
         rcode = Header::kResponseServerFailure;
 
         // Continue to allocate and prepare the response message
@@ -179,7 +187,22 @@ void Server::ProcessQuery(Request &aRequest)
     }
 #endif
 
-    SuccessOrExit(response.AllocateAndInitFrom(aRequest));
+    response.mMessage = Get<Server>().mSocket.NewMessage();
+    VerifyOrExit(response.mMessage != nullptr, error = kErrorNoBufs);
+
+    // Prepare DNS response header
+    response.mHeader.SetType(Header::kTypeResponse);
+    response.mHeader.SetMessageId(aRequest.mHeader.GetMessageId());
+    response.mHeader.SetQueryType(aRequest.mHeader.GetQueryType());
+
+    if (aRequest.mHeader.IsRecursionDesiredFlagSet())
+    {
+        response.mHeader.SetRecursionDesiredFlag();
+    }
+
+    // Append the empty header to reserve room for it in the message.
+    // Header will be updated in the message before sending it.
+    SuccessOrExit(error = response.mMessage->Append(response.mHeader));
 
 #if OPENTHREAD_CONFIG_DNS_UPSTREAM_QUERY_ENABLE
     // Forwarding the query to the upstream may have already set the
@@ -211,59 +234,33 @@ void Server::ProcessQuery(Request &aRequest)
     }
 #endif
 
-    ResolveByProxy(response, *aRequest.mMessageInfo);
+    if (ResolveByQueryCallbacks(response, *aRequest.mMessageInfo) == kErrorNone)
+    {
+        // `ResolveByQueryCallbacks()` will take ownership of the
+        // allocated `response.mMessage` on success. Therefore,
+        // there is no need to free it at `exit`.
+
+        shouldSendResponse = false;
+    }
 
 exit:
-    if (rcode != Header::kResponseSuccess)
+    if ((error == kErrorNone) && shouldSendResponse)
     {
-        response.SetResponseCode(rcode);
+        if (rcode != Header::kResponseSuccess)
+        {
+            response.SetResponseCode(rcode);
+        }
+
+        response.Send(*aRequest.mMessageInfo);
     }
 
-    response.Send(*aRequest.mMessageInfo);
-}
-
-Server::Response::Response(Instance &aInstance)
-    : InstanceLocator(aInstance)
-{
-    // `mHeader` constructors already clears it
-
-    mOffsets.Clear();
-}
-
-Error Server::Response::AllocateAndInitFrom(const Request &aRequest)
-{
-    Error error = kErrorNone;
-
-    mMessage.Reset(Get<Server>().mSocket.NewMessage());
-    VerifyOrExit(!mMessage.IsNull(), error = kErrorNoBufs);
-
-    mHeader.SetType(Header::kTypeResponse);
-    mHeader.SetMessageId(aRequest.mHeader.GetMessageId());
-    mHeader.SetQueryType(aRequest.mHeader.GetQueryType());
-
-    if (aRequest.mHeader.IsRecursionDesiredFlagSet())
-    {
-        mHeader.SetRecursionDesiredFlag();
-    }
-
-    // Append the empty header to reserve room for it in the message.
-    // Header will be updated in the message before sending it.
-    error = mMessage->Append(mHeader);
-
-exit:
-    if (error != kErrorNone)
-    {
-        mMessage.Free();
-    }
-
-    return error;
+    FreeMessageOnError(response.mMessage, error);
 }
 
 void Server::Response::Send(const Ip6::MessageInfo &aMessageInfo)
 {
+    Error        error;
     ResponseCode rcode = mHeader.GetResponseCode();
-
-    VerifyOrExit(!mMessage.IsNull());
 
     if (rcode == Header::kResponseServerFailure)
     {
@@ -275,19 +272,19 @@ void Server::Response::Send(const Ip6::MessageInfo &aMessageInfo)
 
     mMessage->Write(0, mHeader);
 
-    SuccessOrExit(Get<Server>().mSocket.SendTo(*mMessage, aMessageInfo));
+    error = Get<Server>().mSocket.SendTo(*mMessage, aMessageInfo);
 
-    // When `SendTo()` returns success it takes over ownership of
-    // the given message, so we release ownership of `mMessage`.
-
-    mMessage.Release();
-
-    LogInfo("Send response, rcode:%u", rcode);
+    if (error != kErrorNone)
+    {
+        mMessage->Free();
+        LogWarn("Failed to send reply: %s", ErrorToString(error));
+    }
+    else
+    {
+        LogInfo("Send response, rcode:%u", rcode);
+    }
 
     Get<Server>().UpdateResponseCounters(rcode);
-
-exit:
-    return;
 }
 
 Server::ResponseCode Server::Request::ParseQuestions(uint8_t aTestMode)
@@ -422,19 +419,19 @@ Error Server::Response::ParseQueryName(void)
     switch (mType)
     {
     case kPtrQuery:
-        // `mOffsets.mServiceName` may be updated as we read labels and if we
+        // `mServiceOffset` may be updated as we read labels and if we
         // determine that the query name is a sub-type service.
-        mOffsets.mServiceName = sizeof(Header);
+        mServiceOffset = sizeof(Header);
         break;
 
     case kSrvQuery:
     case kTxtQuery:
     case kSrvTxtQuery:
-        mOffsets.mInstanceName = sizeof(Header);
+        mInstanceOffset = sizeof(Header);
         break;
 
     case kAaaaQuery:
-        mOffsets.mHostName = sizeof(Header);
+        mHostOffset = sizeof(Header);
         break;
     }
 
@@ -454,14 +451,14 @@ Error Server::Response::ParseQueryName(void)
 
         if ((mType == kPtrQuery) && StringMatch(label, kSubLabel, kStringCaseInsensitiveMatch))
         {
-            mOffsets.mServiceName = offset;
+            mServiceOffset = offset;
         }
 
         comapreOffset = offset;
 
         if (Name::CompareName(*mMessage, comapreOffset, kDefaultDomainName) == kErrorNone)
         {
-            mOffsets.mDomainName = offset;
+            mDomainOffset = offset;
             ExitNow();
         }
     }
@@ -472,11 +469,24 @@ exit:
     return error;
 }
 
-void Server::Response::ReadQueryName(DnsName &aName) const { Server::ReadQueryName(*mMessage, aName); }
+void Server::Response::ReadQueryName(DnsName &aName) const
+{
+    // Query name is always present immediately after `Header` in the
+    // question section
 
-bool Server::Response::QueryNameMatches(const char *aName) const { return Server::QueryNameMatches(*mMessage, aName); }
+    uint16_t offset = sizeof(Header);
 
-Error Server::Response::AppendQueryName(void) { return Name::AppendPointerLabel(sizeof(Header), *mMessage); }
+    IgnoreError(Name::ReadName(*mMessage, offset, aName, sizeof(aName)));
+}
+
+bool Server::Response::QueryNameMatches(const char *aName) const
+{
+    uint16_t offset = sizeof(Header);
+
+    return (Name::CompareName(*mMessage, offset, aName) == kErrorNone);
+}
+
+Error Server::Response::AppendQueryName(void) const { return Name::AppendPointerLabel(sizeof(Header), *mMessage); }
 
 Error Server::Response::AppendPtrRecord(const char *aInstanceLabel, uint32_t aTtl)
 {
@@ -492,9 +502,9 @@ Error Server::Response::AppendPtrRecord(const char *aInstanceLabel, uint32_t aTt
     recordOffset = mMessage->GetLength();
     SuccessOrExit(error = mMessage->Append(ptrRecord));
 
-    mOffsets.mInstanceName = mMessage->GetLength();
+    mInstanceOffset = mMessage->GetLength();
     SuccessOrExit(error = Name::AppendLabel(aInstanceLabel, *mMessage));
-    SuccessOrExit(error = Name::AppendPointerLabel(mOffsets.mServiceName, *mMessage));
+    SuccessOrExit(error = Name::AppendPointerLabel(mServiceOffset, *mMessage));
 
     UpdateRecordLength(ptrRecord, recordOffset);
 
@@ -539,14 +549,14 @@ Error Server::Response::AppendSrvRecord(const char *aHostName,
     srvRecord.SetWeight(aWeight);
     srvRecord.SetPort(aPort);
 
-    SuccessOrExit(error = Name::AppendPointerLabel(mOffsets.mInstanceName, *mMessage));
+    SuccessOrExit(error = Name::AppendPointerLabel(mInstanceOffset, *mMessage));
 
     recordOffset = mMessage->GetLength();
     SuccessOrExit(error = mMessage->Append(srvRecord));
 
-    mOffsets.mHostName = mMessage->GetLength();
+    mHostOffset = mMessage->GetLength();
     SuccessOrExit(error = Name::AppendMultipleLabels(hostLabels, *mMessage));
-    SuccessOrExit(error = Name::AppendPointerLabel(mOffsets.mDomainName, *mMessage));
+    SuccessOrExit(error = Name::AppendPointerLabel(mDomainOffset, *mMessage));
 
     UpdateRecordLength(srvRecord, recordOffset);
 
@@ -592,7 +602,7 @@ Error Server::Response::AppendHostAddresses(const Ip6::Address *aAddrs, uint16_t
         aaaaRecord.SetTtl(aTtl);
         aaaaRecord.SetAddress(aAddrs[index]);
 
-        SuccessOrExit(error = Name::AppendPointerLabel(mOffsets.mHostName, *mMessage));
+        SuccessOrExit(error = Name::AppendPointerLabel(mHostOffset, *mMessage));
         SuccessOrExit(error = mMessage->Append(aaaaRecord));
 
         IncResourceRecordCount();
@@ -631,7 +641,7 @@ Error Server::Response::AppendTxtRecord(const void *aTxtData, uint16_t aTxtLengt
     txtRecord.SetTtl(aTtl);
     txtRecord.SetLength(aTxtLength);
 
-    SuccessOrExit(error = Name::AppendPointerLabel(mOffsets.mInstanceName, *mMessage));
+    SuccessOrExit(error = Name::AppendPointerLabel(mInstanceOffset, *mMessage));
     SuccessOrExit(error = mMessage->Append(txtRecord));
     SuccessOrExit(error = mMessage->AppendBytes(aTxtData, aTxtLength));
 
@@ -641,7 +651,7 @@ exit:
     return error;
 }
 
-void Server::Response::UpdateRecordLength(ResourceRecord &aRecord, uint16_t aOffset)
+void Server::Response::UpdateRecordLength(ResourceRecord &aRecord, uint16_t aOffset) const
 {
     // Calculates RR DATA length and updates and re-writes it in the
     // response message. This should be called immediately
@@ -827,6 +837,24 @@ exit:
 
 #endif // OPENTHREAD_CONFIG_SRP_SERVER_ENABLE
 
+Error Server::ResolveByQueryCallbacks(Response &aResponse, const Ip6::MessageInfo &aMessageInfo)
+{
+    Error             error = kErrorNone;
+    QueryTransaction *query = nullptr;
+    DnsName           name;
+
+    VerifyOrExit(mQuerySubscribe.IsSet(), error = kErrorFailed);
+
+    query = NewQuery(aResponse, aMessageInfo);
+    VerifyOrExit(query != nullptr, error = kErrorNoBufs);
+
+    query->ReadQueryName(name);
+    mQuerySubscribe.Invoke(name);
+
+exit:
+    return error;
+}
+
 #if OPENTHREAD_CONFIG_DNS_UPSTREAM_QUERY_ENABLE
 bool Server::ShouldForwardToUpstream(const Request &aRequest)
 {
@@ -911,107 +939,71 @@ exit:
 }
 #endif // OPENTHREAD_CONFIG_DNS_UPSTREAM_QUERY_ENABLE
 
-void Server::ResolveByProxy(Response &aResponse, const Ip6::MessageInfo &aMessageInfo)
+Server::QueryTransaction *Server::NewQuery(Response &aResponse, const Ip6::MessageInfo &aMessageInfo)
 {
-    ProxyQuery    *query;
-    ProxyQueryInfo info;
-    DnsName        name;
+    QueryTransaction *newQuery = nullptr;
 
-    VerifyOrExit(mQuerySubscribe.IsSet());
-
-    // We try to convert `aResponse.mMessage` to a `ProxyQuery` by
-    // appending `ProxyQueryInfo` to it.
-
-    info.mType        = aResponse.mType;
-    info.mMessageInfo = aMessageInfo;
-    info.mExpireTime  = TimerMilli::GetNow() + kQueryTimeout;
-    info.mOffsets     = aResponse.mOffsets;
-
-    if (aResponse.mMessage->Append(info) != kErrorNone)
+    for (QueryTransaction &query : mQueryTransactions)
     {
-        aResponse.SetResponseCode(Header::kResponseServerFailure);
-        ExitNow();
+        if (!query.IsValid())
+        {
+            newQuery = &query;
+            break;
+        }
     }
 
-    // Take over the ownership of `aResponse.mMessage` and add it as a
-    // `ProxyQuery` in `mProxyQueries` list.
+    VerifyOrExit(newQuery != nullptr);
 
-    query = aResponse.mMessage.Release();
+    *static_cast<Response *>(newQuery) = aResponse;
+    newQuery->mMessageInfo             = aMessageInfo;
+    newQuery->mExpireTime              = TimerMilli::GetNow() + kQueryTimeout;
 
-    query->Write(0, aResponse.mHeader);
-    mProxyQueries.Enqueue(*query);
-
-    mTimer.FireAtIfEarlier(info.mExpireTime);
-
-    ReadQueryName(*query, name);
-    mQuerySubscribe.Invoke(name);
+    mTimer.FireAtIfEarlier(newQuery->mExpireTime);
 
 exit:
-    return;
+    return newQuery;
 }
 
-void Server::ReadQueryName(const Message &aQuery, DnsName &aName)
+bool Server::QueryTransaction::CanAnswer(const char *aServiceFullName, const ServiceInstanceInfo &aInstanceInfo) const
 {
-    uint16_t offset = sizeof(Header);
+    bool canAnswer = false;
 
-    IgnoreError(Name::ReadName(aQuery, offset, aName, sizeof(aName)));
+    switch (mType)
+    {
+    case kPtrQuery:
+        canAnswer = QueryNameMatches(aServiceFullName);
+        break;
+
+    case kSrvQuery:
+    case kTxtQuery:
+    case kSrvTxtQuery:
+        canAnswer = QueryNameMatches(aInstanceInfo.mFullName);
+        break;
+
+    case kAaaaQuery:
+        break;
+    }
+
+    return canAnswer;
 }
 
-bool Server::QueryNameMatches(const Message &aQuery, const char *aName)
+bool Server::QueryTransaction::CanAnswer(const char *aHostFullName) const
 {
-    uint16_t offset = sizeof(Header);
-
-    return (Name::CompareName(aQuery, offset, aName) == kErrorNone);
+    return (mType == kAaaaQuery) && QueryNameMatches(aHostFullName);
 }
 
-void Server::ProxyQueryInfo::ReadFrom(const ProxyQuery &aQuery)
-{
-    SuccessOrAssert(aQuery.Read(aQuery.GetLength() - sizeof(ProxyQueryInfo), *this));
-}
-
-void Server::ProxyQueryInfo::RemoveFrom(ProxyQuery &aQuery) const
-{
-    SuccessOrAssert(aQuery.SetLength(aQuery.GetLength() - sizeof(ProxyQueryInfo)));
-}
-
-void Server::ProxyQueryInfo::UpdateIn(ProxyQuery &aQuery) const
-{
-    aQuery.Write(aQuery.GetLength() - sizeof(ProxyQueryInfo), *this);
-}
-
-Error Server::Response::ExtractServiceInstanceLabel(const char *aInstanceName, DnsLabel &aLabel)
+Error Server::QueryTransaction::ExtractServiceInstanceLabel(const char *aInstanceName, DnsLabel &aLabel)
 {
     uint16_t offset;
     DnsName  serviceName;
 
-    offset = mOffsets.mServiceName;
+    offset = mServiceOffset;
     IgnoreError(Name::ReadName(*mMessage, offset, serviceName, sizeof(serviceName)));
 
     return Name::ExtractLabels(aInstanceName, serviceName, aLabel, sizeof(aLabel));
 }
 
-void Server::RemoveQueryAndPrepareResponse(ProxyQuery &aQuery, const ProxyQueryInfo &aInfo, Response &aResponse)
-{
-    DnsName name;
-
-    mProxyQueries.Dequeue(aQuery);
-    aInfo.RemoveFrom(aQuery);
-
-    ReadQueryName(aQuery, name);
-    mQueryUnsubscribe.InvokeIfSet(name);
-
-    aResponse.InitFrom(aQuery, aInfo);
-}
-
-void Server::Response::InitFrom(ProxyQuery &aQuery, const ProxyQueryInfo &aInfo)
-{
-    mMessage.Reset(&aQuery);
-    IgnoreError(mMessage->Read(0, mHeader));
-    mType    = aInfo.mType;
-    mOffsets = aInfo.mOffsets;
-}
-
-void Server::Response::Answer(const ServiceInstanceInfo &aInstanceInfo, const Ip6::MessageInfo &aMessageInfo)
+void Server::QueryTransaction::Answer(const ServiceInstanceInfo &aInstanceInfo)
 {
     static const Section kSections[] = {kAnswerSection, kAdditionalDataSection};
 
@@ -1051,24 +1043,17 @@ void Server::Response::Answer(const ServiceInstanceInfo &aInstanceInfo, const Ip
     error = AppendHostAddresses(aInstanceInfo);
 
 exit:
-    if (error != kErrorNone)
-    {
-        SetResponseCode(Header::kResponseServerFailure);
-    }
-
-    Send(aMessageInfo);
+    Finalize(error);
 }
 
-void Server::Response::Answer(const HostInfo &aHostInfo, const Ip6::MessageInfo &aMessageInfo)
+void Server::QueryTransaction::Answer(const HostInfo &aHostInfo)
 {
+    Error error;
+
     mSection = kAnswerSection;
+    error    = AppendHostAddresses(aHostInfo);
 
-    if (AppendHostAddresses(aHostInfo) != kErrorNone)
-    {
-        SetResponseCode(Header::kResponseServerFailure);
-    }
-
-    Send(aMessageInfo);
+    Finalize(error);
 }
 
 void Server::SetQueryCallbacks(SubscribeCallback aSubscribe, UnsubscribeCallback aUnsubscribe, void *aContext)
@@ -1085,38 +1070,11 @@ void Server::HandleDiscoveredServiceInstance(const char *aServiceFullName, const
     OT_ASSERT(StringEndsWith(aInstanceInfo.mFullName, Name::kLabelSeparatorChar));
     OT_ASSERT(StringEndsWith(aInstanceInfo.mHostName, Name::kLabelSeparatorChar));
 
-    // It is safe to remove entries from `mProxyQueries` as we iterate
-    // over it since it is a `MessageQueue`.
-
-    for (ProxyQuery &query : mProxyQueries)
+    for (QueryTransaction &query : mQueryTransactions)
     {
-        bool           canAnswer = false;
-        ProxyQueryInfo info;
-
-        info.ReadFrom(query);
-
-        switch (info.mType)
+        if (query.IsValid() && query.CanAnswer(aServiceFullName, aInstanceInfo))
         {
-        case kPtrQuery:
-            canAnswer = QueryNameMatches(query, aServiceFullName);
-            break;
-
-        case kSrvQuery:
-        case kTxtQuery:
-        case kSrvTxtQuery:
-            canAnswer = QueryNameMatches(query, aInstanceInfo.mFullName);
-            break;
-
-        case kAaaaQuery:
-            break;
-        }
-
-        if (canAnswer)
-        {
-            Response response(GetInstance());
-
-            RemoveQueryAndPrepareResponse(query, info, response);
-            response.Answer(aInstanceInfo, info.mMessageInfo);
+            query.Answer(aInstanceInfo);
         }
     }
 }
@@ -1125,41 +1083,57 @@ void Server::HandleDiscoveredHost(const char *aHostFullName, const HostInfo &aHo
 {
     OT_ASSERT(StringEndsWith(aHostFullName, Name::kLabelSeparatorChar));
 
-    for (ProxyQuery &query : mProxyQueries)
+    for (QueryTransaction &query : mQueryTransactions)
     {
-        ProxyQueryInfo info;
-
-        info.ReadFrom(query);
-
-        if ((info.mType == kAaaaQuery) && QueryNameMatches(query, aHostFullName))
+        if (query.IsValid() && query.CanAnswer(aHostFullName))
         {
-            Response response(GetInstance());
-
-            RemoveQueryAndPrepareResponse(query, info, response);
-            response.Answer(aHostInfo, info.mMessageInfo);
+            query.Answer(aHostInfo);
         }
     }
 }
 
 const otDnssdQuery *Server::GetNextQuery(const otDnssdQuery *aQuery) const
 {
-    const ProxyQuery *query = static_cast<const ProxyQuery *>(aQuery);
+    const QueryTransaction *cur   = &mQueryTransactions[0];
+    const QueryTransaction *found = nullptr;
+    const QueryTransaction *query = static_cast<const QueryTransaction *>(aQuery);
 
-    return (query == nullptr) ? mProxyQueries.GetHead() : query->GetNext();
+    if (aQuery != nullptr)
+    {
+        cur = query + 1;
+    }
+
+    for (; cur < GetArrayEnd(mQueryTransactions); cur++)
+    {
+        if (cur->IsValid())
+        {
+            found = cur;
+            break;
+        }
+    }
+
+    return static_cast<const otDnssdQuery *>(found);
 }
 
 Server::DnsQueryType Server::GetQueryTypeAndName(const otDnssdQuery *aQuery, char (&aName)[Name::kMaxNameSize])
 {
-    const ProxyQuery *query = static_cast<const ProxyQuery *>(aQuery);
-    ProxyQueryInfo    info;
-    DnsQueryType      type;
+    const QueryTransaction *query = static_cast<const QueryTransaction *>(aQuery);
+    DnsQueryType            type;
 
-    ReadQueryName(*query, aName);
-    info.ReadFrom(*query);
+    OT_ASSERT(query->IsValid());
 
-    type = kDnsQueryBrowse;
+    query->GetQueryTypeAndName(type, aName);
 
-    switch (info.mType)
+    return type;
+}
+
+void Server::Response::GetQueryTypeAndName(DnsQueryType &aType, DnsName &aName) const
+{
+    ReadQueryName(aName);
+
+    aType = kDnsQueryBrowse;
+
+    switch (mType)
     {
     case kPtrQuery:
         break;
@@ -1167,15 +1141,13 @@ Server::DnsQueryType Server::GetQueryTypeAndName(const otDnssdQuery *aQuery, cha
     case kSrvQuery:
     case kTxtQuery:
     case kSrvTxtQuery:
-        type = kDnsQueryResolve;
+        aType = kDnsQueryResolve;
         break;
 
     case kAaaaQuery:
-        type = kDnsQueryResolveHost;
+        aType = kDnsQueryResolveHost;
         break;
     }
-
-    return type;
 }
 
 void Server::HandleTimer(void)
@@ -1183,19 +1155,20 @@ void Server::HandleTimer(void)
     TimeMilli now        = TimerMilli::GetNow();
     TimeMilli nextExpire = now.GetDistantFuture();
 
-    for (ProxyQuery &query : mProxyQueries)
+    for (QueryTransaction &query : mQueryTransactions)
     {
-        ProxyQueryInfo info;
-
-        info.ReadFrom(query);
-
-        if (info.mExpireTime <= now)
+        if (!query.IsValid())
         {
-            Finalize(query, Header::kResponseSuccess);
+            continue;
+        }
+
+        if (query.mExpireTime <= now)
+        {
+            query.Finalize(kErrorNone);
         }
         else
         {
-            nextExpire = Min(nextExpire, info.mExpireTime);
+            nextExpire = Min(nextExpire, query.mExpireTime);
         }
     }
 
@@ -1224,16 +1197,19 @@ void Server::HandleTimer(void)
     }
 }
 
-void Server::Finalize(ProxyQuery &aQuery, ResponseCode aResponseCode)
+void Server::QueryTransaction::Finalize(Error aError)
 {
-    Response       response(GetInstance());
-    ProxyQueryInfo info;
+    DnsName name;
 
-    info.ReadFrom(aQuery);
-    RemoveQueryAndPrepareResponse(aQuery, info, response);
+    ReadQueryName(name);
+    Get<Server>().mQueryUnsubscribe.InvokeIfSet(name);
 
-    response.SetResponseCode(aResponseCode);
-    response.Send(info.mMessageInfo);
+    mHeader.SetResponseCode((aError == kErrorNone) ? Header::kResponseSuccess : Header::kResponseServerFailure);
+    Send(mMessageInfo);
+
+    // Set the `mMessage` to null to indicate that
+    // `QueryTransaction` is unused.
+    mMessage = nullptr;
 }
 
 void Server::UpdateResponseCounters(ResponseCode aResponseCode)

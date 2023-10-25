@@ -244,3 +244,50 @@ int bl_sys_wdt_rst_count_get()
     return wdt_triger_counter;
 }
 
+/*
+ * @brief: perform f(data) using stack referred by stacktop,
+ *         not its caller's.
+ * @param: f - the function to be called.
+ *         data - the parameter of f.
+ *         stacktop - the top of the new stack.
+ * @return: none.
+ */
+void bl_function_call_with_stack(void (*f)(void *data), void *data, void *stacktop)
+{
+    /*
+     * calling convention
+     * register saver
+     * x0       -
+     * ra       caller
+     * sp       callee
+     * gp       -
+     * tp       -
+     * t0       caller
+     * t1-2     caller
+     * fp       callee
+     * s1       callee
+     * a0-1     caller
+     * a2-7     caller
+     * s2-11    callee
+     * t3-6     caller
+     */
+    __asm__ __volatile__ (
+        "addi   sp, sp, -12          \n\t"
+        "sw     ra, 8(sp)            \n\t"
+        "sw     s0, 4(sp)            \n\t"
+        "sw     s1, 0(sp)            \n\t"
+        "addi   s0, sp, 12           \n\t"
+
+        "mv     s1, sp               \n\t"
+        "mv     t0, a0               \n\t"
+        "mv     a0, a1               \n\t"
+        "mv     sp, a2               \n\t"
+        "jalr   t0                   \n\t"
+        "mv     sp, s1               \n\t"
+
+        "lw     s1, 0(sp)            \n\t"
+        "lw     s0, 4(sp)            \n\t"
+        "lw     ra, 8(sp)            \n\t"
+        "addi   sp, sp, 12           \n\t"
+    );
+}

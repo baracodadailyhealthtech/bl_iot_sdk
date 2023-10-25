@@ -200,7 +200,6 @@ static ssize_t read_report(struct bt_conn *conn,
 static void input_ccc_changed(const struct bt_gatt_attr *attr, u16_t value)
 {
     ARG_UNUSED(attr);
-    printf("%s value=%d\r\n", __func__, value);
 }
 
 static ssize_t read_input_report(struct bt_conn *conn,

@@ -74,6 +74,8 @@ void bl_ir_led_drv_cfg(uint8_t led0_en, uint8_t led1_en)
     }else{
         GLB_IR_LED_Driver_Disable();
     }
+
+    GLB_IR_LED_Driver_Ibias(15);
 }
 
 void bl_ir_custom_tx_cfg(IR_TxCfg_Type *txCfg, IR_TxPulseWidthCfg_Type *txPWCfg)

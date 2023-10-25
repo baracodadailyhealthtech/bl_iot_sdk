@@ -34,6 +34,8 @@ CONFIG_SYS_AOS_CLI_ENABLE := 1
 CONFIG_SYS_AOS_LOOP_ENABLE := 1
 endif
 
+CONFIG_LINK_CUSTOMER := 1
+
 EXT_CFG_FILE := $(PROJECT_PATH)/proj_config_ext.mk
 ifeq ($(EXT_CFG_FILE), $(wildcard $(EXT_CFG_FILE)))
 include $(PROJECT_PATH)/proj_config_ext.mk

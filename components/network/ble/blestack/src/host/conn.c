@@ -168,6 +168,18 @@ int bt_conn_get_peripheral_pref_params(struct bt_le_conn_param *param)
 
     return 0;
 }
+
+#if defined (BFLB_BLE_ENABLE_OR_DISABLE_SLAVE_PREF_CONN_PARAM_UDPATE)
+int bt_conn_enable_peripheral_pref_param_update(struct bt_conn *conn, bool enable)
+{
+    if(conn == NULL)
+        return -EINVAL;
+
+    conn->le.disable_pref_conn_param_update = !enable;
+    return 0;
+}
+#endif
+
 #endif//BFLB_BLE_GAP_SET_PERIPHERAL_PREF_PARAMS
 
 static void notify_connected(struct bt_conn *conn)
@@ -427,18 +439,23 @@ static void conn_update_timeout(struct k_work *work)
 
 		send_conn_le_param_update(conn, param);
 	} else {
-        #if defined (BFLB_BLE_GAP_SET_PERIPHERAL_PREF_PARAMS)
-		param = BT_LE_CONN_PARAM(peripheral_pref_con_params.interval_min,
-					 peripheral_pref_con_params.interval_max,
-					 peripheral_pref_con_params.latency,
-					 peripheral_pref_con_params.timeout);
-        #else
-		param = BT_LE_CONN_PARAM(CONFIG_BT_PERIPHERAL_PREF_MIN_INT,
-					 CONFIG_BT_PERIPHERAL_PREF_MAX_INT,
-					 CONFIG_BT_PERIPHERAL_PREF_SLAVE_LATENCY,
-					 CONFIG_BT_PERIPHERAL_PREF_TIMEOUT);
-        #endif//BFLB_BLE_GAP_SET_PERIPHERAL_PREF_PARAMS
-		send_conn_le_param_update(conn, param);
+        #if defined (BFLB_BLE_ENABLE_OR_DISABLE_SLAVE_PREF_CONN_PARAM_UDPATE)
+        if(!conn->le.disable_pref_conn_param_update)
+        #endif
+        {
+			#if defined (BFLB_BLE_GAP_SET_PERIPHERAL_PREF_PARAMS)
+			param = BT_LE_CONN_PARAM(peripheral_pref_con_params.interval_min,
+						 peripheral_pref_con_params.interval_max,
+						 peripheral_pref_con_params.latency,
+						 peripheral_pref_con_params.timeout);
+        	#else
+			param = BT_LE_CONN_PARAM(CONFIG_BT_PERIPHERAL_PREF_MIN_INT,
+						 CONFIG_BT_PERIPHERAL_PREF_MAX_INT,
+						 CONFIG_BT_PERIPHERAL_PREF_SLAVE_LATENCY,
+						 CONFIG_BT_PERIPHERAL_PREF_TIMEOUT);
+        	#endif//BFLB_BLE_GAP_SET_PERIPHERAL_PREF_PARAMS
+			send_conn_le_param_update(conn, param);
+		}
 	}
 #else
 	/* update only if application set own params */
@@ -2548,7 +2565,7 @@ struct bt_conn *bt_conn_create_slave_le(const bt_addr_le_t *peer,
 		case BT_CONN_CONNECTED:
 			return conn;
 		case BT_CONN_DISCONNECTED:
-			BT_WARN("Found valid but disconnected conn object");
+			//BT_WARN("Found valid but disconnected conn object");
 			goto start_adv;
 		default:
 			bt_conn_unref(conn);
@@ -2563,7 +2580,6 @@ struct bt_conn *bt_conn_create_slave_le(const bt_addr_le_t *peer,
 
 start_adv:
 	bt_conn_set_state(conn, BT_CONN_CONNECT_DIR_ADV);
-
 	err = bt_le_adv_start_internal(&param_int, NULL, 0, NULL, 0, peer);
 	if (err) {
 		BT_WARN("Directed advertising could not be started: %d", err);

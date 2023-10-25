@@ -14,6 +14,7 @@ MEMORY
   sys_stack (wxa) : ORIGIN = 0x42030000 - __EM_SIZE - __stack_size - __sha_ocram_size, LENGTH = __stack_size
   sha_ocram (wxa) : ORIGIN = 0x42030000 - __EM_SIZE - __sha_ocram_size, LENGTH = __sha_ocram_size
   hbnram    (wxa) : ORIGIN = 0x40010000, LENGTH = (4K)
+  bugkill   (rxai!w) : ORIGIN = 0xD0000000, LENGTH = 16M
 }
 
 SECTIONS
@@ -32,6 +33,19 @@ SECTIONS
     *(.text .text.*)
     *(.gnu.linkonce.t.*)
   } >flash
+
+  .bugkiller_command :
+  {
+    PROVIDE( __bugkiller_command_start = ADDR(.bugkiller_command) );
+    PROVIDE( __bugkiller_command_end = ADDR(.bugkiller_command) + SIZEOF(.bugkiller_command) );
+    KEEP (*(.static_bugkiller_command))
+  } > bugkill
+
+  .bugkiller  :
+  {
+    KEEP (*(.bugkiller_code))
+    KEEP (*bugkiller*.o(.rodata* .text* .data* .sdata* .sbss*))
+  } > bugkill
 
   .rodata :
   {
@@ -266,6 +280,9 @@ SECTIONS
   PROVIDE( _ld_ram_size3 = SIZEOF(.stack) );
   PROVIDE( _ld_ram_addr3 = ADDR(.stack) );
 
+  PROVIDE( _ld_ram_sha_size = LENGTH(sha_ocram) );
+  PROVIDE( _ld_ram_sha_addr = ORIGIN(sha_ocram) );
+  
   /* BOOT2 parameter */
   PROVIDE ( __boot2_pt_addr_src = BOOT2_PT_ADDR );
 

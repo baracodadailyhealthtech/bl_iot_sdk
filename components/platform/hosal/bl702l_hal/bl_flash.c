@@ -74,14 +74,6 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_SP(void)
 
 int bl_flash_erase(uint32_t addr, int len)
 {
-    /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
-        return -1;
-    }
-
-    // if (IS_PSARAM((uint32_t)&_data)) {
-    //     BL702_MemSet4(__spn, 0xa5a5a5a5, PSRAM_TEMP_STACK_SIZE);
-    // }
     unsigned long mstatus_tmp;
     mstatus_tmp = read_csr(mstatus);
     clear_csr(mstatus, MSTATUS_MIE);
@@ -94,10 +86,7 @@ int bl_flash_erase(uint32_t addr, int len)
 int bl_flash_write(uint32_t addr, uint8_t *src, int len)
 {
     uint8_t* _data = src;
-    /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
-        return -1;
-    }
+
 #ifdef CFG_USE_PSRAM
     if(IS_PSARAM((uint32_t)src)){
         if (0 == len) {
@@ -129,10 +118,6 @@ int bl_flash_write(uint32_t addr, uint8_t *src, int len)
 int bl_flash_read(uint32_t addr, uint8_t *dst, int len)
 {
     uint8_t* _data = dst;
-    /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
-        return -1;
-    }
 
 #ifdef CFG_USE_PSRAM
     if(IS_PSARAM((uint32_t)dst)){
@@ -165,11 +150,6 @@ int bl_flash_read(uint32_t addr, uint8_t *dst, int len)
 
 static inline int bl_flash_erase_need_lock_internal(uint32_t addr, int len)
 {
-    /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
-        return -1;
-    }
-
     RomDriver_XIP_SFlash_Erase_Need_Lock(
             &boot2_flashCfg.flashCfg,
             addr,
@@ -181,11 +161,6 @@ static inline int bl_flash_erase_need_lock_internal(uint32_t addr, int len)
 
 static inline int bl_flash_write_need_lock_internal(uint32_t addr, uint8_t *src, int len)
 {
-    /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
-        return -1;
-    }
-
     RomDriver_XIP_SFlash_Write_Need_Lock(
             &boot2_flashCfg.flashCfg,
             addr,
@@ -198,11 +173,6 @@ static inline int bl_flash_write_need_lock_internal(uint32_t addr, uint8_t *src,
 
 static inline int bl_flash_read_need_lock_internal(uint32_t addr, uint8_t *dst, int len)
 {
-    /*We assume mid zero is illegal*/
-    if (0 == boot2_flashCfg.flashCfg.mid) {
-        return -1;
-    }
-
     RomDriver_XIP_SFlash_Read_Need_Lock(
             &boot2_flashCfg.flashCfg,
             addr,
@@ -436,45 +406,42 @@ int ATTR_TCM_SECTION bl_flash_init(void)
     int ret = 0;
 
     // get flash config from bootheader
-    L1C_Cache_Flush();
-    XIP_SFlash_Read_Via_Cache_Need_Lock(8 + BL702L_FLASH_XIP_BASE, (uint8_t *)&boot2_flashCfg, 4 + sizeof(SPI_Flash_Cfg_Type));
-    L1C_Cache_Flush();
+    //L1C_Cache_Flush();
+    //XIP_SFlash_Read_Via_Cache_Need_Lock(8 + BL702L_FLASH_XIP_BASE, (uint8_t *)&boot2_flashCfg, 4 + sizeof(SPI_Flash_Cfg_Type));
+    //L1C_Cache_Flush();
 
-    // update flash config
-    if (pFlashCfg->mid == 0xff) {
-        XIP_SFlash_Opt_Enter(&aesEnable);
-        XIP_SFlash_State_Save(pFlashCfg, &offset);
+    XIP_SFlash_Opt_Enter(&aesEnable);
+    XIP_SFlash_State_Save(pFlashCfg, &offset);
 
-        // store clock delay and clock invert, which have already been used for flash boot
-        clkDelay = pFlashCfg->clkDelay;
-        clkInvert = pFlashCfg->clkInvert;
+    // store clock delay and clock invert, which have already been used for flash boot
+    clkDelay = pFlashCfg->clkDelay;
+    clkInvert = pFlashCfg->clkInvert;
 
-        SFlash_GetJedecId(pFlashCfg, (uint8_t *)&jid);
-        ret = SF_Cfg_Get_Flash_Cfg_Need_Lock(jid, pFlashCfg);
-        if (ret == 0) {
-            if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
-                SFlash_Qspi_Enable(pFlashCfg);
-            }
-
-            if (((pFlashCfg->ioMode >> 4) & 0x01) == 1) {
-                L1C_Set_Wrap(DISABLE);
-            } else {
-                L1C_Set_Wrap(ENABLE);
-                if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
-                    SFlash_SetBurstWrap(pFlashCfg);
-                }
-            }
+    SFlash_GetJedecId(pFlashCfg, (uint8_t *)&jid);
+    ret = SF_Cfg_Get_Flash_Cfg_Need_Lock(jid, pFlashCfg);
+    if (ret == 0) {
+        if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
+            SFlash_Qspi_Enable(pFlashCfg);
         }
 
-        // replace clock delay and clock invert
-        pFlashCfg->clkDelay = clkDelay;
-        pFlashCfg->clkInvert = clkInvert;
-
-        XIP_SFlash_State_Restore(pFlashCfg, offset);
-        XIP_SFlash_Opt_Exit(aesEnable);
-
-        L1C_Cache_Flush();
+        if (((pFlashCfg->ioMode >> 4) & 0x01) == 1) {
+            L1C_Set_Wrap(DISABLE);
+        } else {
+            L1C_Set_Wrap(ENABLE);
+            if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
+                SFlash_SetBurstWrap(pFlashCfg);
+            }
+        }
     }
+
+    // replace clock delay and clock invert
+    pFlashCfg->clkDelay = clkDelay;
+    pFlashCfg->clkInvert = clkInvert;
+
+    XIP_SFlash_State_Restore(pFlashCfg, offset);
+    XIP_SFlash_Opt_Exit(aesEnable);
+
+    L1C_Cache_Flush();
 
     return ret;
 }

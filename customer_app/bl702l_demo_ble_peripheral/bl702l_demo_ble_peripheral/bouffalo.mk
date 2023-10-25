@@ -16,3 +16,10 @@ CPPFLAGS += -DCFG_CLI_DISABLE
 else
 CPPFLAGS += -DCONFIG_BT_STACK_CLI
 endif
+
+ifeq ($(CONFIG_LINK_CUSTOMER),1)
+LINKER_SCRIPTS := flash_rom_lp.ld
+$(info use ble_only/$(LINKER_SCRIPTS))
+COMPONENT_ADD_LDFLAGS += -L $(BL60X_SDK_PATH)/components/platform/soc/bl702l/bl702l/evb/ld/ble_only/ $(addprefix -T ,$(LINKER_SCRIPTS))
+COMPONENT_ADD_LINKER_DEPS := $(addprefix $(BL60X_SDK_PATH)/components/platform/soc/bl702l/bl702l/evb/ld/ble_only/,$(LINKER_SCRIPTS))
+endif ## CONFIG_LINK_CUSTOMER

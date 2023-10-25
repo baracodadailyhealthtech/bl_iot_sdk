@@ -396,6 +396,9 @@ static void oad_image_identity_handler(struct bt_conn *conn, const u8_t *data, u
             oad_env.upgrd_offset = 0x00;
         }
 
+        #if defined (BFLB_BLE_ENABLE_OR_DISABLE_SLAVE_PREF_CONN_PARAM_UDPATE)
+        bt_conn_enable_peripheral_pref_param_update(conn, false);
+        #endif
         conn_param.interval_max = 6;
         conn_param.interval_min = 6;
 		conn_param.latency = 0;

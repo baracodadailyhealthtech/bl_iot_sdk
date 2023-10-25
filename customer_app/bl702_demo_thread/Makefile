@@ -31,6 +31,10 @@ ifeq ($(CONFIG_USB_CDC), 1)
 INCLUDE_COMPONENTS += bl702_usb_cdc
 endif
 
+ifeq ($(CONFIG_COMPONENT_BUGKILLER_ENABLE), 1)
+INCLUDE_COMPONENTS += bugkiller_freertos
+endif
+
 ifeq ($(CONFIG_USE_PSRAM), 1)
 CPPFLAGS += -DCFG_USE_PSRAM=1
 endif
