@@ -72,8 +72,7 @@
 				["CONFIG_SYS_AOS_CLI_ENABLE", 0],
 				["CONFIG_SYS_VFS_UART_ENABLE", 0],
 				["CONFIG_SYS_APP_TASK_STACK_SIZE", 2048],
-				["CONFIG_SYS_APP_TASK_PRIORITY", 15],
-				["CONFIG_PDS_ENABLE", 1]
+				["CONFIG_SYS_APP_TASK_PRIORITY", 15]
 			],
 			"include_dirs": [
 				"components/platform/soc/bl702l/bl702l/evb/src",
