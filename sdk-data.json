@@ -15,7 +15,6 @@
 				"BFLB_PKA_HARDWARE",
 				["PRINT_DEBUG", 0],
 				["CFG_CLI_DISABLE", 1],
-				["CFG_CPP_ENABLE", 1],
 				["CFG_COMPONENT_BLOG_ENABLE",0],
 				["CONFIG_LINK_CUSTOMER",1],
 				["CONFIG_SYS_DMA_ENABLE",1],
@@ -72,9 +71,10 @@
 				["CONFIG_SYS_AOS_LOOP_ENABLE", 0],
 				["CONFIG_SYS_AOS_CLI_ENABLE", 0],
 				["CONFIG_SYS_VFS_UART_ENABLE", 0],
-				["CONFIG_SYS_APP_TASK_STACK_SIZE", 2048],
-				["CONFIG_SYS_APP_TASK_PRIORITY", 15],
-				["CONFIG_PDS_ENABLE", 1]
+				["CFG_AOS_LOOP_STACK_DEPTH", 2048],
+				["SYS_AOS_LOOP_TASK_PRIORITY", 15],
+				["SYS_APP_TASK_STACK_SIZE", 2048],
+				["SYS_APP_TASK_PRIORITY", 15]
 			],
 			"include_dirs": [
 				"components/platform/soc/bl702l/bl702l/evb/src",
@@ -136,6 +136,96 @@
 					]
 				}
 			}
+		},
+		"bl702l_lhal": {
+			"depends": [
+				"blfdt",
+				"blmtd"
+			],
+			"defines": [
+				"BL_IOT_SDK",
+				["CONFIG_IRQ_NUM", 80]
+			],
+			"include_dirs": [
+				"components/platform/lhal/include",
+				"components/platform/lhal/include/arch",
+				"components/platform/lhal/include/arch/risc-v/t-head",
+				"components/platform/lhal/include/arch/risc-v/t-head/Core/Include",
+				"components/platform/lhal/config/bl702l"
+			],
+			"source_dir": "components/platform/lhal",
+			"source_filter": [
+				"-<*>",
+				"+<config/bl702l/device_table.c>",
+				"+<src/bflb_acomp.c>",
+				"+<src/bflb_cks.c>",
+				"+<src/bflb_cks.c>",
+				"+<src/bflb_ef_ctrl.c>",
+				"+<src/bflb_gpio.c>",
+				"+<src/bflb_i2c.c>",
+				"+<src/bflb_dma.c>",
+				"+<src/bflb_rtc.c>",
+				"+<src/bflb_sec_aes.c>",
+				"+<src/bflb_sec_sha.c>",
+				"+<src/bflb_sec_trng.c>",
+				"+<src/bflb_spi.c>",
+				"+<src/bflb_timer.c>",
+				"+<src/bflb_uart.c>",
+				"+<src/bflb_wdg.c>",
+				"+<src/bflb_adc.c>",
+				"+<src/bflb_irq.c>",
+				"+<src/bflb_l1c.c>",
+				"+<src/bflb_mtimer.c>",
+				"+<src/bflb_pwm_v1.c>",
+				"+<src/bflb_pwm_v2.c>",
+				"+<src/bflb_ir.c>"
+			]
+		},
+		"bl702_lhal": {
+			"depends": [
+				"blfdt",
+				"blmtd"
+			],
+			"defines": [
+				"BL_IOT_SDK",
+				["CONFIG_IRQ_NUM", 80]
+			],
+			"include_dirs": [
+				"components/platform/lhal/include",
+				"components/platform/lhal/include/arch",
+				"components/platform/lhal/include/arch/risc-v/t-head",
+				"components/platform/lhal/include/arch/risc-v/t-head/Core/Include",
+				"components/platform/lhal/config/bl702"
+			],
+			"source_dir": "components/platform/lhal",
+			"source_filter": [
+				"-<*>",
+				"+<config/bl702/device_table.c>",
+				"+<src/bflb_acomp.c>",
+				"+<src/bflb_cks.c>",
+				"+<src/bflb_ef_ctrl.c>",
+				"+<src/bflb_gpio.c>",
+				"+<src/bflb_i2c.c>",
+				"+<src/bflb_dma.c>",
+				"+<src/bflb_rtc.c>",
+				"+<src/bflb_sec_aes.c>",
+				"+<src/bflb_sec_sha.c>",
+				"+<src/bflb_sec_trng.c>",
+				"+<src/bflb_spi.c>",
+				"+<src/bflb_timer.c>",
+				"+<src/bflb_uart.c>",
+				"+<src/bflb_wdg.c>",
+				"+<src/bflb_adc.c>",
+				"+<src/bflb_irq.c>",
+				"+<src/bflb_l1c.c>",
+				"+<src/bflb_mtimer.c>",
+				"+<src/bflb_dac.c>",
+				"+<src/bflb_emac.c>",
+				"+<src/bflb_ir.c>",
+				"+<src/bflb_pwm_v1.c>",
+				"+<src/bflb_cam.c>"
+
+			]
 		},
 		"bl702l_ble": {
 			"defines": [
@@ -212,6 +302,7 @@
 				"+<BSP_Driver/std_drv/src/bl702l_auadc.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_cks.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_dma.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_dma_uart.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_i2c.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_pwm.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_pwm_sc.c>",
@@ -233,6 +324,7 @@
 		"bl702l_hosal": {
 			"depends": [
 				"bl702l",
+				"bl702l_lhal",
 				"bl702l_std",
 				"coredump",
 				"newlibc",
@@ -888,6 +980,7 @@
 		"bl702_hosal": {
 			"depends": [
 				"bl702",
+				"bl702_lhal",
 				"bl702_freertos",
 				"bl702_usb_cdc",
 				"bl702_std",
