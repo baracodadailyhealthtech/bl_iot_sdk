@@ -31,6 +31,10 @@ ifeq ($(CONFIG_USB_CDC), 1)
 INCLUDE_COMPONENTS += bl702_usb_cdc
 endif
 
+ifeq ($(CONFIG_COMPONENT_BUGKILLER_ENABLE), 1)
+INCLUDE_COMPONENTS += bugkiller_freertos
+endif
+
 ifeq ($(CONFIG_USE_PSRAM), 1)
 CPPFLAGS += -DCFG_USE_PSRAM=1
 endif
@@ -74,6 +78,8 @@ INCLUDE_COMPONENTS += openthread_port openthread_utils_bl702 openthread
 INCLUDE_COMPONENTS += $(PROJECT_NAME)
 
 CPPFLAGS += -DCFG_CPP_ENABLE=1
+
+# CPPFLAGS += -DOPENTHREAD_CONFIG_LOG_LEVEL=OT_LOG_LEVEL_DEBG
 
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
 

@@ -38,8 +38,8 @@ void demo_hosal_i2c_master_mem(void)
     i2c0.config.scl = 4;
     i2c0.config.sda = 3;
 #elif defined(CONF_USER_BL702) || defined(CONF_USER_BL702L)
-    i2c0.config.scl = 1;
-    i2c0.config.sda = 0;
+    i2c0.config.scl = 0;
+    i2c0.config.sda = 1;
 #endif
 
     /* init i2c with the given settings */

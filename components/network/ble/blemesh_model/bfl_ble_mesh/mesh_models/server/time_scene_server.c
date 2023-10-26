@@ -296,7 +296,7 @@ static void time_get(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_TIME_ROLE_STATUS;
         break;
     default:
-        BT_WARN("%s, Unknown Time Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Time Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -397,7 +397,7 @@ static void time_set(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_TIME_ROLE_STATUS;
         break;
     default:
-        BT_ERR("%s, Unknown Time Set opcode 0x%04x", __func__, ctx->recv_op);
+        BT_ERR("%s, Unknown Time Set opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -572,7 +572,7 @@ static void scene_get(struct bt_mesh_model *model,
         send_scene_register_status(model, ctx, SCENE_SUCCESS, false);
         return;
     default:
-        BT_WARN("%s, Unknown Scene Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Scene Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 }
@@ -913,7 +913,7 @@ static void scene_action(struct bt_mesh_model *model,
         break;
     }
     default:
-        BT_ERR("%s, Unknown Scene setup action opcode 0x%04x", __func__, ctx->recv_op);
+        BT_ERR("%s, Unknown Scene setup action opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -1033,7 +1033,7 @@ static void scheduler_get(struct bt_mesh_model *model,
         return;
     }
     default:
-        BT_WARN("%s, Unknown Scheduler Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Scheduler Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 }

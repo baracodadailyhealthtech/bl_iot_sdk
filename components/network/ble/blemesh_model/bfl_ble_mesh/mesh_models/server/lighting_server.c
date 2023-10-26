@@ -173,7 +173,7 @@ static void light_lightness_get(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_LIGHT_LIGHTNESS_RANGE_STATUS;
         break;
     default:
-        BT_WARN("%s, Unknown Light Lightness Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Light Lightness Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -709,7 +709,7 @@ static void light_ctl_get(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_LIGHT_CTL_TEMPERATURE_STATUS;
         break;
     default:
-        BT_WARN("%s, Unknown Light CTL Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Light CTL Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -1324,7 +1324,7 @@ static void light_hsl_get(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_LIGHT_HSL_SATURATION_STATUS;
         break;
     default:
-        BT_WARN("%s, Unknown Light HSL Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Light HSL Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -1978,7 +1978,7 @@ static void light_xyl_get(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_LIGHT_XYL_RANGE_STATUS;
         break;
     default:
-        BT_WARN("%s, Unknown Light xyL Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Light xyL Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -2359,7 +2359,7 @@ static void light_lc_get(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_LIGHT_LC_LIGHT_ONOFF_STATUS;
         break;
     default:
-        BT_WARN("%s, Unknown Light LC Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Light LC Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 

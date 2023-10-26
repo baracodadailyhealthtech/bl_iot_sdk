@@ -94,6 +94,7 @@ static void bl_kys_get_result(kys_result_t *result)
                 common = state[c1] & state[c2];
                 if(common & (common - 1)){
                     result->ghost_det = 1;
+                    return;
                 }
             }
         }
@@ -212,5 +213,47 @@ void bl_kys_abort(void)
 ATTR_TCM_SECTION
 __attribute__((weak)) void bl_kys_interrupt_callback(const kys_result_t *result)
 {
-    
+#if 0
+    printf("\r\nghost_det: %d, fifo_full: %d, key_num: %d\r\n", result->ghost_det, result->fifo_full, result->key_num);
+    if(result->key_num > 0){
+        for(int i=0; i<result->key_num; i++){
+            printf("%d@(%d, %d)  ", result->key_code[i], result->row_idx[i], result->col_idx[i]);
+        }
+        printf("\r\n");
+    }
+#endif
 }
+
+
+#if 0
+#define KYS_MODE    1  // 1: poll mode; 2: interrupt mode, should overwrite bl_kys_interrupt_callback outside this file
+
+void bl_kys_test(void)
+{
+    uint8_t row_pins[] = {31, 30, 10, 25, 24, 23};
+    uint8_t col_pins[] = {9, 1, 0, 28, 27, 26};
+
+    bl_kys_init(sizeof(row_pins), sizeof(col_pins), row_pins, col_pins);
+
+    while(1){
+#if KYS_MODE == 1
+        kys_result_t result;
+        bl_kys_trigger_poll(&result);
+
+        printf("\r\nghost_det: %d, fifo_full: %d, key_num: %d\r\n", result.ghost_det, result.fifo_full, result.key_num);
+        if(result.key_num > 0){
+            for(int i=0; i<result.key_num; i++){
+                printf("%d@(%d, %d)  ", result.key_code[i], result.row_idx[i], result.col_idx[i]);
+            }
+            printf("\r\n");
+        }
+#endif
+
+#if KYS_MODE == 2
+        bl_kys_trigger_interrupt();
+#endif
+
+        arch_delay_ms(1000);
+    }
+}
+#endif

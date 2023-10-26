@@ -389,9 +389,13 @@ void bl702_main()
     bl_sys_early_init();
     
 #ifdef CFG_USE_ROM_CODE
+#ifdef CFG_ZIGBEE_ENABLE
+    rom_freertos_init(384, 400);
+#else
     rom_freertos_init(256, 400);
+#endif
     rom_hal_init();
-    rom_lmac154_hook_init();
+    //rom_lmac154_hook_init();
 #endif
 
 #if defined(GPIO_SIM_PRINT)
@@ -420,7 +424,7 @@ void bl702_main()
     system_early_init();
 
     puts("[OS] Starting aos_loop_proc task...\r\n");
-    xTaskCreate(aos_loop_proc, (char*)"event_loop", 1024, NULL, 15, &aos_loop_proc_task);
+    xTaskCreate(aos_loop_proc, (char*)"event_loop", CFG_AOS_LOOP_STACK_DEPTH, NULL, SYS_AOS_LOOP_TASK_PRIORITY, &aos_loop_proc_task);
 
     puts("[OS] Starting OS Scheduler...\r\n");
     vTaskStartScheduler();

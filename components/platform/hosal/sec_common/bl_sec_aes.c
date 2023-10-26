@@ -134,6 +134,7 @@ int bl_aes_transform_blocks(bl_sec_aes_t *aes, bl_sec_aes_op_t op, const uint8_t
     }
     bytes = n_blk << 4;
 #ifdef BL616
+    bl_sec_enter_critical();
     if (bl_sec_is_cache_addr(aes)) {
         L1C_DCache_Clean_Invalid_By_Addr((uintptr_t)aes, sizeof(*aes));
         aes = bl_sec_get_no_cache_addr(aes);
@@ -155,6 +156,9 @@ int bl_aes_transform_blocks(bl_sec_aes_t *aes, bl_sec_aes_op_t op, const uint8_t
     ret = Sec_Eng_AES_Link_Work(AES_ID, (uint32_t)&aes->link_cfg, input, bytes, output);
     Sec_Eng_AES_Disable_Link(AES_ID);
 
+#ifdef BL616
+    bl_sec_exit_critical(0);
+#endif
     return !(ret == SUCCESS);
 }
 
@@ -168,6 +172,8 @@ int bl_aes_transform(bl_sec_aes_t *aes, bl_sec_aes_op_t op, const uint8_t *input
  */
 #include <stdbool.h>
 #include <stdlib.h>
+
+#define BL_SEC_INTENTIONALLY_LEAK(x) do{(void)x;}while(0)
 
 bool tc_aes_ecb()
 {
@@ -239,6 +245,8 @@ bool tc_aes_ecb()
                 }
             }
         }
+        BL_SEC_INTENTIONALLY_LEAK(aes);
+        BL_SEC_INTENTIONALLY_LEAK(buf);
     }
     return true;
 }

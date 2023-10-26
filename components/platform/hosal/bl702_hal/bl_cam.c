@@ -403,7 +403,7 @@ static int mjpeg_init()
     memset(&mjpeg_engine, 0, sizeof(mjpeg_engine));
 
     mjpeg_engine.burst = MJPEG_BURST_INCR16;
-    mjpeg_engine.quality = 50;
+    mjpeg_engine.quality = jpeg_quality;
     mjpeg_engine.yuv = MJPEG_YUV422_INTERLEAVE;
     mjpeg_engine.waitCount = 0x400;
     mjpeg_engine.bufferMjpeg = MJPEG_WRITE_ADDR;

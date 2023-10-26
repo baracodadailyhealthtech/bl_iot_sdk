@@ -1053,7 +1053,7 @@ static void gen_power_level_get(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_GEN_POWER_RANGE_STATUS;
         break;
     default:
-        BT_WARN("%s, Unknown Generic Power Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Generic Power Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -1455,7 +1455,7 @@ static void gen_location_get(struct bt_mesh_model *model,
         opcode = BLE_MESH_MODEL_OP_GEN_LOC_LOCAL_STATUS;
         break;
     default:
-        BT_WARN("%s, Unknown Generic Location Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Generic Location Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -1564,7 +1564,7 @@ static void gen_location_set(struct bt_mesh_model *model,
         break;
     }
     default:
-        BT_WARN("%s, Unknown Generic Location Set opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Generic Location Set opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 
@@ -1709,7 +1709,7 @@ static void gen_user_prop_get(struct bt_mesh_model *model,
         return;
     }
     default:
-        BT_WARN("%s, Unknown Generic User Property Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Generic User Property Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 }
@@ -1901,7 +1901,7 @@ static void gen_admin_prop_get(struct bt_mesh_model *model,
         return;
     }
     default:
-        BT_WARN("%s, Unknown Generic Admin Property Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Generic Admin Property Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 }
@@ -2086,7 +2086,7 @@ static void gen_manu_prop_get(struct bt_mesh_model *model,
         return;
     }
     default:
-        BT_WARN("%s, Unknown Generic Manufacturer Property Get opcode 0x%04x", __func__, ctx->recv_op);
+        BT_WARN("%s, Unknown Generic Manufacturer Property Get opcode 0x%04lx", __func__, ctx->recv_op);
         return;
     }
 }

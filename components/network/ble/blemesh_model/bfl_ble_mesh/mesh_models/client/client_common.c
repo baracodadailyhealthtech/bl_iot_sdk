@@ -350,7 +350,7 @@ int bt_mesh_client_send_msg(struct bt_mesh_model *model,
      */
     err = bt_mesh_model_send(model, ctx, msg, &send_cb, node);
     if (err) {
-        BT_ERR("Failed to send client message 0x%08x", node->opcode);
+        BT_ERR("Failed to send client message 0x%08lx", node->opcode);
         k_delayed_work_free(&node->timer);
         bt_mesh_client_free_node(node);
     }

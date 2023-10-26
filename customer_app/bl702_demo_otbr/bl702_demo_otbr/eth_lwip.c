@@ -112,7 +112,7 @@ static void netif_status_callback(struct netif *netif)
         }
 
         if (isIPv6AddressAssigend) {
-            main_task_resume();
+            otbr_instance_routing_init();
         }
     }
     else {

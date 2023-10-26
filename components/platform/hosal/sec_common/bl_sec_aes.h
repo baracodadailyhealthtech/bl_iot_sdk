@@ -71,7 +71,9 @@ typedef enum {
 } bl_sec_aes_op_t;
 
 typedef struct {
+    uint32_t guard0_[7];
     bl_SEC_Eng_AES_Link_Config_Type link_cfg;
+    uint32_t guard1_[7];
 } bl_sec_aes_t;
 
 // Correspond to HW. Do not change order.

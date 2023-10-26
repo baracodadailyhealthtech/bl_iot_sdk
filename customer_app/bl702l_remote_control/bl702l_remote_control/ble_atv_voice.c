@@ -278,6 +278,7 @@ static ssize_t ble_atvv_char_tx_recv(struct bt_conn *conn,
 
         printf("assis_model_used=%d\r\n",atvv_env.assis_model_used);
         ble_atvv_send_caps_resp(conn);
+        ble_rc_check_pending_evt();
         ble_rc_connection_update(ATVV_CONN_INTVAL_IN_NORMAL_MODE, ATVV_CONN_INTVAL_IN_NORMAL_MODE, ATVV_CONN_SLAVE_LATENCY, ATVV_CONN_TIMEOUT);
     }
     else
@@ -294,7 +295,6 @@ static void ble_atvv_audio_ccc_changed(const struct bt_gatt_attr *attr, u16_t va
     u8_t atvv_ccc = 0;
     if(value == BT_GATT_CCC_NOTIFY)
     {
-        printf("enable atvv_audio notify\r\n");
         atvv_env.audioNotifyEnabled = true;
     }
     else

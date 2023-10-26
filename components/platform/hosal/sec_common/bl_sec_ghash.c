@@ -45,13 +45,13 @@ int bl_sec_ghash_init()
 
 int bl_ghash_acquire_hw()
 {
-    taskENTER_CRITICAL();
+    bl_sec_enter_critical();
     return 0;
 }
 
 int bl_ghash_release_hw()
 {
-    taskEXIT_CRITICAL();
+    bl_sec_exit_critical(0);
     return 0;
 }
 
@@ -103,6 +103,7 @@ int bl_ghash_update(bl_sec_ghash_t *ctx, const uint8_t *input, size_t input_len)
     }
 
 #ifdef BL616
+    bl_sec_enter_critical();
     if (bl_sec_is_cache_addr(ctx)) {
         L1C_DCache_Clean_Invalid_By_Addr((uintptr_t)ctx, sizeof(*ctx));
         ctx = bl_sec_get_no_cache_addr(ctx);
@@ -116,7 +117,7 @@ int bl_ghash_update(bl_sec_ghash_t *ctx, const uint8_t *input, size_t input_len)
     if (len) {
         ret = Sec_Eng_GMAC_Link_Work((uint32_t)&ctx->link_cfg, input, len, ctx->tmp_buf);
         if (ret != SUCCESS) {
-            return 1;
+            goto exit;
         }
     }
     if (rem) {
@@ -124,6 +125,10 @@ int bl_ghash_update(bl_sec_ghash_t *ctx, const uint8_t *input, size_t input_len)
         memset(ctx->tmp_buf + rem, 0, 16 - rem);
         ret = Sec_Eng_GMAC_Link_Work((uint32_t)&ctx->link_cfg, ctx->tmp_buf, 16, ctx->tmp_buf);
     }
+exit:
+#ifdef BL616
+    bl_sec_exit_critical(0);
+#endif
     return !(ret == SUCCESS);
 }
 
@@ -148,6 +153,8 @@ int bl_ghash_finish(bl_sec_ghash_t *ctx, uint8_t result[16])
  */
 #include <stdlib.h>
 #include <stdio.h>
+
+#define BL_SEC_INTENTIONALLY_LEAK(x) do{(void)x;}while(0)
 
 #define GHASH_TEST_ITERATIONS 100
 
@@ -197,6 +204,9 @@ bool tc_ghash()
                 return false;
             }
         }
+        BL_SEC_INTENTIONALLY_LEAK(ctx);
+        BL_SEC_INTENTIONALLY_LEAK(in);
+        BL_SEC_INTENTIONALLY_LEAK(out);
     }
     return true;
 }

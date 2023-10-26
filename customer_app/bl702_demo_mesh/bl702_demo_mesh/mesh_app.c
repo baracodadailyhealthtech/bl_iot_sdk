@@ -488,7 +488,7 @@ static void link_close(bt_mesh_prov_bearer_t bearer)
 
 static int output_number(bt_mesh_output_action_t action, u32_t number)
 {
-    BT_WARN("OOB Number: %u", number);
+    BT_WARN("OOB Number: %lu", number);
     return 0;
 }
 
@@ -785,7 +785,7 @@ static void example_ble_mesh_generic_server_cb(
         }
         break;
     default:
-        BT_WARN("Unknown Generic Server event 0x%02x, opcode 0x%04x, src 0x%04x, dst 0x%04x",
+        BT_WARN("Unknown Generic Server event 0x%02x, opcode 0x%04lx, src 0x%04x, dst 0x%04x",
             event, param->ctx.recv_op, param->ctx.addr, param->ctx.recv_dst);
         break;
     }
@@ -823,7 +823,7 @@ static void ble_mesh_generic_onoff_client_model_cb(
             break;
         case BFL_BLE_MESH_MODEL_OP_GEN_ONOFF_SET_UNACK:
             if (param->error_code == BFL_OK) {
-                BT_WARN("GenOnOffClient:SetUNACK,OK, opcode[%x] raddr[%x]", 
+                BT_WARN("GenOnOffClient:SetUNACK,OK, opcode[%lx] raddr[%x]", 
                                 opcode, param->params->ctx.addr);
             } else {
                 BT_WARN("GenOnOffClient:SetUNACK,Fail[%x]", param->error_code);
@@ -885,7 +885,7 @@ static void example_ble_mesh_lighting_server_cb(
         }
         break;
     default:
-        BT_WARN("Unknown Generic Server event 0x%02x, opcode 0x%04x, src 0x%04x, dst 0x%04x",
+        BT_WARN("Unknown Generic Server event 0x%02x, opcode 0x%04lx, src 0x%04x, dst 0x%04x",
             event, param->ctx.recv_op, param->ctx.addr, param->ctx.recv_dst);
         break;
     }
@@ -901,7 +901,7 @@ static void example_ble_mesh_time_scene_server_cb(
         {
             if ( param->ctx.recv_op ==BLE_MESH_MODEL_OP_TIME_SET)
             {
-                BT_WARN("time set tai_seconds [%x] subsecond[%x] uncertainty[%x] time_authority[%x] tai_utc_delta_curr[%x]", 
+                BT_WARN("time set tai_seconds: [%x] [%x] [%x] [%x] [%x], subsecond[%x] uncertainty[%x] time_authority[%x] tai_utc_delta_curr[%x]", 
                 param->value.state_change.time_set.tai_seconds[0],
                 param->value.state_change.time_set.tai_seconds[1],
                 param->value.state_change.time_set.tai_seconds[2],
@@ -924,9 +924,13 @@ static void example_ble_mesh_time_scene_server_cb(
             }
             else if (param->ctx.recv_op ==BLE_MESH_MODEL_OP_TAI_UTC_DELTA_SET)
             { 
-                BT_WARN("tai_utc_delta_new [%x] tai_delta_change[%x]", 
+                BT_WARN("tai_utc_delta_new [%x] tai_delta_change[%x] [%x] [%x] [%x] [%x]", 
                 param->value.state_change.tai_utc_delta_set.tai_utc_delta_new,
-                param->value.state_change.tai_utc_delta_set.tai_delta_change);
+                param->value.state_change.tai_utc_delta_set.tai_delta_change[0],
+                param->value.state_change.tai_utc_delta_set.tai_delta_change[1],
+                param->value.state_change.tai_utc_delta_set.tai_delta_change[2],
+                param->value.state_change.tai_utc_delta_set.tai_delta_change[3],
+                param->value.state_change.tai_utc_delta_set.tai_delta_change[4]);
             }
             else if (param->ctx.recv_op ==BLE_MESH_MODEL_OP_TIME_ROLE_SET)
             { 
@@ -1009,10 +1013,14 @@ static void example_ble_mesh_time_scene_server_cb(
             }
             else if (param->ctx.recv_op ==BLE_MESH_MODEL_OP_TAI_UTC_DELTA_SET)
             {
-                BT_WARN("tai_utc_delta_new [%x] tai_utc_delta.padding [%x] tai_delta_change[%x]", 
+                BT_WARN("tai_utc_delta_new [%x] tai_utc_delta.padding [%x] tai_delta_change[%x] [%x] [%x] [%x] [%x]", 
                 param->value.set.tai_utc_delta.tai_utc_delta_new,
                 param->value.set.tai_utc_delta.padding,
-                param->value.set.tai_utc_delta.tai_delta_change);
+                param->value.set.tai_utc_delta.tai_delta_change[0],
+                param->value.set.tai_utc_delta.tai_delta_change[1],
+                param->value.set.tai_utc_delta.tai_delta_change[2],
+                param->value.set.tai_utc_delta.tai_delta_change[3],
+                param->value.set.tai_utc_delta.tai_delta_change[4]);
             }
             else if (param->ctx.recv_op ==BLE_MESH_MODEL_OP_TIME_ROLE_SET)
             { 
@@ -1060,6 +1068,7 @@ static void example_ble_mesh_time_scene_server_cb(
                 BT_WARN("time set tai_seconds [%x] [%x] [%x] [%x] [%x]subsecond[%x] uncertainty[%x] time_authority[%x] tai_utc_delta[%x] time_zone_offset [%x]", 
                 param->value.status.time_status.tai_seconds[0],
                 param->value.status.time_status.tai_seconds[1],
+                param->value.status.time_status.tai_seconds[2],
                 param->value.status.time_status.tai_seconds[3],
                 param->value.status.time_status.tai_seconds[4],
                 param->value.status.time_status.subsecond,
@@ -1073,7 +1082,7 @@ static void example_ble_mesh_time_scene_server_cb(
         }
         default:
         {
-            BT_WARN("Unknown Generic Server event 0x%02x, opcode 0x%04x, src 0x%04x, dst 0x%04x",
+            BT_WARN("Unknown Generic Server event 0x%02x, opcode 0x%04lx, src 0x%04x, dst 0x%04x",
             event, param->ctx.recv_op, param->ctx.addr, param->ctx.recv_dst);
 
             break;

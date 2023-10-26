@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cli &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  <title>cli &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../about.html"/>
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -67,13 +63,16 @@
           
 
           
+            
+            <img src="../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+                release_bl_iot_sdk_1.6.40-1603-g15bfed04d
               </div>
             
           
@@ -167,15 +166,15 @@
            <div itemprop="articleBody">
             
   <section id="cli">
-<h1>cli<a class="headerlink" href="#cli" title="此标题的永久链接"></a></h1>
-<section id="id1">
-<h2>概述<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<h1>cli<a class="headerlink" href="#cli" title="永久链接至标题"></a></h1>
+<section id="section-1">
+<h2>概述<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
 <p>linux下有强大的shell工具，可以让用户和片上系统进行交互，而在传统的单片机系统中，用户往往需要自行实现一套类似的交互工具。AliOS-Things原生带有一套名为cli（command-line
 interface）的命令行交互工具，在提供基本的系统交互命令的基础上，也支持用户自定义命令。我们已经将其移植到我们到系统中，
 同时对其做出了很多完善， 下面将介绍如何使用cli命令并执行</p>
 </section>
-<section id="id2">
-<h2>示例代码<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<section id="section-2">
+<h2>示例代码<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
 <p>用户在只需在程序中调用<code class="docutils literal notranslate"><span class="pre">test_cli_init()</span></code>接口之后，就可以在shell中<code class="docutils literal notranslate"><span class="pre">test</span></code>,就可以打印<code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world.</span></code>如下图所示</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
 <span class="c1">#</span>
@@ -185,7 +184,7 @@ interface）的命令行交互工具，在提供基本的系统交互命令的�
 <span class="c1">#</span>
 </pre></div>
 </div>
-<p>还有很多常用命令，请参考<a href="#id3"><span class="problematic" id="id4">`常用命令&lt;../helper/helper.html&gt;`_</span></a></p>
+<p>还有很多常用命令，请参考<a href="#system-message-1"><span class="problematic" id="problematic-1">`常用命令&lt;../helper/helper.html&gt;`_</span></a></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">cmd_test_func</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world.</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
@@ -237,7 +236,7 @@ interface）的命令行交互工具，在提供基本的系统交互命令的�
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            VERSION:'release_bl_iot_sdk_1.6.40-1603-g15bfed04d',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -245,10 +244,9 @@ interface）的命令行交互工具，在提供基本的系统交互命令的�
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 

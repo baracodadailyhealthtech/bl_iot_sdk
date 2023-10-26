@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Ble Introduction &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  <title>Ble Introduction &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../../../about.html"/>
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档" href="../../../index.html"/>
         <link rel="up" title="BLE" href="../index.html"/>
         <link rel="next" title="Low_Power_Mode_BL702L" href="../demo_low_power_mode/low_power_mode.html"/>
         <link rel="prev" title="BLE" href="../index.html"/> 
@@ -70,13 +66,16 @@
           
 
           
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+                release_bl_iot_sdk_1.6.40-1603-g15bfed04d
               </div>
             
           
@@ -104,8 +103,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">BLE</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Introduction</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2">使用步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#section-1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#section-2">使用步骤</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ota">OTA使用流程</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cli">Cli命令介绍</a></li>
 </ul>
@@ -190,13 +189,13 @@
            <div itemprop="articleBody">
             
   <section id="ble-introduction">
-<span id="ble-index"></span><h1>Ble Introduction<a class="headerlink" href="#ble-introduction" title="此标题的永久链接"></a></h1>
-<section id="id1">
-<h2>总览<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<span id="ble-index"></span><h1>Ble Introduction<a class="headerlink" href="#ble-introduction" title="永久链接至标题"></a></h1>
+<section id="section-1">
+<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何使用ble。</p>
 </section>
-<section id="id2">
-<h2>使用步骤<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<section id="section-2">
+<h2>使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>对于BL602，进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl602_demo_event</span></code> 工程中，用脚本 <code class="docutils literal notranslate"><span class="pre">genromap</span></code> 编译，完成后下载Bin文件；使用 <code class="docutils literal notranslate"><span class="pre">stack_ble</span></code> 命令使能ble。该Demo默认没有开启任何Ble的行为，如果需要做Ble advertising或者ble scan或者主动建立Ble连接，请参考Cli命令发起相应的Ble行为。</p></li>
 <li><p>对于BL702，进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程中，用脚本 <code class="docutils literal notranslate"><span class="pre">genblem1s1</span></code> 编译，完成后下载Bin文件；demo中已使能ble。该Demo默认没有开启任何Ble的行为，如果需要做Ble advertising或者ble scan或者主动建立Ble连接，请参考Cli命令发起相应的Ble行为。</p></li>
@@ -292,7 +291,7 @@
 </div></blockquote>
 </section>
 <section id="ota">
-<h2>OTA使用流程<a class="headerlink" href="#ota" title="此标题的永久链接"></a></h2>
+<h2>OTA使用流程<a class="headerlink" href="#ota" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><ul>
 <li><p><strong>第一步：安装APP</strong></p>
@@ -420,9 +419,9 @@
 </div></blockquote>
 </section>
 <section id="cli">
-<h2>Cli命令介绍<a class="headerlink" href="#cli" title="此标题的永久链接"></a></h2>
+<h2>Cli命令介绍<a class="headerlink" href="#cli" title="永久链接至标题"></a></h2>
 <section id="ble-init">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_init</span></code><a class="headerlink" href="#ble-init" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_init</span></code><a class="headerlink" href="#ble-init" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：ble通用初始化，在所有ble cli操作前，需要先输入该命令</p></li>
@@ -438,7 +437,7 @@
 </div></blockquote>
 </section>
 <section id="ble-auth">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_auth</span></code><a class="headerlink" href="#ble-auth" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth</span></code><a class="headerlink" href="#ble-auth" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：注册SMP接口函数</p></li>
@@ -454,7 +453,7 @@
 </div></blockquote>
 </section>
 <section id="ble-unpair">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_unpair</span></code><a class="headerlink" href="#ble-unpair" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_unpair</span></code><a class="headerlink" href="#ble-unpair" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：清除配对信息</p></li>
@@ -479,7 +478,7 @@
 </div></blockquote>
 </section>
 <section id="ble-start-adv">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_start_adv</span></code><a class="headerlink" href="#ble-start-adv" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_start_adv</span></code><a class="headerlink" href="#ble-start-adv" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能表示：开启广播</p></li>
@@ -516,7 +515,7 @@
 </div></blockquote>
 </section>
 <section id="ble-stop-adv">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_stop_adv</span></code><a class="headerlink" href="#ble-stop-adv" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_stop_adv</span></code><a class="headerlink" href="#ble-stop-adv" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：停止ADV广播</p></li>
@@ -532,7 +531,7 @@
 </div></blockquote>
 </section>
 <section id="ble-start-scan">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_start_scan</span></code><a class="headerlink" href="#ble-start-scan" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_start_scan</span></code><a class="headerlink" href="#ble-start-scan" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：表示扫描广播设备</p></li>
@@ -567,7 +566,7 @@
 </div></blockquote>
 </section>
 <section id="ble-stop-scan">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_stop_scan</span></code><a class="headerlink" href="#ble-stop-scan" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_stop_scan</span></code><a class="headerlink" href="#ble-stop-scan" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：停止扫描</p></li>
@@ -583,7 +582,7 @@
 </div></blockquote>
 </section>
 <section id="ble-conn-update">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_conn_update</span></code><a class="headerlink" href="#ble-conn-update" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_conn_update</span></code><a class="headerlink" href="#ble-conn-update" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：表示更新连接参数</p></li>
@@ -602,7 +601,7 @@
 </div></blockquote>
 </section>
 <section id="ble-security">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_security</span></code><a class="headerlink" href="#ble-security" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_security</span></code><a class="headerlink" href="#ble-security" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：设置SMP的加密等级</p></li>
@@ -625,7 +624,7 @@
 </div></blockquote>
 </section>
 <section id="ble-get-device-name">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_get_device_name</span></code><a class="headerlink" href="#ble-get-device-name" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_get_device_name</span></code><a class="headerlink" href="#ble-get-device-name" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：获取本地设备名称</p></li>
@@ -641,7 +640,7 @@
 </div></blockquote>
 </section>
 <section id="ble-set-device-name">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_set_device_name</span></code><a class="headerlink" href="#ble-set-device-name" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_set_device_name</span></code><a class="headerlink" href="#ble-set-device-name" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：设置本地设备名称</p></li>
@@ -657,7 +656,7 @@
 </div></blockquote>
 </section>
 <section id="ble-read-local-address">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_read_local_address</span></code><a class="headerlink" href="#ble-read-local-address" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_read_local_address</span></code><a class="headerlink" href="#ble-read-local-address" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：读取本地设备地址</p></li>
@@ -673,7 +672,7 @@
 </div></blockquote>
 </section>
 <section id="ble-set-adv-channel">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_set_adv_channel</span></code><a class="headerlink" href="#ble-set-adv-channel" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_set_adv_channel</span></code><a class="headerlink" href="#ble-set-adv-channel" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：设置ADV通道</p></li>
@@ -689,7 +688,7 @@
 </div></blockquote>
 </section>
 <section id="ble-connect">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_connect</span></code><a class="headerlink" href="#ble-connect" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_connect</span></code><a class="headerlink" href="#ble-connect" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：连接指定地址的设备</p></li>
@@ -716,7 +715,7 @@
 </div></blockquote>
 </section>
 <section id="ble-disconnect">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_disconnect</span></code><a class="headerlink" href="#ble-disconnect" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_disconnect</span></code><a class="headerlink" href="#ble-disconnect" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：断开指定地址的设备的连接</p></li>
@@ -741,7 +740,7 @@
 </div></blockquote>
 </section>
 <section id="ble-select-conn">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_select_conn</span></code><a class="headerlink" href="#ble-select-conn" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_select_conn</span></code><a class="headerlink" href="#ble-select-conn" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：多个连接中，将某一个连接对象设置为当前连接对象</p></li>
@@ -766,7 +765,7 @@
 </div></blockquote>
 </section>
 <section id="ble-auth-cancel">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_cancel</span></code><a class="headerlink" href="#ble-auth-cancel" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_cancel</span></code><a class="headerlink" href="#ble-auth-cancel" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：取消加密认证过程</p></li>
@@ -782,7 +781,7 @@
 </div></blockquote>
 </section>
 <section id="ble-auth-passkey-confirm">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code><a class="headerlink" href="#ble-auth-passkey-confirm" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code><a class="headerlink" href="#ble-auth-passkey-confirm" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：接收到passkey后回复远端，并且对端设备在配对过程中也有显示该passkey； 例如：配对过程本地打印 Confirm passkey for 48:95:E6:73:1C:1A (random): 745491
@@ -799,7 +798,7 @@
 </div></blockquote>
 </section>
 <section id="ble-auth-pairing-confirm">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_pairing_confirm</span></code><a class="headerlink" href="#ble-auth-pairing-confirm" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_pairing_confirm</span></code><a class="headerlink" href="#ble-auth-pairing-confirm" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：接收到远端配对请求，用此函数回复远端配对请求，例如：配对过程本地打印 Confirm pairing for 00:1B:DC:F2:20:E9 (public)
@@ -816,7 +815,7 @@
 </div></blockquote>
 </section>
 <section id="ble-auth-passkey">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_passkey</span></code><a class="headerlink" href="#ble-auth-passkey" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_auth_passkey</span></code><a class="headerlink" href="#ble-auth-passkey" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：请求输入passkey</p></li>
@@ -832,7 +831,7 @@
 </div></blockquote>
 </section>
 <section id="ble-exchange-mtu">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_exchange_mtu</span></code><a class="headerlink" href="#ble-exchange-mtu" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_exchange_mtu</span></code><a class="headerlink" href="#ble-exchange-mtu" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：将ATT MTU Size设置到双方设备能够支持的最大值。</p></li>
@@ -848,7 +847,7 @@
 </div></blockquote>
 </section>
 <section id="ble-discover">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_discover</span></code><a class="headerlink" href="#ble-discover" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_discover</span></code><a class="headerlink" href="#ble-discover" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：查询指定的服务或特性</p></li>
@@ -878,7 +877,7 @@
 </div></blockquote>
 </section>
 <section id="ble-read">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_read</span></code><a class="headerlink" href="#ble-read" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_read</span></code><a class="headerlink" href="#ble-read" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：读取指定句柄的数据</p></li>
@@ -895,7 +894,7 @@
 </div></blockquote>
 </section>
 <section id="ble-write">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_write</span></code><a class="headerlink" href="#ble-write" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_write</span></code><a class="headerlink" href="#ble-write" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：指定句柄写入相应的数据</p></li>
@@ -914,7 +913,7 @@
 </div></blockquote>
 </section>
 <section id="ble-write-without-rsp">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_write_without_rsp</span></code><a class="headerlink" href="#ble-write-without-rsp" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_write_without_rsp</span></code><a class="headerlink" href="#ble-write-without-rsp" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：指定句柄写入相应的数据并且不需要回复</p></li>
@@ -941,7 +940,7 @@
 </div></blockquote>
 </section>
 <section id="ble-subscribe">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_subscribe</span></code><a class="headerlink" href="#ble-subscribe" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_subscribe</span></code><a class="headerlink" href="#ble-subscribe" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>命令功能：订阅CCC</p></li>
@@ -967,7 +966,7 @@
 </div></blockquote>
 </section>
 <section id="ble-unsubscribe">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_unsubscribe</span></code><a class="headerlink" href="#ble-unsubscribe" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_unsubscribe</span></code><a class="headerlink" href="#ble-unsubscribe" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：取消订阅CCC</p></li>
@@ -983,7 +982,7 @@
 </div></blockquote>
 </section>
 <section id="ble-set-data-len">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_set_data_len</span></code><a class="headerlink" href="#ble-set-data-len" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_set_data_len</span></code><a class="headerlink" href="#ble-set-data-len" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：设置pdu数据长度</p></li>
@@ -1000,7 +999,7 @@
 </div></blockquote>
 </section>
 <section id="ble-conn-info">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_conn_info</span></code><a class="headerlink" href="#ble-conn-info" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_conn_info</span></code><a class="headerlink" href="#ble-conn-info" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：获取所有的连接信息</p></li>
@@ -1016,7 +1015,7 @@
 </div></blockquote>
 </section>
 <section id="ble-disable">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_disable</span></code><a class="headerlink" href="#ble-disable" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_disable</span></code><a class="headerlink" href="#ble-disable" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：注销BLE</p></li>
@@ -1032,7 +1031,7 @@
 </div></blockquote>
 </section>
 <section id="ble-set-tx-pwr">
-<h3><code class="docutils literal notranslate"><span class="pre">ble_set_tx_pwr</span></code><a class="headerlink" href="#ble-set-tx-pwr" title="此标题的永久链接"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ble_set_tx_pwr</span></code><a class="headerlink" href="#ble-set-tx-pwr" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
 <li><p>命令功能：设置发送功率</p></li>
@@ -1091,7 +1090,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            VERSION:'release_bl_iot_sdk_1.6.40-1603-g15bfed04d',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -1099,10 +1098,9 @@
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

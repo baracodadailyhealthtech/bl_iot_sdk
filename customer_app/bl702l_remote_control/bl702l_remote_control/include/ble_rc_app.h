@@ -15,10 +15,12 @@ typedef enum{
     RC_KYS_VOICE_STOP,
     RC_KYS_DELETE_ADV_TIMER,
     RC_KYS_REPORT_BATTERY_LEVEL,
+    RC_KYS_INVALID_EVT = 0xFF
 }ble_rc_kys_evt_type;
 
 void ble_stack_start(void);
 void ble_rc_pds_enable(uint8_t enable);
 void ble_rc_kys_init(void);
+void ble_rc_check_pending_evt(void);
 int ble_rc_connection_update(uint16_t interval_min, uint16_t interval_max, uint16_t latency, uint16_t timeout);
 #endif //__BLE_RC_APP_H__

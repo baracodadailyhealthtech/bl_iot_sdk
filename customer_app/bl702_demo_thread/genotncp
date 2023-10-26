@@ -8,7 +8,7 @@
 #   CONFIG_FTD, for thread device type, if CONFIG_NCP = 1
 #       1, build for thread FTD image,
 #       0, build for thread MTD image
-CONFIG_NCP=1
+CONFIG_NCP=0
 CONFIG_FTD=1
 CONFIG_USB_CDC=0
 CONFIG_ENABLE_FP=0

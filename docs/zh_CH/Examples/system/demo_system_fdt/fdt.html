@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>FDT &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  <title>FDT &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../../../about.html"/>
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -67,13 +63,16 @@
           
 
           
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+                release_bl_iot_sdk_1.6.40-1603-g15bfed04d
               </div>
             
           
@@ -167,20 +166,20 @@
            <div itemprop="articleBody">
             
   <section id="fdt">
-<span id="fdt-index"></span><h1>FDT<a class="headerlink" href="#fdt" title="此标题的永久链接"></a></h1>
-<section id="id1">
-<h2>总览<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<span id="fdt-index"></span><h1>FDT<a class="headerlink" href="#fdt" title="永久链接至标题"></a></h1>
+<section id="section-1">
+<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何从fdt文件中获取相关的配置。</p>
 </section>
-<section id="id2">
-<h2>使用步骤<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<section id="section-2">
+<h2>使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_fdt</span></code> 工程并下载对应的bin文件；</p></li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">fdt</span></code> 命令将fdt文件中的wifi配置解析出来，并且打印出整个文件内容。</p></li>
 </ul>
 </section>
-<section id="id3">
-<h2>应用实例<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<section id="section-3">
+<h2>应用实例<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
 <p>本实例为了方便测试，将dts文件转换成数组的形式存放，转换命令 <code class="docutils literal notranslate"><span class="pre">xxd</span> <span class="pre">-i</span> <span class="pre">demo.dts</span> <span class="pre">&gt;</span> <span class="pre">demo.c</span></code>。</p>
 <ul class="simple">
 <li><p>以wifi为例，通过 <code class="docutils literal notranslate"><span class="pre">wifi</span></code> 这个根节点获取其 <code class="docutils literal notranslate"><span class="pre">offset</span></code></p></li>
@@ -246,7 +245,7 @@ if (countindex &gt; 0) {
 <p>下图为dump下来的部分信息，与源文件对应信息一致。</p>
 <blockquote>
 <div><figure class="align-default">
-<img alt="" src="../../../_images/image136.png" />
+<img alt="" src="../../../_images/image137.png" />
 </figure>
 </div></blockquote>
 </section>
@@ -284,7 +283,7 @@ if (countindex &gt; 0) {
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            VERSION:'release_bl_iot_sdk_1.6.40-1603-g15bfed04d',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -292,10 +291,9 @@ if (countindex &gt; 0) {
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

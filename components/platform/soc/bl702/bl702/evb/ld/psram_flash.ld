@@ -5,14 +5,17 @@ ENTRY( bl702_start )
 __EM_SIZE = DEFINED(ble_controller_init) ? (DEFINED(em_16k_init) ? 16K : 8K) : 0K;
 __CACHE_SIZE = DEFINED(__CACHE_SIZE) ? __CACHE_SIZE : 16K;
 __stack_size = DEFINED(__stack_size) ? __stack_size : 2K;
+__sha_ocram_size = DEFINED(__sha_ocram_size) ? __sha_ocram_size : 128;
 
 MEMORY
 {
   flash  (rxai!w) : ORIGIN = 0x23000000, LENGTH = (2M)
-  tcm_ocram (wxa) : ORIGIN = 0x42010000 + __CACHE_SIZE, LENGTH = (64K - __CACHE_SIZE + 64K - __EM_SIZE - __stack_size)
-  sys_stack (wxa) : ORIGIN = 0x42030000 - __EM_SIZE - __stack_size, LENGTH = __stack_size
+  tcm_ocram (wxa) : ORIGIN = 0x42010000 + __CACHE_SIZE, LENGTH = (64K - __CACHE_SIZE + 64K - __EM_SIZE - __stack_size - __sha_ocram_size)
+  sys_stack (wxa) : ORIGIN = 0x42030000 - __EM_SIZE - __stack_size - __sha_ocram_size, LENGTH = __stack_size
+  sha_ocram (wxa) : ORIGIN = 0x42030000 - __EM_SIZE - __sha_ocram_size, LENGTH = __sha_ocram_size
   hbnram    (wxa) : ORIGIN = 0x40010000, LENGTH = (4K)
   psram     (wxa) : ORIGIN = 0x26000000, LENGTH = (2M)
+  bugkill   (rxai!w) : ORIGIN = 0xD0000000, LENGTH = 16M
 }
 
 SECTIONS
@@ -76,6 +79,19 @@ SECTIONS
 
     *(.gnu.linkonce.r.*)
   } >flash
+
+  .bugkiller_command :
+  {
+    PROVIDE( __bugkiller_command_start = ADDR(.bugkiller_command) );
+    PROVIDE( __bugkiller_command_end = ADDR(.bugkiller_command) + SIZEOF(.bugkiller_command) );
+    KEEP (*(.static_bugkiller_command))
+  } > bugkill
+
+  .bugkiller  :
+  {
+    KEEP (*(.bugkiller_code))
+    KEEP (*bugkiller*.o(.rodata* .text* .data* .sdata* .sbss*))
+  } > bugkill
 
   .init_array :
   {
@@ -218,11 +234,6 @@ SECTIONS
     *(COMMON)
   } >tcm_ocram
 
-  .sha_ocram (NOLOAD) :
-  {
-    *(.sha_ocram*)
-  } >tcm_ocram
-
   . = ALIGN(8);
   PROVIDE( _heap_start = . );
   PROVIDE( _heap_size = ORIGIN(tcm_ocram) + LENGTH(tcm_ocram) - _heap_start );
@@ -238,6 +249,11 @@ SECTIONS
     __freertos_irq_stack_top = .;
   } >sys_stack
 
+  .sha_ocram (NOLOAD) :
+  {
+    *(.sha_ocram*)
+  } >sha_ocram
+
   .psram (NOLOAD) :
   {
     . = ALIGN(16);
@@ -250,7 +266,6 @@ SECTIONS
   . = ALIGN(8);
   PROVIDE( _heap3_start = . );
   PROVIDE( _heap3_size = ORIGIN(psram) + LENGTH(psram) - _heap3_start );
-
 
   /* camera driver */
   PROVIDE( _ld_bl_driver_camera_start = _bl_driver_camera_start );
@@ -277,6 +292,11 @@ SECTIONS
   PROVIDE( _ld_ram_addr2 = ORIGIN(hbnram) );
   PROVIDE( _ld_ram_size3 = SIZEOF(.stack) );
   PROVIDE( _ld_ram_addr3 = ADDR(.stack) );
+
+  PROVIDE( _ld_ram_sha_size = LENGTH(sha_ocram) );
+  PROVIDE( _ld_ram_sha_addr = ORIGIN(sha_ocram) );
+  PROVIDE( _ld_psram_size = LENGTH(psram) );
+  PROVIDE( _ld_psram_addr = ORIGIN(psram) );
 
   /* BOOT2 parameter */
   PROVIDE ( __boot2_pt_addr_src = BOOT2_PT_ADDR );

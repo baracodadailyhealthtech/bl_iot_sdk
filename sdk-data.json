@@ -71,8 +71,10 @@
 				["CONFIG_SYS_AOS_LOOP_ENABLE", 0],
 				["CONFIG_SYS_AOS_CLI_ENABLE", 0],
 				["CONFIG_SYS_VFS_UART_ENABLE", 0],
-				["CONFIG_SYS_APP_TASK_STACK_SIZE", 2048],
-				["CONFIG_SYS_APP_TASK_PRIORITY", 15]
+				["CFG_AOS_LOOP_STACK_DEPTH", 2048],
+				["SYS_AOS_LOOP_TASK_PRIORITY", 15],
+				["SYS_APP_TASK_STACK_SIZE", 2048],
+				["SYS_APP_TASK_PRIORITY", 15]
 			],
 			"include_dirs": [
 				"components/platform/soc/bl702l/bl702l/evb/src",
@@ -210,6 +212,7 @@
 				"+<BSP_Driver/std_drv/src/bl702l_auadc.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_cks.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_dma.c>",
+				"+<BSP_Driver/std_drv/src/bl702l_dma_uart.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_i2c.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_pwm.c>",
 				"+<BSP_Driver/std_drv/src/bl702l_pwm_sc.c>",

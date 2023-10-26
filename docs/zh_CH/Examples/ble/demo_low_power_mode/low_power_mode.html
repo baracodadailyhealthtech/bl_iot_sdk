@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档</title>
+  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../../../about.html"/>
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1418-g47a217dab 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档" href="../../../index.html"/>
         <link rel="up" title="BLE" href="../index.html"/>
         <link rel="next" title="Mesh" href="../demo_mesh/mesh.html"/>
         <link rel="prev" title="Ble Introduction" href="../demo_ble/ble.html"/> 
@@ -70,13 +66,16 @@
           
 
           
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1418-g47a217dab
+                release_bl_iot_sdk_1.6.40-1603-g15bfed04d
               </div>
             
           
@@ -105,8 +104,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">BLE</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../demo_ble/ble.html">Introduction</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Low_Power_Mode_BL702L</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2">低功耗模式</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#section-1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#section-2">低功耗模式</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../demo_mesh/mesh.html">Mesh</a></li>
@@ -188,13 +187,13 @@
            <div itemprop="articleBody">
             
   <section id="low-power-mode-bl702l">
-<span id="ble-index"></span><h1>Low_Power_Mode_BL702L<a class="headerlink" href="#low-power-mode-bl702l" title="此标题的永久链接"></a></h1>
-<section id="id1">
-<h2>总览<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<span id="ble-index"></span><h1>Low_Power_Mode_BL702L<a class="headerlink" href="#low-power-mode-bl702l" title="永久链接至标题"></a></h1>
+<section id="section-1">
+<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何使用低功耗模式。</p>
 </section>
-<section id="id2">
-<h2>低功耗模式<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<section id="section-2">
+<h2>低功耗模式<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>系统进入低功耗流程</p>
 <p>系统低功耗模式简称 PDS (Power Down Sleep)。
@@ -244,6 +243,16 @@ SDK中使用了Freertos。Freertos的idle task会检查当前BL702L是否处于�
 <p>例如，应用层使用了key scan功能，则需要在该callback函数中恢复key scan的配置因为该配置在低功耗模式下会丢掉。</p>
 </div></blockquote>
 </li>
+<li><p>如何测量电流及平均功耗</p>
+<blockquote>
+<div><figure class="align-default">
+<img alt="" src="../../../_images/image110.png" />
+</figure>
+</div></blockquote>
+<p>参考以上原理图，</p>
+<p>1.使用万用表测量电流的时候，万用表的正极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33</span></code>，万用表的负极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33_MOD</span></code>。</p>
+<p>2.使用power monitor测量平均功耗的时候，一般通过power monitor给开发板供电，power monitor的正极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33_MOD</span></code> ，power monitor的负极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">GND</span></code>。</p>
+</li>
 </ul>
 </section>
 </section>
@@ -289,7 +298,7 @@ SDK中使用了Freertos。Freertos的idle task会检查当前BL702L是否处于�
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1418-g47a217dab',
+            VERSION:'release_bl_iot_sdk_1.6.40-1603-g15bfed04d',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -297,10 +306,9 @@ SDK中使用了Freertos。Freertos的idle task会检查当前BL702L是否处于�
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

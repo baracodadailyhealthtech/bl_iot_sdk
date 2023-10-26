@@ -607,9 +607,11 @@ int hosal_spi_finalize(hosal_spi_dev_t *spi)
         if (spi_priv->rx_dma_ch >= 0) {
             hosal_dma_chan_release(spi_priv->rx_dma_ch);
         }
+        vEventGroupDelete(spi_priv->spi_event_group);
         vPortFree(spi_priv);
     } else {
         spi_priv_t *spi_priv = (spi_priv_t *)spi->priv;
+        vEventGroupDelete(spi_priv->spi_event_group);
         vPortFree(spi_priv);
     }
     bl_irq_disable(SPI_IRQn);

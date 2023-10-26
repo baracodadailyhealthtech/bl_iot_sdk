@@ -106,19 +106,6 @@ endif
 
 INCLUDE_COMPONENTS += $(PROJECT_NAME)
 
-COMPONENT_COMMON := fs libc stage sys utils
-COMPONENT_PLATFORM := soc/bl702 hosal
-COMPONENT_NETWORK := ble lmac154 zigbee lwip lwip_dhcpd netutils
-ifeq ($(CONFIG_THREAD),1)
-COMPONENT_NETWORK += mdns thread/openthread thread/openthread_port 
-COMPONENT_NETWORK += thread/openthread_utils_bl702 thread/openthread_br
-COMPONENT_COMMON += security/mbedtls_lts
-endif
-COMPONENT_DIRS := $(PROJECT_PATH)/$(PROJECT_NAME)
-COMPONENT_DIRS += $(addprefix $(BL60X_SDK_PATH)/components/, $(COMPONENT_COMMON))
-COMPONENT_DIRS += $(addprefix $(BL60X_SDK_PATH)/components/platform/, $(COMPONENT_PLATFORM))
-COMPONENT_DIRS += $(addprefix $(BL60X_SDK_PATH)/components/network/, $(COMPONENT_NETWORK))
-
 ifeq ($(CONFIG_THREAD),1)
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_br/otbr_config.mk
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk

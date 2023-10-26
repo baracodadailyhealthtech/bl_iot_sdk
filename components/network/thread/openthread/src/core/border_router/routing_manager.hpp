@@ -899,15 +899,18 @@ private:
             TimeMilli   mExpireTime;
         };
 
-        void GenerateLocalPrefix(void);
-        void PublishAndAdvertise(void);
-        void Deprecate(void);
-        void ResetExpireTime(TimeMilli aNow);
-        void EnterAdvertisingState(void);
-        void AppendCurPrefix(Ip6::Nd::RouterAdvertMessage &aRaMessage);
-        void AppendOldPrefixes(Ip6::Nd::RouterAdvertMessage &aRaMessage);
-        void DeprecateOldPrefix(const Ip6::Prefix &aPrefix, TimeMilli aExpireTime);
-        void SavePrefix(const Ip6::Prefix &aPrefix, TimeMilli aExpireTime);
+        State GetState(void) const { return mState; }
+        void  SetState(State aState);
+        void  GenerateLocalPrefix(void);
+        void  PublishAndAdvertise(void);
+        void  Deprecate(void);
+        void  ResetExpireTime(TimeMilli aNow);
+        void  AppendCurPrefix(Ip6::Nd::RouterAdvertMessage &aRaMessage);
+        void  AppendOldPrefixes(Ip6::Nd::RouterAdvertMessage &aRaMessage);
+        void  DeprecateOldPrefix(const Ip6::Prefix &aPrefix, TimeMilli aExpireTime);
+        void  SavePrefix(const Ip6::Prefix &aPrefix, TimeMilli aExpireTime);
+
+        static const char *StateToString(State aState);
 
         using ExpireTimer = TimerMilliIn<RoutingManager, &RoutingManager::HandleOnLinkPrefixManagerTimer>;
 
@@ -985,6 +988,8 @@ private:
         void Stop(void) { Unpublish(); }
         void Evaluate(void);
 
+        void UpdateAdvPioFlags(bool aAdvPioFlag);
+
         RoutePreference GetPreference(void) const { return mPreference; }
         void            SetPreference(RoutePreference aPreference);
         void            ClearPreference(void);
@@ -1019,6 +1024,7 @@ private:
         State           mState;
         RoutePreference mPreference;
         bool            mUserSetPreference;
+        bool            mAdvPioFlag;
         DelayTimer      mTimer;
     };
 

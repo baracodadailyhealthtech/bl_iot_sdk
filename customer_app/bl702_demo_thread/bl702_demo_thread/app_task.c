@@ -344,15 +344,4 @@ void otrInitUser(otInstance * instance)
     app_coapInit(instance, led_handler);
 #endif
 }
-
-#else
-
-void otrInitUser(otInstance * instance)
-{
-#ifdef CONFIG_NCP
-    otAppNcpInit((otInstance * )instance);
-#else
-    otAppCliInit((otInstance * )instance);
-#endif
-}
 #endif

@@ -169,8 +169,7 @@ uint32_t CslTxScheduler::GetNextCslTransmissionDelay(const Child &aChild,
 
     aDelayFromLastRx = static_cast<uint32_t>(nextTxWindow - aChild.GetLastRxTimestamp());
 
-    /** weiyin, shorten delay time to make sure hit in following slot */
-    return static_cast<uint32_t>(nextTxWindow - radioNow - mCslFrameRequestAheadUs - 1000);
+    return static_cast<uint32_t>(nextTxWindow - radioNow - aAheadUs);
 }
 
 #if OPENTHREAD_CONFIG_RADIO_LINK_IEEE_802_15_4_ENABLE

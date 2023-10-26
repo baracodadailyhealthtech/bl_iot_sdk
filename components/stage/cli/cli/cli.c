@@ -791,6 +791,9 @@ static void version_cmd(char *buf, int len, int argc, char **argv)
         }
     }
     aos_cli_printf("Heap left: %d Bytes\r\n", xPortGetFreeHeapSize());
+#if defined(CFG_USE_PSRAM)
+    aos_cli_printf("Psram Heap left: %d Bytes\r\n", xPortGetFreeHeapSizePsram());
+#endif /* CFG_USE_PSRAM */
 }
 
 

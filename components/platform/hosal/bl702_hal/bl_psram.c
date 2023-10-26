@@ -97,7 +97,7 @@
 *******************************************************************************/
 void ATTR_TCM_SECTION SF_Cfg_Init_Ext_Psram_Gpio(void)
 {
-#if !defined(CFG_PSRAM_DUAL_BANK)
+#if 1//!defined(CFG_PSRAM_DUAL_BANK)
     GLB_GPIO_Cfg_Type cfg;
     uint8_t gpiopins[7];
     uint8_t i = 0;
@@ -178,7 +178,7 @@ void ATTR_TCM_SECTION bl_psram_init(void)
     };
     SF_Ctrl_Psram_Cfg sfCtrlPsramCfg = {
         .owner = SF_CTRL_OWNER_SAHB,
-#if !defined(CFG_PSRAM_DUAL_BANK)
+#if 1//!defined(CFG_PSRAM_DUAL_BANK)
         .padSel = SF_CTRL_PAD_SEL_DUAL_CS_SF2,
 #else
         .padSel = SF_CTRL_PAD_SEL_DUAL_BANK_SF2_SF3,
@@ -190,7 +190,18 @@ void ATTR_TCM_SECTION bl_psram_init(void)
         .psramClkDelay = 0,
     };
 
-    SF_Cfg_Init_Ext_Psram_Gpio();
+    Efuse_Device_Info_Type dev_info;
+    EF_Ctrl_Read_Device_Info(&dev_info);
+    if(dev_info.psram_cfg == 1){
+        // use dual bank mode for internal psram
+        sfCtrlPsramCfg.padSel = SF_CTRL_PAD_SEL_DUAL_BANK_SF2_SF3;
+
+        // for dual bank mode, only need to select internal psram
+        // please check map file, make sure that GLB_Set_Psram_Pad_HZ() is not called
+        GLB_Select_Internal_PSram();
+    }else{
+        SF_Cfg_Init_Ext_Psram_Gpio();
+    }
 
     Psram_Init(&apMemory1604, &cmdsCfg, &sfCtrlPsramCfg);
     //if(doReset){

@@ -248,6 +248,9 @@ void bl_uart_setconfig(uint8_t id, uint32_t baudrate, UART_Parity_Type parity)
         UART_LSB_FIRST                                       /* UART each data byte is send out LSB-first */
     };
 
+    const uint8_t uart_div = 0;
+    UartCfg.uartClk = SystemCoreClockGet() / (uart_div + 1);
+
     UartCfg.baudRate = baudrate;
     UartCfg.parity = parity;             //UART_PARITY_NONE
 
