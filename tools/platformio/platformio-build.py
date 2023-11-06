@@ -182,10 +182,10 @@ for define in defines:
 env.Append(
     ASFLAGS=["-x", "assembler-with-cpp"],
     CFLAGS=[
-        "-std=gnu99"
+        "-std=gnu17"
         ],
     CXXFLAGS=[
-        "-std=gnu++11",
+        "-std=gnu++17",
         "-nostdlib",
         "-fms-extensions",
         "-ffunction-sections",
