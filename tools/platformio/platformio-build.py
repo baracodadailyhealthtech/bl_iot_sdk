@@ -247,7 +247,7 @@ env.Append(
         "-nostartfiles",
         "-Wl,--defsym=LD_MAX_SIZE=%d" % board_config.get("upload.maximum_size"),
         "-Wl,--defsym=LD_MAX_DATA_SIZE=%d" % board_config.get("upload.maximum_ram_size"),
-      
+        "-Xlinker","-Map="+join("$BUILD_DIR", "firmware.map"),
         "-u _printf_float",
         "-Wl,--defsym=__stack_size=%d" % bl_stack_size,
         "-Wl,--defsym=__CACHE_SIZE=%d" % bl_cache_size,
