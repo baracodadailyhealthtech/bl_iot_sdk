@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL602 SDK Starter Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档</title>
+  <title>BL602 SDK Starter Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1621-g1b202e980 文档</title>
   
 
   
@@ -29,18 +29,22 @@
   
 
   
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
     <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于这些文档"
+        <link rel="author" title="关于此文档"
               href="../../about.html"/>
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档" href="../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1621-g1b202e980 文档" href="../../index.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -63,16 +67,13 @@
           
 
           
-            
-            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
-          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1603-g15bfed04d
+                release_bl_iot_sdk_1.6.40-1621-g1b202e980
               </div>
             
           
@@ -166,10 +167,10 @@
            <div itemprop="articleBody">
             
   <section id="bl602-sdk-starter-guide">
-<h1>BL602 SDK Starter Guide<a class="headerlink" href="#bl602-sdk-starter-guide" title="永久链接至标题"></a></h1>
+<h1>BL602 SDK Starter Guide<a class="headerlink" href="#bl602-sdk-starter-guide" title="此标题的永久链接"></a></h1>
 <p>本文档旨在指导用户搭建 BL602 硬件开发的软件环境。</p>
-<section id="section-1">
-<h2>编译环境的建立及代码的获取<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<section id="id1">
+<h2>编译环境的建立及代码的获取<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
 <ul class="simple">
 <li><p>打开终端，安装make，命令：<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">update</span></code>、<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">make</span></code></p></li>
 </ul>
@@ -195,8 +196,8 @@
 <li><p>检查源代码解压之后的根目录状态，先用<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">bl_iot_sdk</span></code>命令进入源文件目录，再用<code class="docutils literal notranslate"><span class="pre">ls</span></code>命令检查目录状态</p></li>
 </ul>
 </section>
-<section id="section-2">
-<h2>硬件连接<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+<section id="id2">
+<h2>硬件连接<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
 <p>模块BL602 IoT DVK-1S如下图所示，通过Type-C数据线将模块接到PC，其中图一是模块的正面图，图二是模块的背面图。</p>
 <figure class="align-default">
 <img alt="" src="../../_images/image1310.png" />
@@ -205,8 +206,8 @@
 <img alt="" src="../../_images/image142.png" />
 </figure>
 </section>
-<section id="section-3">
-<h2>代码的编译和烧录<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+<section id="id3">
+<h2>代码的编译和烧录<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
 <ul>
 <li><p>进入需要编译的工程目录，命令：<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">customer_app/bl602_demo_event</span></code>，进行编译，命令<code class="docutils literal notranslate"><span class="pre">./genromap</span></code></p>
 <figure class="align-default">
@@ -221,7 +222,7 @@
 </ul>
 </section>
 <section id="bin">
-<h2>bin文件下载<a class="headerlink" href="#bin" title="永久链接至标题"></a></h2>
+<h2>bin文件下载<a class="headerlink" href="#bin" title="此标题的永久链接"></a></h2>
 <ul>
 <li><p>进入<code class="docutils literal notranslate"><span class="pre">/bl_iot_sdk/tools/flash_tool</span></code>目录下，双击名为 <code class="docutils literal notranslate"><span class="pre">BLDevCube</span></code> 的可执行文件。</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">chip</span> <span class="pre">type</span></code>选择BL602/604，打开后界面参数参考下图配置：</p>
@@ -278,7 +279,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1603-g15bfed04d',
+            VERSION:'release_bl_iot_sdk_1.6.40-1621-g1b202e980',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -286,9 +287,10 @@
         };
     </script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
 
   
 

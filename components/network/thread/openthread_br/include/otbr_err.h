@@ -8,7 +8,7 @@ extern "C" {
 
 enum otbrError
 {
-    OTBR_ERROR_NONE				  = 0, ///< No error.
+    OTBR_ERROR_NONE               = 0, ///< No error.
 
     OTBR_ERROR_ERRNO              = -1,  ///< Error defined by errno.
     OTBR_ERROR_DBUS               = -2,  ///< DBus error.

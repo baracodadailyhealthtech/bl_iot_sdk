@@ -5,6 +5,6 @@ options=$options" CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=4"
 options=$options" OPENTHREAD_RADIO=0"
 options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
 
-make $options -j
+make $options -j2
 
 exit $?

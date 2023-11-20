@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>windows下eclipse调试记录 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档</title>
+  <title>windows下eclipse调试记录 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1621-g1b202e980 文档</title>
   
 
   
@@ -29,18 +29,22 @@
   
 
   
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
     <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于这些文档"
+        <link rel="author" title="关于此文档"
               href="../../../about.html"/>
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1603-g15bfed04d 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1621-g1b202e980 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -63,16 +67,13 @@
           
 
           
-            
-            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
-          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1603-g15bfed04d
+                release_bl_iot_sdk_1.6.40-1621-g1b202e980
               </div>
             
           
@@ -166,18 +167,18 @@
            <div itemprop="articleBody">
             
   <section id="windowseclipse">
-<h1>windows下eclipse调试记录<a class="headerlink" href="#windowseclipse" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>硬件准备工作<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<h1>windows下eclipse调试记录<a class="headerlink" href="#windowseclipse" title="此标题的永久链接"></a></h1>
+<section id="id1">
+<h2>硬件准备工作<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
 <ul class="simple">
 <li><p>安装jtag转usb驱动（驱动安装前先将设备连接电脑可以自动识别到相关设备），驱动下载网站：<a class="reference external" href="https://zadig.akeo.ie/">https://zadig.akeo.ie/</a></p></li>
 </ul>
 <figure class="align-default">
-<img alt="" src="../../../_images/驱动安装.png" />
+<img alt="" src="../../../_images/%E9%A9%B1%E5%8A%A8%E5%AE%89%E8%A3%85.png" />
 </figure>
 </section>
 <section id="eclipse">
-<h2>1.下载安装eclipse<a class="headerlink" href="#eclipse" title="永久链接至标题"></a></h2>
+<h2>1.下载安装eclipse<a class="headerlink" href="#eclipse" title="此标题的永久链接"></a></h2>
 <p>下载地址: <a class="reference external" href="https://www.eclipse.org/downloads/">https://www.eclipse.org/downloads/</a></p>
 <p>下载后双击安装就行,配置如下:</p>
 <figure class="align-default">
@@ -188,8 +189,8 @@
 <img alt="" src="../../../_images/image-27.png" />
 </figure>
 </section>
-<section id="section-2">
-<span id="target-1"></span><h2>2. 加载工作代码<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+<section id="id2">
+<span id="id3"></span><h2>2. 加载工作代码<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
 <p>新建makefile的project文件，操作如下：</p>
 <figure class="align-default">
 <img alt="" src="../../../_images/image-32.png" />
@@ -203,8 +204,8 @@
 <img alt="" src="../../../_images/image-52.png" />
 </figure>
 </section>
-<section id="section-3">
-<span id="target-2"></span><h2>3. 配置编译环境<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+<section id="id4">
+<span id="id5"></span><h2>3. 配置编译环境<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h2>
 <p>1.下载windows环境下编译linux的工具包</p>
 <p>工具地址：<a class="reference external" href="https://sourceforge.net/projects/msys2/files/Base/x86_64/">https://sourceforge.net/projects/msys2/files/Base/x86_64/</a></p>
 <p>安装步骤: <a class="reference external" href="https://www.msys2.org/">https://www.msys2.org/</a></p>
@@ -269,8 +270,8 @@ FilesEclipseembedcpp-2021-06eclipseopenocdxpack-openocd-0.11.0-1bin</p>
 </figure>
 <p>配置完成后点击Apply，点击Apply and Close。</p>
 </section>
-<section id="build-1">
-<span id="build"></span><h2>4.配置build编译标签<a class="headerlink" href="#build-1" title="永久链接至标题"></a></h2>
+<section id="build">
+<span id="id6"></span><h2>4.配置build编译标签<a class="headerlink" href="#build" title="此标题的永久链接"></a></h2>
 <p>配置build的选项</p>
 <ol class="arabic simple">
 <li><p>右键工程，选择<code class="docutils literal notranslate"><span class="pre">Properties-&gt;C/C++Build-&gt;Manage</span> <span class="pre">Configuration</span></code></p></li>
@@ -322,8 +323,8 @@ directory选择你要编译的工程，此处选的是bl602_demo_event。</p></l
 <img alt="" src="../../../_images/image-212.png" />
 </figure>
 </section>
-<section id="debug-1">
-<span id="debug"></span><h2>5.配置debug调试环境<a class="headerlink" href="#debug-1" title="永久链接至标题"></a></h2>
+<section id="debug">
+<span id="id7"></span><h2>5.配置debug调试环境<a class="headerlink" href="#debug" title="此标题的永久链接"></a></h2>
 <p>右键工程，选择<code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">As</span> <span class="pre">&gt;Debug</span> <span class="pre">Configurations...</span></code>操作界面如下：</p>
 <figure class="align-default">
 <img alt="" src="../../../_images/image-221.png" />
@@ -359,8 +360,8 @@ directory选择你要编译的工程，此处选的是bl602_demo_event。</p></l
 </figure>
 <p>配置完成后点击Apply。</p>
 </section>
-<section id="debug-3">
-<span id="debug-2"></span><h2>6.debug<a class="headerlink" href="#debug-3" title="永久链接至标题"></a></h2>
+<section id="id8">
+<span id="id9"></span><h2>6.debug<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
 <figure class="align-default">
 <img alt="" src="../../../_images/image-28.png" />
 </figure>
@@ -442,7 +443,7 @@ Return就可以执行完子函数余下部分，并返回上一层函数。</p><
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1603-g15bfed04d',
+            VERSION:'release_bl_iot_sdk_1.6.40-1621-g1b202e980',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -450,9 +451,10 @@ Return就可以执行完子函数余下部分，并返回上一层函数。</p><
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
 
   
 

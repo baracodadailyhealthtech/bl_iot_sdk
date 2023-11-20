@@ -21,6 +21,7 @@
 #include <openthread/config.h>
 #include <openthread/thread.h>
 #include <platforms/utils/link_metrics.h>
+#include <openthread-core-config.h>
 #include <openthread_port.h>
 
 #include <FreeRTOS.h>
@@ -30,7 +31,6 @@
 #include <ot_internel.h>
 #include <ot_utils_ext.h>
 
-#include OPENTHREAD_PROJECT_CORE_CONFIG_FILE
 
 __attribute__((section(".bss"))) static otRadio_t                otRadioVar;
 __attribute__((section(".bss"))) static uint8_t                  otRadio_buffPool[TOTAL_RX_FRAME_SIZE * (OTRADIO_RX_FRAME_BUFFER_NUM + 1) + (ALIGNED_RX_FRAME_SIZE + MAX_ACK_FRAME_SIZE) * 2];
@@ -422,7 +422,6 @@ otError otPlatRadioSleep(otInstance *aInstance)
     lmac154_disableRx();
 
 #if !defined(CONFIG_NCP) || CONFIG_NCP == 1
-    /** RCP dones't need this */
     lmac154_setRxStateWhenIdle(otThreadGetLinkMode(aInstance).mRxOnWhenIdle);
 #endif
 
@@ -439,7 +438,6 @@ otError otPlatRadioReceive(otInstance *aInstance, uint8_t aChannel)
 
     lmac154_setChannel((lmac154_channel_t)ch);
 #if !defined(CONFIG_NCP) || CONFIG_NCP == 1
-    /** RCP dones't need this */
     lmac154_setRxStateWhenIdle(otThreadGetLinkMode(aInstance).mRxOnWhenIdle);
 #endif
     lmac154_enableRx();

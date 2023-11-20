@@ -600,7 +600,7 @@
 #define BFLB_DYNAMIC_ALLOC_MEM
 #define BFLB_BT_LINK_KEYS_STORE
 #if defined(BL702) || defined(BL702L)
-#if defined(CFG_BLE_PDS) && defined(BFLB_BLE) && defined(BFLB_DYNAMIC_ALLOC_MEM)
+#if defined(CFG_BLE_PDS) && defined(BFLB_BLE) && defined(BFLB_DYNAMIC_ALLOC_MEM)&& !defined(CONFIG_BT_MESH)
 #define BFLB_STATIC_ALLOC_MEM   1
 #else
 #define BFLB_STATIC_ALLOC_MEM   0

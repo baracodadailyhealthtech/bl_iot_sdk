@@ -74,6 +74,6 @@ options=$options" CONFIG_USE_WIFI_BR=$CONFIG_USE_WIFI_BR"
 
 options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
 
-make $options -j $jobs 2>&1 | tee build_out/make.log
+make $options -j2 $jobs 2>&1 | tee build_out/make.log
 
 exit $?
