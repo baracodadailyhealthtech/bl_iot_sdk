@@ -69,7 +69,8 @@
 				["CFG_AOS_LOOP_STACK_DEPTH", 2048],
 				["SYS_AOS_LOOP_TASK_PRIORITY", 15],
 				["SYS_APP_TASK_STACK_SIZE", 2048],
-				["SYS_APP_TASK_PRIORITY", 15]
+				["SYS_APP_TASK_PRIORITY", 15],
+				["CONFIG_PDS_ENABLE", 1]
 			],
 			"include_dirs": [
 				"components/platform/soc/bl702l/bl702l/evb/src",
