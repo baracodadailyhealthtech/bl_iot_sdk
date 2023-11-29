@@ -418,7 +418,7 @@ int ATTR_TCM_SECTION bl_flash_init(void)
     clkInvert = pFlashCfg->clkInvert;
 
     SFlash_GetJedecId(pFlashCfg, (uint8_t *)&jid);
-    ret = SF_Cfg_Get_Flash_Cfg_Need_Lock(jid, pFlashCfg);
+    ret = SF_Cfg_Get_Flash_Cfg_Need_Lock_Ext(jid, pFlashCfg);
     if (ret == 0) {
         if ((pFlashCfg->ioMode & 0x0f) == SF_CTRL_QO_MODE || (pFlashCfg->ioMode & 0x0f) == SF_CTRL_QIO_MODE) {
             SFlash_Qspi_Enable(pFlashCfg);

@@ -32,9 +32,8 @@ static void blvl_ccc_cfg_changed(const struct bt_gatt_attr *attr,
 {
 	ARG_UNUSED(attr);
 
-	bool notif_enabled = (value == BT_GATT_CCC_NOTIFY);
-
 #if !defined(BFLB_BLE)
+	bool notif_enabled = (value == BT_GATT_CCC_NOTIFY);
 	LOG_INF("BAS Notifications %s", notif_enabled ? "enabled" : "disabled");
 #endif
 }

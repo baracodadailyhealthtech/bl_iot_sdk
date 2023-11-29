@@ -165,6 +165,14 @@ void att_pdu_sent(struct bt_conn *conn, void *user_data)
 			/* Save request state so it can be resent */
 			net_buf_simple_save(&att->req->buf->b,
 					    &att->req->state);
+			#if defined(BFLB_BLE_PATCH_ATT_SEND_REQ_WHEN_TX_SEM_BUSY_BUF_ERR)
+			if (!att_send(conn, net_buf_ref(buf), NULL, NULL)) {
+				return;
+			}
+			net_buf_unref(buf);
+			att->req->buf = NULL;
+			#endif /* BFLB_BLE_PATCH_ATT_SEND_REQ_WHEN_TX_SEM_BUSY_BUF_ERR */
+			continue;
 		}
 
 		if (!att_send(conn, buf, NULL, NULL)) {

@@ -4961,6 +4961,7 @@ int bt_gatts_add_serv_attr(const struct bt_uuid *uuid, uint8_t is_primary,uint32
     if(!serv_info->attrs){
         serv_info->attrs = (struct bt_gatt_attr *)k_malloc(sizeof(struct bt_gatt_attr) * number_attrs);
         if(!serv_info->attrs){
+            k_free(serv_info);
             return -ENOBUFS;
         }
     }
@@ -5250,7 +5251,7 @@ static int attr_is_descptor(const struct bt_gatt_attr *desp_attr)
     SYS_SLIST_FOR_EACH_CONTAINER(&custom_desp_db, tmp_attr, node){
         if(tmp_attr){
             if(tmp_attr->attr == desp_attr){
-                ret = 0;
+                return 0;
             }
         }
     }
@@ -5271,7 +5272,7 @@ static int free_attr_descptor(struct bt_gatt_attr *desp_attr)
     SYS_SLIST_FOR_EACH_CONTAINER(&custom_desp_db, tmp_attr, node){
         if(tmp_attr){
             if(tmp_attr->attr == desp_attr){
-                //sys_slist_find_and_remove(&custom_desp_db,&tmp_attr->node);
+                sys_slist_find_and_remove(&custom_desp_db,&tmp_attr->node);
                 k_free(tmp_attr);
                 tmp_attr = NULL;
             }

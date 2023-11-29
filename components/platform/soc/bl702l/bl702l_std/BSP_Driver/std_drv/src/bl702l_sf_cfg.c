@@ -1123,7 +1123,12 @@ static const ATTR_TCM_CONST_SECTION Flash_Info_t flashInfos[] = {
         .jedecID = 0x15345E,
         .name = "ZB_25Q16A_15_33",
         .cfg = &flashCfg_Winb_16JV,
-    }
+    },
+    {
+        .jedecID = 0x14650b,
+        .name="XTX_25W08F_08_1833",
+        .cfg = &flashCfg_Winb_16JV,
+    },
 };
 #endif
 

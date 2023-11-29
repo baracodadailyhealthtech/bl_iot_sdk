@@ -290,6 +290,7 @@ int bt_le_read_chan_map(struct bt_conn *conn, struct bt_hci_rp_le_read_chan_map 
 
 #if defined(BL702L) || defined(BL616) || defined(BL606P) || defined(BL808)
 int bt_le_throughput_calc(bool enable, u8_t interval);
+int bt_le_set_conn_window(u8_t percentage);
 #endif
 
 int bt_le_enh_tx_test(u8_t tx_ch, u8_t test_data_len, u8_t pkt_payload, u8_t phy);

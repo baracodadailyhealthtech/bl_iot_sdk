@@ -186,7 +186,7 @@ void bl_packet_to_host(uint8_t pkt_type, uint16_t src_id, uint8_t *param, uint8_
         {
             prio = false;
             bt_buf_set_type(buf, BT_BUF_ACL_IN);
-            tlt_len = bt_onchiphci_hanlde_rx_acl(param, buf_data);
+            tlt_len = bt_onchiphci_handle_rx_acl(param, buf_data);
             break;
         }
         #endif

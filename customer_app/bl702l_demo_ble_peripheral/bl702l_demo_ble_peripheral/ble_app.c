@@ -2,11 +2,11 @@
 #include "bl_irq.h"
 #include "btble_lib_api.h"
 #include "bluetooth.h"
+#include "conn.h"
+#include "conn_internal.h"
 #include "hci_driver.h"
 #include "hci_core.h"
 #include "log.h"
-#include "conn.h"
-#include "conn_internal.h"
 #include "bl_port.h"
 #if defined(CONFIG_BT_STACK_CLI) 
 #include "ble_cli_cmds.h"

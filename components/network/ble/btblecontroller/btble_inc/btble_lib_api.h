@@ -77,6 +77,10 @@ struct hci_vs_tx_test_cmd
 //The default stack size of btblecontroller task is 2k in ble only mode and 4k in bt/ble mode.
 void btble_controller_set_task_stack_size(uint16_t stack_size);
 void btble_controller_init(uint8_t task_priority);
+#if defined(CFG_NUTTX)
+void btblecontroller_main(void);
+#endif
+
 void btble_controller_deinit(void);
 extern int32_t btble_controller_sleep(int32_t max_sleep_cycles);
 extern void btble_controller_sleep_restore();

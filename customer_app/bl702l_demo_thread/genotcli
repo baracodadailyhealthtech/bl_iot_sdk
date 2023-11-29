@@ -49,6 +49,6 @@ options=$options" CONFIG_OPENTHREAD_CLI_ENABLE=1"
 
 options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
 
-make $options -j $jobs 2>&1 | tee build_out/make.log
+make $options -j2 $jobs 2>&1 | tee build_out/make.log
 
 exit $?

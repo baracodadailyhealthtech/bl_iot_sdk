@@ -1,5 +1,8 @@
 # Changes
 
+## 2023-11-2
+1.[BL616/BL702L]Add the feature of setting ble connection window.
+
 ## 2023-10-11
 1.[BL702L]Add btblecontroller_702l_m4s1p.
 

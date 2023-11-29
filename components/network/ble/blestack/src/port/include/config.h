@@ -600,7 +600,7 @@
 #define BFLB_DYNAMIC_ALLOC_MEM
 #define BFLB_BT_LINK_KEYS_STORE
 #if defined(BL702) || defined(BL702L)
-#if defined(CFG_BLE_PDS) && defined(BFLB_BLE) && defined(BFLB_DYNAMIC_ALLOC_MEM)
+#if defined(CFG_BLE_PDS) && defined(BFLB_BLE) && defined(BFLB_DYNAMIC_ALLOC_MEM)&& !defined(CONFIG_BT_MESH)
 #define BFLB_STATIC_ALLOC_MEM   1
 #else
 #define BFLB_STATIC_ALLOC_MEM   0
@@ -700,6 +700,12 @@ BT_SMP_DIST_ENC_KEY bit is not cleared while remote ENC_KEY is received.*/
 #if defined(CONFIG_BT_SMP)
 #define BFLB_BLE_SMP_SC_ONLY
 #endif
+
+/* Fix do att_send_req but att->tx_sem is busy, the request will push into att->tx_queue, when
+ * pop att->tx_queue and send request, att_send not ref req->buf, this will cause buf to be
+ * released early.
+ */
+#define BFLB_BLE_PATCH_ATT_SEND_REQ_WHEN_TX_SEM_BUSY_BUF_ERR
 
 #define BR_EDR_PTS_TEST 0
 #define BFLB_BLE_ENABLE_TEST_PSM 0

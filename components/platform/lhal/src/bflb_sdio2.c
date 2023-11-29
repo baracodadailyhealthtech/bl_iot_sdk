@@ -468,6 +468,8 @@ static void bflb_sdio2_reset_irq(int irq, void *arg)
     uint32_t reg_base = dev->reg_base;
     uint32_t regval = 0;
 
+    bflb_irq_clear_pending(BL616_IRQ_SDU_SOFT_RST);
+
     uint32_t dnld_desc_num = 0;
     bflb_sdio2_trans_desc_t dnld_desc_s[SDIO2_MAX_PORT_NUM] = { 0 };
 

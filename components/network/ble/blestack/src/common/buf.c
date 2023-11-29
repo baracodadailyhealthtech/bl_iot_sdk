@@ -65,7 +65,6 @@
 extern struct net_buf_pool hci_cmd_pool;
 extern struct net_buf_pool hci_rx_pool;
 #if (BFLB_STATIC_ALLOC_MEM)
-__attribute__((section(".tcm_data"))) u8_t hci_cmd_data_pool[CONFIG_BT_HCI_CMD_COUNT * BT_BUF_RX_SIZE];
 __attribute__((section(".tcm_data"))) u8_t hci_rx_data_pool[CONFIG_BT_RX_BUF_COUNT * BT_BUF_RX_SIZE];
 #endif
 #if defined(CONFIG_BT_CONN)
@@ -180,14 +179,14 @@ void net_buf_init(struct net_buf_pool *buf_pool, u16_t buf_count, size_t data_si
     #if (BFLB_STATIC_ALLOC_MEM)
     switch (buf_type){
         case HCI_CMD:
-            buf_fixed->data_pool = hci_cmd_data_pool;
+            buf_fixed->data_pool = (u8_t *)k_malloc(buf_count * data_size);
             break;
         case HCI_RX:
             buf_fixed->data_pool = hci_rx_data_pool;
             break;
         #if defined(CONFIG_BT_CONN)
         case ACL_TX:
-            buf_fixed->data_pool = (u8_t *)k_malloc(buf_count * data_size); ;
+            buf_fixed->data_pool = (u8_t *)k_malloc(buf_count * data_size);
             break;
         case NUM_COMPLETE:
             buf_fixed->data_pool = num_complete_data_pool;
@@ -242,9 +241,17 @@ void net_buf_deinit(struct net_buf_pool *buf_pool)
 {
     extern void bt_delete_queue(struct k_fifo *queue_to_del);
     bt_delete_queue((struct k_fifo *)(&(buf_pool->free)));
-
-    #if !(BFLB_STATIC_ALLOC_MEM)
     struct net_buf_pool_fixed *buf_fixed = (struct net_buf_pool_fixed *)buf_pool->alloc->alloc_data;
+    #if (BFLB_STATIC_ALLOC_MEM)
+    if(buf_pool == &hci_cmd_pool || buf_pool == &acl_tx_pool
+       #if CONFIG_BT_L2CAP_TX_FRAG_COUNT > 0
+       || buf_pool == &frag_pool
+       #endif
+        )
+    {
+        k_free(buf_fixed->data_pool);
+    }
+    #else
     k_free(buf_fixed->data_pool);
     #endif
     k_free(buf_pool->__bufs);

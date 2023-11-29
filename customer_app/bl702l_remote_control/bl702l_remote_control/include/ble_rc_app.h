@@ -9,6 +9,7 @@
 
 typedef enum{
     RC_KYS_IR_TX,
+    RC_KYS_IR_RELEASE, 
     RC_KYS_NOTIFY,
     RC_KYS_ADV,
     RC_KYS_VOICE_START,

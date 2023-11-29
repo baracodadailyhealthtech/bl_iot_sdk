@@ -16,20 +16,18 @@
 #endif
 
 hosal_pwm_dev_t pwm;
+
 void demo_hosal_pwm_init(void)
 {
 #if defined(CONF_USER_BL602) || defined(CONF_USER_BL702)
     /* pwm port and pin set  note: There is corresponding relationship between port and pin, for bl602/bl702, map is  port = pin%5 */
     pwm.port = 0;
-    /* pwm config */
     pwm.config.pin = 0;
 #elif defined(CONF_USER_BL702L)
-    /* for bl702l, pwm port must be 0 */
-    pwm.port = 0;
-    /* for bl702l, there are two pwm versions
-       for pwm_v1, pin%5 == 0
-       for pwm_v2, pin%5 != 0
-       here pwm_v2 is used */
+    /* for bl702l, pwm port can be 0 or 1
+       if port = 0, pwm_v1 is used, which supports one channel, pin%5 == 0
+       if port = 1, pwm_v2 is used, which supports four channels, pin%5 != 0 */
+    pwm.port = 1;
     pwm.config.pin = 1;
 #endif
     pwm.config.duty_cycle = 5000; //duty_cycle range is 0~10000 correspond to 0~100%
@@ -43,6 +41,7 @@ void demo_hosal_pwm_start(void)
     /* start pwm */
     hosal_pwm_start(&pwm);
 }
+
 void demo_hosal_pwm_change_param(void)
 {
     /* change pwm param */

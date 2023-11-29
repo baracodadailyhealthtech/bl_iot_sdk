@@ -49,6 +49,6 @@ options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-co
 options=$options" CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=$CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION"
 options=$options" OPENTHREAD_RADIO=$OPENTHREAD_RADIO"
 
-make $options -j $jobs 2>&1 | tee build_out/make.log
+make $options -j2 $jobs 2>&1 | tee build_out/make.log
 
 exit $?

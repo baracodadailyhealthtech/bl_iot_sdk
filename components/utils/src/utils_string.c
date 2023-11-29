@@ -33,10 +33,10 @@
 #include <string.h>
 #include <utils_string.h>
 
-static int params_filter(char** params,uint32_t *r)
+static int params_filter(char** params,uint64_t *r)
 {	
 	char *p ;
-	uint32_t result=0;
+	uint64_t result=0;
 	uint8_t base=0;
 	
 	p = *params;
@@ -113,6 +113,18 @@ void get_uint16_from_string(char** params, uint16_t *result)
 void get_uint32_from_string(char** params, uint32_t *result)
 {
     uint32_t p = 0;
+	int state=0;
+	
+	state = params_filter(params,&p);
+	if(!state){
+		*result = p;
+	}else
+		*result = 0;
+}
+
+void get_uint64_from_string(char** params, uint64_t *result)
+{
+    uint64_t p = 0;
 	int state=0;
 	
 	state = params_filter(params,&p);
