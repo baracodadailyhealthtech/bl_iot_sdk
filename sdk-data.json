@@ -231,7 +231,8 @@
 				["CONFIG_LONG_RANG", 0],
 				["CONFIG_PHY_UPDATE", 0],
 				["CONFIG_LE_PING", 0],
-				["CONFIG_PHY_UPDATE", 0]
+				["CONFIG_PHY_UPDATE", 0],
+				["CFG_CON", 4]
 			],
 			"include_dirs": [
 				"components/network/ble/btblecontroller/btble_inc",
@@ -393,7 +394,6 @@
 				"CFG_BLE_ENABLE",
 				"BFLB_BLE",
 				"CFG_BLE",
-				["CFG_CON", 1],
 				["CFG_BLE_TX_BUFF_DATA", 2],
 				"CFG_BLE_STACK_DBG_PRINT",
 				["CONFIG_BT_GATT_DYNAMIC_DB", 1],
@@ -829,6 +829,9 @@
 			}
 		},
 		"bl702_ble": {
+			"defines": [
+				["CFG_CON", 1]
+			],
 			"include_dirs": [
 				"components/network/ble/blecontroller/ble_inc",
 				"components/platform/soc/bl702/bl702_rf/include"
