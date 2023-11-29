@@ -1,5 +1,22 @@
 # Changes
 
+## 2023-11-28
+1.Fix an error that buf is released early when send gatt req, Occurs in a throughput test scene.
+
+## 2023-11-20
+1.Fix an assert issue when sending hci commands in a corner case.
+
+## 2023-11-13
+1. Fix the issue that ble rconnection fails if the previous ble connection is established with its high duty cycle directed adv.
+2. Fix the issue that ble reconnection fails if the previous high duty cycle adv timeout happens.
+3. Fix the issue that upper layer cannot identify the connection with connection handle in upper layer's disconnected callback.
+
+## 2023-11-2
+1. Add the feature of setting ble connection window.
+
+## 2023-10-27
+1. Fix the issue that ble master fails to connect to the same slave after disconnection in a corner case.
+
 ## 2023-09-14
 1. Fix the issue that connection update work is not released when upper layer does disconnection in BT_CONN_CONNECT_SCAN state.
 

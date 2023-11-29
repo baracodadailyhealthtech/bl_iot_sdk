@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "bl_rtc.h"
+#include "bl_timer.h"
+#include "blog.h"
 
 
 void bl_rtc_init(void)
@@ -39,6 +41,16 @@ void bl_rtc_init(void)
 #endif
     
     HBN_Enable_RTC_Counter();
+    
+    // if rtc counter does not change, something must be wrong, e.g. CFG_USE_XTAL32K is defined but XTAL32K crystal is not mounted
+    uint32_t now = bl_timer_now_us();
+    uint32_t timeout = 1000000;
+    uint64_t cnt = bl_rtc_get_counter();
+    while(bl_rtc_get_counter() - cnt < 3){
+        if(bl_timer_now_us() - now >= timeout){
+            blog_assert(0);
+        }
+    }
 }
 
 uint64_t bl_rtc_get_counter(void)

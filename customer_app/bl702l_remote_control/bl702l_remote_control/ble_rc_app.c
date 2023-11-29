@@ -8,14 +8,14 @@
 #include "bl_ir.h"
 #include "btble_lib_api.h"
 #include "bluetooth.h"
+#include "conn.h"
+#include "conn_internal.h"
 #include "hci_driver.h"
 #include "hci_core.h"
 #include "hci_host.h"
 #include "log.h"
 #include "btble_lib_api.h"
 #include "bas.h"
-#include "conn.h"
-#include "conn_internal.h"
 #include "gatt.h"
 #include "bl_port.h"
 #include "cli.h"
@@ -24,6 +24,7 @@
 #include "ble_rc_hog.h"
 #include "ble_rc_voice.h"
 #include "ble_rc_app.h"
+#include "ble_rc_ir.h"
 #include "ble_atv_voice.h"
 #if defined(CONFIG_BT_OAD_SERVER)
 #include "oad_main.h"
@@ -32,12 +33,13 @@
 
 
 //#define BLE_RC_PDS_SECTION_ENABLE
+volatile bool ir_tx_start = false;
 volatile bool voice_start = false;
 volatile bool cont_start = false;//send release key value after key is released.
 volatile bool cont_release = false;
 volatile bool wait_for_unpair = false;
 volatile u8_t rc_battery_level = 80;
-u8_t pending_evt = RC_KYS_INVALID_EVT;
+volatile u8_t bonded_device_cnt = 0;
 bool pending_key = false;
 
 struct k_fifo ble_rc_key_scan_queue;
@@ -45,8 +47,13 @@ static struct bt_gatt_exchange_params exchange_params;
 struct bt_conn *rc_default_conn;
 struct hids_remote_key *m_key_usage;
 static TaskHandle_t ble_rc_Key_Scan_task_hdl;
-k_timer_t ble_rc_adv_timer;//restart adv
-k_timer_t ble_rc_adc_sample_timer;//adv sample
+k_timer_t ble_rc_start_pairing_timer;//restart adv
+k_timer_t ble_rc_stop_adv_timer;//stop adv
+k_timer_t ble_rc_adc_sample_timer;//adc sample
+k_timer_t ble_rc_conn_param_update_timer;
+
+k_timer_t ble_rc_ir_tx_timer;
+uint32_t ir_tx_timestamp;
 extern struct hids_remote_key remote_kbd_map_tab[];
 extern uint8_t KEY_CH_INS[8]; //Keyboard Pageup
 extern uint8_t KEY_CH_DES[8]; //Keyboard Pagedown
@@ -63,10 +70,18 @@ extern uint8_t KEY_VOL_DES[2]; //Volume Decrement
 extern uint8_t KEY_HOME[2]; //AC Home
 extern uint8_t KEY_BACK[2]; //AC Back
 
+typedef struct{
+    uint8_t evt_type;
+    bool press;
+    bool auto_release;
+    struct hids_remote_key *key_usage;
+}ble_rc_notify_key_info_t;
+ble_rc_notify_key_info_t pending_notify_key_info;
 static int ble_rc_start_adv(void);
 static void ble_rc_key_notify_process(u8_t hid_page, u8_t *hid_usage, bool press, bool auto_release);
 static void ble_rc_key_notify(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
 static void ble_rc_create_adc_sample_timer(void);
+void ble_rc_create_stop_adv_timer(void);
     
 const struct cli_command bleFireTvRcCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
       {"ble_key_ch_ins", "", ble_rc_key_notify},
@@ -138,14 +153,40 @@ static void ble_rc_gatt_exchange_mtu(void)
     bt_gatt_exchange_mtu(rc_default_conn, &exchange_params);
 }
 
+void ble_rc_create_adv_timer(void)
+{
+    k_timer_start(&ble_rc_start_pairing_timer, 2 * 1000);
+}
+
+static void ble_rc_stop_adv_timer_cb(void *timer)
+{
+    if(rc_default_conn == NULL && pending_notify_key_info.evt_type != RC_KYS_INVALID_EVT)
+         pending_notify_key_info.evt_type = RC_KYS_INVALID_EVT;
+
+    printf("stop adv\r\n");
+    bt_le_adv_stop();
+}
+
 static void ble_rc_connected(struct bt_conn *conn, u8_t err)
 {
     char addr[BT_ADDR_LE_STR_LEN];
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-
+    bt_conn_enable_peripheral_pref_param_update(conn, false);
+    if(ble_rc_stop_adv_timer.timer.hdl && k_timer_is_active(&ble_rc_stop_adv_timer))
+    {
+        k_timer_stop(&ble_rc_stop_adv_timer);
+        ble_rc_stop_adv_timer_cb(NULL);
+    }
+    
     if (err) {
         printf("Failed to connect to %s (%u) \r\n", addr, err);
+        pending_notify_key_info.evt_type = RC_KYS_INVALID_EVT;
+        //if high duty cycle directed adv timeout, start connectionable adv
+        if(err == BT_HCI_ERR_ADV_TIMEOUT)
+        {
+            ble_rc_create_adv_timer();
+        }
         return;
     }
 
@@ -175,7 +216,7 @@ static void ble_rc_connected(struct bt_conn *conn, u8_t err)
         }
         printf("\r\n");
     }
-#endif
+#endif 
     ble_rc_gatt_exchange_mtu();
     ble_rc_create_adc_sample_timer();
 }
@@ -186,15 +227,6 @@ static void ble_rc_disconnected(struct bt_conn *conn, u8_t reason)
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
     printf("Disconnected: %s (reason %u) \r\n", addr, reason);
-#if 0
-    if(conn->role == BT_CONN_ROLE_SLAVE) {
-        if(set_adv_enable(true)) {
-            printf("Fail to restart adv. \r\n");
-        } else {
-            printf("Restart adv successfully. \r\n");
-        }
-    }
-#endif
     if(ble_rc_adc_sample_timer.timer.hdl)
     {
         k_timer_stop(&ble_rc_adc_sample_timer);
@@ -275,6 +307,22 @@ static void ble_rc_conn_param_updated(struct bt_conn *conn, u16_t interval,
     }
 }
 
+static void ble_rc_conn_update_timer_cb(void *timer)
+{
+    printf("%s hdl=%p\r\n", __func__,ble_rc_conn_param_update_timer.timer.hdl);
+    k_timer_delete(&ble_rc_conn_param_update_timer);
+    ble_rc_conn_param_update_timer.timer.hdl = NULL;
+    ble_rc_connection_update(0x10, 0x10, 10, 1000);
+}
+
+void ble_rc_create_conn_update_timer(void)
+{
+    printf("%s\r\n", __func__);
+    k_timer_init(&ble_rc_conn_param_update_timer, ble_rc_conn_update_timer_cb, NULL);
+    k_timer_start(&ble_rc_conn_param_update_timer, pdMS_TO_TICKS(5 * 1000));
+    printf("%s,end\r\n", __func__);
+}
+
 static void ble_rc_auth_pairing_failed(struct bt_conn *conn, enum bt_security_err reason)
 {
     char addr[BT_ADDR_LE_STR_LEN];
@@ -299,17 +347,35 @@ static void ble_rc_security_changed(struct bt_conn *conn, bt_security_t level, e
 {
     char addr[BT_ADDR_LE_STR_LEN];
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-    printf("Security changed: %s level %u \r\n", addr, level);     
+    printf("Security changed: %s level %u \r\n", addr, level);    
+    if(level >= BT_SECURITY_L2) 
+    {
+        ble_rc_create_conn_update_timer();
+    }
 }
 
 void ble_rc_check_pending_evt(void)
 {
-    if(pending_evt != RC_KYS_INVALID_EVT)
+    if(pending_notify_key_info.evt_type != RC_KYS_INVALID_EVT)
     {
-         u8_t *evt_type_ptr =  k_malloc(1);
-         *evt_type_ptr = pending_evt;
-         k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+        if(pending_notify_key_info.evt_type == RC_KYS_NOTIFY)
+        {
+            pending_notify_key_info.auto_release = true;
+            pending_notify_key_info.press = true;
+        }
+        printf("check,%p\r\n", pending_notify_key_info.key_usage);
+        k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)&pending_notify_key_info);
     }
+}
+
+void ble_rc_foreach_bond_info_cb(const struct bt_bond_info *info, void *user_data)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
+    if(user_data)
+        (*(u8_t *)user_data)++;
+
+    bt_addr_le_to_str(&info->addr, addr, sizeof(addr));
+    printf("bonded device: %s\r\n", addr);
 }
 
 static struct bt_conn_cb ble_rc_conn_callbacks = {
@@ -452,36 +518,39 @@ static void ble_rc_key_notify(char *pcWriteBuffer, int xWriteBufferLen, int argc
     ble_rc_key_notify_process(hid_page, hid_usage, press, auto_release);
 }
 
-static void ble_rc_adv_timer_cb(void *timer)
+static void ble_rc_start_adv_timer_cb(void *timer)
 {
-    if(!wait_for_unpair)
-    {
-        if(rc_default_conn)
-            bt_conn_disconnect(rc_default_conn, BT_HCI_ERR_LOCALHOST_TERM_CONN);
-        else
-        {
-            printf("start adv\r\n");
-            set_adv_enable(true);
-        }
+    int err = ble_rc_start_adv();
+    if(err)
+        printf("fail to start adv,err=%d\r\n", err);
+    else
+        printf("start undirect connectable adv succesfully\r\n");
+    ble_rc_create_stop_adv_timer();
+}
 
-        wait_for_unpair = true;
-        k_timer_start(&ble_rc_adv_timer, pdMS_TO_TICKS((BLE_RC_UNPAIR_TIMER_IN_SEC - BLE_RC_ADV_TIMER_IN_SEC) * 1000));
+void ble_rc_start_pairing(void)
+{
+    bt_foreach_bond(0, ble_rc_foreach_bond_info_cb, (void *)&bonded_device_cnt);
+    if(bonded_device_cnt)
+    {
+        printf("unpair\r\n");
+        bt_unpair(0, NULL);
+        ble_rc_create_adv_timer();
     }
     else
     {
-        k_timer_delete(&ble_rc_adv_timer);
-        ble_rc_adv_timer.timer.hdl = NULL;
-        wait_for_unpair = false;
-        printf("to unpair\r\n");
-        bt_unpair(0, NULL);
-    }
+        printf("start adv\r\n");
+        ble_rc_start_adv();
+        ble_rc_create_stop_adv_timer();
+    }        
 }
 
-void ble_rc_create_adv_timer(void)
+void ble_rc_create_stop_adv_timer(void)
 {
-    printf("%s\r\n", __func__);
-    k_timer_init(&ble_rc_adv_timer, ble_rc_adv_timer_cb, NULL);
-    k_timer_start(&ble_rc_adv_timer, pdMS_TO_TICKS(BLE_RC_ADV_TIMER_IN_SEC * 1000));
+    if(ble_rc_stop_adv_timer.timer.hdl)
+        k_timer_start(&ble_rc_stop_adv_timer, 60 * 1000);
+    else
+        printf("Stop adv timer fail\n");
 }
 
 int ble_rc_start_high_duty_cycle_directed_adv(bt_addr_le_t *peer_addr)
@@ -493,7 +562,10 @@ int ble_rc_start_high_duty_cycle_directed_adv(bt_addr_le_t *peer_addr)
        .interval_max = BT_GAP_ADV_FAST_INT_MAX_3, \
      };
 
-    return bt_conn_create_slave_le((const bt_addr_le_t *)peer_addr, &adv_param);
+    if(bt_conn_create_slave_le((const bt_addr_le_t *)peer_addr, &adv_param))
+        return 0;
+    else
+        return -1;
 }
 
 void ble_rc_get_bonded_addr(const struct bt_bond_info *info, void *user_data)
@@ -504,9 +576,19 @@ void ble_rc_get_bonded_addr(const struct bt_bond_info *info, void *user_data)
     }
 }
 
+static void ble_rc_ir_tx_timer_cb(void *timer)
+{
+    taskENTER_CRITICAL();
+    while(bl_timer_now_us() - ir_tx_timestamp < 10 * 1000);
+    ir_tx_timestamp = bl_timer_now_us();
+    k_timer_start(&ble_rc_ir_tx_timer, pdMS_TO_TICKS(100));
+    ble_rc_ir_tx_repeat();
+    printf("repeat code\r\n");
+    taskEXIT_CRITICAL();
+}
+
 static void ble_rc_key_scan_task(void *pvParameters)
 {
-   u8_t bonded_device_cnt = 0;
    bl_kys_trigger_interrupt();
 
     while(1)
@@ -516,76 +598,77 @@ static void ble_rc_key_scan_task(void *pvParameters)
         {
             u8_t evt_type = *data;
             int err = 0;
-            k_free(data);
-
-            if(!rc_default_conn && evt_type != RC_KYS_ADV && evt_type != RC_KYS_IR_TX && evt_type!= RC_KYS_VOICE_START && evt_type!= RC_KYS_VOICE_STOP)
+            UNUSED(err);
+            printf("ble_rc_key_scan_task evt_type=%d,%p\r\n", evt_type, data);
+            if(evt_type != RC_KYS_NOTIFY && evt_type != RC_KYS_VOICE_START)
             {
-                bt_addr_le_t peer_addr;
-                bt_addr_le_copy(&peer_addr, BT_ADDR_LE_NONE);
-                //printf("rc is not connected\r\n");
-                bt_foreach_bond(0, ble_rc_get_bonded_addr, &peer_addr);
-                if(bt_addr_le_cmp(&peer_addr, BT_ADDR_LE_NONE))
-                {  
-                    pending_evt = evt_type; 
-                    err = ble_rc_start_high_duty_cycle_directed_adv(&peer_addr);
-                    //printf("start directed adv err=%d\r\n", err);
-                }
-                
-                continue;
+                k_free(data);
+                data = NULL;
             }
-            
+
+            bt_addr_le_t peer_addr;
+            bt_addr_le_copy(&peer_addr, BT_ADDR_LE_NONE);
+            bt_foreach_bond(0, ble_rc_get_bonded_addr, (void *)&peer_addr);
+            extern bool le_check_valid_adv(void);
+            if(!rc_default_conn && bt_addr_le_cmp(&peer_addr, BT_ADDR_LE_NONE))
+            {
+                if(evt_type == RC_KYS_NOTIFY || evt_type == RC_KYS_VOICE_START){
+                    ble_rc_notify_key_info_t *info_tmp = (ble_rc_notify_key_info_t *)data;
+                    if(info_tmp->key_usage || evt_type == RC_KYS_VOICE_START)
+                        memcpy((void *)&pending_notify_key_info, (void *)data, sizeof(ble_rc_notify_key_info_t));
+    
+                    if(!le_check_valid_adv())
+                    {
+                        err = ble_rc_start_high_duty_cycle_directed_adv(&peer_addr);
+                        printf("start directed adv err=%d,%p\r\n", err,pending_notify_key_info.key_usage);
+                    }
+                    k_free(data);
+                    data = NULL;
+                    continue;
+                }
+            }
+            else if(!rc_default_conn)
+            {
+                if(evt_type == RC_KYS_NOTIFY || evt_type == RC_KYS_VOICE_START)
+                {
+                     k_free(data);
+                     data = NULL;
+                     continue;    
+                }
+            }
+ 
             switch(evt_type)
             {
                 case RC_KYS_NOTIFY:
                 {
-                    if(m_key_usage)
-                    {
-                        if(cont_start && pending_evt == RC_KYS_INVALID_EVT)
-                        {  
-                            if(!cont_release)
-                                ble_rc_key_notify_process(m_key_usage->hid_page, m_key_usage->hid_usage, true, false);
-                            else
-                            {
-                                cont_release = false;
-                                cont_start = false;
-                                ble_rc_key_notify_process(m_key_usage->hid_page, m_key_usage->hid_usage, false, false);
-                                m_key_usage = NULL;
-                            }
-                        }
-                        else
-                        {
-                            ble_rc_key_notify_process(m_key_usage->hid_page, m_key_usage->hid_usage, true, true);
-                            
-                            if(pending_evt != RC_KYS_INVALID_EVT)
-                            {
-                                cont_release = false;
-                                cont_start = false;
-                                pending_evt = RC_KYS_INVALID_EVT;
-                                
-                            }
-                            m_key_usage = NULL;
-                        }
+                    ble_rc_notify_key_info_t *info = (ble_rc_notify_key_info_t *)data;
+                    struct hids_remote_key *key_usage = info->key_usage;
+                    if(info->press == false)
+                        key_usage = m_key_usage;
+                    printf("key_usage=%p,%p,%u\r\n",key_usage, info,info->press);
+                    ble_rc_key_notify_process(key_usage->hid_page, key_usage->hid_usage, info->press, info->auto_release);
+                    if(info == &pending_notify_key_info){
+                        pending_notify_key_info.evt_type = RC_KYS_INVALID_EVT;
+                    }else{
+                        k_free(data);
                     }
                 }
                 break;
                 case RC_KYS_ADV:
                 {
-                    ble_rc_create_adv_timer();
-                }
-                break;
-                case RC_KYS_DELETE_ADV_TIMER:
-                {
-                    if(ble_rc_adv_timer.timer.hdl)
-                    {
-                         printf("delete adv timer\r\n");
-                         k_timer_delete(&ble_rc_adv_timer);
-                         ble_rc_adv_timer.timer.hdl = NULL;
-                    }
+                    ble_rc_start_pairing();
                 }
                 break;
                 case RC_KYS_VOICE_START:
                 {
                     printf("RC_KYS_VOICE_START\r\n");
+                    ble_rc_pds_enable(0);
+                    ble_rc_notify_key_info_t *info = (ble_rc_notify_key_info_t *)data;
+                    if(info == &pending_notify_key_info){
+                        pending_notify_key_info.evt_type = RC_KYS_INVALID_EVT;
+                    }else{
+                        k_free(data);
+                    }
                     #if defined (CONFIG_ATVV_SERVER_ENABLE)
                     if(rc_default_conn)
                         ble_atvv_voice_start();
@@ -620,9 +703,18 @@ static void ble_rc_key_scan_task(void *pvParameters)
                 break;
                 case RC_KYS_IR_TX:
                 {
-                    printf("ble_rc_ir_tx_demo\r\n");
-                    extern void ble_rc_ir_tx_demo(void);
+                    printf("RC_KYS_IR_TX\r\n");
+                    ir_tx_timestamp = bl_timer_now_us();
+                    k_timer_init(&ble_rc_ir_tx_timer, ble_rc_ir_tx_timer_cb, NULL);
+                    k_timer_start(&ble_rc_ir_tx_timer, pdMS_TO_TICKS(100));
                     ble_rc_ir_tx_demo();
+                }
+                break;
+                case RC_KYS_IR_RELEASE:
+                {
+                    printf("RC_KYS_IR_RELEASE\r\n");
+                    k_timer_delete(&ble_rc_ir_tx_timer);
+                    ble_rc_ir_tx_timer.timer.hdl = NULL;
                 }
                 break;
 
@@ -662,7 +754,6 @@ void bl_kys_interrupt_callback(const kys_result_t *result)
 {  
     static bool pressed = false;
     static bool adv_key_pressed = false;
-    static bool adv_key_released = false;
     u8_t home_key_row_idx = 3, home_key_col_idx = 1;
     u8_t back_key_row_idx = 1, back_key_col_idx = 3;
     u8_t voice_key_row_idx = 1, voice_key_col_idx = 1;
@@ -670,14 +761,13 @@ void bl_kys_interrupt_callback(const kys_result_t *result)
     bool process = false;
     u8_t *evt_type_ptr = NULL;
 
-    bl_pds_set_white_keys(result->key_num, result->row_idx, result->col_idx);
+    bl_pds_set_white_keys(result->key_num, (uint8_t *)result->row_idx, (uint8_t *)result->col_idx);
     pending_key = false;
-
-    if(pending_evt != RC_KYS_INVALID_EVT)
+    if((pending_notify_key_info.evt_type != RC_KYS_INVALID_EVT) && (result->key_num < 2))
     {
         return;    
     }
-                
+    
     if(result->key_num && !pressed)
     {
         pressed = true;
@@ -689,15 +779,15 @@ void bl_kys_interrupt_callback(const kys_result_t *result)
          if(adv_key_pressed)
         {
             process = true;
-            adv_key_released = true;
             adv_key_pressed = false;
             cont_start = false;
         }
-        else if(pressed && (voice_start || cont_start))
+        else if(pressed && (voice_start || cont_start || ir_tx_start))
         {
             process = true;
             if(cont_start)
             {
+                cont_start = false;
                 cont_release = true;
             }
         }
@@ -712,13 +802,19 @@ void bl_kys_interrupt_callback(const kys_result_t *result)
            adv_key_pressed = true;
            process = true;
         }
+        else
+        {
+            return;
+        }
     }
     
     if(process)
     { 
         flash_restore(); 
         if(voice_start)
-        {   
+        {  
+            if(pending_notify_key_info.evt_type == RC_KYS_VOICE_START)
+                return; 
             #if defined (CONFIG_ATVV_SERVER_ENABLE)
             if(!rc_default_conn || ble_atvv_get_assist_mode() == ATVV_ASSIS_MODEL_HTT)
             #endif
@@ -728,27 +824,25 @@ void bl_kys_interrupt_callback(const kys_result_t *result)
                 voice_start = false;
                 evt_type_ptr = k_malloc(1);
                 *evt_type_ptr = RC_KYS_VOICE_STOP;
-                k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+                k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)evt_type_ptr);
             }
-        }
-        else if(cont_release)
-        {
-            evt_type_ptr = k_malloc(1);
-            *evt_type_ptr = RC_KYS_NOTIFY;
-            k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
         }
         else if(adv_key_pressed)
         {
             evt_type_ptr = k_malloc(1);
             *evt_type_ptr = RC_KYS_ADV;
-            k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+            k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)evt_type_ptr);
         }
-        else if(adv_key_released && ble_rc_adv_timer.timer.hdl)
+        else if(cont_release)
         {
-            adv_key_released = false;
-            evt_type_ptr = k_malloc(1);
-            *evt_type_ptr = RC_KYS_DELETE_ADV_TIMER;
-            k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+            ble_rc_notify_key_info_t *notify_key_info = k_malloc(sizeof(ble_rc_notify_key_info_t));   
+            printf("%s cont_release: %d,%p\n", __func__, cont_release,notify_key_info);
+            cont_release = false;
+            notify_key_info->evt_type = RC_KYS_NOTIFY;
+            notify_key_info->key_usage = NULL;
+            notify_key_info->press = false;
+            notify_key_info->auto_release = false;
+            k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)notify_key_info);
         }
         else if(result->key_num == 1)
         {
@@ -756,26 +850,32 @@ void bl_kys_interrupt_callback(const kys_result_t *result)
             if(result->row_idx[0] == voice_key_row_idx && result->col_idx[0] == voice_key_col_idx)
             {
                 voice_start = true;
-                ble_rc_pds_enable(0);
-                evt_type_ptr = k_malloc(1);
-                *evt_type_ptr = RC_KYS_VOICE_START;
-                k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+                ble_rc_notify_key_info_t *notify_key_info = k_malloc(sizeof(ble_rc_notify_key_info_t));
+                memset(notify_key_info, 0, sizeof(ble_rc_notify_key_info_t));
+                notify_key_info->evt_type = RC_KYS_VOICE_START;
+                printf("%s voice start: %p\n", __func__, notify_key_info);
+                k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)notify_key_info);
             }
             else if(result->row_idx[0] == ir_row_idx && result->col_idx[0] == ir_col_idx)
             {
+                ir_tx_start = true;
                 evt_type_ptr = k_malloc(1);
                 *evt_type_ptr = RC_KYS_IR_TX;
-                k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+                k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)evt_type_ptr);
             }
             else
             {
-                evt_type_ptr = k_malloc(1);
-                *evt_type_ptr = RC_KYS_NOTIFY;
-                m_key_usage = key_usage[result->row_idx[0]][result->col_idx[0]];
+                ble_rc_notify_key_info_t *notify_key_info = k_malloc(sizeof(ble_rc_notify_key_info_t));
+                notify_key_info->evt_type = RC_KYS_NOTIFY;
+                notify_key_info->key_usage = key_usage[result->row_idx[0]][result->col_idx[0]];
+                notify_key_info->press = true;
+                notify_key_info->auto_release = false;
                 cont_start = true;
                 cont_release = false;
-                   
-                k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+                m_key_usage = key_usage[result->row_idx[0]][result->col_idx[0]];
+                printf("***** %s result->key_num: %d, %p,%p\n", __func__, result->key_num, notify_key_info, notify_key_info->key_usage);   
+                k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)notify_key_info);
+                //printf("***** %s %u\n", __func__,k_queue_get_cnt(&ble_rc_key_scan_queue));   
             }
         } 
     }
@@ -812,7 +912,7 @@ int ble_rc_start_adv(void)
     char *adv_name = BLE_RC_NAME;
     u8_t data[1] = {(BT_LE_AD_LIMITED | BT_LE_AD_NO_BREDR)};
     u8_t data_uuid[4] = {0x12, 0x18, 0x0F, 0x18};//0x1812,0x180f
-    u8_t data_appearance[2] = {0xc1, 0x03};//0x0180 {0x80, 0x01};
+    u8_t data_appearance[2] = {0x80, 0x01};//{0xc1, 0x03};//0x0180 {0x80, 0x01};
     //u8_t data_manuf_data[15] = {0xe0, 0x00, 0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
     struct bt_data adv_data[] = {
             BT_DATA(BT_DATA_FLAGS, data, 1),
@@ -850,7 +950,9 @@ ATTR_PDS_SECTION
 int ble_rc_before_sleep_callback(void)
 {
     if(pending_key)
+    {
         return -1;
+    }
     taskENTER_CRITICAL();
     //disable keyscan
     bl_kys_abort();
@@ -863,6 +965,7 @@ int ble_rc_before_sleep_callback(void)
     uint32_t pulldown_bitmap = 1<<12;  // enable GPIO12 pull-down when entering pds, and still take effect after wakeup
     bl_pds_gpio_pull_set(pullup_bitmap, pulldown_bitmap);
 #endif
+    bl_pds_gpio_pull_set(1<<22, 0);  // enable GPIO22(ir tx pin) pull-up when entering pds, and still take effect after wakeup
 
     return 0;
 }
@@ -884,9 +987,6 @@ void ble_rc_after_sleep_callback(void)
     uint8_t key_row_idx = 0xff, key_col_idx = 0xff;
     uint8_t key_evt_type = 0;
 
-    // disable GPIO pull-up/pull-down, better after GPIO reinitialization
-    bl_pds_gpio_pull_disable();
-
     extern uint8_t g_uart0_tx_pin;
     extern uint8_t g_uart0_rx_pin;
     extern uint32_t g_uart0_baudrate;
@@ -901,6 +1001,11 @@ void ble_rc_after_sleep_callback(void)
     //enable keyscan
     ble_rc_kys_init();
     bl_kys_trigger_interrupt();
+    //enable ir tx
+    ble_rc_ir_tx_init();
+
+    // disable GPIO pull-up/pull-down, better after GPIO reinitialization
+    bl_pds_gpio_pull_disable();
 }
 
 static void ble_rc_adc_timer_cb()
@@ -917,9 +1022,10 @@ static void ble_rc_adc_timer_cb()
     
     u8_t *evt_type_ptr = k_malloc(1);
     *evt_type_ptr = RC_KYS_REPORT_BATTERY_LEVEL;
-    k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+    k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)evt_type_ptr);
     k_timer_start(&ble_rc_adc_sample_timer, pdMS_TO_TICKS(BLE_RC_ADC_TIMER_IN_SEC * 1000));
-}
+}
+
     
 static void ble_rc_create_adc_sample_timer(void)
 { 
@@ -930,16 +1036,6 @@ static void ble_rc_create_adc_sample_timer(void)
 void ble_rc_pds_enable(uint8_t enable)
 {
     btble_pds_enable(enable);
-}
-
-void ble_rc_foreach_bond_info_cb(const struct bt_bond_info *info, void *user_data)
-{
-    char addr[BT_ADDR_LE_STR_LEN];
-    if(user_data)
-        (*(u8_t *)user_data)++;
-
-    bt_addr_le_to_str(&info->addr, addr, sizeof(addr));
-    printf("bonded device: %s\r\n", addr);
 }
 
 #if defined(CONFIG_BT_OAD_SERVER)
@@ -957,7 +1053,6 @@ bool ble_rc_check_oad(u32_t cur_file_ver, u32_t new_file_ver)
 void bt_enable_cb(int err)
 {
     if (!err) {
-        u8_t bonded_device_cnt = 0;
         bt_addr_le_t bt_addr;
         bt_get_local_public_address(&bt_addr);
         printf("BD_ADDR:(MSB)%02x:%02x:%02x:%02x:%02x:%02x(LSB) \n",
@@ -967,34 +1062,58 @@ void bt_enable_cb(int err)
         bt_gap_set_local_device_appearance(BLE_RC_DEVICE_APPEARANCE);
         bas_init();
         hog_init();
+
+        k_timer_init(&ble_rc_start_pairing_timer, ble_rc_start_adv_timer_cb, NULL);
+        k_timer_init(&ble_rc_stop_adv_timer, ble_rc_stop_adv_timer_cb, NULL);
+        
         ble_rc_create_key_scan_task();
 
         bt_conn_auth_cb_register(&ble_rc_auth_cb_display);
         bt_conn_cb_register(&ble_rc_conn_callbacks);
 
-        //If there is no bonded device, ble_rc_foreach_bond_info_cb will not be called.
-        //If there is N bonded devices, ble_rc_foreach_bond_info_cb will be called N times.
-        bt_foreach_bond(0, ble_rc_foreach_bond_info_cb, &bonded_device_cnt);
-        printf("%d peer device(s) bonded\r\n", bonded_device_cnt);
-
-        int err = ble_rc_start_adv();
-        if(err == 0)
-        {
-            printf("ble advertising is started\r\n");
-        }
-        else
-            printf("ble advertising failed, err %d\r\n", err);
-
         #if defined(CONFIG_BT_OAD_SERVER)
         oad_service_enable(ble_rc_check_oad);
         bt_oad_enable_data_len_exchange(false);
         #endif
+
+        //If there is no bonded device, ble_rc_foreach_bond_info_cb will not be called.
+        //If there is N bonded devices, ble_rc_foreach_bond_info_cb will be called N times.
+        bonded_device_cnt = 0;
+        bt_foreach_bond(0, ble_rc_foreach_bond_info_cb, (void *)&bonded_device_cnt);
+        printf("%d peer device(s) bonded\r\n", bonded_device_cnt);
+        if(bonded_device_cnt)
+        {
+            bt_addr_le_t peer_addr;
+            bt_addr_le_copy(&peer_addr, BT_ADDR_LE_NONE);
+            bt_foreach_bond(0, ble_rc_get_bonded_addr, &peer_addr);
+            if(bt_addr_le_cmp(&peer_addr, BT_ADDR_LE_NONE))
+            {
+                err = ble_rc_start_high_duty_cycle_directed_adv(&peer_addr);
+                printf("start directed adv err=%d\r\n", err);
+            }
+        }
+        else
+        {
+            err = ble_rc_start_adv();
+            if(err == 0)
+            {
+                printf("ble advertising is started\r\n");
+            }
+            else
+            {
+                printf("ble advertising failed, err %d\r\n", err);
+            }
+           
+            ble_rc_create_stop_adv_timer();
+        }
+
         ble_rc_pds_enable(1);
     }
 }
 
 void ble_stack_start(void)
 {
+    pending_notify_key_info.evt_type = RC_KYS_INVALID_EVT;
     // Initialize BLE controller
     btble_controller_init(configMAX_PRIORITIES - 1);
     #if defined(CFG_BLE_PDS)

@@ -8,13 +8,12 @@
 
 #ifndef BL_IOT_SDK
 extern struct bflb_irq_info_s g_irqvector[];
-#endif
 
 static void irq_unexpected_isr(int irq, void *arg)
 {
     printf("irq :%d unregistered\r\n", irq);
 }
-
+#endif
 void bflb_irq_initialize(void)
 {
 #ifndef BL_IOT_SDK
@@ -58,8 +57,8 @@ int bflb_irq_attach(int irq, irq_callback isr, void *arg)
     g_irqvector[irq].handler = isr;
     g_irqvector[irq].arg = arg;
 #else
-    extern void bl_irq_register(int irqnum, void *handler);
-    bl_irq_register(irq, (void *)isr);
+    extern void bl_irq_register_with_ctx(int irqnum, void *handler, void *ctx);
+    bl_irq_register_with_ctx(irq, (void *)isr, arg);
 #endif
     return 0;
 }

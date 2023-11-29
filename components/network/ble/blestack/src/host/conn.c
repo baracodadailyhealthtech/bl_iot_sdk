@@ -1923,6 +1923,7 @@ void bt_conn_set_state(struct bt_conn *conn, bt_conn_state_t state)
 			/* this indicate Directed advertising stopped */
 			if (conn->err) {
 				notify_connected(conn);
+				bt_conn_unref(conn);//bouffalo fix:unref the ref is increased in bt_conn_create_slave_le.
 			}
 
 			bt_conn_unref(conn);
@@ -1950,6 +1951,7 @@ void bt_conn_set_state(struct bt_conn *conn, bt_conn_state_t state)
 	case BT_CONN_DISCONNECT:
 		#if defined(BFLB_BLE_PATCH_DISCONNECT_ERROR_WHEN_TASK_YEILD)
 		if(old_state == BT_CONN_DISCONNECTED){
+			conn->state = old_state;
 			bt_conn_unref(conn);
 		}
 		#endif /* BFLB_BLE_PATCH_DISCONNECT_ERROR_WHEN_TASK_YEILD */
@@ -2578,6 +2580,7 @@ struct bt_conn *bt_conn_create_slave_le(const bt_addr_le_t *peer,
 		return NULL;
 	}
 
+    conn->role = BT_HCI_ROLE_SLAVE;//bouffalo fix
 start_adv:
 	bt_conn_set_state(conn, BT_CONN_CONNECT_DIR_ADV);
 	err = bt_le_adv_start_internal(&param_int, NULL, 0, NULL, 0, peer);

@@ -301,6 +301,30 @@ int bl_dma_uart_init(bl_dma_uart_cfg_t *cfg)
     return 0;
 }
 
+int bl_dma_uart_change_baudrate(uint32_t baudrate)
+{
+    uint32_t clk;
+    uint32_t divisor;
+    uint32_t fraction;
+    uint32_t uartAddr[] = {UART0_BASE};
+    uint32_t UARTx = uartAddr[uart_id];
+    
+    clk = 32000000;
+    divisor = clk / baudrate;
+    fraction = clk * 10 / baudrate % 10;
+    if(fraction < 5){
+        divisor--;
+    }
+    
+    while(UART_GetTxBusBusyStatus(uart_id) && UART_GetRxBusBusyStatus(uart_id));
+    
+    UART_Disable(uart_id, UART_TXRX);
+    BL_WR_REG(UARTx, UART_BIT_PRD, (divisor << 16) | divisor);
+    UART_Enable(uart_id, UART_TXRX);
+    
+    return 0;
+}
+
 uint16_t bl_dma_uart_get_rx_count(void)
 {
     return Ring_Buffer_Get_Length(&uartRB);
@@ -319,15 +343,23 @@ uint16_t bl_dma_uart_read(uint8_t *data, uint16_t len)
     return len;
 }
 
-void bl_dma_uart_write(uint8_t *data, uint16_t len)
+void bl_dma_uart_write(uint8_t *data, uint16_t len, uint8_t wait_tx_done)
 {
     if(!uart_ok){
+        return;
+    }
+    
+    if(!len){
         return;
     }
     
     DMA_Channel_Disable(DMA0_ID, uart_tx_dma_ch);
     DMA_Channel_Update_SrcMemcfg(DMA0_ID, uart_tx_dma_ch, (uint32_t)data, len);
     DMA_Channel_Enable(DMA0_ID, uart_tx_dma_ch);
+    
+    if(wait_tx_done){
+        while(DMA_Channel_Is_Busy(DMA0_ID, uart_tx_dma_ch));
+    }
 }
 
 void bl_dma_uart_deinit(void)
@@ -338,6 +370,10 @@ void bl_dma_uart_deinit(void)
     
     DMA_Channel_Disable(DMA0_ID, uart_tx_dma_ch);
     DMA_Channel_Disable(DMA0_ID, uart_rx_dma_ch);
+    hosal_dma_chan_release(uart_tx_dma_ch);
+    hosal_dma_chan_release(uart_rx_dma_ch);
+    uart_tx_dma_ch = -1;
+    uart_rx_dma_ch = -1;
     
     UART_DeInit(uart_id);
     
@@ -355,7 +391,8 @@ void bl_dma_uart_deinit(void)
 
 #if 0
 // For BL702L, do not enable CLI if you want to use dma uart function
-// After bl_dma_uart_init, do not call printf/puts/putchar/UART_SendData
+// After bl_dma_uart_init, do not call UART API like UART_SendData
+// After bl_dma_uart_init, do not call printf/puts/putchar based on UART_SendData
 void bl_dma_uart_test(void)
 {
     uint8_t rx_buf[16];
@@ -380,7 +417,7 @@ void bl_dma_uart_test(void)
     while(1){
         len = bl_dma_uart_get_rx_count();
         bl_dma_uart_read(tx_buf, len);
-        bl_dma_uart_write(tx_buf, len);
+        bl_dma_uart_write(tx_buf, len, 1);
         arch_delay_ms(500);
     }
 }

@@ -74,7 +74,7 @@ struct bt_keys *bt_keys_get_addr(u8_t id, const bt_addr_le_t *addr)
 			}
 		}
 
-		bt_unpair(oldest->id, &oldest->addr);
+		(void)bt_unpair(oldest->id, &oldest->addr);
 		if (!bt_addr_le_cmp(&oldest->addr, BT_ADDR_LE_ANY)) {
 			first_free_slot = oldest - &key_pool[0];
 		}

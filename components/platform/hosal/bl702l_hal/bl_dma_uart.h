@@ -49,9 +49,10 @@ typedef struct
 }bl_dma_uart_cfg_t;
 
 int bl_dma_uart_init(bl_dma_uart_cfg_t *cfg);
+int bl_dma_uart_change_baudrate(uint32_t baudrate);
 uint16_t bl_dma_uart_get_rx_count(void);
 uint16_t bl_dma_uart_read(uint8_t *data, uint16_t len);
-void bl_dma_uart_write(uint8_t *data, uint16_t len);
+void bl_dma_uart_write(uint8_t *data, uint16_t len, uint8_t wait_tx_done);
 void bl_dma_uart_deinit(void);
 
 #endif

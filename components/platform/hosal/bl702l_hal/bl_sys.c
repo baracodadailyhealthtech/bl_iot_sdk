@@ -228,6 +228,8 @@ int bl_sys_early_init(void)
 
     GLB_AHB_MCU_Software_Reset(GLB_AHB_MCU_SW_UART0);
 
+    GLB_GPIO_O_Latch_Mode_Set(1);
+
     /*debuger may NOT ready don't print anything*/
     return 0;
 }

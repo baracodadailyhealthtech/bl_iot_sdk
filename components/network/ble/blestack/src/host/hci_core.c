@@ -208,7 +208,7 @@ struct acl_data {
 extern struct k_sem g_poll_sem;
 #endif
 
-__attribute__((section(".tcm_data"))) static struct cmd_data cmd_data[CONFIG_BT_HCI_CMD_COUNT];
+static struct cmd_data cmd_data[CONFIG_BT_HCI_CMD_COUNT];
 
 #define cmd(buf) (&cmd_data[net_buf_id(buf)])
 #define acl(buf) ((struct acl_data *)net_buf_user_data(buf))
@@ -1135,7 +1135,7 @@ static void hci_disconn_complete(struct net_buf *buf)
 #endif
 
 	bt_conn_set_state(conn, BT_CONN_DISCONNECTED);
-	conn->handle = 0U;
+	//conn->handle = 0U;//bouffalo fix:comment out because upper layer may use this conn->hanle to identify the connection.
 
 	if (conn->type != BT_CONN_TYPE_LE) {
 	#if defined(CONFIG_BT_BREDR)
@@ -1515,7 +1515,9 @@ static void enh_conn_complete(struct bt_hci_evt_le_enh_conn_complete *evt)
 		/* for slave we may need to add new connection */
 		if (!conn) {
 			conn = bt_conn_add_le(bt_dev.adv_id, &id_addr);
-		}
+		}else if(conn->state == BT_CONN_CONNECT_DIR_ADV){
+			bt_conn_unref(conn);//bouffalo fix:unref the ref increased in bt_conn_create_slave_le.
+        }
 	}
 
 	if (IS_ENABLED(CONFIG_BT_CENTRAL) &&
@@ -7602,6 +7604,30 @@ int bt_le_throughput_calc(bool enable, u8_t interval)
 	return 0;
 }
 
+/* 
+  This is used to set ble connection window.
+  For example, connection interval is 100ms,  
+ if percentage is 20, less than 20ms (100 * 20%)  can be used  for packet transmittion in each connection event.
+*/
+int bt_le_set_conn_window(u8_t percentage)
+{
+   
+    struct hci_vsc_ble_conn_window_setting_cmd *window;
+    struct net_buf *buf;
+
+    buf = bt_hci_cmd_create( HCI_VS_BLE_CONN_WINDOW_SETTING_CMD_OPCODE, sizeof(*window) );
+    if( !buf ){
+        return -ENOBUFS;
+    }
+
+    window = net_buf_add( buf, sizeof(*window) );
+    memset( window, 0, sizeof(*window) );
+
+    window->percentage = percentage;
+
+    return bt_hci_cmd_send_sync( HCI_VS_BLE_CONN_WINDOW_SETTING_CMD_OPCODE, buf, NULL );
+}
+
 #endif
 
 int bt_set_bd_addr(const bt_addr_t *addr)
@@ -8242,9 +8268,6 @@ int bt_le_test_end(void)
     net_buf_unref(rsp);
     return err;
 }
-
-
-
 
 #if defined(BFLB_RELEASE_CMD_SEM_IF_CONN_DISC)
 void hci_release_conn_related_cmd(void)

@@ -94,6 +94,8 @@ void pdsapp_after_sleep_callback(void)
     uint32_t wakeupGpioPinMask = 0;
     uint8_t gpio_idx = 0;
 
+    /*deinit hosal dma before calling reinit APIs based on hosal dma*/
+    hosal_dma_finalize();
 #if defined(CFG_CLI_DISABLE)
     HOSAL_UART_DEV_DECL(uart_stdio, 0, APP_UART_TX_PIN, APP_UART_RX_PIN, APP_UART_BAUDRATE);
     hosal_uart_init(&uart_stdio);

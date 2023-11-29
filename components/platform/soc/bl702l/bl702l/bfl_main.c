@@ -399,8 +399,8 @@ void bl702_main()
 #endif
 
 #if defined(GPIO_SIM_PRINT)
-    extern int bl_gpio_uart_init(uint8_t tx_pin, uint32_t baudrate);
-    bl_gpio_uart_init(8, 1000000);
+    extern int bl_gpio_uart_tx_init(uint8_t id, uint8_t tx_pin, uint32_t baudrate);
+    bl_gpio_uart_tx_init(0, 8, 1000000);
 #endif
 
     /*Init UART In the first place*/

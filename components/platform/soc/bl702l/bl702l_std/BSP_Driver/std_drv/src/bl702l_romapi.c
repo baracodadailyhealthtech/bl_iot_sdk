@@ -1376,6 +1376,12 @@ uint32_t SF_Cfg_Flash_Identify(uint8_t callFromFlash, uint32_t autoScan, uint32_
     return RomDriver_SF_Cfg_Flash_Identify(callFromFlash,autoScan,flashPinCfg,restoreDefault,pFlashCfg);
 }
 
+
+__ALWAYS_INLINE ATTR_TCM_SECTION
+uint32_t SF_Cfg_Flash_Identify_Ext(uint8_t callFromFlash, uint32_t autoScan, uint32_t flashPinCfg, uint8_t restoreDefault, SPI_Flash_Cfg_Type *pFlashCfg){
+    return SF_Cfg_Flash_Identify(callFromFlash,autoScan,flashPinCfg,restoreDefault,pFlashCfg);
+}
+
 __ALWAYS_INLINE ATTR_TCM_SECTION
 void SF_Ctrl_Enable(const SF_Ctrl_Cfg_Type *cfg){
     return RomDriver_SF_Ctrl_Enable(cfg);

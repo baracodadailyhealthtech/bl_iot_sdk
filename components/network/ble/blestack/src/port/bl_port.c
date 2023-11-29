@@ -379,6 +379,20 @@ void k_timer_delete(k_timer_t *timer)
     BT_ASSERT(ret == pdPASS);
 }
 
+bool k_timer_is_active(k_timer_t *timer)
+{
+    BaseType_t ret;
+    (void) ret;
+
+    BT_ASSERT(timer != NULL);
+
+    ret = xTimerIsTimerActive(timer->timer.hdl);
+    if(ret == pdPASS)
+        return true;
+    else
+        return false;
+}
+
 long long k_now_ms(void)
 {
     return (long long)xTaskGetTickCount() * 1000 / configTICK_RATE_HZ;

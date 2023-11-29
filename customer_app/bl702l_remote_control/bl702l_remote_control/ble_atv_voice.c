@@ -166,6 +166,8 @@ static void ble_atvv_audio_start(u8_t reason)
     atvv_env.mic_open_reason = reason;
 
     err = ble_atvv_send_audio_start(reason);
+
+    UNUSED(err);
 }
 
 static void ble_atvv_audio_stop(u8_t reason)
@@ -221,7 +223,7 @@ static void ble_atvv_recv_cmd_handler(u8_t *buf)
                 if(atvv_env.state < ATVV_STATE_MIC_CLOSE)
                 {
                     atvv_env.state = ATVV_STATE_MIC_CLOSE;
-                    if(ble_atvv_get_assist_mode() != ATVV_ASSIS_MODEL_HTT)
+                    //if(ble_atvv_get_assist_mode() != ATVV_ASSIS_MODEL_HTT)
                     {
                         voice_start = false;
                         ble_rc_voice_stop();
@@ -279,7 +281,6 @@ static ssize_t ble_atvv_char_tx_recv(struct bt_conn *conn,
         printf("assis_model_used=%d\r\n",atvv_env.assis_model_used);
         ble_atvv_send_caps_resp(conn);
         ble_rc_check_pending_evt();
-        ble_rc_connection_update(ATVV_CONN_INTVAL_IN_NORMAL_MODE, ATVV_CONN_INTVAL_IN_NORMAL_MODE, ATVV_CONN_SLAVE_LATENCY, ATVV_CONN_TIMEOUT);
     }
     else
     {
@@ -427,11 +428,7 @@ void ble_atvv_voice_start(void)
     }
 
     atvv_env.state = ATVV_STATE_VOICE_START_PENDING;
-    err = ble_rc_connection_update(ATVV_CONN_INTVAL_IN_VOICE_MODE, ATVV_CONN_INTVAL_IN_VOICE_MODE, ATVV_CONN_SLAVE_LATENCY, ATVV_CONN_TIMEOUT);
-    if(err)
-    {
-        ble_atvv_voice_start_cont();
-    }            
+    ble_atvv_voice_start_cont();
 }
 
 static void ble_atvv_conn_update_timer_cb(void *timer)
@@ -439,7 +436,6 @@ static void ble_atvv_conn_update_timer_cb(void *timer)
     printf("%s hdl=%p\r\n", __func__,atvv_env.connUpdateTimer.timer.hdl);
     k_timer_delete(&atvv_env.connUpdateTimer);
     atvv_env.connUpdateTimer.timer.hdl = NULL;
-    ble_rc_connection_update(ATVV_CONN_INTVAL_IN_NORMAL_MODE, ATVV_CONN_INTVAL_IN_NORMAL_MODE, ATVV_CONN_SLAVE_LATENCY, ATVV_CONN_TIMEOUT);
 }
 
 void ble_atvv_voice_stop(void)
@@ -450,11 +446,6 @@ void ble_atvv_voice_stop(void)
     else
         ble_atvv_audio_stop(ATVV_AUDIO_STOP_BY_MIC_CLOSE);
 
-    if(atvv_env.connUpdateTimer.timer.hdl == NULL)
-    {
-        k_timer_init(&atvv_env.connUpdateTimer, ble_atvv_conn_update_timer_cb, NULL);
-        k_timer_start(&atvv_env.connUpdateTimer, pdMS_TO_TICKS(ATVV_CONN_UPDATE_TO_NORMAL_ITVL_TIMEOUT_IN_SEC * 1000));
-    }
 }
 
 u8_t ble_atvv_get_assist_mode(void)

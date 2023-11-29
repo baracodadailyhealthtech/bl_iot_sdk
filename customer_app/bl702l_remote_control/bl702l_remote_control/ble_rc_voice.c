@@ -1,5 +1,7 @@
 #include "bl_audio.h"
 #include "bl_irq.h"
+#include "conn.h"
+#include "conn_internal.h"
 #include "ble_rc_voice.h"
 #include "ble_rc_hog.h"
 #include "log.h"
@@ -37,7 +39,7 @@ void ble_rc_voice_frame_handle(int index)
     if(rc_default_conn == NULL)
         return;
     //printf("[%lu]f\r\n",bl_timer_now_us());
-    queue_cnt = k_queue_get_cnt(&voice_orig_data_queue);
+    queue_cnt = k_queue_get_cnt(&voice_orig_data_queue._queue);
     if(queue_cnt < 2)
         k_fifo_put_from_isr(&voice_orig_data_queue, pcm_buf[index]);
     else
@@ -82,7 +84,6 @@ int ble_rc_voice_init(void)
 static void ble_rc_encode_voice_task(void *pvParameters)
 {
     int nbBytes = 0;
-    unsigned int key = 0;
     u8_t queue_cnt = 0;
     while(1)
     {
@@ -106,7 +107,7 @@ static void ble_rc_encode_voice_task(void *pvParameters)
             }
             else
             {
-                queue_cnt = k_queue_get_cnt(&voice_encoded_data_queue);
+                queue_cnt = k_queue_get_cnt(&voice_encoded_data_queue._queue);
                 if(queue_cnt < ENCODED_BUFFER_CNT)
                 {
                     //printf("[%lu]cnt=%d\r\n",bl_timer_now_us(),queue_cnt);

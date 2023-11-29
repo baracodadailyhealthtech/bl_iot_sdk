@@ -45,6 +45,7 @@ static int ble_adv_id;
 #define vOutputString(...)  printf(__VA_ARGS__)
 
 static void blecli_enable(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+static void blecli_set_chan_map(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
 static void blecli_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
 #if defined(BL702)
 static void blecli_set_2M_phy(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
@@ -147,6 +148,7 @@ const struct cli_command btStackCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
     /*1.The cmd string to type, 2.Cmd description, 3.The function to run, 4.Number of parameters*/
 
     {"ble_enable", "ble enable\r\nParameter [Null]\r\n", blecli_enable},
+    {"ble_set_chan_map", "ble set channel map\r\nParameter [channels]\r\n", blecli_set_chan_map},
     {"ble_init", "ble Initialize\r\nParameter [Null]\r\n", blecli_init},
     {"ble_get_device_name", "ble get device name\r\nParameter [Null]\r\n", blecli_get_device_name},
     {"ble_set_device_name", "ble set device name\r\nParameter [Lenth of name] [name]\r\n", blecli_set_device_name},
@@ -522,6 +524,47 @@ static void blecli_enable(char *pcWriteBuffer, int xWriteBufferLen, int argc, ch
     hci_driver_init();
 
     bt_enable(btcli_enable_cb);
+}
+
+static void blecli_set_chan_map(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+{
+    u8_t chan_map[5] = {0};
+    uint8_t nb_good_channels = 0;
+    int err,i,j;
+
+    if(argc != 2){
+       vOutputString("Number of Parameters is not correct\r\n");
+       return;
+    }
+    get_bytearray_from_string(&argv[1], chan_map, sizeof(chan_map));
+
+    // Make sure that the three most significant bits are 0
+    if (chan_map[5 - 1] >> 5){
+        vOutputString("Parameters is not correct\r\n");
+        return;
+    }
+
+    // Count number of good channels
+    for(i = 0; i < 5; ++i){
+        for(j = 0; j < 8; ++j){
+            if(chan_map[i]&(1<<j)){
+                nb_good_channels++;
+            }
+        }
+    }
+    if(nb_good_channels == 0){
+        vOutputString("Parameters is not correct\r\n");
+        return;
+    }
+
+    printf("channel map %02x %02x %02x %02x %02x\r\n",
+            chan_map[0], chan_map[1], chan_map[2], chan_map[3], chan_map[4]);
+    err = bt_le_set_chan_map(chan_map);
+    if(!err){
+        vOutputString("Set ble channel map pending\r\n");
+    }else{
+        vOutputString("Failed to set ble channel map\r\n");
+    }
 }
 
 static void blecli_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)

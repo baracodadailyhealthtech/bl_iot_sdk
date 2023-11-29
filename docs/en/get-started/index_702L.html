@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1621-g1b202e980 文档</title>
+  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../about.html"/>
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1621-g1b202e980 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档" href="../index.html"/>
         <link rel="next" title="API 参考" href="../api-reference/index.html"/>
         <link rel="prev" title="BL IOT SDK Development Guide" href="index_702.html"/> 
 
@@ -69,13 +65,16 @@
           
 
           
+            
+            <img src="../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1621-g1b202e980
+                release_bl_iot_sdk_1.6.40-1705-g429b6af2b
               </div>
             
           
@@ -111,7 +110,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#debug-software">Debug Software</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id7">1. Hardware connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hardware-connection-1">1. Hardware connection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-and-configure-cklink">2. Install and configure CKLink</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-and-use-freedom-studio">3. Install and use Freedom Studio</a></li>
 </ul>
@@ -188,9 +187,9 @@
            <div itemprop="articleBody">
             
   <section id="bl-iot-sdk-development-guide">
-<h1>BL IOT SDK Development Guide<a class="headerlink" href="#bl-iot-sdk-development-guide" title="此标题的永久链接"></a></h1>
+<h1>BL IOT SDK Development Guide<a class="headerlink" href="#bl-iot-sdk-development-guide" title="永久链接至标题"></a></h1>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="此标题的永久链接"></a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>The BL702L/704L series chip is a general purpose microcontroller which is developed by Bouffalo Lab Technology, and based on <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> processor. It has a main frequency of up to 128MHz and rich peripherals. It also supports BLE 5.0, Zigbee 3.0 and other functions, and can be widely used in IoT and other low-power fields.</p>
 <p>The <a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> is an IOT software development kit specially provided by Bouffalo Lab team for BL60X, BL70X and subsequent chips.</p>
@@ -198,7 +197,7 @@
 </div></blockquote>
 </section>
 <section id="preparation">
-<h2>Preparation<a class="headerlink" href="#preparation" title="此标题的永久链接"></a></h2>
+<h2>Preparation<a class="headerlink" href="#preparation" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>Before starting this example, the required development environment includes:</p>
 <ul>
@@ -223,14 +222,14 @@
 </div></blockquote>
 </section>
 <section id="hardware-connection">
-<h2>Hardware Connection<a class="headerlink" href="#hardware-connection" title="此标题的永久链接"></a></h2>
+<h2>Hardware Connection<a class="headerlink" href="#hardware-connection" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>The BL702L/704L DVK board reserves rich communication interfaces for the chip, and supports programming firmware and debugging software through UART, JTAG and other connection methods.</p>
 <p>The BL702L/704L DVK board integrates a BL702 chip, which is used to realize the conversion between USB-CDC (UART) and USB-CKLink (JTAG), and can easily realize software programming, serial communication and online debugging and other functions.</p>
 </div></blockquote>
 </section>
 <section id="software-installation">
-<h2>Software Installation<a class="headerlink" href="#software-installation" title="此标题的永久链接"></a></h2>
+<h2>Software Installation<a class="headerlink" href="#software-installation" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>Before starting to compile the project, please complete the installation of all the following tools correctly. The specific steps and environment variable settings are as follows:</p>
 <blockquote>
@@ -241,12 +240,12 @@
 <div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>Please pay attention to the settings of environment variables, drivers and other information in the document, which will avoid abnormal errors in subsequent operations.</p>
-</div>
+</aside>
 </div></blockquote>
 </div></blockquote>
 </section>
 <section id="project-compilation">
-<h2>Project Compilation<a class="headerlink" href="#project-compilation" title="此标题的永久链接"></a></h2>
+<h2>Project Compilation<a class="headerlink" href="#project-compilation" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>This section describes how to compile the bl702l_demo_event project under the customer_app directory.</p>
 <ol class="arabic simple">
@@ -276,24 +275,24 @@
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><a href="#id1"><span class="problematic" id="id2">**</span></a>bl702l_demo_ble_peripheral.bin: ** Binary firmware for programming into the chip</p></li>
-<li><p><a href="#id3"><span class="problematic" id="id4">**</span></a>bl702l_demo_ble_peripheral.elf: ** Executable file for debugging software</p></li>
-<li><p><a href="#id5"><span class="problematic" id="id6">**</span></a>bl702l_demo_ble_peripheral.map: ** Map file for analysis of functions and memory usage</p></li>
+<li><p><a href="#system-message-1"><span class="problematic" id="problematic-1">**</span></a>bl702l_demo_ble_peripheral.bin: ** Binary firmware for programming into the chip</p></li>
+<li><p><a href="#system-message-2"><span class="problematic" id="problematic-2">**</span></a>bl702l_demo_ble_peripheral.elf: ** Executable file for debugging software</p></li>
+<li><p><a href="#system-message-3"><span class="problematic" id="problematic-3">**</span></a>bl702l_demo_ble_peripheral.map: ** Map file for analysis of functions and memory usage</p></li>
 </ul>
 <p><a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab Parse Tool For Windows</a> is a map file analysis software provided by Bouffalo Lab team, which can be used for memory analysis</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_images/image2112.png"><img alt="../_images/image2112.png" src="../_images/image2112.png" style="width: 6in; height: 3.8in;" /></a>
+<a class="reference internal image-reference" href="../_images/image2113.png"><img alt="../_images/image2113.png" src="../_images/image2113.png" style="width: 6in; height: 3.8in;" /></a>
 </figure>
 </div></blockquote>
 </div></blockquote>
 </section>
 <section id="firmware-programming">
-<h2>Firmware Programming<a class="headerlink" href="#firmware-programming" title="此标题的永久链接"></a></h2>
+<h2>Firmware Programming<a class="headerlink" href="#firmware-programming" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>This section introduces how to use <strong>BLDevCube</strong> integrated development tool to program firmware into BL702L/704L DVK board.</p>
 </div></blockquote>
 <section id="let-the-chip-enter-programming-mode">
-<h3>1. Let the chip enter programming mode<a class="headerlink" href="#let-the-chip-enter-programming-mode" title="此标题的永久链接"></a></h3>
+<h3>1. Let the chip enter programming mode<a class="headerlink" href="#let-the-chip-enter-programming-mode" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>1.1 After connecting to BL702L/704L DVK board with <code class="docutils literal notranslate"><span class="pre">USB</span> <span class="pre">cable</span></code></p>
 <blockquote>
@@ -306,7 +305,7 @@
 </div></blockquote>
 </section>
 <section id="download-firmware-using-bldevcube">
-<h3>2. Download firmware using BLDevCube<a class="headerlink" href="#download-firmware-using-bldevcube" title="此标题的永久链接"></a></h3>
+<h3>2. Download firmware using BLDevCube<a class="headerlink" href="#download-firmware-using-bldevcube" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>2.1 Open <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>, select <code class="docutils literal notranslate"><span class="pre">BL702L/704L</span></code> in the drop-down box of <code class="docutils literal notranslate"><span class="pre">Chip</span></code>, click <code class="docutils literal notranslate"><span class="pre">Finish</span></code> and enter the main interface of <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Cube</span></code></p>
 <blockquote>
@@ -356,7 +355,7 @@
 </div></blockquote>
 </section>
 <section id="run-firmware">
-<h3>3. Run firmware<a class="headerlink" href="#run-firmware" title="此标题的永久链接"></a></h3>
+<h3>3. Run firmware<a class="headerlink" href="#run-firmware" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>Open the serial port tool installed on the PC, select 2000000 baud rate</p></li>
@@ -367,19 +366,19 @@
 <a class="reference internal image-reference" href="../_images/image272.png"><img alt="../_images/image272.png" src="../_images/image272.png" style="width: 6in; height: 4in;" /></a>
 </figure>
 <div class="admonition note">
-<p class="admonition-title">备注</p>
+<p class="admonition-title">注解</p>
 <p>During the burning, if there are abnormalities such as unable to burn, burning failed, and no printing after burning successfully, refer to <a class="reference external" href="https://dev.bouffalolab.com/media/doc/faq/702/html/content/FAQ.html#bl702">BL702 FAQ Summary</a> .</p>
-</div>
+</aside>
 </div></blockquote>
 </section>
 </section>
 <section id="debug-software">
-<h2>Debug Software<a class="headerlink" href="#debug-software" title="此标题的永久链接"></a></h2>
+<h2>Debug Software<a class="headerlink" href="#debug-software" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>This section describes how to use Freedom Studio to debug code.</p>
 </div></blockquote>
-<section id="id7">
-<h3>1. Hardware connection<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
+<section id="hardware-connection-1">
+<h3>1. Hardware connection<a class="headerlink" href="#hardware-connection-1" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>1.1 Use jumper caps to connect the following 4 groups of JTAG signals of the <code class="docutils literal notranslate"><span class="pre">J3</span></code> connector on the BL702L/704L DVK board:</p>
 <blockquote>
@@ -396,7 +395,7 @@
 </div></blockquote>
 </section>
 <section id="install-and-configure-cklink">
-<h3>2. Install and configure CKLink<a class="headerlink" href="#install-and-configure-cklink" title="此标题的永久链接"></a></h3>
+<h3>2. Install and configure CKLink<a class="headerlink" href="#install-and-configure-cklink" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>2.1 Download the latest version <a class="reference external" href="https://occ.t-head.cn/community/download?id=4103855596351066112">CKLink driver from T-HEAD official website</a></p>
 <p>2.2 Unzip the downloaded CKLink installation package, double-click Setup, and click next all the way. After the installation is complete, there will be a T-HeadDebugServer icon on the desktop</p>
@@ -409,7 +408,7 @@
 </div></blockquote>
 </section>
 <section id="install-and-use-freedom-studio">
-<h3>3. Install and use Freedom Studio<a class="headerlink" href="#install-and-use-freedom-studio" title="此标题的永久链接"></a></h3>
+<h3>3. Install and use Freedom Studio<a class="headerlink" href="#install-and-use-freedom-studio" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>3.1 Download and unzip Freedom Studio, download website <code class="docutils literal notranslate"><span class="pre">https://github.com/sifive/freedom-studio/releases</span></code>, version <code class="docutils literal notranslate"><span class="pre">FreedomStudio-2019-08-2</span></code></p>
 <p>3.2 Run <code class="docutils literal notranslate"><span class="pre">FreedomStudio.exe</span></code></p>
@@ -428,7 +427,7 @@
 <p>3.5 Open the <code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Configurations</span></code> dialog box as shown below</p>
 <blockquote>
 <div><figure class="align-center">
-<a class="reference internal image-reference" href="../_images/image516.png"><img alt="../_images/image516.png" src="../_images/image516.png" style="width: 4in; height: 2in;" /></a>
+<a class="reference internal image-reference" href="../_images/image517.png"><img alt="../_images/image517.png" src="../_images/image517.png" style="width: 4in; height: 2in;" /></a>
 </figure>
 </div></blockquote>
 <p>3.6 If you want to see the current code running status, please select <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch</span></code>; If you want to execute the code from scratch, please select <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_bl702l.launch</span></code></p>
@@ -439,7 +438,7 @@
 <div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>Before using bl_iot_sdk_debug_freedom_studio_win_bl702l.launch, the chip needs to enter the UART programming mode.</p>
-</div>
+</aside>
 </div></blockquote>
 </div></blockquote>
 </section>
@@ -487,7 +486,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1621-g1b202e980',
+            VERSION:'release_bl_iot_sdk_1.6.40-1705-g429b6af2b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -495,10 +494,9 @@
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 

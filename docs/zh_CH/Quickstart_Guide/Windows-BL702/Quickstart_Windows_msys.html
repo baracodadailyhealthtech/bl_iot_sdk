@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL702 SDK Starter Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1621-g1b202e980 文档</title>
+  <title>BL702 SDK Starter Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档</title>
   
 
   
@@ -29,22 +29,18 @@
   
 
   
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
     <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
   
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
   
 
   
-        <link rel="author" title="关于此文档"
+        <link rel="author" title="关于这些文档"
               href="../../about.html"/>
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1621-g1b202e980 文档" href="../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档" href="../../index.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -67,13 +63,16 @@
           
 
           
+            
+            <img src="../../_static/Bouffalolab-logo.png" class="logo" />
+          
           </a>
 
           
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1621-g1b202e980
+                release_bl_iot_sdk_1.6.40-1705-g429b6af2b
               </div>
             
           
@@ -167,10 +166,10 @@
            <div itemprop="articleBody">
             
   <section id="bl702-sdk-starter-guide">
-<h1>BL702 SDK Starter Guide<a class="headerlink" href="#bl702-sdk-starter-guide" title="此标题的永久链接"></a></h1>
+<h1>BL702 SDK Starter Guide<a class="headerlink" href="#bl702-sdk-starter-guide" title="永久链接至标题"></a></h1>
 <p>本文档旨在指导用户搭建 BL702硬件开发的软件环境。</p>
-<section id="id1">
-<h2>编译环境的建立<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<section id="section-1">
+<h2>编译环境的建立<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
 <ul>
 <li><p><a class="reference external" href="https://sourceforge.net/projects/msys2/files/Base/x86_64/">获取MSYS2安装包</a></p></li>
 <li><p><a class="reference external" href="https://www.msys2.org/">安装步骤</a></p></li>
@@ -185,8 +184,8 @@
 </li>
 </ul>
 </section>
-<section id="id2">
-<h2>设置环境变量<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<section id="section-2">
+<h2>设置环境变量<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
 <ul>
 <li><dl>
 <dt>使用gcc进行编译，需要在MSYS2中将gcc添加至环境变量，方法如下：</dt><dd><p>1，（推荐）在MSYS2的启动文件 home/xxx/.bash_profile 中添加如下指令：
@@ -200,8 +199,8 @@
 </li>
 </ul>
 </section>
-<section id="id3">
-<h2>代码编译<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<section id="section-3">
+<h2>代码编译<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>进入需要编译的工程目录，命令：<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">customer_app/bl702_demo_event</span></code></p>
 <figure class="align-default">
@@ -216,13 +215,13 @@
 </ul>
 </section>
 <section id="bin">
-<h2>bin文件下载<a class="headerlink" href="#bin" title="此标题的永久链接"></a></h2>
+<h2>bin文件下载<a class="headerlink" href="#bin" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>可参考 <a class="reference external" href="../../Developer_Environment_BL702/BLFlashEnv/BLFlashEnv.html">BLFlashEnv</a> 中的&lt;下载程序&gt;章节</p></li>
 </ul>
 </section>
-<section id="id4">
-<h2>bin文件运行<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h2>
+<section id="bin-1">
+<h2>bin文件运行<a class="headerlink" href="#bin-1" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>通过USB端口连接电脑，打开相应的串口号设置波特率为2000000，按下图标2中的Reset键复位设备；如果是用BL_PROJ板通过JTAG连接设备，设备启动时串口会提示打印信息；如果是USB直接连接设备，USB打印功能是在程序初始化完成后才开启，所以无法打印设备启动信息。等USB在PC上枚举成功后，再打开对应的串口号查看后续打印以及进行命令输入。</p>
 <figure class="align-default">
@@ -268,7 +267,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1621-g1b202e980',
+            VERSION:'release_bl_iot_sdk_1.6.40-1705-g429b6af2b',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -276,10 +275,9 @@
         };
     </script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
 
   
 

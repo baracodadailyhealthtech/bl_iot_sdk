@@ -7,6 +7,7 @@
 #include "bl_kys.h"
 #include "bl_adc.h"
 #include "ble_rc_app.h"
+#include "ble_rc_ir.h"
 
 static void cmd_start_pds(char *buf, int len, int argc, char **argv)
 {
@@ -23,5 +24,6 @@ void main(void)
     btble_pds_init(NULL);
     #endif
     ble_rc_kys_init();
+    ble_rc_ir_tx_init();
     ble_stack_start();
 }

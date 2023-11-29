@@ -236,6 +236,8 @@ static void ble_tp_ind_ccc_changed(const struct bt_gatt_attr *attr, u16_t value)
         err = bl_tp_send_indicate(ble_tp_conn, get_attr(BT_CHAR_BLE_TP_IND_ATTR_VAL_INDEX), data, 9);
         BT_INFO("ble tp send indatcate: %d", err);
     }
+
+    UNUSED(err);
 }
 
 /*************************************************************************
@@ -268,7 +270,7 @@ static void ble_tp_notify_task(void *pvParameters)
     while(1)
     {
         err = bt_gatt_notify(ble_tp_conn, get_attr(BT_CHAR_BLE_TP_NOT_ATTR_VAL_INDEX), data, (tx_mtu_size - 3));
-        BT_WARN("ble tp send notify : %d", err);
+        BT_INFO("ble tp send notify : %d", err);
     }
     #endif
 }

@@ -22,6 +22,7 @@ COMPONENT_SRCS := bl702l_hal/bl_adc.c \
                   bl702l_hal/bl_irq.c \
                   bl702l_hal/bl_kys.c \
                   bl702l_hal/bl_pwm.c \
+                  bl702l_hal/bl_pwm_ir.c \
                   bl702l_hal/bl_rtc.c \
                   bl702l_hal/bl_sec.c \
                   bl702l_hal/bl_sec_aes.c \
