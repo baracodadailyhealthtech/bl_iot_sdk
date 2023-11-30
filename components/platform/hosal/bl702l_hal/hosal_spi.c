@@ -346,7 +346,6 @@ static void spi_irq_process(hosal_spi_dev_t *spi)
         if (spi_priv->rx_data) {
             spi_priv->rx_data[spi_priv->rx_index] = BL_RD_REG(SPI_BASE, SPI_FIFO_RDATA) & 0xff;
         }
-        (void)(BL_RD_REG(spi_id, SPI_FIFO_RDATA));
         spi_priv->rx_index++;
         if (spi_priv->rx_index == spi_priv->length) {
             bl_irq_disable(SPI_IRQn);
