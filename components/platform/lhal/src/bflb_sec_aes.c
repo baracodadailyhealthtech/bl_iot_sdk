@@ -6,8 +6,6 @@
 #define BFLB_PUT_LE32(p) ((p[3] << 24) | (p[2] << 16) | (p[1] << 8) | (p[0]))
 #define BFLB_PUT_BE32(p) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3]))
 
-volatile uint8_t hw_key_sel = 1;
-
 void bflb_aes_init(struct bflb_device_s *dev)
 {
     uint32_t regval;
@@ -38,9 +36,22 @@ void bflb_aes_deinit(struct bflb_device_s *dev)
     putreg32(regval, reg_base + SEC_ENG_SE_AES_0_CTRL_OFFSET);
 }
 
-void bflb_aes_set_hwkey(uint8_t keysel)
+void bflb_aes_select_hwkey(struct bflb_device_s *dev, uint8_t keysel0, uint8_t keysel1)
 {
-    hw_key_sel = keysel;
+    uint32_t regval;
+    uint32_t reg_base;
+
+    reg_base = dev->reg_base;
+
+    regval = getreg32(reg_base + SEC_ENG_SE_AES_0_KEY_SEL_OFFSET);
+    regval &= ~SEC_ENG_SE_AES_0_KEY_SEL_MASK;
+    regval |= (keysel0 << SEC_ENG_SE_AES_0_KEY_SEL_SHIFT);
+    putreg32(regval, reg_base + SEC_ENG_SE_AES_0_KEY_SEL_OFFSET);
+
+    regval = getreg32(reg_base + SEC_ENG_SE_AES_1_KEY_SEL_OFFSET);
+    regval &= ~SEC_ENG_SE_AES_1_KEY_SEL_MASK;
+    regval |= (keysel1 << SEC_ENG_SE_AES_1_KEY_SEL_SHIFT);
+    putreg32(regval, reg_base + SEC_ENG_SE_AES_1_KEY_SEL_OFFSET);
 }
 
 void bflb_aes_set_mode(struct bflb_device_s *dev, uint8_t mode)
@@ -92,17 +103,7 @@ void bflb_aes_setkey(struct bflb_device_s *dev, const uint8_t *key, uint16_t key
     }
     putreg32(regval, reg_base + SEC_ENG_SE_AES_0_CTRL_OFFSET);
 
-    if (key == NULL) {
-        regval = getreg32(reg_base + SEC_ENG_SE_AES_0_KEY_SEL_OFFSET);
-        regval &= ~SEC_ENG_SE_AES_0_KEY_SEL_MASK;
-        regval |= (hw_key_sel << SEC_ENG_SE_AES_0_KEY_SEL_SHIFT);
-        putreg32(regval, reg_base + SEC_ENG_SE_AES_0_KEY_SEL_OFFSET);
-
-        regval = getreg32(reg_base + SEC_ENG_SE_AES_1_KEY_SEL_OFFSET);
-        regval &= ~SEC_ENG_SE_AES_1_KEY_SEL_MASK;
-        regval |= (hw_key_sel << SEC_ENG_SE_AES_1_KEY_SEL_SHIFT);
-        putreg32(regval, reg_base + SEC_ENG_SE_AES_1_KEY_SEL_OFFSET);
-    } else {
+    if (key) {
         putreg32(BFLB_PUT_LE32(temp_key), reg_base + SEC_ENG_SE_AES_0_KEY_0_OFFSET);
         temp_key += 4;
         putreg32(BFLB_PUT_LE32(temp_key), reg_base + SEC_ENG_SE_AES_0_KEY_1_OFFSET);
@@ -126,6 +127,7 @@ void bflb_aes_setkey(struct bflb_device_s *dev, const uint8_t *key, uint16_t key
             temp_key += 4;
             putreg32(BFLB_PUT_LE32(temp_key), reg_base + SEC_ENG_SE_AES_0_KEY_7_OFFSET);
             temp_key += 4;
+        } else {
         }
     }
 }

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #include <string.h>
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "btc_ble_mesh_sensor_model.h"
 #include "btc_ble_mesh_prov.h"

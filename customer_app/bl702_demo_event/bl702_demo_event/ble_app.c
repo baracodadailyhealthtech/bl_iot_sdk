@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -58,7 +58,7 @@
 #include "conn_internal.h"
 #include "hci_core.h"
 #include "ble_lib_api.h"
-#include "log.h"
+#include "bt_log.h"
 
 #if defined(CONFIG_BLE_TP_SERVER)
 #include "ble_tp_svc.h"

@@ -175,6 +175,9 @@ struct bt_conn {
 		u16_t subversion;
 	} rv;
 #endif
+#if defined(BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK)
+	bool notPermit_disconnect;
+#endif
 };
 
 void bt_conn_reset_rx_state(struct bt_conn *conn);

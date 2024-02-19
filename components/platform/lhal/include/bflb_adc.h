@@ -161,6 +161,14 @@ extern "C" {
 void bflb_adc_init(struct bflb_device_s *dev, const struct bflb_adc_config_s *config);
 
 /**
+ * @brief Update adc trim.
+ *
+ * @param [in] dev device handle
+ * @param [in] config pointer to save adc configuration
+ */
+void bflb_update_adc_trim(struct bflb_device_s *dev, const struct bflb_adc_config_s *config);
+
+/**
  * @brief Deinitialize adc.
  *
  * @param [in] dev device handle

@@ -759,16 +759,16 @@ static inline int bt_addr_le_to_str(const bt_addr_le_t *addr, char *str,
 
 	switch (addr->type) {
 	case BT_ADDR_LE_PUBLIC:
-		strcpy(type, "public");
+		strlcpy(type, "public", sizeof(type));
 		break;
 	case BT_ADDR_LE_RANDOM:
-		strcpy(type, "random");
+		strlcpy(type, "random", sizeof(type));
 		break;
 	case BT_ADDR_LE_PUBLIC_ID:
-		strcpy(type, "public-id");
+		strlcpy(type, "public-id", sizeof(type));
 		break;
 	case BT_ADDR_LE_RANDOM_ID:
-		strcpy(type, "random-id");
+		strlcpy(type, "random-id", sizeof(type));
 		break;
 	default:
 		snprintk(type, sizeof(type), "0x%02x", addr->type);

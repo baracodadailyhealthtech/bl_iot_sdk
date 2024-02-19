@@ -17,7 +17,7 @@
 #include <string.h>
 #include "btc/btc_task.h"
 //#include "osi/thread.h"
-#include "log.h"
+#include "bt_log.h"
 #include "bt_common.h"
 #if 0
 #include "osi/allocator.h"

@@ -8,7 +8,7 @@
 
 #include <zephyr.h>
 #include <string.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <stdbool.h>
 #include <atomic.h>
 #include <misc/byteorder.h>
@@ -21,7 +21,7 @@
 #include <hci_driver.h>
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_ATT)
-#include "log.h"
+#include "bt_log.h"
 
 #include "hci_core.h"
 #include "conn_internal.h"
@@ -129,13 +129,13 @@ static bt_conn_tx_cb_t att_cb(struct net_buf *buf);
 static int att_send(struct bt_conn *conn, struct net_buf *buf,
 		    bt_conn_tx_cb_t cb, void *user_data)
 {
+    #if defined(CONFIG_BT_SMP) && defined(CONFIG_BT_SIGNING)
 	struct bt_att_hdr *hdr;
 
 	hdr = (void *)buf->data;
 
 	BT_DBG("code 0x%02x", hdr->code);
-    
-    #if defined(CONFIG_BT_SMP) && defined(CONFIG_BT_SIGNING)
+
 	if (hdr->code == BT_ATT_OP_SIGNED_WRITE_CMD) {
 		int err;
 
@@ -360,12 +360,23 @@ static void att_process(struct bt_att *att)
 	sys_snode_t *node;
 
 	BT_DBG("");
-
+	#if defined(BFLB_BLE_PATCH_AVOID_NEXT_ATT_REQ_SENT_BEFORE_PREVIOUS_ATT_RSP_RCVD)
+	unsigned int key = irq_lock();
+	att->req = NULL;
+	#endif
 	/* Pull next request from the list */
 	node = sys_slist_get(&att->reqs);
 	if (!node) {
+        #if defined(BFLB_BLE_PATCH_AVOID_NEXT_ATT_REQ_SENT_BEFORE_PREVIOUS_ATT_RSP_RCVD)
+        irq_unlock(key);
+        #endif
 		return;
 	}
+
+	#if defined(BFLB_BLE_PATCH_AVOID_NEXT_ATT_REQ_SENT_BEFORE_PREVIOUS_ATT_RSP_RCVD)
+	att->req = ATT_REQ(node);
+	irq_unlock(key);
+	#endif
 
 	att_send_req(att, ATT_REQ(node));
 }
@@ -409,8 +420,9 @@ static u8_t att_handle_rsp(struct bt_att *att, void *pdu, u16_t len, u8_t err)
 		att_req_destroy(att->req);
 	}
 
+#if !defined(BFLB_BLE_PATCH_AVOID_NEXT_ATT_REQ_SENT_BEFORE_PREVIOUS_ATT_RSP_RCVD)
 	att->req = NULL;
-
+#endif
 process:
 	/* Process pending requests */
 	att_process(att);

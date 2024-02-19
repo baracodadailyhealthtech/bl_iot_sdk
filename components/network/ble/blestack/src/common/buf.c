@@ -12,11 +12,11 @@
 #define LOG_LEVEL CONFIG_NET_BUF_LOG_LEVEL
 #endif
 
-#include <log.h>
+#include <bt_log.h>
 //LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
 #include <stdio.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <stddef.h>
 #include <string.h>
 #include <misc/byteorder.h>
@@ -105,8 +105,10 @@ extern struct net_buf_pool friend_buf_pool;
 #if defined(CONFIG_BT_BREDR)
 extern struct net_buf_pool br_sig_pool;
 extern struct net_buf_pool sdp_pool;
+#if defined(CONFIG_BT_HFP)
 extern struct net_buf_pool hf_pool;
 extern struct net_buf_pool dummy_pool;
+#endif
 #endif
 
 #if defined(CONFIG_AUTO_PTS)
@@ -148,8 +150,10 @@ struct net_buf_pool *_net_buf_pool_list[] = {&hci_cmd_pool, &hci_rx_pool,
 	#if defined(CONFIG_BT_BREDR)
 	&sdp_pool,
 	&br_sig_pool,
+	#if defined(CONFIG_BT_HFP)
 	&hf_pool,
 	&dummy_pool,
+	#endif
 	#endif
 	#if defined(CONFIG_AUTO_PTS)
 	&server_pool,

@@ -74,18 +74,28 @@ static void bflb_i2c_set_frequence(struct bflb_device_s *dev, uint32_t freq)
 {
     uint32_t regval;
     uint32_t reg_base;
-    uint32_t phase, phase0, phase1, phase2, phase3;
-    uint32_t bias;
+    int32_t phase, phase0, phase1, phase2, phase3;
+    int32_t bias;
 
     reg_base = dev->reg_base;
 
-    phase = (bflb_clk_get_peripheral_clock(BFLB_DEVICE_TYPE_I2C, dev->idx) + freq / 2) / freq - 4;
-    phase0 = (phase + 4) / 8;
-    phase2 = (phase * 3 + 4) / 8;
-    phase3 = (phase + 4) / 8;
-    phase1 = phase - (phase0 + phase2 + phase3);
-    regval = getreg32(reg_base + I2C_CONFIG_OFFSET);
+    phase = (bflb_clk_get_peripheral_clock(BFLB_DEVICE_TYPE_I2C, dev->idx) + freq / 2) / freq;
+    if (freq <= 100 * 1000) {
+        /* when SCL clock <= 100KHz, duty cycle is default 50%  */
+        phase0 = (phase + 2) / 4;
+        phase1 = phase0;
+        phase2 = phase / 2 - phase0;
+        phase3 = phase - phase0 - phase1 - phase2;
+    } else {
+        /* when SCL clock > 100KHz, duty cycle isdefault 33% */
+        phase0 = (phase + 2) / 3;
+        phase1 = (phase + 3) / 6;
+        phase2 = (phase + 1) / 3 - phase1;
+        phase3 = phase - phase0 - phase1 - phase2;
+    }
 
+    /* calculate rectify phase when de-glitch or clock-stretching is enabled */
+    regval = getreg32(reg_base + I2C_CONFIG_OFFSET);
     if ((regval & I2C_CR_I2C_DEG_EN) && (regval & I2C_CR_I2C_SCL_SYNC_EN)) {
         bias = (regval & I2C_CR_I2C_DEG_CNT_MASK) >> I2C_CR_I2C_DEG_CNT_SHIFT;
         bias += 1;
@@ -96,20 +106,35 @@ static void bflb_i2c_set_frequence(struct bflb_device_s *dev, uint32_t freq)
         bias += 3;
     }
 
-    if (phase1 < (bias + 1)) {
-        phase1 = 1;
-    } else {
-        phase1 -= bias;
-    }
+    /* value should decrement one before write to register */
+    phase0 = (phase0 <= 0) ? 1 : phase0;
+    phase1 = (phase1 <= bias) ? (bias + 1) : phase1;
+    phase2 = (phase2 <= 0) ? 1 : phase2;
+    phase3 = (phase3 <= 0) ? 1 : phase3;
+    /* only 8bit is available for phase0~3 in register */
+    phase0 = (phase0 >= 256) ? 256 : phase0;
+    phase1 = (phase1 >= 256) ? 256 : phase1;
+    phase2 = (phase2 >= 256) ? 256 : phase2;
+    phase3 = (phase0 >= 256) ? 256 : phase3;
 
-    regval = phase0 << I2C_CR_I2C_PRD_S_PH_0_SHIFT;
-    regval |= phase1 << I2C_CR_I2C_PRD_S_PH_1_SHIFT;
-    regval |= phase2 << I2C_CR_I2C_PRD_S_PH_2_SHIFT;
-    regval |= phase3 << I2C_CR_I2C_PRD_S_PH_3_SHIFT;
-
-    putreg32(regval, reg_base + I2C_PRD_START_OFFSET);
-    putreg32(regval, reg_base + I2C_PRD_STOP_OFFSET);
+    /* calculate data phase */
+    regval = (phase0 - 1) << I2C_CR_I2C_PRD_D_PH_0_SHIFT;
+    regval |= (((phase1 - bias - 1) <= 0) ? 1 : (phase1 - bias - 1)) << I2C_CR_I2C_PRD_D_PH_1_SHIFT; /* data phase1 must not be 0 */
+    regval |= (phase2 - 1) << I2C_CR_I2C_PRD_D_PH_2_SHIFT;
+    regval |= (phase3 - 1) << I2C_CR_I2C_PRD_D_PH_3_SHIFT;
     putreg32(regval, reg_base + I2C_PRD_DATA_OFFSET);
+    /* calculate start phase */
+    regval = (phase0 - 1) << I2C_CR_I2C_PRD_S_PH_0_SHIFT;
+    regval |= (((phase0 + phase3 - 1) >= 256) ? 255 : (phase0 + phase3 - 1)) << I2C_CR_I2C_PRD_S_PH_1_SHIFT;
+    regval |= (((phase1 + phase2 - 1) >= 256) ? 255 : (phase1 + phase2 - 1)) << I2C_CR_I2C_PRD_S_PH_2_SHIFT;
+    regval |= (phase3 - 1) << I2C_CR_I2C_PRD_S_PH_3_SHIFT;
+    putreg32(regval, reg_base + I2C_PRD_START_OFFSET);
+    /* calculate stop phase */
+    regval = (phase0 - 1) << I2C_CR_I2C_PRD_P_PH_0_SHIFT;
+    regval |= (((phase1 + phase2 - 1) >= 256) ? 255 : (phase1 + phase2 - 1)) << I2C_CR_I2C_PRD_P_PH_1_SHIFT;
+    regval |= (phase0 - 1) << I2C_CR_I2C_PRD_P_PH_2_SHIFT;
+    regval |= (phase3 - 1) << I2C_CR_I2C_PRD_P_PH_3_SHIFT;
+    putreg32(regval, reg_base + I2C_PRD_STOP_OFFSET);
 }
 
 static inline bool bflb_i2c_isbusy(struct bflb_device_s *dev)
@@ -391,7 +416,7 @@ void bflb_i2c_link_rxdma(struct bflb_device_s *dev, bool enable)
 
 int bflb_i2c_transfer(struct bflb_device_s *dev, struct bflb_i2c_msg_s *msgs, int count)
 {
-    uint16_t subaddr = 0;
+    uint32_t subaddr = 0;
     uint16_t subaddr_size = 0;
     bool is_addr_10bit = false;
     int ret = 0;
@@ -486,6 +511,7 @@ int bflb_i2c_feature_control(struct bflb_device_s *dev, int cmd, size_t arg)
     int ret = 0;
     uint32_t reg_base;
     uint32_t regval;
+    struct bflb_i2c_timing_s *timing;
 
     reg_base = dev->reg_base;
     switch (cmd) {
@@ -508,6 +534,57 @@ int bflb_i2c_feature_control(struct bflb_device_s *dev, int cmd, size_t arg)
                 regval |= ((arg - 1) << I2C_CR_I2C_DEG_CNT_SHIFT);
             }
             putreg32(regval, reg_base + I2C_CONFIG_OFFSET);
+            break;
+        case I2C_CMD_SET_TIMING:
+            timing = (struct bflb_i2c_timing_s *)arg;
+            regval = getreg32(reg_base + I2C_PRD_DATA_OFFSET);
+            regval &= ~I2C_CR_I2C_PRD_D_PH_0_MASK;
+            regval |= (timing->data_phase0 << I2C_CR_I2C_PRD_D_PH_0_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_D_PH_1_MASK;
+            regval |= (timing->data_phase1 << I2C_CR_I2C_PRD_D_PH_1_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_D_PH_2_MASK;
+            regval |= (timing->data_phase2 << I2C_CR_I2C_PRD_D_PH_2_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_D_PH_3_MASK;
+            regval |= (timing->data_phase3 << I2C_CR_I2C_PRD_D_PH_3_SHIFT);
+            putreg32(regval, reg_base + I2C_PRD_DATA_OFFSET);
+            regval = getreg32(reg_base + I2C_PRD_START_OFFSET);
+            regval &= ~I2C_CR_I2C_PRD_S_PH_0_MASK;
+            regval |= (timing->start_phase0 << I2C_CR_I2C_PRD_S_PH_0_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_S_PH_1_MASK;
+            regval |= (timing->start_phase1 << I2C_CR_I2C_PRD_S_PH_1_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_S_PH_2_MASK;
+            regval |= (timing->start_phase2 << I2C_CR_I2C_PRD_S_PH_2_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_S_PH_3_MASK;
+            regval |= (timing->start_phase3 << I2C_CR_I2C_PRD_S_PH_3_SHIFT);
+            putreg32(regval, reg_base + I2C_PRD_START_OFFSET);
+            regval = getreg32(reg_base + I2C_PRD_STOP_OFFSET);
+            regval &= ~I2C_CR_I2C_PRD_P_PH_0_MASK;
+            regval |= (timing->stop_phase0 << I2C_CR_I2C_PRD_P_PH_0_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_P_PH_1_MASK;
+            regval |= (timing->stop_phase1 << I2C_CR_I2C_PRD_P_PH_1_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_P_PH_2_MASK;
+            regval |= (timing->stop_phase2 << I2C_CR_I2C_PRD_P_PH_2_SHIFT);
+            regval &= ~I2C_CR_I2C_PRD_P_PH_3_MASK;
+            regval |= (timing->stop_phase3 << I2C_CR_I2C_PRD_P_PH_3_SHIFT);
+            putreg32(regval, reg_base + I2C_PRD_STOP_OFFSET);
+            break;
+        case I2C_CMD_GET_TIMING:
+            timing = (struct bflb_i2c_timing_s *)arg;
+            regval = getreg32(reg_base + I2C_PRD_DATA_OFFSET);
+            timing->data_phase0 = (regval & I2C_CR_I2C_PRD_D_PH_0_MASK) >> I2C_CR_I2C_PRD_D_PH_0_SHIFT;
+            timing->data_phase1 = (regval & I2C_CR_I2C_PRD_D_PH_1_MASK) >> I2C_CR_I2C_PRD_D_PH_1_SHIFT;
+            timing->data_phase2 = (regval & I2C_CR_I2C_PRD_D_PH_2_MASK) >> I2C_CR_I2C_PRD_D_PH_2_SHIFT;
+            timing->data_phase3 = (regval & I2C_CR_I2C_PRD_D_PH_3_MASK) >> I2C_CR_I2C_PRD_D_PH_3_SHIFT;
+            regval = getreg32(reg_base + I2C_PRD_START_OFFSET);
+            timing->start_phase0 = (regval & I2C_CR_I2C_PRD_S_PH_0_MASK) >> I2C_CR_I2C_PRD_S_PH_0_SHIFT;
+            timing->start_phase1 = (regval & I2C_CR_I2C_PRD_S_PH_1_MASK) >> I2C_CR_I2C_PRD_S_PH_1_SHIFT;
+            timing->start_phase2 = (regval & I2C_CR_I2C_PRD_S_PH_2_MASK) >> I2C_CR_I2C_PRD_S_PH_2_SHIFT;
+            timing->start_phase3 = (regval & I2C_CR_I2C_PRD_S_PH_3_MASK) >> I2C_CR_I2C_PRD_S_PH_3_SHIFT;
+            regval = getreg32(reg_base + I2C_PRD_STOP_OFFSET);
+            timing->stop_phase0 = (regval & I2C_CR_I2C_PRD_P_PH_0_MASK) >> I2C_CR_I2C_PRD_P_PH_0_SHIFT;
+            timing->stop_phase1 = (regval & I2C_CR_I2C_PRD_P_PH_1_MASK) >> I2C_CR_I2C_PRD_P_PH_1_SHIFT;
+            timing->stop_phase2 = (regval & I2C_CR_I2C_PRD_P_PH_2_MASK) >> I2C_CR_I2C_PRD_P_PH_2_SHIFT;
+            timing->stop_phase3 = (regval & I2C_CR_I2C_PRD_P_PH_3_MASK) >> I2C_CR_I2C_PRD_P_PH_3_SHIFT;
             break;
         default:
             ret = -EPERM;

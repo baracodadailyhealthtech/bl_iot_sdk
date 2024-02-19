@@ -21,6 +21,7 @@ COMPONENT_SRCS := bl702l_hal/bl_adc.c \
                   bl702l_hal/bl_ir.c \
                   bl702l_hal/bl_irq.c \
                   bl702l_hal/bl_kys.c \
+                  bl702l_hal/bl_os_port.c \
                   bl702l_hal/bl_pwm.c \
                   bl702l_hal/bl_pwm_ir.c \
                   bl702l_hal/bl_rtc.c \
@@ -35,8 +36,6 @@ COMPONENT_SRCS := bl702l_hal/bl_adc.c \
                   bl702l_hal/hal_boot2.c \
                   bl702l_hal/hal_button.c \
                   bl702l_hal/hal_gpio.c \
-                  bl702l_hal/hal_hbn.c \
-                  bl702l_hal/hal_hwtimer.c \
                   bl702l_hal/hal_ota.c \
                   bl702l_hal/hal_sys.c \
                   bl702l_hal/hal_tcal.c \
@@ -102,8 +101,8 @@ CPPFLAGS += -DCFG_TCAL_ENABLE
 endif
 
 ifeq ($(CONFIG_PDS_ENABLE),1)
-CPPFLAGS += -DCFG_PDS_ENABLE
 CONFIG_PDS_LEVEL ?= 31
+CPPFLAGS += -DCFG_PDS_ENABLE
 CPPFLAGS += -DCFG_PDS_LEVEL=$(CONFIG_PDS_LEVEL)
 ifeq ($(CONFIG_PDS_LEVEL),31)
 CPPFLAGS += -DCFG_PDS_OPTIMIZE
@@ -114,6 +113,7 @@ endif
 ifeq ($(CONFIG_HBN_ENABLE),1)
 CPPFLAGS += -DCFG_HBN_ENABLE
 CPPFLAGS += -DCFG_HBN_OPTIMIZE
+CPPFLAGS += -DCONFIG_HW_SEC_ENG_DISABLE
 endif
 
 ifeq ($(CONFIG_USE_PSRAM),1)

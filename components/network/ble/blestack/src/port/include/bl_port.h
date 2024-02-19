@@ -283,5 +283,8 @@ long long k_now_ms(void);
 void k_get_random_byte_array(uint8_t *buf, size_t len);
 void *k_malloc(size_t size);
 void k_free(void *buf);
+
+void bt_assert(void);
+
 #endif /* BL_PORT_H */
 

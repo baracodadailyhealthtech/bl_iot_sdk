@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -31,13 +31,12 @@
 #define __BL_PDS_H__
 
 
-#include "bl702l_glb.h"
-#include "bl702l_sflash.h"
 #include "bl702l_romdriver.h"
 
 
-#define ATTR_NOINLINE              __attribute__((noinline))
+#ifndef ATTR_PDS_SECTION
 #define ATTR_PDS_SECTION           __attribute__((section(".pds_code." ATTR_UNI_SYMBOL)))
+#endif
 
 
 void bl_pds_init(void);

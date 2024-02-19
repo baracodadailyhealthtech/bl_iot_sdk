@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -78,7 +78,7 @@ struct hci_vs_tx_test_cmd
 void btble_controller_set_task_stack_size(uint16_t stack_size);
 void btble_controller_init(uint8_t task_priority);
 #if defined(CFG_NUTTX)
-void btblecontroller_main(void);
+void btblecontroller_main( void *pvParameters );
 #endif
 
 void btble_controller_deinit(void);

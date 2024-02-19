@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -29,28 +29,18 @@
  */
 #include <string.h>
 #include <stdio.h>
-#include <device/vfs_spi.h>
-#include <vfs_err.h>
-#include <vfs_register.h>
-#include <aos/kernel.h>
 
-#include <bl_dma.h>
-#include <bl_gpio.h>
 #include <bl702l_spi.h>
 #include <bl702l_gpio.h>
 #include <bl702l_glb.h>
 #include <bl702l_dma.h>
 #include <bl702l.h>
 #include <bl_irq.h>
-#include <bl_dma.h>
 #include <bl_gpio.h>
 #include <hosal_dma.h>
 #include <hosal_spi.h>
 
-#include <FreeRTOS.h>
-#include <task.h>
-#include <timers.h>
-#include <event_groups.h>
+#include <bl_os_port.h>
 
 #include <libfdt.h>
 #include <utils_log.h>
@@ -72,13 +62,13 @@ typedef struct {
     uint32_t length;
     uint32_t tx_index;
     uint32_t rx_index;
-    EventGroupHandle_t spi_event_group;
+    void *spi_event_group;
 } spi_priv_t;
 
 typedef struct {
     int8_t tx_dma_ch;
     int8_t rx_dma_ch;
-    EventGroupHandle_t spi_event_group;
+    void *spi_event_group;
 } spi_dma_priv_t;
 
 static void *hosal_spi_priv = NULL;
@@ -199,7 +189,7 @@ static void lli_list_init(DMA_LLI_Ctrl_Type **pptxlli, DMA_LLI_Ctrl_Type **pprxl
 
 static int hosal_spi_dma_trans(hosal_spi_dev_t *spi, uint8_t *TxData, uint8_t *RxData, uint32_t Len, uint32_t timeout)
 {
-    EventBits_t uxBits;
+    uint32_t uxBits;
     DMA_LLI_Cfg_Type txllicfg;
     DMA_LLI_Cfg_Type rxllicfg;
     DMA_LLI_Ctrl_Type *ptxlli = NULL;
@@ -257,8 +247,8 @@ static int hosal_spi_dma_trans(hosal_spi_dev_t *spi, uint8_t *TxData, uint8_t *R
         hosal_dma_chan_start(dma_arg->tx_dma_ch);
     }
 
-    uxBits = xEventGroupWaitBits(dma_arg->spi_event_group, EVT_GROUP_SPI_TR, pdTRUE, pdTRUE, timeout);
-    xEventGroupClearBits(dma_arg->spi_event_group, EVT_GROUP_SPI_TR);
+    uxBits = bl_os_event_group_wait_bits(dma_arg->spi_event_group, EVT_GROUP_SPI_TR, timeout);
+    bl_os_event_group_clear_bits(dma_arg->spi_event_group, EVT_GROUP_SPI_TR);
 
     if (dma_arg->tx_dma_ch >= 0) {
         hosal_dma_chan_stop(dma_arg->tx_dma_ch);
@@ -292,38 +282,28 @@ static int hosal_spi_dma_trans(hosal_spi_dev_t *spi, uint8_t *TxData, uint8_t *R
 
 static void hosal_spi_int_handler_tx(void *arg, uint32_t flag)
 {
-    BaseType_t xResult = pdFAIL;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     spi_dma_priv_t *priv = (spi_dma_priv_t *)hosal_spi_priv;
 
-    xResult = xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_TX, &xHigherPriorityTaskWoken);
     if (priv->rx_dma_ch == -1) {
-        xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_RX, &xHigherPriorityTaskWoken);
-    }
-    if(xResult != pdFAIL) {
-        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+        bl_os_event_group_set_bits(priv->spi_event_group, EVT_GROUP_SPI_TR);
+    } else {
+        bl_os_event_group_set_bits(priv->spi_event_group, EVT_GROUP_SPI_TX);
     }
 }
 
 static void hosal_spi_int_handler_rx(void *arg, uint32_t flag)
 {
-    BaseType_t xResult = pdFAIL;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     spi_dma_priv_t *priv = (spi_dma_priv_t *)hosal_spi_priv;
 
-    xResult = xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_RX, &xHigherPriorityTaskWoken);
     if (priv->tx_dma_ch == -1) {
-        xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_TX, &xHigherPriorityTaskWoken);
-    }
-    if(xResult != pdFAIL) {
-        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+        bl_os_event_group_set_bits(priv->spi_event_group, EVT_GROUP_SPI_TR);
+    } else {
+        bl_os_event_group_set_bits(priv->spi_event_group, EVT_GROUP_SPI_RX);
     }
 }
 
 static void spi_irq_process(hosal_spi_dev_t *spi)
 {
-    BaseType_t xResult = pdFAIL;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     spi_priv_t *spi_priv = (spi_priv_t *)hosal_spi_priv;
     SPI_ID_Type spi_id = SPI0_ID; //spi->port;
 
@@ -349,18 +329,14 @@ static void spi_irq_process(hosal_spi_dev_t *spi)
         spi_priv->rx_index++;
         if (spi_priv->rx_index == spi_priv->length) {
             bl_irq_disable(SPI_IRQn);
-            xResult = xEventGroupSetBitsFromISR(spi_priv->spi_event_group, EVT_GROUP_SPI_TX, &xHigherPriorityTaskWoken);
-            xEventGroupSetBitsFromISR(spi_priv->spi_event_group, EVT_GROUP_SPI_RX, &xHigherPriorityTaskWoken);
-            if(xResult != pdFAIL) {
-                portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-            }
+            bl_os_event_group_set_bits(spi_priv->spi_event_group, EVT_GROUP_SPI_TR);
         }
     }
 }
 
 static int hosal_spi_trans(hosal_spi_dev_t *spi, uint8_t *tx_data, uint8_t *rx_data, uint32_t length, uint32_t timeout)
 {
-    EventBits_t uxBits;
+    uint32_t uxBits;
     spi_priv_t *spi_priv = (spi_priv_t *)hosal_spi_priv;
     SPI_ID_Type spi_id = SPI0_ID; //spi->port;
 
@@ -384,8 +360,8 @@ static int hosal_spi_trans(hosal_spi_dev_t *spi, uint8_t *tx_data, uint8_t *rx_d
     bl_irq_register_with_ctx(SPI_IRQn, spi_irq_process, spi);
     bl_irq_enable(SPI_IRQn);
 
-    uxBits = xEventGroupWaitBits(spi_priv->spi_event_group, EVT_GROUP_SPI_TR, pdTRUE, pdTRUE, timeout);
-    xEventGroupClearBits(spi_priv->spi_event_group, EVT_GROUP_SPI_TR);
+    uxBits = bl_os_event_group_wait_bits(spi_priv->spi_event_group, EVT_GROUP_SPI_TR, timeout);
+    bl_os_event_group_clear_bits(spi_priv->spi_event_group, EVT_GROUP_SPI_TR);
 
     if ((uxBits & EVT_GROUP_SPI_TR) == EVT_GROUP_SPI_TR) {
         if (spi->cb) {
@@ -426,11 +402,11 @@ int hosal_spi_init(hosal_spi_dev_t *spi)
             spi_dma_priv_t *priv = malloc(sizeof(spi_dma_priv_t));
             priv->tx_dma_ch = -1;
             priv->rx_dma_ch = -1;
-            priv->spi_event_group = xEventGroupCreate();
+            priv->spi_event_group = bl_os_event_group_create();
             hosal_spi_priv = priv;
         } else {
             spi_priv_t *priv = malloc(sizeof(spi_priv_t));
-            priv->spi_event_group = xEventGroupCreate();
+            priv->spi_event_group = bl_os_event_group_create();
             hosal_spi_priv = priv;
         }
     }
@@ -467,11 +443,11 @@ int hosal_spi_finalize(hosal_spi_dev_t *spi)
     if (hosal_spi_priv != NULL) {
         if (spi->config.dma_enable) {
             spi_dma_priv_t *priv = (spi_dma_priv_t *)hosal_spi_priv;
-            vEventGroupDelete(priv->spi_event_group);
+            bl_os_event_group_delete(priv->spi_event_group);
             free(priv);
         } else {
             spi_priv_t *priv = (spi_priv_t *)hosal_spi_priv;
-            vEventGroupDelete(priv->spi_event_group);
+            bl_os_event_group_delete(priv->spi_event_group);
             free(priv);
         }
         hosal_spi_priv = NULL;

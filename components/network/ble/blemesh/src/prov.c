@@ -7,7 +7,7 @@
  */
 
 #include <zephyr.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <common/include/atomic.h>
 #include <util.h>
 #include <byteorder.h>
@@ -21,7 +21,7 @@
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_MESH_DEBUG_PROV)
 #define LOG_MODULE_NAME bt_mesh_prov
-#include "log.h"
+#include "bt_log.h"
 
 #include "../../blestack/src/host/ecc.h"
 //#include "host/testing.h"
@@ -736,7 +736,7 @@ static void send_input_complete(void)
 
 int bt_mesh_input_number(u32_t num)
 {
-	BT_DBG("%u", num);
+	BT_DBG("%lu", num);
 
 	if (!atomic_test_and_clear_bit(link.flags, WAIT_NUMBER)) {
 		return -EINVAL;
@@ -764,9 +764,9 @@ int bt_mesh_input_string(const char *str)
 	}
 
 #if defined(BFLB_BLE)
-    strncpy((char *)link.auth, str, prov->input_size);
+    strlcpy((char *)link.auth, str, prov->input_size);
 #else
-	strncpy(link.auth, str, prov->input_size);
+	strlcpy(link.auth, str, prov->input_size);
 #endif
 
 	send_input_complete();
@@ -1251,7 +1251,7 @@ static void prov_data(const u8_t *data)
 	iv_index = sys_get_be32(&pdu[19]);
 	addr = sys_get_be16(&pdu[23]);
 
-	BT_DBG("net_idx %u iv_index 0x%08x, addr 0x%04x",
+	BT_DBG("net_idx %u iv_index 0x%08lx, addr 0x%04x",
 	       net_idx, iv_index, addr);
 
 	prov_buf_init(&msg, PROV_COMPLETE);

@@ -100,7 +100,7 @@ uint32_t bflb_acomp_get_result(uint8_t acomp_id)
     }
 }
 
-uint32_t bflb_acomp_gpio_2_chanid(uint32_t pin, uint32_t *channel)
+int bflb_acomp_gpio_2_chanid(uint32_t pin, uint32_t *channel)
 {
 #if defined(BL602)
     if (pin == GPIO_PIN_12) {
@@ -208,7 +208,7 @@ uint32_t bflb_acomp_gpio_2_chanid(uint32_t pin, uint32_t *channel)
     return 0;
 }
 
-uint32_t bflb_acomp_chanid_2_gpio(uint32_t channel, uint32_t *pin)
+int bflb_acomp_chanid_2_gpio(uint32_t channel, uint32_t *pin)
 {
 #if defined(BL602)
     if (channel == AON_ACOMP_CHAN_ADC0) {

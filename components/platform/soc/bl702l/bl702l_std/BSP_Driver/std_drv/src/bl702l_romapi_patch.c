@@ -144,11 +144,129 @@ static const ATTR_TCM_CONST_SECTION SPI_Flash_Cfg_Type flashCfg_Winb_16JV = {
     .qeData = 0,
 };
 
+static const ATTR_TCM_CONST_SECTION SPI_Flash_Cfg_Type flashCfg_FM_Q80 = {
+        .resetCreadCmd = 0xff,
+        .resetCreadCmdSize = 3,
+        .mid = 0xc8,
+
+        .deBurstWrapCmd = 0x77,
+        .deBurstWrapCmdDmyClk = 0x3,
+        .deBurstWrapDataMode = SF_CTRL_DATA_4_LINES,
+        .deBurstWrapData = 0xF0,
+
+        /*reg*/
+        .writeEnableCmd = 0x06,
+        .wrEnableIndex = 0x00,
+        .wrEnableBit = 0x01,
+        .wrEnableReadRegLen = 0x01,
+
+        .qeIndex = 1,
+        .qeBit = 0x01,
+        .qeWriteRegLen = 0x02,
+        .qeReadRegLen = 0x1,
+
+        .busyIndex = 0,
+        .busyBit = 0x00,
+        .busyReadRegLen = 0x1,
+        .releasePowerDown = 0xab,
+
+        .readRegCmd[0] = 0x05,
+        .readRegCmd[1] = 0x35,
+        .writeRegCmd[0] = 0x01,
+        .writeRegCmd[1] = 0x01,
+
+        .fastReadQioCmd = 0xeb,
+        .frQioDmyClk = 16 / 8,
+        .cReadSupport = 1,
+        .cReadMode = 0xA0,
+
+        .burstWrapCmd = 0x77,
+        .burstWrapCmdDmyClk = 0x3,
+        .burstWrapDataMode = SF_CTRL_DATA_4_LINES,
+        .burstWrapData = 0x40,
+        /*erase*/
+        .chipEraseCmd = 0xc7,
+        .sectorEraseCmd = 0x20,
+        .blk32EraseCmd = 0x52,
+        .blk64EraseCmd = 0xd8,
+        /*write*/
+        .pageProgramCmd = 0x02,
+        .qpageProgramCmd = 0x32,
+        .qppAddrMode = SF_CTRL_ADDR_1_LINE,
+
+        .ioMode = SF_CTRL_QIO_MODE,
+        .clkDelay = 1,
+        .clkInvert = 0x01,
+
+        .resetEnCmd = 0x66,
+        .resetCmd = 0x99,
+        .cRExit = 0xff,
+        .wrEnableWriteRegLen = 0x00,
+
+        /*id*/
+        .jedecIdCmd = 0x9f,
+        .jedecIdCmdDmyClk = 0,
+        .qpiJedecIdCmd = 0x9f,
+        .qpiJedecIdCmdDmyClk = 0x00,
+        .sectorSize = 4,
+        .pageSize = 256,
+
+        /*read*/
+        .fastReadCmd = 0x0b,
+        .frDmyClk = 8 / 8,
+        .qpiFastReadCmd = 0x0b,
+        .qpiFrDmyClk = 8 / 8,
+        .fastReadDoCmd = 0x3b,
+        .frDoDmyClk = 8 / 8,
+        .fastReadDioCmd = 0xbb,
+        .frDioDmyClk = 0,
+        .fastReadQoCmd = 0x6b,
+        .frQoDmyClk = 8 / 8,
+
+        .qpiFastReadQioCmd = 0xeb,
+        .qpiFrQioDmyClk = 16 / 8,
+        .qpiPageProgramCmd = 0x02,
+        .writeVregEnableCmd = 0x50,
+
+        /* qpi mode */
+        .enterQpi = 0x38,
+        .exitQpi = 0xff,
+
+        /*AC*/
+        .timeEsector = 300,
+        .timeE32k = 1200,
+        .timeE64k = 1200,
+        .timePagePgm = 5,
+        .timeCe = 33000,
+        .pdDelay = 20,
+        .qeData = 0,
+};
+
 static const ATTR_TCM_CONST_SECTION Flash_Info_t flashInfos[] = {
     {
         .jedecID = 0x14650b,
         .name="XTX_25W08F_08_1833",
         .cfg = &flashCfg_Winb_16JV,
+    },
+    {
+        .jedecID = 0x1660c4,
+        .name="gt25q32_32_33",
+        .cfg = &flashCfg_Winb_16JV,
+    },
+    {
+        .jedecID = 0x152085,
+        .name="py25q16hb_16_33",
+        .cfg = &flashCfg_FM_Q80,
+    },
+    {
+        .jedecID = 0x162085,
+        .name="py25q32hb_32_33",
+        .cfg = &flashCfg_FM_Q80,
+    },
+    {
+        .jedecID = 0x166125,
+        .name="sk25e032_32_33",
+        .cfg = &flashCfg_FM_Q80,
     },
 };
 
@@ -240,4 +358,30 @@ uint32_t ATTR_TCM_SECTION SF_Cfg_Flash_Identify_Ext(uint8_t callFromFlash, uint3
     } else {
         return (jdecId | BFLB_FLASH_ID_VALID_FLAG);
     }
+}
+
+/****************************************************************************/ /**
+ * @brief  Power on XTAL 32K
+ *
+ * @param  None
+ *
+ * @return SUCCESS or ERROR
+ *
+*******************************************************************************/
+BL_Err_Type ATTR_CLOCK_SECTION HBN_Power_On_Xtal_32K(void)
+{
+    uint32_t tmpVal = 0;
+
+    tmpVal = BL_RD_REG(HBN_BASE, HBN_XTAL32K);
+    tmpVal = BL_CLR_REG_BIT(tmpVal, HBN_XTAL32K_HIZ_EN);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, HBN_XTAL32K_INV_STRE, 3);
+    tmpVal = BL_CLR_REG_BIT(tmpVal, HBN_XTAL32K_AC_CAP_SHORT);
+    tmpVal = BL_SET_REG_BIT(tmpVal, HBN_PU_XTAL32K);
+    tmpVal = BL_SET_REG_BIT(tmpVal, HBN_PU_XTAL32K_BUF);
+    BL_WR_REG(HBN_BASE, HBN_XTAL32K, tmpVal);
+
+    /* Delay >1s, but 1s is too long, so user should delay after this function */
+    arch_delay_us(1100);
+
+    return SUCCESS;
 }

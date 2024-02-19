@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #include <string.h>
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "btc_ble_mesh_prov.h"
 //#include "btc_ble_mesh_config_model.h"
@@ -27,7 +27,7 @@
 #include "adv.h"
 //#include "mesh_kernel.h"
 //#include "mesh_proxy.h"
-#include "src/mesh.h"
+#include "../../../blemesh/src/mesh.h"
 #include "access.h"
 //#include "prov.h"
 //#include "proxy_server.h"
@@ -560,7 +560,7 @@ static int btc_ble_mesh_output_string_cb(const char *str)
 
     BT_DBG("%s", __func__);
 
-    strncpy(mesh_param.node_prov_output_str.string, str,
+    strlcpy(mesh_param.node_prov_output_str.string, str,
         MIN(strlen(str), sizeof(mesh_param.node_prov_output_str.string)));
 
     ret = btc_ble_mesh_prov_callback(&mesh_param, BFL_BLE_MESH_NODE_PROV_OUTPUT_STRING_EVT);
@@ -721,7 +721,7 @@ static int btc_ble_mesh_provisioner_prov_output_cb(u8_t method,
     mesh_param.provisioner_prov_output.size = size;
     mesh_param.provisioner_prov_output.link_idx = link_idx;
     if (act == BLE_MESH_ENTER_STRING) {
-        strncpy(mesh_param.provisioner_prov_output.string, (char *)data, size);
+        strlcpy(mesh_param.provisioner_prov_output.string, (char *)data, size);
     } else {
         mesh_param.provisioner_prov_output.number = sys_get_le32((u8_t *)data);
     }
@@ -1603,12 +1603,12 @@ void btc_ble_mesh_prov_call_handler(btc_msg_t *msg)
     case BTC_BLE_MESH_ACT_PROV_ENABLE:
         BT_DBG("%s, BTC_BLE_MESH_ACT_PROV_ENABLE, bearers = %d", __func__, arg->node_prov_enable.bearers);
         act = BFL_BLE_MESH_NODE_PROV_ENABLE_COMP_EVT;
-        param.node_prov_enable_comp.err_code = bt_mesh_prov_enable(arg->node_prov_enable.bearers);
+        param.node_prov_enable_comp.err_code = bt_mesh_prov_enable((bt_mesh_prov_bearer_t)arg->node_prov_enable.bearers);
         break;
     case BTC_BLE_MESH_ACT_PROV_DISABLE:
         BT_DBG("%s, BTC_BLE_MESH_ACT_PROV_DISABLE, bearers = %d", __func__, arg->node_prov_disable.bearers);
         act = BFL_BLE_MESH_NODE_PROV_DISABLE_COMP_EVT;
-        param.node_prov_disable_comp.err_code = bt_mesh_prov_disable(arg->node_prov_disable.bearers);
+        param.node_prov_disable_comp.err_code = bt_mesh_prov_disable((bt_mesh_prov_bearer_t)arg->node_prov_disable.bearers);
         break;
     case BTC_BLE_MESH_ACT_NODE_RESET:
         BT_DBG("%s, BTC_BLE_MESH_ACT_NODE_RESET", __func__);
@@ -2075,7 +2075,7 @@ void btc_ble_mesh_model_call_handler(btc_msg_t *msg)
     }
     case BTC_BLE_MESH_ACT_SERVER_MODEL_UPDATE_STATE:
         err = bt_mesh_update_binding_state(
-                  (struct bt_mesh_model *)arg->model_update_state.model, arg->model_update_state.type,
+                  (struct bt_mesh_model *)arg->model_update_state.model, (bt_mesh_server_state_type_t)arg->model_update_state.type,
                   (bt_mesh_server_state_value_t *)arg->model_update_state.value);
         btc_ble_mesh_server_model_update_state_comp_cb(arg->model_update_state.model,
                 arg->model_update_state.type, err);

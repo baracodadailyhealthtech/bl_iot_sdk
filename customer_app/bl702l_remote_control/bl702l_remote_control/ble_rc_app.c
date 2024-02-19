@@ -13,7 +13,7 @@
 #include "hci_driver.h"
 #include "hci_core.h"
 #include "hci_host.h"
-#include "log.h"
+#include "bt_log.h"
 #include "btble_lib_api.h"
 #include "bas.h"
 #include "gatt.h"
@@ -30,6 +30,7 @@
 #include "oad_main.h"
 #include "oad_service.h"
 #endif
+#include "bl_timer.h"
 
 
 //#define BLE_RC_PDS_SECTION_ENABLE
@@ -579,11 +580,11 @@ void ble_rc_get_bonded_addr(const struct bt_bond_info *info, void *user_data)
 static void ble_rc_ir_tx_timer_cb(void *timer)
 {
     taskENTER_CRITICAL();
-    while(bl_timer_now_us() - ir_tx_timestamp < 10 * 1000);
-    ir_tx_timestamp = bl_timer_now_us();
-    k_timer_start(&ble_rc_ir_tx_timer, pdMS_TO_TICKS(100));
-    ble_rc_ir_tx_repeat();
     printf("repeat code\r\n");
+    while(bl_timer_now_us() - ir_tx_timestamp < 110 * 1000);
+    k_timer_start(&ble_rc_ir_tx_timer, pdMS_TO_TICKS(108));
+    ir_tx_timestamp = bl_timer_now_us();
+    ble_rc_ir_tx_repeat();
     taskEXIT_CRITICAL();
 }
 
@@ -703,11 +704,13 @@ static void ble_rc_key_scan_task(void *pvParameters)
                 break;
                 case RC_KYS_IR_TX:
                 {
+                    taskENTER_CRITICAL();
                     printf("RC_KYS_IR_TX\r\n");
-                    ir_tx_timestamp = bl_timer_now_us();
                     k_timer_init(&ble_rc_ir_tx_timer, ble_rc_ir_tx_timer_cb, NULL);
-                    k_timer_start(&ble_rc_ir_tx_timer, pdMS_TO_TICKS(100));
+                    k_timer_start(&ble_rc_ir_tx_timer, pdMS_TO_TICKS(108));
+                    ir_tx_timestamp = bl_timer_now_us();
                     ble_rc_ir_tx_demo();
+                    taskEXIT_CRITICAL();
                 }
                 break;
                 case RC_KYS_IR_RELEASE:
@@ -736,7 +739,7 @@ static struct hids_remote_key *key_usage[4 /* row */][4 /* col */] = {
 #if defined(BLE_RC_PDS_SECTION_ENABLE)
 ATTR_PDS_SECTION
 #endif
-bool bl_kys_check_existed(const kys_result_t *result, u8_t row_idx, u8_t col_idx)
+bool bl_kys_check_existed(const bl_kys_result_t *result, u8_t row_idx, u8_t col_idx)
 {
     for(int i = 0; i < result->key_num; i++)
     {
@@ -750,7 +753,7 @@ bool bl_kys_check_existed(const kys_result_t *result, u8_t row_idx, u8_t col_idx
 #if defined(BLE_RC_PDS_SECTION_ENABLE)
 ATTR_PDS_SECTION
 #endif
-void bl_kys_interrupt_callback(const kys_result_t *result)
+void bl_kys_interrupt_callback(bl_kys_result_t *result)
 {  
     static bool pressed = false;
     static bool adv_key_pressed = false;
@@ -844,6 +847,13 @@ void bl_kys_interrupt_callback(const kys_result_t *result)
             notify_key_info->auto_release = false;
             k_fifo_put_from_isr(&ble_rc_key_scan_queue, (void *)notify_key_info);
         }
+        else if(ir_tx_start)
+        {
+            ir_tx_start = false;
+            evt_type_ptr = k_malloc(1);
+            *evt_type_ptr = RC_KYS_IR_RELEASE;
+            k_fifo_put_from_isr(&ble_rc_key_scan_queue, evt_type_ptr);
+        }
         else if(result->key_num == 1)
         {
             printf("key(%d, %d)\r\n", result->row_idx[0], result->col_idx[0]);
@@ -935,6 +945,7 @@ void ble_rc_kys_init(void)
     uint8_t row_pins[] = {/*31, 30*/ 10, 25, 24, 23};
     uint8_t col_pins[] = {9, /*1,0,*/ 28, 27, 26};
     bl_kys_init(sizeof(row_pins), sizeof(col_pins), row_pins, col_pins);
+    bl_kys_register_interrupt_callback(bl_kys_interrupt_callback);
     #if defined(CFG_BLE_PDS)
     if(!initiated)
     {
@@ -956,8 +967,6 @@ int ble_rc_before_sleep_callback(void)
     taskENTER_CRITICAL();
     //disable keyscan
     bl_kys_abort();
-    //clear keyscan irq pending bit.
-    rom_bl_irq_pending_clear(KYS_IRQn);
     taskEXIT_CRITICAL();
 
 #if 0

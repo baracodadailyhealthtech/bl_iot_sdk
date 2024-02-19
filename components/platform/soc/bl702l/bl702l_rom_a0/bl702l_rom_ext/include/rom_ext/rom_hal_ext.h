@@ -8,11 +8,15 @@
 #define rom_sprintf                ((int (*)(char *str, const char *format, ...))0x2101107a)
 #define rom_vsnprintf              ((int (*)(char *buffer, size_t n, const char *format, va_list ap))0x210110a8)
 
-/* if a function is defined by ATTR_PDS_SECTION, then this function CANNOT call functions in Flash and it can only call
-   1, functions that are defined in ROM
-   2, functions that are also defined by ATTR_PDS_SECTION
+/* If a function is qualified with ATTR_PDS_SECTION, then this function is in OCRAM and is retentive during PDS (Power Down Sleep) mode.
+   Note that it CANNOT call functions in Flash before Flash is initialized, but can call functions:
+   1, that are in ROM
+   2, that are also qualified with ATTR_PDS_SECTION
+   3, that are in Flash after Flash is initialized
  */
+#ifndef ATTR_PDS_SECTION
 #define ATTR_PDS_SECTION           __attribute__((section(".pds_code." ATTR_UNI_SYMBOL)))
+#endif
 
 #define PDS_WAKEUP_BY_RTC          1
 #define PDS_WAKEUP_BY_GPIO         2
@@ -81,7 +85,7 @@ extern void rom_bl_irq_disable(unsigned int source);
 extern void rom_bl_irq_pending_set(unsigned int source);
 extern void rom_bl_irq_pending_clear(unsigned int source);
 extern void rom_bl_irq_register(int irqnum, void *handler);
-extern void rom_bl_irq_unregister(int irqnum, void *handler);
+extern void rom_bl_irq_unregister(int irqnum);
 extern void rom_bl_irq_handler_get(int irqnum, void **handler);
 
 extern void rom_bl_srand(uint32_t seed);

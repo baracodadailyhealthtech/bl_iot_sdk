@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "btc_ble_mesh_lighting_model.h"
 #include "btc_ble_mesh_prov.h"
@@ -3275,7 +3275,7 @@ static int light_server_init(struct bt_mesh_model *model)
     if (model->pub) {
         model->pub->update = btc_ble_mesh_model_publish_update;
     }
-#endif /* CONFIG_AUTO_PTS */server
+#endif /* CONFIG_AUTO_PTS */
 
     switch (model->id) {
     case BT_MESH_MODEL_ID_LIGHT_LIGHTNESS_SRV: {

@@ -2,7 +2,7 @@
 #define BLE_CONFIG_H
 
 #include "FreeRTOSConfig.h"
-#include "bl_timer.h"
+
 /**
  * CONFIG_BLUETOOTH: Enable the bluetooh stack
  */
@@ -82,7 +82,7 @@
 #if !defined(CONFIG_BT_CONN)
 #define CONFIG_BT_HCI_TX_STACK_SIZE  1024
 #else
-#define CONFIG_BT_HCI_TX_STACK_SIZE 1536//1024//200
+#define CONFIG_BT_HCI_TX_STACK_SIZE 1536+512//1024//200
 #endif
 #endif
 
@@ -322,6 +322,8 @@
 #ifdef CONFIG_BT_GATT_DYNAMIC_DB
 #undef CONFIG_BT_GATT_DYNAMIC_DB
 #define CONFIG_BT_GATT_DYNAMIC_DB 1
+#else
+#define CONFIG_BT_GATT_DYNAMIC_DB 1
 #endif
 
 /**
@@ -405,7 +407,7 @@
 */
 #ifndef CONFIG_BT_WORK_QUEUE_STACK_SIZE
 #ifndef CONFIG_BT_MESH
-#define CONFIG_BT_WORK_QUEUE_STACK_SIZE 1536//1280//512
+#define CONFIG_BT_WORK_QUEUE_STACK_SIZE 1536+512//1280//512
 #else
 #if !defined(CONFIG_BT_CONN)
 #define CONFIG_BT_WORK_QUEUE_STACK_SIZE 1024
@@ -593,8 +595,14 @@
 
 /*******************************Bouffalo Lab Modification******************************/
 
+#if defined(CFG_IOT_SDK) || defined(BL_MCU_SDK)
 //#define BFLB_BLE_DISABLE_STATIC_ATTR
 //#define BFLB_BLE_DISABLE_STATIC_CHANNEL
+#else/* CFG_IOT_SDK BL_MCU_SDK */
+#define BFLB_BLE_DISABLE_STATIC_ATTR
+#define BFLB_BLE_DISABLE_STATIC_CHANNEL
+#define BFLB_BR_DISABLE_STATIC_CHANNEL
+#endif /* CFG_IOT_SDK BL_MCU_SDK */
 #define BFLB_DISABLE_BT
 #define BFLB_FIXED_IRK 0
 #define BFLB_DYNAMIC_ALLOC_MEM
@@ -712,6 +720,30 @@ BT_SMP_DIST_ENC_KEY bit is not cleared while remote ENC_KEY is received.*/
 #define BFLB_BREDR_SCO_TYPE_FIX
 #define BFLB_BLE_PATCH_FORCE_UPDATE_GAP_DEVICE_NAME
 #define BFLB_BLE_PATCH_ADD_ERRNO_IN_DISCOVER_CALLBACK
+#define BFLB_BLE_PATCH_NOT_DO_TX_IF_DISCONNECTED
+/* Fix the issue that sc(gatt service chagned configuration) cannot be saved because of sc entries are all used.
+ * Root cause: the sc entries configured by unbonded peer devices are not cleared.
+ * Fix: Clear the sc entries configred by unbonded peer devices if those peer devices are disconnected.
+ */
+#define BFLB_BLE_PATCH_CLEAR_UNBONDED_DEVICE_SC_WHEN_DISCONNECTED
+/* Fix the issue that gatt configurations are not cleared even if the peer devices are unpaired.
+ * Root cause: 1.when CONFIG_BT_SETTINGS is not enabled, bt_gatt_clear is not called to clear the configurations.
+ * 2. Unpaired device's address is cleared before doing bt_gatt_clear, then gatt configurations cannot be found.
+ * Fix: 1.Whether CONFIG_BT_SETTINGS is enabled or not, clear the configurations when doing unpair.
+ * 2. When doing unpair, clear gatt congigurations before clearing the peer device address.
+ */
+#define BFLB_BLE_PATCH_DO_GATT_CLEAR_IF_UNPAIRED
+#define BFLB_BLE_PATCH_SC_CFG_FAIL_TO_BE_REMOVED_FROM_FLASH
+#define BFLB_BLE_PATCH_AVOID_NEXT_ATT_REQ_SENT_BEFORE_PREVIOUS_ATT_RSP_RCVD
+#define BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK
+/* Fix the issue:upper layer calls bt_conn_disconnect in a lower task. Sometimes, hci_disconnect_complete event comes while the processing in bt_conn_set_state to
+change conn->state to disconnect is not completed. conn->state is changed to disconnected when handing hci_disconnect_complete event. Once hci_disconnect_complete event
+processing is completed, it continues the processing in bt_conn_set_state to change conn_state to disconnect. Because conn->state has been changed to discconnected,
+then it does disconnected flow once more. This will cause hardfault issue because some resourse has been released in previouse disconnected flow.
+(We see conn_cleanup is called twice).
+*/
+#define BFLB_BLE_PATCH_FIX_CONN_STATE_CHANGE_RISK
+#define BFLB_BLE_PATCH_FREE_CONN_UPDATE_WORK_WHEN_CANCEL_CONN_IN_CONNECT_STATE
 #define BFLB_BLE_AUTO_CLEAN_KEY_WHEN_KEY_MISSING
 #define BFLB_BLE_AUTO_CANCEL_RELIABLE_WRITE_CHARACTERISTIC
 #define BFLB_BLE_FREE_CONN_UPDATE_WORK_WHEN_DISCONNECT_IN_CONN_SCAN_STATE

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -87,86 +87,15 @@ static PDS_DEFAULT_LV_CFG_Type pdsCfgLevel31 = {
     }
 };
 
-/* Flash Pin Configuration, will get from efuse */
-static uint8_t flashPinCfg;
-
 /* Flash Configuration Pointer, will get from bl_flash_get_flashCfg() */
-static SPI_Flash_Cfg_Type *flashCfgPtr;
+static SPI_Flash_Cfg_Type *flashCfgPtr = NULL;
 
-
-ATTR_PDS_SECTION ATTR_NOINLINE
-int bl_pds_pre_process(uint32_t pdsLevel, uint32_t pdsSleepCycles, uint32_t *store, uint32_t arg[])
-{
-    __disable_irq();
-    
-    if(pdsLevel < 4){
-        *store = 0;
-    }
-    
-    // Power down flash
-    RomDriver_HBN_Power_Down_Flash(flashCfgPtr);
-    
-    // Select RC32M
-    RomDriver_HBN_Set_ROOT_CLK_Sel(HBN_ROOT_CLK_RC32M);
-    RomDriver_GLB_Power_Off_DLL();
-    RomDriver_AON_Power_Off_XTAL();
-    
-    return 0;
-}
-
-ATTR_PDS_SECTION ATTR_NOINLINE
-int bl_pds_start(uint32_t pdsLevel, uint32_t pdsSleepCycles)
-{
-    // Make HBNRAM retention
-    BL_WR_REG(HBN_BASE, HBN_SRAM, (0x3<<0)|(0x1<<3)|(0x1<<6)|(0x0<<7));
-    
-    // Clear HBN_IRQ status
-    BL_WR_REG(HBN_BASE, HBN_IRQ_CLR, 0xFFFFFFFF);
-    
-    // Enter PDS mode
-    RomDriver_PDS_Default_Level_Config(&pdsCfgLevel31, pdsSleepCycles);
-    __WFI();
-    
-    return 0;
-}
-
-ATTR_PDS_SECTION ATTR_NOINLINE
-int bl_pds_post_process(uint32_t pdsLevel, uint32_t pdsSleepCycles, uint32_t reset, uint32_t arg[])
-{
-    // For pdsLevel >=4, clock and flash will be configured in fast boot entry
-    if(pdsLevel < 4){
-        // Select XTAL32M
-        RomDriver_AON_Power_On_XTAL();
-        RomDriver_HBN_Set_ROOT_CLK_Sel(HBN_ROOT_CLK_XTAL);
-        
-        // Power up flash
-        RomDriver_SF_Cfg_Init_Flash_Gpio(flashPinCfg, 1);
-        RomDriver_SF_Ctrl_Set_Owner(SF_CTRL_OWNER_SAHB);
-        RomDriver_SFlash_Restore_From_Powerdown(flashCfgPtr, flashCfgPtr->cReadSupport);
-    }
-    
-    __enable_irq();
-    
-    return 0;
-}
+/* PDS Configuration Pointer */
+static PDS_DEFAULT_LV_CFG_Type *pdsCfgPtr = NULL;
 
 
 void bl_pds_init(void)
 {
-    Efuse_Device_Info_Type devInfo;
-    
-    // Get flash pin configuration from efuse
-    EF_Ctrl_Read_Device_Info(&devInfo);
-    if(devInfo.flash_cfg == 0){
-        flashPinCfg = SF_CTRL_SEL_EXTERNAL_FLASH;
-    }else{
-        if(devInfo.sf_reverse == 0){
-            flashPinCfg = devInfo.sf_swap_cfg + 1;
-        }else{
-            flashPinCfg = devInfo.sf_swap_cfg + 5;
-        }
-    }
-    
     // Get flash configuration pointer
     flashCfgPtr = (SPI_Flash_Cfg_Type *)bl_flash_get_flashCfg();
     
@@ -197,7 +126,57 @@ void bl_pds_fastboot_cfg(uint32_t addr)
     HBN_Set_Status_Flag(HBN_STATUS_ENTER_FLAG);
 }
 
-ATTR_PDS_SECTION ATTR_NOINLINE
+ATTR_PDS_SECTION
+int bl_pds_pre_process(uint32_t pdsLevel, uint32_t pdsSleepCycles, uint32_t *store, uint32_t arg[])
+{
+    if(pdsLevel == 31){
+        pdsCfgPtr = &pdsCfgLevel31;
+    }else{
+        return -1;
+    }
+    
+    __disable_irq();
+    
+    *store = 0;
+    
+    return 0;
+}
+
+ATTR_PDS_SECTION
+int bl_pds_start(uint32_t pdsLevel, uint32_t pdsSleepCycles)
+{
+    // Power down flash
+    RomDriver_SF_Ctrl_Set_Owner(SF_CTRL_OWNER_SAHB);
+    RomDriver_SFlash_Reset_Continue_Read(flashCfgPtr);
+    RomDriver_SFlash_Powerdown();
+    
+    // Select RC32M
+    RomDriver_HBN_Set_ROOT_CLK_Sel(HBN_ROOT_CLK_RC32M);
+    RomDriver_GLB_Power_Off_DLL();
+    RomDriver_AON_Power_Off_XTAL();
+    
+    // Make HBNRAM retention
+    BL_WR_REG(HBN_BASE, HBN_SRAM, (0x3<<0)|(0x1<<3)|(0x1<<6)|(0x0<<7));
+    
+    // Clear HBN_IRQ status
+    BL_WR_REG(HBN_BASE, HBN_IRQ_CLR, 0xFFFFFFFF);
+    
+    // Enter PDS mode
+    RomDriver_PDS_Default_Level_Config(pdsCfgPtr, pdsSleepCycles);
+    __WFI();
+    
+    return 0;
+}
+
+ATTR_PDS_SECTION
+int bl_pds_post_process(uint32_t pdsLevel, uint32_t pdsSleepCycles, uint32_t reset, uint32_t arg[])
+{
+    __enable_irq();
+    
+    return 0;
+}
+
+ATTR_PDS_SECTION
 void bl_pds_enter_do(uint32_t pdsLevel, uint32_t pdsSleepCycles, uint32_t store, uint32_t *reset)
 {
     bl_pds_start(pdsLevel, pdsSleepCycles);

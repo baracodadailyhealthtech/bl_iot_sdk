@@ -22,6 +22,7 @@
 #include <misc/util.h>
 #include <conn.h>
 #include <../bluetooth/uuid.h>
+#include <port/include/config.h>
 
 #include <att.h>
 #ifdef __cplusplus
@@ -559,7 +560,11 @@ ssize_t bt_gatt_attr_read_chrc(struct bt_conn *conn,
 	BT_GATT_ATTRIBUTE(_uuid, _perm, _read, _write, _value)
 
 #if IS_ENABLED(CONFIG_BT_SETTINGS_CCC_LAZY_LOADING)
-	#define BT_GATT_CCC_MAX (CONFIG_BT_MAX_CONN)
+/*For bonded peer device, ccc cfg is cleared when unpaired. In case that the bonded peer devices are disconnected, 
+ *the oldest bonded peer device will be unpaired if there is no space to store new bonded device's keys.
+ *For unbonded peer device, ccc cfg is cleared when disconnected.
+ */
+	#define BT_GATT_CCC_MAX (CONFIG_BT_MAX_PAIRED + CONFIG_BT_MAX_CONN)
 #else
 	#define BT_GATT_CCC_MAX (CONFIG_BT_MAX_PAIRED + CONFIG_BT_MAX_CONN)
 #endif

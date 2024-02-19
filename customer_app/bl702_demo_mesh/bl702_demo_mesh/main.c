@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -55,7 +55,6 @@
 #include <hal_board.h>
 #include <hosal_uart.h>
 #include <hal_gpio.h>
-#include <hal_hwtimer.h>
 #include <hal_pds.h>
 #include <hal_tcal.h>
 
@@ -73,7 +72,7 @@
 #include "ble_cli_cmds.h"
 #include <hci_driver.h>
 #include "ble_lib_api.h"
-#include "log.h"
+#include "bt_log.h"
 #endif
 #if defined(CONFIG_BT_OAD_SERVER)
 #include "oad_main.h"
@@ -118,20 +117,6 @@ void vApplicationMallocFailedHook(void)
 void vApplicationIdleHook(void)
 {
     __asm volatile("wfi");
-}
-
-void bl_pds_restore(void)
-{
-    bl_uart_init(0, 14, 15, 255, 255, 2 * 1000 * 1000);
-    bl_uart_int_enable(0);
-#ifndef CFG_USB_CDC_ENABLE
-	//power off Dll
-    GLB_Power_Off_DLL();
-#endif
-#if defined(CFG_USB_CDC_ENABLE)
-    extern void usb_cdc_restore(void);
-    usb_cdc_restore();
-#endif
 }
 
 #if ( configUSE_TICKLESS_IDLE != 0 )
@@ -322,8 +307,6 @@ static void aos_loop_proc(void *pvParameters)
     usb_cdc_start(fd_console);
 #endif
 
-    hal_hwtimer_init();
-
 #if defined(CFG_BLE_ENABLE)
     ble_init();
 #endif
@@ -407,11 +390,6 @@ static void system_init(void)
 static void system_thread_init()
 {
     /*nothing here*/
-}
-
-void rf_reset_done_callback(void)
-{
-    hal_tcal_restart();
 }
 
 void setup_heap()

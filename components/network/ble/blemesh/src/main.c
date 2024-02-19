@@ -8,7 +8,7 @@
 
 #include <zephyr.h>
 #include <stdbool.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 
 #include <net/buf.h>
 #include <bluetooth.h>
@@ -19,7 +19,7 @@
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_MESH_DEBUG)
 #define LOG_MODULE_NAME bt_mesh_main
-#include "log.h"
+#include "bt_log.h"
 
 #include "test.h"
 #include "adv.h"
@@ -53,7 +53,7 @@ int bt_mesh_provision(const u8_t net_key[16], u16_t net_idx,
 				net_idx, flags, iv_index);
 
 	BT_INFO("Primary Element: 0x%04x", addr);
-	BT_DBG("net_idx 0x%04x flags 0x%02x iv_index 0x%04x",
+	BT_DBG("net_idx 0x%04x flags 0x%02x iv_index 0x%04lx",
 	       net_idx, flags, iv_index);
 
 	if (IS_ENABLED(CONFIG_BT_MESH_PB_GATT)) {

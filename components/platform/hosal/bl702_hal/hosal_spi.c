@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -29,27 +29,18 @@
  */
 #include <string.h>
 #include <stdio.h>
-#include <device/vfs_spi.h>
-#include <vfs_err.h>
-#include <vfs_register.h>
-#include <aos/kernel.h>
 
-#include <bl_dma.h>
-#include <bl_gpio.h>
 #include <bl702_spi.h>
 #include <bl702_gpio.h>
 #include <bl702_glb.h>
 #include <bl702_dma.h>
 #include <bl702.h>
 #include <bl_irq.h>
-#include <bl_dma.h>
 #include <bl_gpio.h>
 #include <hosal_dma.h>
 #include <hosal_spi.h>
 
 #include <FreeRTOS.h>
-#include <task.h>
-#include <timers.h>
 #include <event_groups.h>
 
 #include <libfdt.h>
@@ -295,9 +286,10 @@ static void hosal_spi_int_handler_tx(void *arg, uint32_t flag)
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     spi_dma_priv_t *priv = (spi_dma_priv_t *)hosal_spi_priv;
 
-    xResult = xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_TX, &xHigherPriorityTaskWoken);
     if (priv->rx_dma_ch == -1) {
-        xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_RX, &xHigherPriorityTaskWoken);
+        xResult = xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_TR, &xHigherPriorityTaskWoken);
+    } else {
+        xResult = xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_TX, &xHigherPriorityTaskWoken);
     }
     if(xResult != pdFAIL) {
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -310,9 +302,10 @@ static void hosal_spi_int_handler_rx(void *arg, uint32_t flag)
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     spi_dma_priv_t *priv = (spi_dma_priv_t *)hosal_spi_priv;
 
-    xResult = xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_RX, &xHigherPriorityTaskWoken);
     if (priv->tx_dma_ch == -1) {
-        xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_TX, &xHigherPriorityTaskWoken);
+        xResult = xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_TR, &xHigherPriorityTaskWoken);
+    } else {
+        xResult = xEventGroupSetBitsFromISR(priv->spi_event_group, EVT_GROUP_SPI_RX, &xHigherPriorityTaskWoken);
     }
     if(xResult != pdFAIL) {
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -348,8 +341,7 @@ static void spi_irq_process(hosal_spi_dev_t *spi)
         spi_priv->rx_index++;
         if (spi_priv->rx_index == spi_priv->length) {
             bl_irq_disable(SPI_IRQn);
-            xResult = xEventGroupSetBitsFromISR(spi_priv->spi_event_group, EVT_GROUP_SPI_TX, &xHigherPriorityTaskWoken);
-            xEventGroupSetBitsFromISR(spi_priv->spi_event_group, EVT_GROUP_SPI_RX, &xHigherPriorityTaskWoken);
+            xResult = xEventGroupSetBitsFromISR(spi_priv->spi_event_group, EVT_GROUP_SPI_TR, &xHigherPriorityTaskWoken);
             if(xResult != pdFAIL) {
                 portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
             }

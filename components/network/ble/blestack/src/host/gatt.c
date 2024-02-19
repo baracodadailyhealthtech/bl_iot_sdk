@@ -8,7 +8,7 @@
 
 #include <zephyr.h>
 #include <string.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <atomic.h>
@@ -46,7 +46,7 @@ extern u8_t event_flag;
 #endif
 
 #define LOG_MODULE_NAME bt_gatt
-#include "log.h"
+#include "bt_log.h"
 
 #include "hci_core.h"
 #include "conn_internal.h"
@@ -96,6 +96,8 @@ static atomic_t init;
 #if defined(BFLB_BLE_MTU_CHANGE_CB)
 bt_gatt_mtu_changed_cb_t gatt_mtu_changed_cb;
 #endif
+
+static int sc_clear_by_addr(u8_t id, const bt_addr_le_t *addr);
 
 static ssize_t read_name(struct bt_conn *conn, const struct bt_gatt_attr *attr,
 			 void *buf, u16_t len, u16_t offset)
@@ -334,13 +336,15 @@ static void sc_clear(struct gatt_sc_cfg *cfg)
 	BT_DBG("peer %s", bt_addr_le_str(&cfg->peer));
 
 	if (IS_ENABLED(CONFIG_BT_SETTINGS)) {
+		#if defined(BFLB_BLE_PATCH_SC_CFG_FAIL_TO_BE_REMOVED_FROM_FLASH)
+		if(bt_addr_le_is_bonded(cfg->id, &cfg->peer)) {
+		#else
 		bool modified = false;
-
 		if (cfg->data.start || cfg->data.end) {
 			modified = true;
 		}
-
 		if (modified && bt_addr_le_is_bonded(cfg->id, &cfg->peer)) {
+		#endif
 			char key[BT_SETTINGS_KEY_MAX];
 			int err;
 
@@ -1127,16 +1131,15 @@ static void sc_indicate(u16_t start, u16_t end)
 
     #if defined (BFLB_BLE_PATCH_SET_SCRANGE_CHAGD_ONLY_IN_CONNECTED_STATE)
     struct bt_conn *conn = bt_conn_lookup_state_le(NULL, BT_CONN_CONNECTED);
-    if(conn){        
+    if(conn)       
     #endif
-	if (!atomic_test_and_set_bit(gatt_sc.flags, SC_RANGE_CHANGED)) {
-		gatt_sc.start = start;
-		gatt_sc.end = end;
-		goto submit;
-	}
-    #if defined (BFLB_BLE_PATCH_SET_SCRANGE_CHAGD_ONLY_IN_CONNECTED_STATE)
+	{
+		if (!atomic_test_and_set_bit(gatt_sc.flags, SC_RANGE_CHANGED)) {
+			gatt_sc.start = start;
+			gatt_sc.end = end;
+			goto submit;
+		}
     }
-    #endif
 
 	if (!update_range(&gatt_sc.start, &gatt_sc.end, start, end)) {
 #if defined (BFLB_BLE_PATCH_SET_SCRANGE_CHAGD_ONLY_IN_CONNECTED_STATE)
@@ -1150,6 +1153,11 @@ static void sc_indicate(u16_t start, u16_t end)
 submit:
 	if (atomic_test_bit(gatt_sc.flags, SC_INDICATE_PENDING)) {
 		BT_DBG("indicate pending, waiting until complete...");
+		#if defined (BFLB_BLE_PATCH_SET_SCRANGE_CHAGD_ONLY_IN_CONNECTED_STATE)
+        if(conn){
+            bt_conn_unref(conn);
+        }
+		#endif
 		return;
 	}
 
@@ -1517,8 +1525,6 @@ void bt_gatt_foreach_attr_type(u16_t start_handle, u16_t end_handle,
 			       const void *attr_data, uint16_t num_matches,
 			       bt_gatt_attr_func_t func, void *user_data)
 {
-	int i;
-
 	if (!num_matches) {
 		num_matches = UINT16_MAX;
 	}
@@ -1533,7 +1539,7 @@ void bt_gatt_foreach_attr_type(u16_t start_handle, u16_t end_handle,
 				continue;
 			}
 
-			for (i = 0; i < static_svc->attr_count; i++, handle++) {
+			for (int i = 0; i < static_svc->attr_count; i++, handle++) {
 				struct bt_gatt_attr attr;
 
 				memcpy(&attr, &static_svc->attrs[i],
@@ -3089,11 +3095,10 @@ static void gatt_read_group_rsp(struct bt_conn *conn, u8_t err,
 	BT_DBG("err 0x%02x", err);
 
 	if (err) {
-    #if defined(BFLB_BLE_DISCOVER_ONGOING)
-		discover_ongoing = BT_GATT_ITER_STOP;	    
+	#if defined(BFLB_BLE_DISCOVER_ONGOING)
+		discover_ongoing = BT_GATT_ITER_STOP;
 	#endif
 		params->func(conn, NULL, params);
-	    
 		return;
 	}
 
@@ -3282,6 +3287,9 @@ static int gatt_find_info(struct bt_conn *conn,
 int bt_gatt_discover(struct bt_conn *conn,
 		     struct bt_gatt_discover_params *params)
 {
+	#if defined(BFLB_BLE_DISCOVER_ONGOING)
+    int ret = 0;
+	#endif
 	__ASSERT(conn, "invalid parameters\n");
 	__ASSERT(params && params->func, "invalid parameters\n");
 	__ASSERT((params->start_handle && params->end_handle),
@@ -3297,9 +3305,12 @@ int bt_gatt_discover(struct bt_conn *conn,
 	if (discover_ongoing != BT_GATT_ITER_STOP) {
 		return -EINPROGRESS;
 	}
-	discover_ongoing = BT_GATT_ITER_CONTINUE;
 
-	return bt_gatt_discover_continue(conn, params);
+	ret = bt_gatt_discover_continue(conn, params);
+	if(ret == 0)
+		discover_ongoing = BT_GATT_ITER_CONTINUE;
+
+	return ret;
 }
 int bt_gatt_discover_continue(struct bt_conn *conn,
 		     struct bt_gatt_discover_params *params)
@@ -4219,14 +4230,6 @@ static int ccc_set_direct(const char *key, size_t len, settings_read_cb read_cb,
 }
 #endif
 
-#if defined(BFLB_BLE)
-#if defined(CONFIG_BT_GATT_SERVICE_CHANGED)
-#if defined(CONFIG_BT_SETTINGS)
-static int sc_set(u8_t id, bt_addr_le_t *addr);
-static int sc_commit(void);
-#endif
-#endif
-#endif
 void bt_gatt_connected(struct bt_conn *conn)
 {
 	struct conn_data data;
@@ -4284,15 +4287,6 @@ void bt_gatt_connected(struct bt_conn *conn)
 #if defined(CONFIG_BT_GATT_CLIENT)
 	add_subscriptions(conn);
 #endif /* CONFIG_BT_GATT_CLIENT */
-    
-#if defined(BFLB_BLE)
-#if defined(CONFIG_BT_GATT_SERVICE_CHANGED)
-#if defined(CONFIG_BT_SETTINGS)
-    sc_set(conn->id, &conn->le.dst);
-    sc_commit();
-#endif
-#endif
-#endif
 }
 
 void bt_gatt_encrypt_change(struct bt_conn *conn)
@@ -4419,6 +4413,13 @@ void bt_gatt_disconnected(struct bt_conn *conn)
 		bt_gatt_store_cf(conn);
 	}
 
+	#if defined(BFLB_BLE_PATCH_CLEAR_UNBONDED_DEVICE_SC_WHEN_DISCONNECTED)
+	if (!bt_addr_le_is_bonded(conn->id, &conn->le.dst)){
+		sc_clear_by_addr(conn->id, &conn->le.dst);
+	}
+	#endif
+
+
 #if defined(CONFIG_BT_GATT_CLIENT)
 	remove_subscriptions(conn);
 #endif /* CONFIG_BT_GATT_CLIENT */
@@ -4441,7 +4442,6 @@ void bt_gatt_register_mtu_callback(bt_gatt_mtu_changed_cb_t cb)
 }
 #endif
 
-#if defined(CONFIG_BT_SETTINGS)
 
 struct ccc_save {
 	struct addr_with_id addr_with_id;
@@ -4562,12 +4562,15 @@ static u8_t remove_peer_from_attr(const struct bt_gatt_attr *attr,
 
 static int bt_gatt_clear_ccc(u8_t id, const bt_addr_le_t *addr)
 {
+    #if defined(CONFIG_BT_SETTINGS)
 	char key[BT_SETTINGS_KEY_MAX];
+    #endif
 	struct addr_with_id addr_with_id = {
 		.addr = addr,
 		.id = id,
 	};
 
+	#if defined(CONFIG_BT_SETTINGS)
 	if (id) {
 		char id_str[4];
 
@@ -4578,11 +4581,15 @@ static int bt_gatt_clear_ccc(u8_t id, const bt_addr_le_t *addr)
 		bt_settings_encode_key(key, sizeof(key), "ccc",
 				       (bt_addr_le_t *)addr, NULL);
 	}
-
+	#endif
 	bt_gatt_foreach_attr(0x0001, 0xffff, remove_peer_from_attr,
 			     &addr_with_id);
 
+    #if defined(CONFIG_BT_SETTINGS)
 	return settings_delete(key);
+    #else
+    return 0;
+    #endif
 }
 
 #if defined(CONFIG_BT_GATT_CACHING)
@@ -4603,9 +4610,11 @@ static struct gatt_cf_cfg *find_cf_cfg_by_addr(const bt_addr_le_t *addr)
 static int bt_gatt_clear_cf(u8_t id, const bt_addr_le_t *addr)
 {
 #if defined(CONFIG_BT_GATT_CACHING)
+#if defined(CONFIG_BT_SETTINGS)
 	char key[BT_SETTINGS_KEY_MAX];
+#endif
 	struct gatt_cf_cfg *cfg;
-
+#if defined(CONFIG_BT_SETTINGS)
 	if (id) {
 		char id_str[4];
 
@@ -4616,13 +4625,16 @@ static int bt_gatt_clear_cf(u8_t id, const bt_addr_le_t *addr)
 		bt_settings_encode_key(key, sizeof(key), "cf",
 				       (bt_addr_le_t *)addr, NULL);
 	}
-
+#endif
 	cfg = find_cf_cfg_by_addr(addr);
 	if (cfg) {
 		clear_cf_cfg(cfg);
 	}
-
+#if defined(CONFIG_BT_SETTINGS)
 	return settings_delete(key);
+#else
+	return 0;
+#endif
 #endif /* CONFIG_BT_GATT_CACHING */
 	return 0;
 
@@ -4683,6 +4695,7 @@ int bt_gatt_clear(u8_t id, const bt_addr_le_t *addr)
 }
 
 #if defined(CONFIG_BT_GATT_SERVICE_CHANGED)
+#if 0
 #if defined(BFLB_BLE)
 static int sc_set(u8_t id, bt_addr_le_t *addr)
 #else
@@ -4699,8 +4712,10 @@ static int sc_set(const char *name, size_t len_rd, settings_read_cb read_cb,
     #endif
 
     #if defined(BFLB_BLE)
-    int err;
+    int err = 0;
+    #if defined(CONFIG_BT_SETTINGS)
     char key[BT_SETTINGS_KEY_MAX];
+    #endif
   
     cfg = find_sc_cfg(id, addr);
     if (!cfg) {
@@ -4714,7 +4729,7 @@ static int sc_set(const char *name, size_t len_rd, settings_read_cb read_cb,
 		cfg->id = id;
 		bt_addr_le_copy(&cfg->peer, addr);
 	}
-
+    #if defined(CONFIG_BT_SETTINGS)
     if(id){
         char id_str[4];
 
@@ -4729,6 +4744,7 @@ static int sc_set(const char *name, size_t len_rd, settings_read_cb read_cb,
     err = bt_settings_get_bin(key, (u8_t *)cfg, sizeof(*cfg), NULL);
     if(err)
         memset(cfg, 0, sizeof(*cfg));
+    #endif
     return err;
     #else
 	if (!name) {
@@ -4794,7 +4810,7 @@ static int sc_commit(void)
 
 	return 0;
 }
-
+#endif
 #if !defined(BFLB_BLE)
 SETTINGS_STATIC_HANDLER_DEFINE(bt_sc, "bt/sc", NULL, sc_set, sc_commit, NULL);
 #endif
@@ -4812,13 +4828,13 @@ static int cf_set(const char *name, size_t len_rd, settings_read_cb read_cb,
 		BT_ERR("Insufficient number of arguments");
 		return -EINVAL;
 	}
-
+    #if defined(CONFIG_BT_SETTINGS)
 	err = bt_settings_decode_key(name, &addr);
 	if (err) {
 		BT_ERR("Unable to decode address %s", log_strdup(name));
 		return -EINVAL;
 	}
-
+    #endif
 	cfg = find_cf_cfg_by_addr(&addr);
 	if (!cfg) {
 		cfg = find_cf_cfg(NULL);
@@ -4900,7 +4916,6 @@ static int db_hash_commit(void)
 SETTINGS_STATIC_HANDLER_DEFINE(bt_hash, "bt/hash", NULL, db_hash_set,
 			       db_hash_commit, NULL);
 #endif /*CONFIG_BT_GATT_CACHING */
-#endif /* CONFIG_BT_SETTINGS */
 
 #if defined(CONFIG_BT_GATT_DYNAMIC_DB)
 uint16_t bt_gatt_get_last_handle(void)

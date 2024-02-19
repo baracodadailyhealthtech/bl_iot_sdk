@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -34,9 +34,24 @@
 
 void bl_rtc_init(void)
 {
+    uint32_t tmpVal;
+    uint32_t pu32k;
+    
 #ifdef CFG_USE_XTAL32K
+    tmpVal = BL_RD_REG(HBN_BASE, HBN_XTAL32K);
+    pu32k = BL_GET_REG_BITS_VAL(tmpVal, HBN_PU_XTAL32K);
+    if(!pu32k){
+        HBN_Power_On_Xtal_32K();
+    }
+    
     HBN_32K_Sel(HBN_32K_XTAL);
 #else
+    tmpVal = BL_RD_REG(HBN_BASE, HBN_GLB);
+    pu32k = BL_GET_REG_BITS_VAL(tmpVal, HBN_PU_RC32K);
+    if(!pu32k){
+        HBN_Power_On_RC32K();
+    }
+    
     HBN_32K_Sel(HBN_32K_RC);
 #endif
     

@@ -14,7 +14,7 @@ CONFIG_CHIP_NAME := BL702L
 CONFIG_USE_STDLIB_MALLOC := 0
 CONFIG_BUILD_ROM_CODE := 0
 CONFIG_EASYFLASH_ENABLE:=1
-CONFIG_CLI_DISABLE:=0
+CONFIG_CLI_DISABLE:=1
 # use internal RC32K by default; may set to 1 for better accuracy if there is XTAL32K on the board
 CONFIG_USE_XTAL32K := 0
 CONFIG_BL702_USE_ROM_DRIVER := 1
@@ -38,3 +38,5 @@ EXT_CFG_FILE := $(PROJECT_PATH)/proj_config_ext.mk
 ifeq ($(EXT_CFG_FILE), $(wildcard $(EXT_CFG_FILE)))
 include $(PROJECT_PATH)/proj_config_ext.mk
 endif
+
+CONFIG_BT_MESH_CLI := 0

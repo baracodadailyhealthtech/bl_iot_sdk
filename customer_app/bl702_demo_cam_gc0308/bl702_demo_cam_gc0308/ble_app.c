@@ -5,7 +5,7 @@
 #include "bluetooth.h"
 #include "hci_driver.h"
 #include "hci_core.h"
-#include "log.h"
+#include "bt_log.h"
 #include "ble_app.h"
 #if defined(CONFIG_BT_STACK_CLI) 
 #include "ble_cli_cmds.h"

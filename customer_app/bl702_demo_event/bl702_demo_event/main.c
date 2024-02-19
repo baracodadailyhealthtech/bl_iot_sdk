@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -700,8 +700,6 @@ void hbn_wakeup_pin_interrupt(void *arg)
 
 static void system_init(void)
 {
-    bl_rtc_init();
-
 #if defined(CFG_ZIGBEE_HBN)
     if(bl_sys_rstinfo_get() == BL_RST_SOFTWARE && bl_hbn_get_wakeup_source() == HBN_WAKEUP_BY_GPIO){
         uint8_t wkpin = __builtin_ctz(bl_hbn_get_wakeup_gpio());
@@ -735,7 +733,7 @@ static void system_init(void)
     #if (CFG_PDS_LEVEL == 3)
     bl_pds_gpio_wakeup_cfg_ex(1<<PDS_WAKEUP_GPIO);
     #endif
-    hal_tcal_init();
+
 #if defined(CFG_ZIGBEE_HBN)
     //configure hbn gpio wakeup after pds init and hbn init complete.
     uint8_t pin_list[1];
@@ -799,13 +797,6 @@ static void system_thread_init()
 #endif
 #if defined(CFG_ZIGBEE_ENABLE)
     zigbee_init();
-#endif
-}
-
-void rf_reset_done_callback(void)
-{
-#if !defined(CFG_ZIGBEE_HBN)
-    hal_tcal_restart();
 #endif
 }
 

@@ -8,7 +8,7 @@
 
 #include <zephyr.h>
 #include <string.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <stdbool.h>
 #include <atomic.h>
 #include <misc/byteorder.h>
@@ -25,7 +25,7 @@
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_CONN)
 #define LOG_MODULE_NAME bt_conn
-#include "log.h"
+#include "bt_log.h"
 
 #include "hci_core.h"
 #include "conn_internal.h"
@@ -425,6 +425,9 @@ static void conn_update_timeout(struct k_work *work)
 		 * auto connect flag if it was set, instead just cancel
 		 * connection directly
 		 */
+		#if defined(BFLB_BLE_PATCH_FREE_CONN_UPDATE_WORK_WHEN_CANCEL_CONN_IN_CONNECT_STATE)
+		k_delayed_work_free(&conn->update_work);
+		#endif
 		bt_hci_cmd_send_sync(BT_HCI_OP_LE_CREATE_CONN_CANCEL, NULL, NULL);
 		return;
 	}
@@ -833,7 +836,7 @@ static int pin_code_reply(struct bt_conn *conn, const char *pin, u8_t len)
 
 	bt_addr_copy(&cp->bdaddr, &conn->br.dst);
 	cp->pin_len = len;
-	strncpy((char *)cp->pin_code, pin, sizeof(cp->pin_code));
+	strlcpy((char *)cp->pin_code, pin, sizeof(cp->pin_code));
 
 	return bt_hci_cmd_send_sync(BT_HCI_OP_PIN_CODE_REPLY, buf, NULL);
 }
@@ -1709,6 +1712,14 @@ static void conn_cleanup(struct bt_conn *conn)
 	bt_conn_reset_rx_state(conn);
 
     k_delayed_work_submit(&conn->update_work, K_NO_WAIT);
+
+    #ifdef BFLB_BLE_PATCH_FREE_ALLOCATED_BUFFER_IN_OS
+    k_queue_free(&conn->tx_queue._queue);
+    conn->tx_queue._queue.hdl = NULL;
+    if(conn->update_work.timer.timer.hdl){
+        k_delayed_work_del_timer(&conn->update_work);
+    }
+    #endif
 }
 
 int bt_conn_prepare_events(struct k_poll_event events[])
@@ -1763,14 +1774,23 @@ void bt_conn_process_tx(struct bt_conn *conn)
 	struct net_buf *buf;
 
 	BT_DBG("conn %p", conn);
-
+	#if defined(BFLB_BLE_PATCH_NOT_DO_TX_IF_DISCONNECTED)
+	if (conn->state == BT_CONN_DISCONNECTED){     
+		if(atomic_test_and_clear_bit(conn->flags, BT_CONN_CLEANUP)) {
+			BT_DBG("handle %u disconnected - cleaning up", conn->handle);
+			conn_cleanup(conn);
+		} 
+		return;
+	}
+	#else
 	if (conn->state == BT_CONN_DISCONNECTED &&
 	    atomic_test_and_clear_bit(conn->flags, BT_CONN_CLEANUP)) {
 		BT_DBG("handle %u disconnected - cleaning up", conn->handle);
 		conn_cleanup(conn);
 		return;
 	}
-
+    #endif
+    
 	/* Get next ACL packet for connection */
 	buf = net_buf_get(&conn->tx_queue, K_NO_WAIT);
 	BT_ASSERT(buf);
@@ -1871,7 +1891,11 @@ void bt_conn_set_state(struct bt_conn *conn, bt_conn_state_t state)
 	}
 
 	/* Actions needed for entering the new state */
+	#if defined(BFLB_BLE_PATCH_FIX_CONN_STATE_CHANGE_RISK)
+	switch (state) {
+	#else
 	switch (conn->state) {
+	#endif
 	case BT_CONN_CONNECTED:
 		if (conn->type == BT_CONN_TYPE_SCO) {
 			/* TODO: Notify sco connected */
@@ -2125,7 +2149,7 @@ void bt_conn_unref(struct bt_conn *conn)
 
 	old = atomic_dec(&conn->ref);
 
-	BT_DBG("handle %u ref %ld -> %ld", conn->handle, old,
+	BT_DBG("handle %u ref %d -> %d", conn->handle, old,
 	       atomic_get(&conn->ref));
 
 	BT_ASSERT(old > 0);
@@ -2285,6 +2309,11 @@ int bt_conn_disconnect(struct bt_conn *conn, u8_t reason)
 
 	switch (conn->state) {
 	case BT_CONN_CONNECT_SCAN:
+		#if defined(BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK)
+		if(conn->notPermit_disconnect){
+			return -EACCES;
+		}
+		#endif
 		conn->err = reason;
 		bt_conn_set_state(conn, BT_CONN_DISCONNECTED);
 		if (IS_ENABLED(CONFIG_BT_CENTRAL)) {
@@ -2313,6 +2342,9 @@ int bt_conn_disconnect(struct bt_conn *conn, u8_t reason)
 
 		if (IS_ENABLED(CONFIG_BT_CENTRAL)) {
 			k_delayed_work_cancel(&conn->update_work);
+			#if defined(BFLB_BLE_PATCH_FREE_CONN_UPDATE_WORK_WHEN_CANCEL_CONN_IN_CONNECT_STATE)
+			k_delayed_work_free(&conn->update_work);
+			#endif
 			return bt_hci_cmd_send_sync(BT_HCI_OP_LE_CREATE_CONN_CANCEL,
 					       NULL, NULL);
 		}

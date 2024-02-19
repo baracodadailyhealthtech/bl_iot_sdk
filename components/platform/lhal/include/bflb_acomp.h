@@ -130,7 +130,7 @@ uint32_t bflb_acomp_get_result(uint8_t acomp_id);
  * @param [out] channel adc channel index
  * @return Zero on success; a negated errno value on failure
  */
-uint32_t bflb_acomp_gpio_2_chanid(uint32_t pin, uint32_t* channel);
+int bflb_acomp_gpio_2_chanid(uint32_t pin, uint32_t* channel);
 
 /**
  * @brief adc_chan_id change gpio index.
@@ -139,7 +139,7 @@ uint32_t bflb_acomp_gpio_2_chanid(uint32_t pin, uint32_t* channel);
  * @param [out] pin gpio index
  * @return Zero on success; a negated errno value on failure
  */
-uint32_t bflb_acomp_chanid_2_gpio(uint32_t channel, uint32_t* pin);
+int bflb_acomp_chanid_2_gpio(uint32_t channel, uint32_t* pin);
 
 #ifdef __cplusplus
 }

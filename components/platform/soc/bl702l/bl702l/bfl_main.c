@@ -21,7 +21,6 @@
 #include <bl_sec.h>
 #include <hal_boot2.h>
 #include <hal_board.h>
-#include <hal_hwtimer.h>
 #include <hal_tcal.h>
 #include <hosal_uart.h>
 #include <hosal_dma.h>
@@ -39,11 +38,13 @@
 #ifdef SYS_USER_VFS_ROMFS_ENABLE
 #include <bl_romfs.h>
 #endif
+#if defined(CFG_USE_PSRAM)
+#include <bl_psram.h>
+#endif
 
 #ifdef CFG_USE_ROM_CODE
 #include <rom_freertos_ext.h>
 #include <rom_hal_ext.h>
-#include <rom_lmac154_ext.h>
 #endif
 
 HOSAL_UART_DEV_DECL(uart_stdio, 0, 14, 15, 2000000);
@@ -52,21 +53,19 @@ extern uint8_t _heap_start;
 extern uint8_t _heap_size; // @suppress("Type cannot be resolved")
 extern uint8_t _heap2_start;
 extern uint8_t _heap2_size; // @suppress("Type cannot be resolved")
-static HeapRegion_t xHeapRegions[] =
+static const HeapRegion_t xHeapRegions[] =
 {
     { &_heap_start,  (unsigned int) &_heap_size },
     { &_heap2_start, (unsigned int) &_heap2_size },
-    { NULL, 0 }, /* Terminates the array. */
     { NULL, 0 } /* Terminates the array. */
 };
 
 #if defined(CFG_USE_PSRAM)
 extern uint8_t _heap3_start;
 extern uint8_t _heap3_size; // @suppress("Type cannot be resolved")
-static HeapRegion_t xHeapRegionsPsram[] =
+static const HeapRegion_t xHeapRegionsPsram[] =
 {
     { &_heap3_start, (unsigned int) &_heap3_size },
-    { NULL, 0 }, /* Terminates the array. */
     { NULL, 0 } /* Terminates the array. */
 };
 #endif
@@ -259,7 +258,6 @@ static void aos_loop_proc(void *pvParameters)
 #endif
 
 #if defined(CFG_TCAL_ENABLE)
-    hal_hwtimer_init();
     hal_tcal_init();
     bl_wireless_capcode_tcal_en_set(1);
 #endif
@@ -350,16 +348,14 @@ void setup_heap()
     // Invoked during system boot via start.S
     vPortDefineHeapRegions(xHeapRegions);
 
-
 #if defined(CFG_USE_PSRAM)
     extern uint8_t _psram_start;
     extern uint8_t _psram_end;
-    extern void bl_psram_init(void);
 
     bl_psram_init();
     memset(&_psram_start, 0, &_psram_end - &_psram_start);
     vPortDefineHeapRegionsPsram(xHeapRegionsPsram);
-#endif /*CFG_USE_PSRAM*/
+#endif
 }
 
 static void system_early_init(void)
@@ -395,12 +391,11 @@ void bl702_main()
     rom_freertos_init(256, 400);
 #endif
     rom_hal_init();
-    //rom_lmac154_hook_init();
 #endif
 
 #if defined(GPIO_SIM_PRINT)
     extern int bl_gpio_uart_tx_init(uint8_t id, uint8_t tx_pin, uint32_t baudrate);
-    bl_gpio_uart_tx_init(0, 8, 1000000);
+    bl_gpio_uart_tx_init(0, GPIO_SIM_PRINT_TX_PIN, GPIO_SIM_PRINT_BAUDRATE);
 #endif
 
     /*Init UART In the first place*/
@@ -419,6 +414,7 @@ void bl702_main()
 
 #if defined(CFG_USE_PSRAM)
     printf("PSRAM Heap %u@%p\r\n",(unsigned int)&_heap3_size, &_heap3_start);
+    bl_psram_dump_id();
 #endif
 
     system_early_init();

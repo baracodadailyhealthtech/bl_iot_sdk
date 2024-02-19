@@ -21,6 +21,7 @@ libbtblecontroller_702l_m1s1p:  Based on libbtblecontroller_702l_m1s1rp, but con
 libbtblecontroller_702l_m2s1p:  2 BLE connections are supported, BL702L can be master or slave. Controller codes are all in flash. Support BLE PDS(power down sleep) feature.
 libbtblecontroller_702l_m4s1p:  4 BLE connections are supported, BL702L can be master or slave, controller codes are all in flash. Support BLE PDS(power down sleep) feature.
 libbtblecontroller_702l_m8s1p:  8 BLE connections are supported, BL702L can be master or slave, controller codes are all in flash. Support BLE PDS(power down sleep) feature.
+libbtblecontroller_702l_m0s1p:  1 BLE connections are supported, BL702L can only be slave. Controller codes are all in flash. Support BLE PDS(power down sleep) feature.
 libbtblecontroller_702l_m0s2p:  2 BLE connections are supported, BL702L can only be slave. Controller codes are all in flash. Support BLE PDS(power down sleep) feature.
 
 BL616:

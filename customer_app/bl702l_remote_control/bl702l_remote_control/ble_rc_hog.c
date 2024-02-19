@@ -12,7 +12,7 @@
 #include "conn.h"
 #include "uuid.h"
 #include "gatt.h"
-#include "log.h"
+#include "bt_log.h"
 #include "ble_rc_hog.h"
 #include "ble_rc_voice.h"
 #if defined (CONFIG_ATVV_SERVER_ENABLE)

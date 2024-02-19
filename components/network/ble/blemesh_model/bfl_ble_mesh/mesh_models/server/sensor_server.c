@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "btc_ble_mesh_sensor_model.h"
 #include "btc_ble_mesh_prov.h"

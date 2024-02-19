@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -30,7 +30,7 @@
 #ifndef __BL_BOOT2_H__
 #define __BL_BOOT2_H__
 
-#include "stdint.h"
+#include <stdint.h>
 #include "bl702l_sflash.h"
 #include "bl702l_xip_sflash.h"
 
@@ -76,7 +76,7 @@ typedef enum {
 typedef enum {
     PT_ENTRY_FW_CPU0,                       /*!< Partition entry type:CPU0 firmware */
     PT_ENTRY_FW_CPU1,                       /*!< Partition entry type:CPU1 firmware */
-    PT_ENTRY_MAX=8,       /*!< Partition entry type:Max */
+    PT_ENTRY_MAX=8,                         /*!< Partition entry type:Max */
 }PtTable_Entry_Type;
 
 /**

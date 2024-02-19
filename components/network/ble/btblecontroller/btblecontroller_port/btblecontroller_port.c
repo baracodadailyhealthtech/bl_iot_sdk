@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -41,6 +41,7 @@
 #include "bl616_pds.h"
 #if defined(CFG_IOT_SDK)
 #include "bl_efuse.h"
+#include "bflb_efuse.h"
 #endif
 #define WL_API_RMEM_ADDR    0x20010600
 #endif
@@ -229,6 +230,19 @@ __attribute__((weak)) void btblecontroller_software_pds_reset()
 __attribute__((weak)) void btblecontroller_pds_trim_rc32m()
 {
     PDS_Trim_RC32M();
+}
+
+__attribute__((weak)) int btblecontroller_printf(const char *fmt, ...)
+{
+    return 0;
+}
+
+__attribute__((weak)) uint8_t btblecontrolller_get_chip_version()
+{
+    extern void bflb_efuse_get_device_info(bflb_efuse_device_info_type *device_info);
+    bflb_efuse_device_info_type device_info;
+    bflb_efuse_get_device_info(&device_info);
+    return device_info.version;
 }
 #endif
 

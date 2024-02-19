@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -32,6 +32,9 @@
 
 #include <stdint.h>
 
+#define BL616_A0              0
+#define BL616_A1              1
+
 void btblecontroller_ble_irq_init(void *handler);
 void btblecontroller_bt_irq_init(void *handler);
 void btblecontroller_dm_irq_init(void *handler);
@@ -44,4 +47,5 @@ int btblecontroller_efuse_read_mac(uint8_t mac[6]);
 void btblecontroller_software_btdm_reset();
 void btblecontroller_software_pds_reset();
 void btblecontroller_pds_trim_rc32m();
+uint8_t btblecontrolller_get_chip_version();
 #endif

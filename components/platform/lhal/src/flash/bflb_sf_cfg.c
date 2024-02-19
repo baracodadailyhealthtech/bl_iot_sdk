@@ -45,7 +45,6 @@
 /** @defgroup  SF_CFG_Private_Macros
  *  @{
  */
-#define BFLB_FLASH_CFG_MAGIC "FCFG"
 
 /*@} end of group SF_CFG_Private_Macros */
 
@@ -64,6 +63,7 @@ typedef struct
 /** @defgroup  SF_CFG_Private_Variables
  *  @{
  */
+#ifndef NOT_SUPPORT_0X13_0X14_0X15_FLASH
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_winb_80dv = {
     .reset_c_read_cmd = 0xff,
     .reset_c_read_cmd_size = 3,
@@ -166,6 +166,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_winb_80dv = {
     .pd_delay = 3,
     .qe_data = 0,
 };
+#endif
 
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_winb_16jv = {
     .reset_c_read_cmd = 0xff,
@@ -579,6 +580,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_issi = {
     .qe_data = 0,
 };
 
+#ifndef NOT_SUPPORT_0X13_0X14_0X15_FLASH
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_gd_md_40d = {
     .reset_c_read_cmd = 0xff,
     .reset_c_read_cmd_size = 3,
@@ -681,6 +683,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_gd_md_40d = {
     .pd_delay = 20,
     .qe_data = 0,
 };
+#endif
 
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_gd_lq08c_le16c_lq32d_wq32e = {
     .reset_c_read_cmd = 0xff,
@@ -888,6 +891,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_gd_q80e_q16e = 
     .qe_data = 0,
 };
 
+#ifndef NOT_SUPPORT_0X13_0X14_0X15_FLASH
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_gd_wq80e_wq16e = {
     .reset_c_read_cmd = 0xff,
     .reset_c_read_cmd_size = 3,
@@ -990,6 +994,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_gd_wq80e_wq16e 
     .pd_delay = 20,
     .qe_data = 0x12,
 };
+#endif
 
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_gd_q32e_q128e = {
     .reset_c_read_cmd = 0xff,
@@ -1710,6 +1715,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_puya_q32h = {
     .qe_data = 0,
 };
 
+#ifndef NOT_SUPPORT_0X13_0X14_0X15_FLASH
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_boya40 = {
     .reset_c_read_cmd = 0xff,
     .reset_c_read_cmd_size = 3,
@@ -1812,6 +1818,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_boya40 = {
     .pd_delay = 20,
     .qe_data = 0,
 };
+#endif
 
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_boya = {
     .reset_c_read_cmd = 0xff,
@@ -1915,6 +1922,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_boya = {
     .qe_data = 0,
 };
 
+#ifndef NOT_SUPPORT_0X13_0X14_0X15_FLASH
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_mx_kh25 = {
     .reset_c_read_cmd = 0xff,
     .reset_c_read_cmd_size = 3,
@@ -2017,6 +2025,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_mx_kh25 = {
     .pd_delay = 20,
     .qe_data = 0,
 };
+#endif
 
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_winb_256fv = {
     .reset_c_read_cmd = 0xff,
@@ -2121,6 +2130,7 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flash_cfg_winb_256fv = {
     .qe_data = 0,
 };
 
+#ifndef NOT_SUPPORT_0X13_0X14_0X15_FLASH
 static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flashcfg_xtx_q80b_f16b = {
     .reset_c_read_cmd = 0xff,
     .reset_c_read_cmd_size = 3,
@@ -2222,23 +2232,231 @@ static const ATTR_TCM_CONST_SECTION spi_flash_cfg_type flashcfg_xtx_q80b_f16b = 
     .pd_delay = 20,
     .qe_data = 0,
 };
+#endif
 
 static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
+#ifndef NOT_SUPPORT_0X13_0X14_0X15_FLASH
+    {
+        .jedec_id = 0x134051,
+        //.name="gd_md04d_04_33",
+        .cfg = &flash_cfg_gd_md_40d,
+    },
+    {
+        .jedec_id = 0x1320c2,
+        //.name="mx_kh40_04_33",
+        .cfg = &flash_cfg_mx_kh25,
+    },
+    {
+        .jedec_id = 0x13400b,
+        //.name="xt_25f04d_04_33",
+        .cfg = &flash_cfg_xtx,
+    },
+    {
+        .jedec_id = 0x134068,
+        //.name="boya_q04b_04_33",
+        .cfg = &flash_cfg_boya40,
+    },
+    {
+        .jedec_id = 0x13325e,
+        //.name="zbit_04_33",
+        .cfg = &flash_cfg_mx_kh25,
+    },
+    {
+        .jedec_id = 0x13605e,
+        //.name="zbit_04_33",
+        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
+    },
     {
         .jedec_id = 0x1440ef,
         //.name="winb_80dv_08_33",
         .cfg = &flash_cfg_winb_80dv,
     },
     {
+        .jedec_id = 0x1460ef,
+        //.name="winb_80ew_08_18",
+        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
+    },
+    {
+        .jedec_id = 0x1440c8,
+        //.name="gd_q08e_08_33",
+        .cfg = &flash_cfg_gd_q80e_q16e,
+    },
+    {
+        .jedec_id = 0x1460c8,
+        //.name="gd_lq08c_08_18",
+        .cfg = &flash_cfg_gd_lq08c_le16c_lq32d_wq32e,
+    },
+    {
+        .jedec_id = 0x1465c8,
+        //.name="gd_wq80e_80_33",
+        .cfg = &flash_cfg_gd_wq80e_wq16e,
+    },
+    {
+        .jedec_id = 0x1420c2,
+        //.name="mx_kh80_08_33",
+        .cfg = &flash_cfg_mx_kh25,
+    },
+    {
+        .jedec_id = 0x14600b,
+        //.name="xt_25q80b_08_18",
+        .cfg = &flashcfg_xtx_q80b_f16b,
+    },
+    {
+        .jedec_id = 0x144068,
+        //.name="boya_q08b_08_33",
+        .cfg = &flash_cfg_boya,
+    },
+    {
+        .jedec_id = 0x14325e,
+        //.name="zbit_08_33",
+        .cfg = &flash_cfg_mx_kh25,
+    },
+    {
+        .jedec_id = 0x14605e,
+        //.name="zbit_08_33",
+        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
+    },
+    {
+        .jedec_id = 0x144020,
+        //.name="xm_qh80_08_33",
+        .cfg = &flash_cfg_winb_16jv,
+    },
+    {
+        .jedec_id = 0x1440a1,
+        //.name="fm25q80_80_33",
+        .cfg = &flash_cfg_gd_q80e_q16e,
+    },
+    {
+        .jedec_id = 0x146085,
+        //.name="puya_q80l/h_08_18/33",
+        .cfg = &flash_cfg_puya_q80l_q80h_q16h,
+    },
+    {
+        .jedec_id = 0x14609d,
+        //.name="issi_08_33",
+        .cfg = &flash_cfg_issi,
+    },
+    {
+        .jedec_id = 0x14709d,
+        //.name="issi_08_18",
+        .cfg = &flash_cfg_issi,
+    },
+    {
+        .jedec_id = 0x1460cd,
+        //.name="th25q80_80_33",
+        .cfg = &flash_cfg_gd_lq08c_le16c_lq32d_wq32e,
+    },
+    {
         .jedec_id = 0x1540ef,
         //.name="winb_16dv_16_33",
-        .cfg = &flash_cfg_winb_16jv,
+        .cfg = &flash_cfg_puya_q80l_q80h_q16h,
     },
     {
         .jedec_id = 0x1570ef,
         //.name="wb_16jv_16_33",
         .cfg = &flash_cfg_winb_16jv,
     },
+    {
+        .jedec_id = 0x1560ef,
+        //.name="winb_16fw_16_18",
+        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
+    },
+    {
+        .jedec_id = 0x1540c8,
+        //.name="gd_q16e_16_33",
+        .cfg = &flash_cfg_gd_q80e_q16e,
+    },
+    {
+        .jedec_id = 0x1560c8,
+        //.name="gd_le16c_16_18",
+        .cfg = &flash_cfg_gd_lq08c_le16c_lq32d_wq32e,
+    },
+    {
+        .jedec_id = 0x1565c8,
+        //.name="gd_wq16e_16_33",
+        .cfg = &flash_cfg_gd_wq80e_wq16e,
+    },
+    {
+        .jedec_id = 0x1520c2,
+        //.name="mx_kh16_16_33",
+        .cfg = &flash_cfg_mx_kh25,
+    },
+    {
+        .jedec_id = 0x15400b,
+        //.name="xt_25f16b_16_33",
+        .cfg = &flashcfg_xtx_q80b_f16b,
+    },
+    {
+        .jedec_id = 0x15650b,
+        //.name="xt_25w08f_08_1833",
+        .cfg = &flash_cfg_winb_16jv,
+    },
+    {
+        .jedec_id = 0x154068,
+        //.name="boya_q16b_16_33",
+        .cfg = &flash_cfg_boya,
+    },
+    {
+        .jedec_id = 0x15345e,
+        //.name="zb_wq16a_16_33",
+        .cfg = &flash_cfg_gd_q32e_q128e,
+    },
+    {
+        .jedec_id = 0x15605e,
+        //.name="zb_vq16_16_33",
+        .cfg = &flash_cfg_gd_q32e_q128e,
+    },
+    {
+        .jedec_id = 0x15405e,
+        //.name="zb_16b_16_33",
+        .cfg = &flash_cfg_gd_q32e_q128e,
+    },
+    {
+        .jedec_id = 0x154020,
+        //.name="xm_qh16_16_33",
+        .cfg = &flash_cfg_winb_16jv,
+    },
+    {
+        .jedec_id = 0x1540a1,
+        //.name="fm25q16a_16_33",
+        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
+    },
+    {
+        .jedec_id = 0x156085,
+        //.name="puya_q16h_16_33",
+        .cfg = &flash_cfg_puya_q80l_q80h_q16h,
+    },
+    {
+        .jedec_id = 0x15609d,
+        //.name="issi_16_33",
+        .cfg = &flash_cfg_issi,
+    },
+    {
+        .jedec_id = 0x15709d,
+        //.name="issi_16_18",
+        .cfg = &flash_cfg_issi,
+    },
+    {
+        .jedec_id = 0x1560eb,
+        //.name="th25q16_16_33",
+        .cfg = &flash_cfg_gd_q80e_q16e,
+    },
+    {
+        .jedec_id = 0x1560ba,
+        //.name="zd25a16_16_33",
+        .cfg = &flashcfg_xtx_q80b_f16b,
+    },
+    {
+        .jedec_id = 0x1560c4,
+        //.name="gt25q16_16_33",
+        .cfg = &flash_cfg_winb_16jv,
+    },
+    {
+        .jedec_id = 0x152085,
+        //.name="py25q16hb_16_33",
+        .cfg = &flash_cfg_puya_q80l_q80h_q16h,
+    },
+#endif
     {
         .jedec_id = 0x1640ef,
         //.name="winb_32fv_32_33",
@@ -2263,16 +2481,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .jedec_id = 0x1940ef,
         //.name="wb_256fv_256_33",
         .cfg = &flash_cfg_winb_256fv,
-    },
-    {
-        .jedec_id = 0x1460ef,
-        //.name="winb_80ew_08_18",
-        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
-    },
-    {
-        .jedec_id = 0x1560ef,
-        //.name="winb_16fw_16_18",
-        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
     },
     {
         .jedec_id = 0x1660ef,
@@ -2300,21 +2508,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_winb_128jw_128jv,
     },
     {
-        .jedec_id = 0x134051,
-        //.name="gd_md04d_04_33",
-        .cfg = &flash_cfg_gd_md_40d,
-    },
-    {
-        .jedec_id = 0x1440c8,
-        //.name="gd_q08e_08_33",
-        .cfg = &flash_cfg_gd_q80e_q16e,
-    },
-    {
-        .jedec_id = 0x1540c8,
-        //.name="gd_q16e_16_33",
-        .cfg = &flash_cfg_gd_q80e_q16e,
-    },
-    {
         .jedec_id = 0x1640c8,
         //.name="gd_q32c_32_33",
         .cfg = &flash_cfg_gd_q32e_q128e,
@@ -2328,16 +2521,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .jedec_id = 0x1840c8,
         //.name="gd_q128e_128_33",
         .cfg = &flash_cfg_gd_q32e_q128e,
-    },
-    {
-        .jedec_id = 0x1460c8,
-        //.name="gd_lq08c_08_18",
-        .cfg = &flash_cfg_gd_lq08c_le16c_lq32d_wq32e,
-    },
-    {
-        .jedec_id = 0x1560c8,
-        //.name="gd_le16c_16_18",
-        .cfg = &flash_cfg_gd_lq08c_le16c_lq32d_wq32e,
     },
     {
         .jedec_id = 0x1660c8,
@@ -2355,16 +2538,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_gd_lq08c_le16c_lq32d_wq32e,
     },
     {
-        .jedec_id = 0x1465c8,
-        //.name="gd_wq80e_80_33",
-        .cfg = &flash_cfg_gd_wq80e_wq16e,
-    },
-    {
-        .jedec_id = 0x1565c8,
-        //.name="gd_wq16e_16_33",
-        .cfg = &flash_cfg_gd_wq80e_wq16e,
-    },
-    {
         .jedec_id = 0x1665c8,
         //.name="gd_wq32e_32_33",
         .cfg = &flash_cfg_gd_lq08c_le16c_lq32d_wq32e,
@@ -2373,21 +2546,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .jedec_id = 0x1865C8,
         //.name="gd_wq128e_128_1833",
         .cfg = &flash_cfg_gd_q32e_q128e,
-    },
-    {
-        .jedec_id = 0x1320c2,
-        //.name="mx_kh40_04_33",
-        .cfg = &flash_cfg_mx_kh25,
-    },
-    {
-        .jedec_id = 0x1420c2,
-        //.name="mx_kh80_08_33",
-        .cfg = &flash_cfg_mx_kh25,
-    },
-    {
-        .jedec_id = 0x1520c2,
-        //.name="mx_kh16_16_33",
-        .cfg = &flash_cfg_mx_kh25,
     },
     {
         .jedec_id = 0x3425c2,
@@ -2420,16 +2578,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_mxic_25l256,
     },
     {
-        .jedec_id = 0x13400b,
-        //.name="xt_25f04d_04_33",
-        .cfg = &flash_cfg_xtx,
-    },
-    {
-        .jedec_id = 0x15400b,
-        //.name="xt_25f16b_16_33",
-        .cfg = &flashcfg_xtx_q80b_f16b,
-    },
-    {
         .jedec_id = 0x16400b,
         //.name="xt_25f32b_32_33",
         .cfg = &flash_cfg_xtx,
@@ -2445,34 +2593,9 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_xtx,
     },
     {
-        .jedec_id = 0x14600b,
-        //.name="xt_25q80b_08_18",
-        .cfg = &flashcfg_xtx_q80b_f16b,
-    },
-    {
         .jedec_id = 0x16600b,
         //.name="xt_25q32b_32_18",
         .cfg = &flash_cfg_xtx,
-    },
-    {
-        .jedec_id = 0x15650b,
-        //.name="xt_25w08f_08_1833",
-        .cfg = &flash_cfg_winb_16jv,
-    },
-    {
-        .jedec_id = 0x134068,
-        //.name="boya_q04b_04_33",
-        .cfg = &flash_cfg_boya40,
-    },
-    {
-        .jedec_id = 0x144068,
-        //.name="boya_q08b_08_33",
-        .cfg = &flash_cfg_boya,
-    },
-    {
-        .jedec_id = 0x154068,
-        //.name="boya_q16b_16_33",
-        .cfg = &flash_cfg_boya,
     },
     {
         .jedec_id = 0x164068,
@@ -2490,41 +2613,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_boya,
     },
     {
-        .jedec_id = 0x13325e,
-        //.name="zbit_04_33",
-        .cfg = &flash_cfg_mx_kh25,
-    },
-    {
-        .jedec_id = 0x14325e,
-        //.name="zbit_08_33",
-        .cfg = &flash_cfg_mx_kh25,
-    },
-    {
-        .jedec_id = 0x15345e,
-        //.name="zb_wq16a_16_33",
-        .cfg = &flash_cfg_gd_q32e_q128e,
-    },
-    {
-        .jedec_id = 0x13605e,
-        //.name="zbit_04_33",
-        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
-    },
-    {
-        .jedec_id = 0x14605e,
-        //.name="zbit_08_33",
-        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
-    },
-    {
-        .jedec_id = 0x15605e,
-        //.name="zb_vq16_16_33",
-        .cfg = &flash_cfg_gd_q32e_q128e,
-    },
-    {
-        .jedec_id = 0x15405e,
-        //.name="zb_16b_16_33",
-        .cfg = &flash_cfg_gd_q32e_q128e,
-    },
-    {
         .jedec_id = 0x16405e,
         //.name="zb_32b_32_33",
         .cfg = &flash_cfg_gd_q32e_q128e,
@@ -2538,16 +2626,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .jedec_id = 0x18405e,
         //.name="zb_vq128_128_33",
         .cfg = &flash_cfg_gd_q32e_q128e,
-    },
-    {
-        .jedec_id = 0x144020,
-        //.name="xm_qh80_08_33",
-        .cfg = &flash_cfg_winb_16jv,
-    },
-    {
-        .jedec_id = 0x154020,
-        //.name="xm_qh16_16_33",
-        .cfg = &flash_cfg_winb_16jv,
     },
     {
         .jedec_id = 0x164020,
@@ -2575,16 +2653,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_winb_16jv,
     },
     {
-        .jedec_id = 0x1440a1,
-        //.name="fm25q80_80_33",
-        .cfg = &flash_cfg_gd_q80e_q16e,
-    },
-    {
-        .jedec_id = 0x1540a1,
-        //.name="fm25q16a_16_33",
-        .cfg = &flash_cfg_winb_80ew_16fw_32jw_32fw_32fv,
-    },
-    {
         .jedec_id = 0x1640a1,
         //.name="fm25q32_32_33",
         .cfg = &flash_cfg_gd_q80e_q16e,
@@ -2605,16 +2673,6 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_winb_16jv,
     },
     {
-        .jedec_id = 0x146085,
-        //.name="puya_q80l/h_08_18/33",
-        .cfg = &flash_cfg_puya_q80l_q80h_q16h,
-    },
-    {
-        .jedec_id = 0x156085,
-        //.name="puya_q16h_16_33",
-        .cfg = &flash_cfg_puya_q80l_q80h_q16h,
-    },
-    {
         .jedec_id = 0x166085,
         //.name="puya_q32h_32_33",
         .cfg = &flash_cfg_puya_q32h,
@@ -2630,28 +2688,8 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_puya_q32h,
     },
     {
-        .jedec_id = 0x14609d,
-        //.name="issi_08_33",
-        .cfg = &flash_cfg_issi,
-    },
-    {
-        .jedec_id = 0x15609d,
-        //.name="issi_16_33",
-        .cfg = &flash_cfg_issi,
-    },
-    {
         .jedec_id = 0x16609d,
         //.name="issi_32_33",
-        .cfg = &flash_cfg_issi,
-    },
-    {
-        .jedec_id = 0x14709d,
-        //.name="issi_08_18",
-        .cfg = &flash_cfg_issi,
-    },
-    {
-        .jedec_id = 0x15709d,
-        //.name="issi_16_18",
         .cfg = &flash_cfg_issi,
     },
     {
@@ -2660,19 +2698,24 @@ static const ATTR_TCM_CONST_SECTION flash_info_t flash_infos[] = {
         .cfg = &flash_cfg_issi,
     },
     {
-        .jedec_id = 0x1460cd,
-        //.name="th25q80_80_33",
-        .cfg = &flash_cfg_gd_lq08c_le16c_lq32d_wq32e,
+        .jedec_id = 0x1660c4,
+        //.name="gt25q32_32_33",
+        .cfg = &flash_cfg_winb_16jv,
     },
     {
-        .jedec_id = 0x1560eb,
-        //.name="th25q16_16_33",
-        .cfg = &flash_cfg_gd_q80e_q16e,
+        .jedec_id = 0x1760c4,
+        //.name="gt25q64_64_33",
+        .cfg = &flash_cfg_winb_16jv,
     },
     {
-        .jedec_id = 0x1560ba,
-        //.name="zd25a16_16_33",
-        .cfg = &flashcfg_xtx_q80b_f16b,
+        .jedec_id = 0x162085,
+        //.name="py25q32hb_32_33",
+        .cfg = &flash_cfg_puya_q80l_q80h_q16h,
+    },
+    {
+        .jedec_id = 0x166125,
+        //.name="sk25e032_32_33",
+        .cfg = &flash_cfg_puya_q80l_q80h_q16h,
     },
 };
 
@@ -2936,73 +2979,6 @@ int ATTR_TCM_SECTION bflb_sf_cfg_deinit_ext_flash_gpio(uint8_t ext_flash_pin)
 /** @defgroup  SF_CFG_Public_Functions
  *  @{
  */
-
-/****************************************************************************/ /**
- * @brief  Get flash config according to flash ID
- *
- * @param  flash_id: Flash ID
- * @param  p_flash_cfg: Flash config pointer
- * @param  group: CPU group id 0 or 1
- * @param  bank: Flash bank select
- *
- * @return BFLB_RET:0 means success and other value means error
- *
-*******************************************************************************/
-__WEAK
-int ATTR_TCM_SECTION bflb_sf_cfg_get_flash_cfg_need_lock(uint32_t flash_id, spi_flash_cfg_type *p_flash_cfg,
-                                                         uint8_t group, uint8_t bank)
-{
-    uint32_t i = 0;
-    uint8_t buf[sizeof(spi_flash_cfg_type) + 8];
-    uint32_t crc = 0, *p_crc;
-    uint32_t xip_offset = 0;
-
-    if (flash_id == 0) {
-        xip_offset = bflb_sf_ctrl_get_flash_image_offset(group, bank);
-        bflb_sf_ctrl_set_flash_image_offset(0, group, bank);
-        bflb_xip_sflash_read_via_cache_need_lock(8 + BFLB_FLASH_XIP_BASE, buf, sizeof(spi_flash_cfg_type) + 8, group, bank);
-        bflb_sf_ctrl_set_flash_image_offset(xip_offset, group, bank);
-
-        if (arch_memcmp(buf, BFLB_FLASH_CFG_MAGIC, 4) == 0) {
-            crc = bflb_soft_crc32((uint8_t *)buf + 4, sizeof(spi_flash_cfg_type));
-            p_crc = (uint32_t *)(buf + 4 + sizeof(spi_flash_cfg_type));
-
-            if (*p_crc == crc) {
-                arch_memcpy_fast(p_flash_cfg, (uint8_t *)buf + 4, sizeof(spi_flash_cfg_type));
-                return 0;
-            }
-        }
-    } else {
-        for (i = 0; i < sizeof(flash_infos) / sizeof(flash_infos[0]); i++) {
-            if (flash_infos[i].jedec_id == flash_id) {
-                arch_memcpy_fast(p_flash_cfg, flash_infos[i].cfg, sizeof(spi_flash_cfg_type));
-                return 0;
-            }
-        }
-    }
-
-    return -1;
-}
-
-#if defined(BL616) || defined(BL628) || defined(BL606P) || defined(BL808) || defined(BL702L)
-/****************************************************************************/ /**
- * @brief  Get flash config according to flash ID patch
- *
- * @param  flash_id: Flash ID
- * @param  p_flash_cfg: Flash config pointer
- * @param  group: CPU group id 0 or 1
- * @param  bank: Flash bank select
- *
- * @return BFLB_RET:0 means success and other value means error
- *
-*******************************************************************************/
-__WEAK
-int ATTR_TCM_SECTION bflb_sf_cfg_get_flash_cfg_need_lock_ext(uint32_t flash_id, spi_flash_cfg_type *p_flash_cfg,
-                                                             uint8_t group, uint8_t bank)
-{
-    return bflb_sf_cfg_get_flash_cfg_need_lock(flash_id, p_flash_cfg, group, bank);
-}
-#endif
 
 /****************************************************************************/ /**
  * @brief  Init flash GPIO according to flash Pin config
@@ -3496,6 +3472,74 @@ uint32_t ATTR_TCM_SECTION bflb_sf_cfg_flash_identify_ext(uint8_t call_from_flash
                                                          uint8_t restore_default, spi_flash_cfg_type *p_flash_cfg, uint8_t group, uint8_t bank)
 {
     return bflb_sf_cfg_flash_identify(call_from_flash, flash_pin_cfg, restore_default, p_flash_cfg, group, bank);
+}
+#endif
+
+/****************************************************************************/ /**
+ * @brief  Get flash config according to flash ID
+ *
+ * @param  flash_id: Flash ID
+ * @param  p_flash_cfg: Flash config pointer
+ * @param  group: CPU group id 0 or 1
+ * @param  bank: Flash bank select
+ *
+ * @return BFLB_RET:0 means success and other value means error
+ *
+*******************************************************************************/
+__WEAK
+int ATTR_TCM_SECTION bflb_sf_cfg_get_flash_cfg_need_lock(uint32_t flash_id, spi_flash_cfg_type *p_flash_cfg,
+                                                         uint8_t group, uint8_t bank)
+{
+    uint32_t i = 0;
+    uint8_t buf[sizeof(spi_flash_cfg_type) + 8];
+    uint32_t crc = 0, *p_crc;
+    uint32_t xip_offset = 0;
+    char flash_cfg_magic[] = "FCFG";
+
+    if (flash_id == 0) {
+        xip_offset = bflb_sf_ctrl_get_flash_image_offset(group, bank);
+        bflb_sf_ctrl_set_flash_image_offset(0, group, bank);
+        bflb_xip_sflash_read_via_cache_need_lock(8 + BFLB_FLASH_XIP_BASE, buf, sizeof(spi_flash_cfg_type) + 8, group, bank);
+        bflb_sf_ctrl_set_flash_image_offset(xip_offset, group, bank);
+
+        if (arch_memcmp(buf, flash_cfg_magic, 4) == 0) {
+            crc = bflb_soft_crc32((uint8_t *)buf + 4, sizeof(spi_flash_cfg_type));
+            p_crc = (uint32_t *)(buf + 4 + sizeof(spi_flash_cfg_type));
+
+            if (*p_crc == crc) {
+                arch_memcpy_fast(p_flash_cfg, (uint8_t *)buf + 4, sizeof(spi_flash_cfg_type));
+                return 0;
+            }
+        }
+    } else {
+        for (i = 0; i < sizeof(flash_infos) / sizeof(flash_infos[0]); i++) {
+            if (flash_infos[i].jedec_id == flash_id) {
+                arch_memcpy_fast(p_flash_cfg, flash_infos[i].cfg, sizeof(spi_flash_cfg_type));
+                return 0;
+            }
+        }
+    }
+
+    return -1;
+}
+
+#if defined(BL616) || defined(BL628) || defined(BL606P) || defined(BL808) || defined(BL702L)
+/****************************************************************************/ /**
+ * @brief  Get flash config according to flash ID patch
+ *
+ * @param  flash_id: Flash ID
+ * @param  p_flash_cfg: Flash config pointer
+ * @param  group: CPU group id 0 or 1
+ * @param  bank: Flash bank select
+ *
+ * @return BFLB_RET:0 means success and other value means error
+ *
+*******************************************************************************/
+__WEAK
+int ATTR_TCM_SECTION bflb_sf_cfg_get_flash_cfg_need_lock_ext(uint32_t flash_id, spi_flash_cfg_type *p_flash_cfg,
+                                                             uint8_t group, uint8_t bank)
+{
+    return bflb_sf_cfg_get_flash_cfg_need_lock(flash_id, p_flash_cfg, group, bank);
 }
 #endif
 

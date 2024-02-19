@@ -1,7 +1,7 @@
 #include "bl_ir.h"
 #include "bl_pwm_ir.h"
 
-#define USE_PWM_IR
+//#define USE_PWM_IR
 
 #if !defined(USE_PWM_IR)
 //interrupt callback after sending a pulse
@@ -30,12 +30,12 @@ void ble_rc_ir_tx_init(void)
 
 void ble_rc_ir_tx_demo(void)
 {
-    uint16_t ir_tx[6] = {3, 2, 4, 2, 5};
+    uint16_t ir_tx[] = {2, 2, 4, 2, 6};
     
 #if defined(USE_PWM_IR)
     bl_pwm_ir_tx(ir_tx, sizeof(ir_tx)/2);
 #else
-    bl_ir_swm_tx(ir_tx, sizeof(ir_tx)/2);
+    bl_ir_swm_tx(1, ir_tx, sizeof(ir_tx)/2);
     while(bl_ir_swm_tx_busy());
 #endif
 }
@@ -45,5 +45,9 @@ void ble_rc_ir_tx_repeat(void)
 #if defined(USE_PWM_IR)
     uint16_t ir_tx[] = {340, 85, 21};
     bl_pwm_ir_tx(ir_tx, sizeof(ir_tx)/2);
+#else
+    uint16_t ir_tx[] = {340, 84, 20};  // tx data should be multiple of k
+    bl_ir_swm_tx(2, ir_tx, sizeof(ir_tx)/2);  // here set k to 2, so that max carrier number can be 256*2
+    while(bl_ir_swm_tx_busy());
 #endif
 }

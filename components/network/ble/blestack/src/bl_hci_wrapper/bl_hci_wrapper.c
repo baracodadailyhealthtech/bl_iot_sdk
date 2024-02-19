@@ -11,11 +11,11 @@
 *****************************************************************************************/
 
 #include <string.h>
-#include <log.h>
+#include <bt_log.h>
 #include "hci_host.h"
 #include "bl_hci_wrapper.h"
 #include "hci_driver.h"
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include "byteorder.h"
 #include "hci_onchip.h"
 

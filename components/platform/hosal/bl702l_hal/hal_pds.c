@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -30,13 +30,16 @@
 #include "hal_pds.h"
 
 
-#define pulTimeHigh                (volatile uint32_t *)( configCLINT_BASE_ADDRESS + 0xBFFC )
-#define pulTimeLow                 (volatile uint32_t *)( configCLINT_BASE_ADDRESS + 0xBFF8 )
+#define pulTimeHigh                          (volatile uint32_t *)( 0x02000000 + 0xBFFC )
+#define pulTimeLow                           (volatile uint32_t *)( 0x02000000 + 0xBFF8 )
+#define pullMachineTimerCompareRegister      (volatile uint64_t *)( 0x02000000 + 0x4000 )
 
-#define MTIMER_TICKS_PER_US        (2)
+#define configCLIC_TIMER_ENABLE_ADDRESS      (0x02800407)
+
+#define MTIMER_TICKS_PER_US                  (2)
 
 
-extern volatile uint64_t * const pullMachineTimerCompareRegister;
+extern void vTaskStepTick(uint32_t xTicksToJump);
 extern void vPortSetupTimerInterrupt(void);
 
 
@@ -80,8 +83,6 @@ uint32_t hal_pds_enter_with_time_compensation(uint32_t pdsLevel, uint32_t pdsSle
     *pullMachineTimerCompareRegister = -1;
     *(volatile uint8_t *)configCLIC_TIMER_ENABLE_ADDRESS = 0;
     
-    vTaskStepTick(actualSleepDuration_ms);
-    
     mtimerClkCycles = actualSleepDuration_ms * 1000 * MTIMER_TICKS_PER_US;
     ulCurrentTimeLow += mtimerClkCycles;
     if(ulCurrentTimeLow < mtimerClkCycles){
@@ -91,6 +92,8 @@ uint32_t hal_pds_enter_with_time_compensation(uint32_t pdsLevel, uint32_t pdsSle
     *pulTimeLow = 0;
     *pulTimeHigh = ulCurrentTimeHigh;
     *pulTimeLow = ulCurrentTimeLow;
+    
+    vTaskStepTick(actualSleepDuration_ms);
     
     vPortSetupTimerInterrupt();
     *(volatile uint8_t *)configCLIC_TIMER_ENABLE_ADDRESS = 1;

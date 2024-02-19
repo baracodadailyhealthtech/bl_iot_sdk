@@ -10,7 +10,7 @@
 #include <zephyr.h>
 #include <string.h>
 #include <stdio.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <atomic.h>
 #include <misc/util.h>
 #include <misc/slist.h>
@@ -27,7 +27,7 @@
 #include <hci_driver.h>
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_HCI_CORE)
-#include "log.h"
+#include "bt_log.h"
 
 #include "rpa.h"
 #include "keys.h"
@@ -1168,14 +1168,6 @@ static void hci_disconn_complete(struct net_buf *buf)
 
 	bt_conn_unref(conn);
 
-#ifdef BFLB_BLE_PATCH_FREE_ALLOCATED_BUFFER_IN_OS
-    k_queue_free(&conn->tx_queue._queue);
-    conn->tx_queue._queue.hdl = NULL;
-    if(conn->update_work.timer.timer.hdl){
-        k_delayed_work_del_timer(&conn->update_work);
-    }
-#endif
-
 #if defined(BFLB_RELEASE_CMD_SEM_IF_CONN_DISC)
 	hci_release_conn_related_cmd();
 #endif
@@ -1989,6 +1981,10 @@ static void check_pending_conn(const bt_addr_le_t *id_addr,
 		return;
 	}
 
+	#if defined(BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK)
+	conn->notPermit_disconnect = true;
+	#endif
+
 	if (atomic_test_bit(bt_dev.flags, BT_DEV_SCANNING) &&
 	    set_le_scan_enable(BT_HCI_LE_SCAN_DISABLE)) {
 		goto failed;
@@ -2000,10 +1996,16 @@ static void check_pending_conn(const bt_addr_le_t *id_addr,
 	}
 	
 	bt_conn_set_state(conn, BT_CONN_CONNECT);
+	#if defined(BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK)
+	conn->notPermit_disconnect = false;
+	#endif
 	bt_conn_unref(conn);
 	return;
 
 failed:
+	#if defined(BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK)
+	conn->notPermit_disconnect = false;
+	#endif
 	conn->err = BT_HCI_ERR_UNSPECIFIED;
 	bt_conn_set_state(conn, BT_CONN_DISCONNECTED);
 	bt_conn_unref(conn);
@@ -2088,6 +2090,10 @@ int bt_unpair(u8_t id, const bt_addr_le_t *addr)
 		if (conn->type == BT_CONN_TYPE_LE) {
 			keys = conn->le.keys;
 			conn->le.keys = NULL;
+			#if defined(BFLB_BLE_PATCH_DO_GATT_CLEAR_IF_UNPAIRED)
+			if (bt_addr_le_cmp(addr, &conn->le.dst))
+			memcpy(addr, &conn->le.dst, sizeof(bt_addr_le_t));
+			#endif
 		}
 
 		bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
@@ -2101,18 +2107,21 @@ int bt_unpair(u8_t id, const bt_addr_le_t *addr)
 		}
 	}
 
+    #if !defined(BFLB_BLE_PATCH_DO_GATT_CLEAR_IF_UNPAIRED)
+	if (IS_ENABLED(CONFIG_BT_SETTINGS))
+	#endif
+	{
+		bt_gatt_clear(id, addr);
+	}
+
 	if (IS_ENABLED(CONFIG_BT_SMP)) {
 		if (!keys) {
 			keys = bt_keys_find_addr(id, addr);
 		}
 
 		if (keys) {
-			bt_keys_clear(keys);
+			bt_keys_clear(keys);//will clear addr
 		}
-	}
-
-	if (IS_ENABLED(CONFIG_BT_SETTINGS)) {
-		bt_gatt_clear(id, addr);
 	}
 
 	return 0;
@@ -5126,7 +5135,7 @@ static int br_init(void)
 	}
 
 	name_cp = net_buf_add(buf, sizeof(*name_cp));
-	strncpy((char *)name_cp->local_name, CONFIG_BT_DEVICE_NAME,
+	strlcpy((char *)name_cp->local_name, CONFIG_BT_DEVICE_NAME,
 		sizeof(name_cp->local_name));
 
 	err = bt_hci_cmd_send_sync(BT_HCI_OP_WRITE_LOCAL_NAME, buf, NULL);
@@ -6489,7 +6498,7 @@ static inline int bt_le_name_update(const struct bt_data *ad, size_t ad_len)
 		for (i = 0; i < ad_len; i++) {
 			if (ad[i].type == BT_DATA_NAME_COMPLETE ||
 			    ad[i].type == BT_DATA_NAME_SHORTENED) {
-				strncpy(name,(char*)ad[i].data,ad[i].data_len);
+				strlcpy(name,(char*)ad[i].data,ad[i].data_len);
 				ret = bt_set_name(name);
 			}
 		}
@@ -8330,5 +8339,15 @@ void bt_hci_reset_complete(struct net_buf *buf)
 void bt_register_host_assist_cb(struct blhast_cb *cb)
 {
     host_assist_cb = cb;
+}
+#endif
+
+#if defined(BFLB_BLE)
+bool ble_gap_event_ongoing(void)
+{
+    if(le_check_valid_conn() || le_check_valid_scan() || le_check_valid_adv())
+        return true;
+    else
+        return false;
 }
 #endif

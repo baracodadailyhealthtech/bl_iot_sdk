@@ -19,9 +19,9 @@
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_MESH_DEBUG_ADV)
 #define LOG_MODULE_NAME bt_mesh_adv
-#include "log.h"
+#include "bt_log.h"
 
-#include "errno.h"
+#include "bt_errno.h"
 #include "hci_core.h"
 
 #include "adv.h"
@@ -243,7 +243,7 @@ static void adv_thread(void *p1)
 				s32_t timeout;
 
 				timeout = bt_mesh_proxy_adv_start();
-				BT_DBG("Proxy Advertising up to %d ms",
+				BT_DBG("Proxy Advertising up to %ld ms",
 				       timeout);
 				buf = net_buf_get(&adv_queue, timeout);
 				bt_mesh_proxy_adv_stop();

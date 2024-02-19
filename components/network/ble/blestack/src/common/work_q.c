@@ -13,8 +13,8 @@
 
 
 #include <zephyr.h>
-#include <log.h>
-#include <sys/errno.h>
+#include <bt_log.h>
+#include <bt_errno.h>
 
 struct k_thread work_q_thread;
 #if !defined(BFLB_BLE)

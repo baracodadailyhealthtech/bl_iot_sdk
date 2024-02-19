@@ -9,12 +9,12 @@ NOTES
 */
 /****************************************************************************/
 
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <FreeRTOS.h>
 #include <task.h>
-#include <blog.h>
+//#include <blog.h>
 
 #include "bluetooth.h"
 #include "conn.h"
@@ -23,7 +23,7 @@ NOTES
 #include "hci_core.h"
 #include "uuid.h"
 #include "ble_tp_svc.h"
-#include "log.h"
+#include "bt_log.h"
 
 #define TP_PRIO configMAX_PRIORITIES - 5
 #if defined(CONFIG_BLE_TP_SVC_COMPATIBILITY_TEST)
@@ -164,7 +164,7 @@ NAME
 static int ble_tp_recv_wr(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                         const void *buf, u16_t len, u16_t offset, u8_t flags)
 {
-    BT_INFO("recv data len=%d, offset=%d, flag=%d", len, offset, flags);
+    BT_WARN("recv data len=%d, offset=%d, flag=%d", len, offset, flags);
     #if defined(CONFIG_BLE_TP_SVC_COMPATIBILITY_TEST)
 	u16_t iLen = (len < 16)?len:16;
 	u8_t err = 0;
@@ -219,7 +219,7 @@ NAME
 */ 
 void indicate_rsp(struct bt_conn *conn, const struct bt_gatt_attr *attr,	u8_t err)
 {
-    BT_INFO("receive confirm, err:%d", err);
+    BT_WARN("receive confirm, err:%d", err);
 }
 
 /*************************************************************************
@@ -234,7 +234,7 @@ static void ble_tp_ind_ccc_changed(const struct bt_gatt_attr *attr, u16_t value)
 
     if(value == BT_GATT_CCC_INDICATE) {
         err = bl_tp_send_indicate(ble_tp_conn, get_attr(BT_CHAR_BLE_TP_IND_ATTR_VAL_INDEX), data, 9);
-        BT_INFO("ble tp send indatcate: %d", err);
+        BT_WARN("ble tp send indatcate: %d", err);
     }
 
     UNUSED(err);
@@ -270,7 +270,7 @@ static void ble_tp_notify_task(void *pvParameters)
     while(1)
     {
         err = bt_gatt_notify(ble_tp_conn, get_attr(BT_CHAR_BLE_TP_NOT_ATTR_VAL_INDEX), data, (tx_mtu_size - 3));
-        BT_INFO("ble tp send notify : %d", err);
+        BT_WARN("ble tp send notify : %d", err);
     }
     #endif
 }
@@ -281,7 +281,8 @@ NAME
 */ 
 static void ble_tp_not_ccc_changed(const struct bt_gatt_attr *attr, u16_t value)
 {
-    BT_WARN("ccc:value=[%d]\r\n",value);
+    int err;
+    BT_WARN("ccc:value=[%d]",value);
     
     if(tp_start)
     {
@@ -316,6 +317,10 @@ static void ble_tp_not_ccc_changed(const struct bt_gatt_attr *attr, u16_t value)
             vTaskDelete(ble_tp_task_h);
             created_tp_task = 0;
         }
+        if(value == BT_GATT_CCC_NOTIFY) {
+            err = bt_gatt_notify(ble_tp_conn, get_attr(BT_CHAR_BLE_TP_NOT_ATTR_VAL_INDEX), "notify", strlen("notify"));
+            BT_WARN("ble tp send indatcate: %d", err);
+        }
     }
 }
 
@@ -341,7 +346,7 @@ static struct bt_gatt_attr attrs[]= {
 
 	BT_GATT_CHARACTERISTIC(BT_UUID_CHAR_BLE_TP_IND,
 							BT_GATT_CHRC_INDICATE,
-							NULL,
+							0,
 							NULL,
 							NULL,
 							NULL),
@@ -350,7 +355,7 @@ static struct bt_gatt_attr attrs[]= {
 
 	BT_GATT_CHARACTERISTIC(BT_UUID_CHAR_BLE_TP_NOT,
 							BT_GATT_CHRC_NOTIFY,
-							NULL,
+							0,
 							NULL,
 							NULL,
 							NULL),

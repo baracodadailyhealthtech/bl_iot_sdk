@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-const struct bt_mesh_model_cb bt_mesh_sensor_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_sensor_cli_cb;
 
 /** @def    BFL_BLE_MESH_MODEL_SENSOR_CLI
  *
@@ -262,8 +262,8 @@ bfl_err_t bfl_ble_mesh_sensor_client_get_state(bfl_ble_mesh_client_common_param_
 bfl_err_t bfl_ble_mesh_sensor_client_set_state(bfl_ble_mesh_client_common_param_t *params,
         bfl_ble_mesh_sensor_client_set_state_t *set_state);
 
-const struct bt_mesh_model_cb bt_mesh_sensor_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_sensor_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_sensor_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_sensor_setup_srv_cb;
 
 /**
  * @brief Sensor Server Models related context.

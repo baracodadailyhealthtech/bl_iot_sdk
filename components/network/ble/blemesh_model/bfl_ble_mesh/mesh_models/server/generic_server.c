@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "btc_ble_mesh_generic_model.h"
 #include "btc_ble_mesh_prov.h"

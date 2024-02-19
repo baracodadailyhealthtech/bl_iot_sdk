@@ -7,7 +7,7 @@
  */
 
 #include <zephyr.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <string.h>
 #include <types.h>
 #include <util.h>
@@ -20,7 +20,7 @@
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_MESH_DEBUG_TRANS)
 #define LOG_MODULE_NAME bt_mesh_transport
-#include "log.h"
+#include "bt_log.h"
 #include "slab.h"
 
 //#include "host/testing.h"
@@ -40,9 +40,6 @@
 //#endif
 #include "mesh_config.h"
 
-#if defined(CONFIG_AUTO_PTS)
-#include "testing.h"
-#endif
 
 #define AID_MASK                    ((u8_t)(BIT_MASK(6)))
 
@@ -1183,7 +1180,7 @@ static int trans_ack(struct bt_mesh_net_rx *rx, u8_t hdr,
 	BT_PTS("[PTS]   - BlockAck: 0x%08X", ack);
 #endif
 
-	BT_DBG("OBO %u seq_zero 0x%04x ack 0x%08x", obo, seq_zero, ack);
+	BT_DBG("OBO %u seq_zero 0x%04x ack 0x%08lx", obo, seq_zero, ack);
 
 	tx = seg_tx_lookup(seq_zero, obo, rx->ctx.addr);
 	if (!tx) {
@@ -1443,7 +1440,7 @@ static int send_ack(struct bt_mesh_subnet *sub, u16_t src, u16_t dst,
 	u16_t seq_zero = *seq_auth & TRANS_SEQ_ZERO_MASK;
 	u8_t buf[6];
 
-	BT_DBG("SeqZero 0x%04x Block 0x%08x OBO %u", seq_zero, block, obo);
+	BT_DBG("SeqZero 0x%04x Block 0x%08lx OBO %u", seq_zero, block, obo);
 
 	if (bt_mesh_lpn_established()) {
 		BT_WARN("Not sending ack when LPN is enabled");
@@ -1631,7 +1628,7 @@ static struct seg_rx *seg_rx_alloc(struct bt_mesh_net_rx *net_rx,
 		rx->dst = net_rx->ctx.recv_dst;
 		rx->block = 0U;
 
-		BT_DBG("New RX context. Block Complete 0x%08x",
+		BT_DBG("New RX context. Block Complete 0x%08lx",
 		       BLOCK_COMPLETE(seg_n));
 
 		return rx;
@@ -1720,7 +1717,7 @@ static int trans_seg(struct net_buf_simple *buf, struct bt_mesh_net_rx *net_rx,
 		}
 
 		if (rx->in_use) {
-			BT_DBG("Existing RX context. Block 0x%08x", rx->block);
+			BT_DBG("Existing RX context. Block 0x%08lx", rx->block);
 			goto found_rx;
 		}
 
@@ -1886,7 +1883,7 @@ int bt_mesh_trans_recv(struct net_buf_simple *buf, struct bt_mesh_net_rx *rx)
 		rx->friend_match = false;
 	}
 
-	BT_DBG("src 0x%04x dst 0x%04x seq 0x%08x friend_match %u",
+	BT_DBG("src 0x%04x dst 0x%04x seq 0x%08lx friend_match %u",
 	       rx->ctx.addr, rx->ctx.recv_dst, rx->seq, rx->friend_match);
 
 	/* Remove network headers */

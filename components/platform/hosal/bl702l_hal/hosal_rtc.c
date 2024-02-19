@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -31,9 +31,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <hosal_rtc.h>
-#include "bl_rtc.h"
-#include <FreeRTOS.h>
-#include <task.h>
+#include <bl_rtc.h>
 #include <blog.h>
 
 #define SEC_PER_MIN  ((time_t)60)

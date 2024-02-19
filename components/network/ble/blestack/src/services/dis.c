@@ -13,7 +13,7 @@
 #include <zephyr/types.h>
 #include <stddef.h>
 #include <string.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <zephyr.h>
 
 #include "settings.h"
@@ -28,7 +28,7 @@
 #if !defined(BFLB_BLE)
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_SERVICE)
 #define LOG_MODULE_NAME bt_dis
-#include "log.h"
+#include "bt_log.h"
 #endif
 
 #if CONFIG_BT_GATT_DIS_PNP

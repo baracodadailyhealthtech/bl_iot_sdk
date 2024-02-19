@@ -33,6 +33,7 @@
 #include "bflb_sf_cfg.h"
 #include "bflb_flash.h"
 #include "hardware/sf_ctrl_reg.h"
+#include "bflb_efuse.h"
 
 #if defined(BL616) || defined(BL628)
 static uint32_t flash1_size = 4 * 1024 * 1024;
@@ -243,7 +244,7 @@ static spi_flash_cfg_type g_flash2_cfg = {
     .qe_data = 0,
 };
 
-static bflb_efuse_device_info_type deviceInfo;
+static bflb_efuse_device_info_type device_info;
 #endif
 
 #ifdef BFLB_SF_CTRL_SBUS2_ENABLE
@@ -363,10 +364,13 @@ static int ATTR_TCM_SECTION flash_config_init(spi_flash_cfg_type *p_flash_cfg, u
     if (ret == 0) {
         p_flash_cfg->mid = (jid & 0xff);
     }
-
-    // p_flash_cfg->io_mode = 0x11;
-    // p_flash_cfg->c_read_support = 0x00;
-
+#ifdef CONFIG_FLASH_2LINE
+#if (CONFIG_FLASH_2LINE != 0x11) && (CONFIG_FLASH_2LINE != 0x13)
+#error flash 2 line only supports 0x11 or 0x13
+#endif
+    p_flash_cfg->io_mode = CONFIG_FLASH_2LINE;
+    p_flash_cfg->c_read_support = 0x00;
+#endif
     /* Set flash controler from p_flash_cfg */
 #if defined(BL616) || defined(BL628) || defined(BL606P) || defined(BL808)
     bflb_flash_set_cmds(p_flash_cfg);
@@ -417,7 +421,7 @@ static int ATTR_TCM_SECTION flash2_init(void)
     cmds_cfg.cmds_wrap_mode = 1;
     cmds_cfg.cmds_wrap_len = SF_CTRL_WRAP_LEN_4096;
 
-    if (deviceInfo.memoryInfo == 3) {
+    if (device_info.flash_info == 3) {
         /* memoryInfo==3, embedded 4MB+2MB flash */
         flash2_enable = 1;
     }
@@ -468,7 +472,7 @@ int ATTR_TCM_SECTION bflb_flash_init(void)
 #endif
 
 #ifdef BFLB_SF_CTRL_SBUS2_ENABLE
-    bflb_ef_ctrl_get_device_info(&deviceInfo);
+    bflb_efuse_get_device_info(&device_info);
 #endif
 
 #if defined(BL602) || defined(BL702)

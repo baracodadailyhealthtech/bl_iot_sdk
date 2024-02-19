@@ -33,7 +33,7 @@
 #include "mesh_atomic.h"
 #include "net/buf.h"
 #include "bfl_err.h"
-#include "log.h"
+#include "bt_log.h"
 #include "__assert.h"
 
 #ifdef __cplusplus
@@ -62,9 +62,14 @@ extern "C" {
 #define bt_mesh_malloc(size)    heap_caps_malloc_prefer(size, 2, MALLOC_CAP_DEFAULT|MALLOC_CAP_SPIRAM, MALLOC_CAP_DEFAULT|MALLOC_CAP_INTERNAL)
 #define bt_mesh_calloc(size)    heap_caps_calloc_prefer(1, size, 2, MALLOC_CAP_DEFAULT|MALLOC_CAP_SPIRAM, MALLOC_CAP_DEFAULT|MALLOC_CAP_INTERNAL)
 #else
-extern void* pvPortCalloc(size_t numElements, size_t sizeOfElement);
 #define bt_mesh_malloc(size)    pvPortMalloc((size)) //malloc((size))
+#if defined(CFG_IOT_SDK) || defined(BL_MCU_SDK)
+extern void* pvPortCalloc(size_t numElements, size_t sizeOfElement);
 #define bt_mesh_calloc(size)    pvPortCalloc(1, (size)) //calloc(1, (size))
+#else /* CFG_IOT_SDK CFG_IOT_SDK */
+extern void *calloc(size_t size, size_t len);
+#define bt_mesh_calloc(size)    calloc(1, (size)) //calloc(1, (size))
+#endif /* CFG_IOT_SDK CFG_IOT_SDK */
 #endif /* CONFIG_BLE_MESH_ALLOC_FROM_PSRAM_FIRST */
 #define bt_mesh_free(p)         vPortFree((p))
 

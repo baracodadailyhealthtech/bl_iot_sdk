@@ -1,5 +1,14 @@
 # Changes
 
+## 2023-12-19
+1.[BL616][BL702L]Fix the issue that ble connection will be disconnected with reason 0x22(LMP response timeout) when central and peripheral devices sent connection parameter request at the same time.
+
+## 2023-11-30
+1.[BL702L][bl616]fix the issue that it fails to add device to resolving list.
+
+## 2023-11-30
+1.[BL616]fix crash caused by btblecontroller irq not disable and clear.
+
 ## 2023-11-2
 1.[BL616/BL702L]Add the feature of setting ble connection window.
 

@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <errno.h>
+#include <bt_errno.h>
 
-#include "src/mesh.h"
+#include "../../../../blemesh/src/mesh.h"
 #include "access.h"
 #include "mesh_common.h"
 #include "generic_server.h"

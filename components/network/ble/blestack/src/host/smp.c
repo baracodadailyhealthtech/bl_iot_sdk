@@ -12,7 +12,7 @@
 
 #include <zephyr.h>
 #include <stddef.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <string.h>
 #include <atomic.h>
 #include <misc/util.h>
@@ -27,13 +27,13 @@
 #include <../include/bluetooth/buf.h>
 
 #include "constants.h"
-#include "aes.h"
+#include <tinycrypt/include/tinycrypt/aes.h>
 #include "utils.h"
 #include "cmac_mode.h"
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_SMP)
 #define LOG_MODULE_NAME bt_smp
-#include "log.h"
+#include "bt_log.h"
 
 #include "hci_core.h"
 #include "ecc.h"
@@ -806,7 +806,7 @@ static int smp_g2(const u8_t u[32], const u8_t v[32],
 	memcpy(passkey, xs + 12, 4);
 	*passkey = sys_be32_to_cpu(*passkey) % 1000000;
 
-	BT_DBG("passkey %u", *passkey);
+	BT_DBG("passkey %lu", *passkey);
 
 	return 0;
 }
@@ -917,8 +917,8 @@ static void smp_check_complete(struct bt_conn *conn, u8_t dist_complete)
 #if defined(CONFIG_BT_BREDR)
 	if (conn->type == BT_CONN_TYPE_BR) {
 		struct bt_smp_br *smp;
-
-		chan = bt_l2cap_le_lookup_tx_cid(conn, BT_L2CAP_CID_BR_SMP);
+        extern struct bt_l2cap_chan *bt_l2cap_br_lookup_tx_cid(struct bt_conn *conn, uint16_t cid);
+		chan = bt_l2cap_br_lookup_tx_cid(conn, BT_L2CAP_CID_BR_SMP);
 		__ASSERT(chan, "No SMP channel found");
 
 		smp = CONTAINER_OF(chan, struct bt_smp_br, chan);
@@ -4662,7 +4662,7 @@ int bt_smp_sign_verify(struct bt_conn *conn, struct net_buf *buf)
 	cnt = sys_cpu_to_le32(keys->remote_csrk.cnt);
 	memcpy(net_buf_tail(buf) - sizeof(sig), &cnt, sizeof(cnt));
 
-	BT_DBG("Sign data len %zu key %s count %u", buf->len - sizeof(sig),
+	BT_DBG("Sign data len %zu key %s count %lu", buf->len - sizeof(sig),
 	       bt_hex(keys->remote_csrk.val, 16), keys->remote_csrk.cnt);
 
 	err = smp_sign_buf(keys->remote_csrk.val, buf->data,
@@ -4704,7 +4704,7 @@ int bt_smp_sign(struct bt_conn *conn, struct net_buf *buf)
 	cnt = sys_cpu_to_le32(keys->local_csrk.cnt);
 	memcpy(net_buf_tail(buf) - 12, &cnt, sizeof(cnt));
 
-	BT_DBG("Sign data len %u key %s count %u", buf->len,
+	BT_DBG("Sign data len %u key %s count %lu", buf->len,
 	       bt_hex(keys->local_csrk.val, 16), keys->local_csrk.cnt);
 
 	err = smp_sign_buf(keys->local_csrk.val, buf->data, buf->len - 12);

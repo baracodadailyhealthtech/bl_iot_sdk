@@ -16,14 +16,10 @@ include $(PROJECT_PATH)/$(notdir $(PROJECT_PATH))/bouffalo_ext.mk
 endif
 
 ifeq ($(CONFIG_LINK_CUSTOMER),1)
-ifeq ($(CONFIG_PDS_CPU_PWROFF),1)
-LINKER_SCRIPTS := bl702_demo_event_pds.ld
-endif
-
-COMPONENT_ADD_LDFLAGS += -L $(PROJECT_PATH)/$(notdir $(PROJECT_PATH)) $(addprefix -T ,$(LINKER_SCRIPTS))
-##
-COMPONENT_ADD_LINKER_DEPS := $(addprefix ,$(LINKER_SCRIPTS))
-
+LINKER_SCRIPTS := flash_lp.ld
+$(info use $(LINKER_SCRIPTS))
+COMPONENT_ADD_LDFLAGS += -L $(BL60X_SDK_PATH)/components/platform/soc/bl702/bl702/evb/ld/ $(addprefix -T ,$(LINKER_SCRIPTS))
+COMPONENT_ADD_LINKER_DEPS := $(addprefix $(BL60X_SDK_PATH)/components/platform/soc/bl702/bl702/evb/ld/,$(LINKER_SCRIPTS))
 endif ## CONFIG_LINK_CUSTOMER
 
 ifeq ($(CONFIG_PDS_ENABLE),1)

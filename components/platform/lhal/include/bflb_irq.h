@@ -10,8 +10,11 @@
 /** @addtogroup IRQ
   * @{
   */
-
+#ifndef BL_IOT_SDK
 typedef void (*irq_callback)(int irq, void *arg);
+#else
+typedef void (*irq_callback)(void *arg);
+#endif
 
 /**
  * @brief IRQ configuration structure

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -224,7 +224,7 @@ __attribute__((weak)) void btble_uart_init(uint8_t uartid)
     struct bflb_uart_config_s cfg;
 
     uart_id = uartid;
-    sprintf((char *)uart_name, "uart%d", uartid);
+    snprintf((char *)uart_name,sizeof(uart_name)-1, "uart%d", uartid);
     btble_uart = bflb_device_get_by_name(uart_name);
 
     bflb_uart_txint_mask(btble_uart, true);

@@ -4,7 +4,7 @@
 #include "conn_internal.h"
 #include "ble_rc_voice.h"
 #include "ble_rc_hog.h"
-#include "log.h"
+#include "bt_log.h"
 #include "adpcm.h"
 #include "bl_port.h"
 #include "gatt.h"

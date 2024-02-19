@@ -14,9 +14,9 @@
 // limitations under the License.
 
 #include <string.h>
-#include <errno.h>
+#include <bt_errno.h>
 
-#include "src/mesh.h"
+#include "../../../../blemesh/src/mesh.h"
 #include "include/main.h"
 #include "transport.h"
 #include "foundation.h"

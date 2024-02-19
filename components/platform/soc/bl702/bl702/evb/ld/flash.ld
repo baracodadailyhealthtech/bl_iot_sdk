@@ -122,17 +122,16 @@ SECTIONS
 
     /* tcm code that should be retentive after hbn wakeup */
     *libbl702_std.a:bl702_romapi.o(.tcm_code.* .sclock_rlt_code.*)
-    *libbl702_std.a:bl702_glb.o(.tcm_code.* .sclock_rlt_code.*)
     *libbl702_std.a:bl702_aon.o(.tcm_code.* .sclock_rlt_code.*)
+    *libbl702_std.a:bl702_glb.o(.tcm_code.* .sclock_rlt_code.*)
+    *libbl702_std.a:bl702_hbn.o(.tcm_code.* .sclock_rlt_code.*)
     PROVIDE ( _hbn_restore_tcm_run_end = . );
 
     /* data that should be retentive after hbn wakeup */
     *liblmac154.a:*(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
     *libbl702_std.a:*(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
-    *libhosal.a:bl_adc.o(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
     *libhosal.a:bl_gpio.o(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
-    *libhosal.a:bl_sys.o(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
-    *libhosal.a:bl_timer.o(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
+    *libhosal.a:hosal_gpio.o(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
     *libhosal.a:bl_uart.o(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
     *libhosal.a:hosal_uart.o(.sdata.* .srodata.* .sbss.* .bss.* COMMON)
     PROVIDE ( _hbn_restore_data_run_end = . );
@@ -146,11 +145,6 @@ SECTIONS
   {
     *(.hbn_noinit)
     *(.retention_noinit)
-
-    /* PDS backup address */
-    . = ALIGN(4);
-    PROVIDE ( __ld_pds_bak_addr = . );
-    . = . + 116;
   } >hbnram
 
   .rsvd (NOLOAD) :

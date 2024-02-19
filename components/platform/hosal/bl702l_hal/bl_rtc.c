@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -92,13 +92,39 @@ void rc32k_cal(void)
     }
 }
 
+void xtal32k_fix(void)
+{
+    uint32_t tmpVal;
+    
+    tmpVal = BL_RD_REG(HBN_BASE, HBN_XTAL32K);
+    tmpVal = BL_CLR_REG_BIT(tmpVal, HBN_XTAL32K_HIZ_EN);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, HBN_XTAL32K_INV_STRE, 3);
+    tmpVal = BL_CLR_REG_BIT(tmpVal, HBN_XTAL32K_AC_CAP_SHORT);
+    BL_WR_REG(HBN_BASE, HBN_XTAL32K, tmpVal);
+}
+
 
 void bl_rtc_init(void)
 {
+    uint32_t tmpVal;
+    uint32_t pu32k;
+    
 #ifdef CFG_USE_XTAL32K
+    tmpVal = BL_RD_REG(HBN_BASE, HBN_XTAL32K);
+    pu32k = BL_GET_REG_BITS_VAL(tmpVal, HBN_PU_XTAL32K);
+    if(!pu32k){
+        HBN_Power_On_Xtal_32K();
+    }
+    
     HBN_32K_Sel(HBN_32K_XTAL);
-    *(volatile uint32_t *)0x4000F204 &= ~(1U << 0);
+    xtal32k_fix();
 #else
+    tmpVal = BL_RD_REG(HBN_BASE, HBN_GLB);
+    pu32k = BL_GET_REG_BITS_VAL(tmpVal, HBN_PU_RC32K);
+    if(!pu32k){
+        HBN_Power_On_RC32K();
+    }
+    
     HBN_32K_Sel(HBN_32K_RC);
     rc32k_cal();
 #endif

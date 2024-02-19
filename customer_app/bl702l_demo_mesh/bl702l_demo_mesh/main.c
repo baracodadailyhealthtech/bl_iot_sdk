@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -34,7 +34,6 @@
 #include "bluetooth.h"
 #include "hci_driver.h"
 #include "hci_core.h"
-#include "mesh_cli_cmds.h"
 #if defined(CONFIG_BT_OAD_SERVER)
 #include "oad_main.h"
 #endif
@@ -42,7 +41,7 @@
 #if defined(CONFIG_BT_STACK_CLI)
 #include"ble_cli_cmds.h"
 #endif
-#define CONFIG_MESH_APP  0
+#include "bt_log.h"
 
 #if defined(CFG_BLE_ENABLE)
 extern int mesh_app_init(void);
@@ -68,11 +67,7 @@ void bt_enable_cb(int err)
         #ifdef CONFIG_BT_STACK_CLI 
         ble_cli_register();
         #endif
-        #if CONFIG_MESH_APP
         mesh_app_init();
-        #else
-        blemesh_cli_register();
-        #endif
     }
 }
 void ble_init(void)

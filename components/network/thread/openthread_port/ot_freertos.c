@@ -244,8 +244,6 @@ void otrStart(otRadio_opt_t opt)
     assert(ot_extLock != NULL);
 
     otrLock();
-
     xTaskCreate(otrStackTask, "threadTask", OT_TASK_SIZE, (void *)((uint32_t)opt.byte), 15, &ot_taskHandle);
-
     otrUnlock();
 }

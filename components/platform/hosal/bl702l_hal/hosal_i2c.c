@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -35,6 +35,58 @@
 #include "hosal_i2c.h"
 #include "blog.h"
 
+#if 0
+static void hosal_i2c_set_clock(I2C_ID_Type i2cNo, uint32_t clk)
+{
+    uint32_t tmpVal;
+    uint32_t I2Cx = I2C_BASE;
+    uint32_t phase, phase0, phase1, phase2, phase3;
+    uint32_t bias;
+
+    phase = Clock_Peripheral_Clock_Get(BL_PERIPHERAL_CLOCK_I2C0);
+    phase = (phase + clk / 2) / clk - 4;
+    phase0 = (phase + 4) / 8;
+    phase2 = (phase * 3 + 4) / 8;
+    phase3 = (phase + 4) / 8;
+    phase1 = phase - (phase0 + phase2 + phase3);
+    tmpVal = BL_RD_REG(I2Cx, I2C_CONFIG);
+
+    if (BL_IS_REG_BIT_SET(tmpVal, I2C_CR_I2C_DEG_EN) && (BL_IS_REG_BIT_SET(tmpVal, I2C_CR_I2C_SCL_SYNC_EN))) {
+        bias = BL_GET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_DEG_CNT);
+        bias += 1;
+    } else {
+        bias = 0;
+    }
+    if (BL_IS_REG_BIT_SET(tmpVal, I2C_CR_I2C_SCL_SYNC_EN)) {
+        bias += 3;
+    }
+
+    if (phase1 < (bias + 1)) {
+        phase1 = 1;
+    } else {
+        phase1 -= bias;
+    }
+
+    tmpVal = BL_RD_REG(I2Cx, I2C_PRD_START);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_S_PH_0, phase0);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_S_PH_1, phase1);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_S_PH_2, phase2);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_S_PH_3, phase3);
+    BL_WR_REG(I2Cx, I2C_PRD_START, tmpVal);
+    tmpVal = BL_RD_REG(I2Cx, I2C_PRD_STOP);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_P_PH_0, phase0);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_P_PH_1, phase1);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_P_PH_2, phase2);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_P_PH_3, phase3);
+    BL_WR_REG(I2Cx, I2C_PRD_STOP, tmpVal);
+    tmpVal = BL_RD_REG(I2Cx, I2C_PRD_DATA);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_D_PH_0, phase0);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_D_PH_1, phase1);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_D_PH_2, phase2);
+    tmpVal = BL_SET_REG_BITS_VAL(tmpVal, I2C_CR_I2C_PRD_D_PH_3, phase3);
+    BL_WR_REG(I2Cx, I2C_PRD_DATA, tmpVal);
+}
+
 static void hosal_i2c_adjust_clock(uint32_t scl_freq)
 {
     uint32_t div = 1;
@@ -56,7 +108,9 @@ static void hosal_i2c_adjust_clock(uint32_t scl_freq)
     }
 
     GLB_Set_I2C_CLK(1, GLB_I2C_CLK_SRC_BCLK, div - 1);
+    hosal_i2c_set_clock(I2C0_ID, scl_freq);
 }
+#endif
 
 int hosal_i2c_init(hosal_i2c_dev_t *i2c)
 {
@@ -69,7 +123,7 @@ int hosal_i2c_init(hosal_i2c_dev_t *i2c)
 
     GLB_PER_Clock_UnGate(GLB_AHB_CLOCK_I2C);
     GLB_Set_I2C_CLK(1, GLB_I2C_CLK_SRC_BCLK, 0);
-    I2C_SetSclSync(i2c->port, 0);
+    //I2C_SetSclSync(i2c->port, 0);
 
     gpiopins[0] = i2c->config.scl;
     gpiopins[1] = i2c->config.sda;
@@ -104,7 +158,8 @@ int hosal_i2c_master_send(hosal_i2c_dev_t *i2c, uint16_t dev_addr, const uint8_t
     i2c_cfg_send.data = (uint8_t *)data;
     i2c_cfg_send.dataSize = size;
 
-    hosal_i2c_adjust_clock(i2c->config.freq);
+    //hosal_i2c_adjust_clock(i2c->config.freq);
+    I2C_ClockSet(i2c->port, i2c->config.freq);
     return I2C_MasterSendBlocking(i2c->port, &i2c_cfg_send);
 }
 
@@ -133,7 +188,8 @@ int hosal_i2c_master_recv(hosal_i2c_dev_t *i2c, uint16_t dev_addr, uint8_t *data
     i2c_cfg_recv.data = (uint8_t *)data;
     i2c_cfg_recv.dataSize = size;
 
-    hosal_i2c_adjust_clock(i2c->config.freq);
+    //hosal_i2c_adjust_clock(i2c->config.freq);
+    I2C_ClockSet(i2c->port, i2c->config.freq);
     return I2C_MasterReceiveBlocking(i2c->port, &i2c_cfg_recv);
 }
 
@@ -189,7 +245,8 @@ int hosal_i2c_mem_write(hosal_i2c_dev_t *i2c, uint16_t dev_addr, uint32_t mem_ad
     i2c_cfg_send.data = (uint8_t *)data;
     i2c_cfg_send.dataSize = size;
 
-    hosal_i2c_adjust_clock(i2c->config.freq);
+    //hosal_i2c_adjust_clock(i2c->config.freq);
+    I2C_ClockSet(i2c->port, i2c->config.freq);
     return I2C_MasterSendBlocking(i2c->port, &i2c_cfg_send);
 }
 
@@ -221,7 +278,8 @@ int hosal_i2c_mem_read(hosal_i2c_dev_t *i2c, uint16_t dev_addr, uint32_t mem_add
     i2c_cfg_recv.data = (uint8_t *)data;
     i2c_cfg_recv.dataSize = size;
 
-    hosal_i2c_adjust_clock(i2c->config.freq);
+    //hosal_i2c_adjust_clock(i2c->config.freq);
+    I2C_ClockSet(i2c->port, i2c->config.freq);
     return I2C_MasterReceiveBlocking(i2c->port, &i2c_cfg_recv);
 }
 

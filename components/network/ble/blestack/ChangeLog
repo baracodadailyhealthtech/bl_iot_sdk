@@ -1,5 +1,28 @@
 # Changes
 
+## 2024-01-16
+1.Fix the issue that gatt ccc and sc are not removed if upper layer calls bt_unpair with the peer address which is not identity address.
+2.Fix the memory leak issue because conn_update timer is not freed in some corner case.
+3.Fix the assert issue in hci_tx_thread because conn_cleanup is called twice in some corner case.
+
+## 2024-01-11
+1.Fix an assert issue caused by a risk that upper layer disconnect le connection while target's adv has been received by host in connection scan state.
+
+## 2024-01-08
+1.Fix the issue that the att response of previous att request fails to be handled because the previous att request's req context is overwritten by the next att request in a corner case.
+
+## 2024-01-02
+1.Fix the issue that it fails to remove sc configurations from flash.
+
+## 2023-12-29
+1.Fix the issue that it fails to start gatt discovery in a new connection if gatt discovery returns error directly in previous connection.
+
+## 2023-12-26
+1.Fix the issue that gatt service changed configuration cannot be saved because sc entries are all used.
+
+## 2023-12-22
+1.Fix the assert issue that it still accesses connection tx queue which is cleaned and freed to initiate tx in le disconnected state in a corner case.
+
 ## 2023-11-28
 1.Fix an error that buf is released early when send gatt req, Occurs in a throughput test scene.
 

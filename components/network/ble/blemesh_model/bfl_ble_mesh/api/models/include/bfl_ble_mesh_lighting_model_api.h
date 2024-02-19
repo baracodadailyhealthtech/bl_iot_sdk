@@ -26,11 +26,11 @@
 extern "C" {
 #endif
 
-const struct bt_mesh_model_cb bt_mesh_light_lightness_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_light_ctl_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_light_hsl_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_light_xyl_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_light_lc_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_lightness_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_ctl_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_hsl_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_xyl_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_lc_cli_cb;
 
 /** @def    BFL_BLE_MESH_MODEL_LIGHT_LIGHTNESS_CLI
  *
@@ -593,19 +593,19 @@ bfl_err_t bfl_ble_mesh_light_client_set_state(bfl_ble_mesh_client_common_param_t
 /**
  * @brief Lighting Server Models related context.
  */
-const struct bt_mesh_model_cb bt_mesh_light_lightness_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_lightness_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_ctl_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_ctl_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_ctl_temp_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_hsl_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_hsl_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_hsl_hue_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_hsl_sat_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_xyl_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_xyl_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_lc_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_light_lc_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_lightness_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_lightness_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_ctl_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_ctl_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_ctl_temp_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_hsl_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_hsl_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_hsl_hue_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_hsl_sat_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_xyl_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_xyl_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_lc_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_light_lc_setup_srv_cb;
 
 /** @def    BFL_BLE_MESH_MODEL_LIGHT_LIGHTNESS_SRV
  *

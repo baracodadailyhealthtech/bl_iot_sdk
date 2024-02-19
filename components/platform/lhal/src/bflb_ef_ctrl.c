@@ -30,21 +30,41 @@
 #define EF_CTRL_EFUSE_R0_SIZE 128
 #endif
 
-#ifndef BOOTROM
-#define EF_CTRL_LOAD_BEFORE_READ_R0 bflb_ef_ctrl_load_efuse_r0(dev)
-#define EF_CTRL_LOAD_BEFORE_READ_R1 bflb_ef_ctrl_load_efuse_r1(dev)
-#else
-#define EF_CTRL_LOAD_BEFORE_READ_R0
-#define EF_CTRL_LOAD_BEFORE_READ_R1
-#endif
 #define EF_CTRL_DATA0_CLEAR bflb_ef_ctrl_clear_data_reg0(dev)
 #define EF_CTRL_DATA1_CLEAR bflb_ef_ctrl_clear_data_reg1(dev)
 
-static int bflb_ef_ctrl_busy(struct bflb_device_s *dev);
 #if defined(BL702) || defined(BL602) || defined(BL702L)
 extern void bflb_efuse_switch_cpu_clock_save(void);
 extern void bflb_efuse_switch_cpu_clock_restore(void);
 #endif
+
+static ATTR_TCM_SECTION size_t bflb_ef_ctrl_strlen(const char *s)
+{
+  const char *sc;
+  for (sc = s; *sc != '\0'; ++sc);
+  return sc - s;
+}
+
+/****************************************************************************/ /**
+ * @brief  Check efuse busy status
+ *
+ * @param dev  ef control device pointer
+ *
+ * @return 1 for busy 0 for not
+ *
+*******************************************************************************/
+static int ATTR_TCM_SECTION bflb_ef_ctrl_busy(struct bflb_device_s *dev)
+{
+    uint32_t reg_val;
+
+    reg_val = getreg32(BFLB_EF_CTRL_BASE + EF_CTRL_EF_IF_CTRL_0_OFFSET);
+
+    if (reg_val & EF_CTRL_EF_IF_0_BUSY_MASK) {
+        return 1;
+    }
+
+    return 0;
+}
 
 /****************************************************************************/ /**
  * @brief  Switch efuse region 0 control to AHB clock
@@ -468,27 +488,6 @@ static void ATTR_TCM_SECTION bflb_ef_ctrl_load_efuse_r1(struct bflb_device_s *de
 #endif
 
 /****************************************************************************/ /**
- * @brief  Check efuse busy status
- *
- * @param dev  ef control device pointer
- *
- * @return 1 for busy 0 for not
- *
-*******************************************************************************/
-static int ATTR_TCM_SECTION bflb_ef_ctrl_busy(struct bflb_device_s *dev)
-{
-    uint32_t reg_val;
-
-    reg_val = getreg32(BFLB_EF_CTRL_BASE + EF_CTRL_EF_IF_CTRL_0_OFFSET);
-
-    if (reg_val & EF_CTRL_EF_IF_0_BUSY_MASK) {
-        return 1;
-    }
-
-    return 0;
-}
-
-/****************************************************************************/ /**
  * @brief  Check efuse auto load done
  *
  * @param dev  ef control device pointer
@@ -720,7 +719,7 @@ void ATTR_TCM_SECTION bflb_ef_ctrl_read_common_trim(struct bflb_device_s *dev, c
     trim_list_len = bflb_ef_ctrl_get_common_trim_list(&trim_list);
 
     for (i = 0; i < trim_list_len; i++) {
-        if (arch_memcmp(name, trim_list[i].name, strlen(name)) == 0) {
+        if (arch_memcmp(name, trim_list[i].name, bflb_ef_ctrl_strlen(name)) == 0) {
             /* switch clock */
             if (trim_list[i].en_addr <= EF_CTRL_EFUSE_R0_SIZE) {
                 /* Switch to AHB clock */
@@ -796,7 +795,7 @@ void ATTR_TCM_SECTION bflb_ef_ctrl_write_common_trim(struct bflb_device_s *dev, 
 
     irq_stat = bflb_irq_save();
     for (i = 0; i < trim_list_len; i++) {
-        if (memcmp(name, trim_list[i].name, strlen(name)) == 0) {
+        if (arch_memcmp(name, trim_list[i].name, bflb_ef_ctrl_strlen(name)) == 0) {
 #if defined(BL702) || defined(BL602) || defined(BL702L)
             bflb_efuse_switch_cpu_clock_save();
 #endif
@@ -916,7 +915,7 @@ uint32_t ATTR_TCM_SECTION bflb_ef_ctrl_get_byte_zero_cnt(uint8_t val)
  * @return Parity bit value
  *
 *******************************************************************************/
-uint8_t ATTR_CLOCK_SECTION bflb_ef_ctrl_get_trim_parity(uint32_t val, uint8_t len)
+uint8_t ATTR_TCM_SECTION bflb_ef_ctrl_get_trim_parity(uint32_t val, uint8_t len)
 {
     uint8_t cnt = 0;
     uint8_t i = 0;

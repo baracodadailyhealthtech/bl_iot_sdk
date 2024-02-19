@@ -7,7 +7,7 @@
  */
 
 #include <zephyr.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <util.h> /* Modified by bouffalo */
 #include <byteorder.h> /* Modified by bouffalo */
 
@@ -17,7 +17,7 @@
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_MESH_DEBUG_ACCESS)
 #define LOG_MODULE_NAME bt_mesh_access
-#include "log.h" /* Modified by bouffalo */
+#include "bt_log.h" /* Modified by bouffalo */
 
 #include "mesh.h"
 #include "adv.h"
@@ -103,7 +103,7 @@ static s32_t next_period(struct bt_mesh_model *mod)
 
 	elapsed = k_uptime_get_32() - pub->period_start;
 
-	BT_DBG("Publishing took %ums", elapsed);
+	BT_DBG("Publishing took %lums", elapsed);
 
 	if (elapsed >= period) {
 		BT_WARN("Publication sending took longer than the period");
@@ -128,7 +128,7 @@ static void publish_sent(int err, void *user_data)
 	}
 
 	if (delay) {
-		BT_DBG("Publishing next time in %dms", delay);
+		BT_DBG("Publishing next time in %ldms", delay);
 		k_delayed_work_submit(&mod->pub->timer, K_MSEC(delay));
 	}
 }
@@ -206,7 +206,7 @@ static void mod_publish(struct k_work *work)
 	BT_DBG("");
 
 	period_ms = bt_mesh_model_pub_period_get(pub->mod);
-	BT_DBG("period %u ms", period_ms);
+	BT_DBG("period %lu ms", period_ms);
 
 	if (pub->count) {
 		err = publish_retransmit(pub->mod);
@@ -598,9 +598,9 @@ void bt_mesh_model_recv(struct bt_mesh_net_rx *rx, struct net_buf_simple *buf)
 		return;
 	}
 	#if defined(CONFIG_AUTO_PTS)
-	BT_WARN("OpCode 0x%08x", opcode);
+	BT_WARN("OpCode 0x%08lx", opcode);
 	#else
-	BT_DBG("OpCode 0x%08x", opcode);
+	BT_DBG("OpCode 0x%08lx", opcode);
 	#endif /* CONFIG_AUTO_PTS */
 
 	for (i = 0; i < dev_comp->elem_count; i++) {
@@ -621,7 +621,7 @@ void bt_mesh_model_recv(struct bt_mesh_net_rx *rx, struct net_buf_simple *buf)
 
 		op = find_op(models, count, opcode, &model);
 		if (!op) {
-			BT_DBG("No OpCode 0x%08x for elem %d", opcode, i);
+			BT_DBG("No OpCode 0x%08lx for elem %d", opcode, i);
 			continue;
 		}
 
