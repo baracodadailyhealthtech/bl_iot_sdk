@@ -177,6 +177,12 @@ for define in defines:
         if define.startswith('CONFIG_'):
            redefines.append(define.replace('CONFIG_', '')) 
 
+# find em size
+bl_em_size = redefines
+for define in defines:
+    if isinstance(define, list):
+        if define[0] == "CONFIG_EM_SIZE":
+           bl_em_size = int(define[1]) * 1024
 
 
 env.Append(
@@ -251,6 +257,7 @@ env.Append(
         "-u _printf_float",
         "-Wl,--defsym=__stack_size=%d" % bl_stack_size,
         "-Wl,--defsym=__CACHE_SIZE=%d" % bl_cache_size,
+        "-Wl,--defsym=__EM_SIZE=%d" % bl_em_size,
         "-Wl,--gc-sections",
         "-Wl,-static",
         "-Wl,-EL",
