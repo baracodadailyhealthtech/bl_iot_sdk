@@ -259,6 +259,7 @@ env.Append(
         "-Wl,--defsym=__CACHE_SIZE=%d" % bl_cache_size,
         "-Wl,--defsym=__EM_SIZE=%d" % bl_em_size,
         "-Wl,--gc-sections",
+        "-Wl,--no-warn-rwx-segments",
         "-Wl,-static",
         "-Wl,-EL",
     ],
