@@ -17,7 +17,6 @@
 				["CFG_CLI_DISABLE", 1],
 				["CONFIG_LINK_CUSTOMER",1],
 				["CONFIG_SYS_DMA_ENABLE",1],
-				["CONF_ENABLE_COREDUMP",1],
 				["CONFIG_MBEDTLS_AES_USE_HW",1],
 				["CONFIG_MBEDTLS_SHA256_USE_HW",1],
 				["CONFIG_MBEDTLS_BIGNUM_USE_HW",1],
@@ -227,7 +226,7 @@
 		"bl702l_ble": {
 			"defines": [
 				["CONFIG_BLE_ACT_MAX", 5],
-				["CONFIG_BT_ALLROLES", 1],
+				["CONFIG_BT_PERIPHERAL", 1],
 				["CONFIG_DISABLE_BT_HOST_PRIVACY", 1],
 				["CONFIG_LONG_RANG", 0],
 				["CONFIG_PHY_UPDATE", 0],
@@ -239,13 +238,13 @@
 				"components/network/ble/btblecontroller/btble_inc",
 				"components/platform/soc/bl702l/bl702l_rf/api"
 			],
-			"source_dir": "components/network/ble/btblecontroller_702l_m4s1p",
+			"source_dir": "components/network/ble/btblecontroller_702l_m0s2p",
 			"library_dirs": [
 				"components/platform/soc/bl702l/bl702l_rf/lib",
-				"components/network/ble/btblecontroller_702l_m4s1p/lib"
+				"components/network/ble/btblecontroller_702l_m0s2p/lib"
 			],
 			"link_libraries": [
-				"btblecontroller_702l_m4s1p",
+				"btblecontroller_702l_m0s2p",
 				"bl702l_rf"
 			]
 		},
