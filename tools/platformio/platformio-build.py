@@ -228,7 +228,8 @@ env.Append(
         "-Wno-unused-function",
         "-Wno-format",
         "-Wno-discarded-qualifiers",
-        "-Wno-strict-aliasing"
+        "-Wno-strict-aliasing",
+        "-Wno-array-parameter"
 
     ],
     CPPDEFINES = defines + redefines + [
