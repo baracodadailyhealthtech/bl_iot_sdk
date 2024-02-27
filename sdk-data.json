@@ -237,13 +237,13 @@
 				"components/network/ble/btblecontroller/btble_inc",
 				"components/platform/soc/bl702l/bl702l_rf/api"
 			],
-			"source_dir": "components/network/ble/btblecontroller_702l_m0s2p",
+			"source_dir": "components/network/ble/btblecontroller_702l_<ble_stack>",
 			"library_dirs": [
 				"components/platform/soc/bl702l/bl702l_rf/lib",
-				"components/network/ble/btblecontroller_702l_m0s2p/lib"
+				"components/network/ble/btblecontroller_702l_<ble_stack>/lib"
 			],
 			"link_libraries": [
-				"btblecontroller_702l_m0s2p",
+				"btblecontroller_702l_<ble_stack>",
 				"bl702l_rf"
 			]
 		},

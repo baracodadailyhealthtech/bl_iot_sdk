@@ -33,6 +33,20 @@ bl_stack_size = board_config.get("build.stack_size")
 bl_cache_size = board_config.get("build.cache_size")
 bl_mcu = board_config.get("build.mcu")
 bl_debug_print = board_config.get("build.debug_print", False)
+bl_stack = board_config.get("build.ble_stack", "m1s1p")
+
+
+# set BL702L BLE stack
+SDKDATA['components']["bl702l_ble"]["source_dir"] = SDKDATA['components']["bl702l_ble"]["source_dir"].replace("<ble_stack>", bl_stack)
+library_dirs = []
+for library_dir in SDKDATA['components']["bl702l_ble"]["library_dirs"]:
+    library_dirs.append(library_dir.replace("<ble_stack>", bl_stack))
+SDKDATA['components']["bl702l_ble"]["library_dirs"] = library_dirs
+link_libraries = []
+for link_library in SDKDATA['components']["bl702l_ble"]["link_libraries"]:
+    link_libraries.append(link_library.replace("<ble_stack>", bl_stack))
+SDKDATA['components']["bl702l_ble"]["link_libraries"] = link_libraries
+
 
 def debug_print(*argv):
     if bl_debug_print == True:
@@ -78,6 +92,7 @@ for component in COMPONENTS:
 print("BOUFFALO SDK:")
 print(" - Version: " + SDKDATA['sdk']['version'])
 print(" - Chip: " + bl_chipname)
+print(" - Stack: " + bl_stack)
 print(" - Components: " + ", ".join(COMPONENTS))
 
 #
