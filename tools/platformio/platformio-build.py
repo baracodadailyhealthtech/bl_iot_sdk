@@ -280,7 +280,6 @@ env.Append(
         "-Wl,-EL",
     ],
     LIBS= list(set(link_libraries)) + [
-        "c",
         "m"
     ],
     LIBPATH= library_dirs + [
