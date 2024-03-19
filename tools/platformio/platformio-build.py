@@ -289,7 +289,12 @@ env.Append(
 #
 # Linker requires preprocessing with correct RAM|ROM sizes
 #
-env.Replace(LDSCRIPT_PATH=board_config.get("build.linker_script"),)
+linker_scripts = []
+for script in board_config.get("build.linker_script").split('\n'):
+    if script != "":
+        linker_scripts.append(("-T", script))
+
+env.Prepend(LINKFLAGS=linker_scripts)
 
 #
 # Process configuration flags
