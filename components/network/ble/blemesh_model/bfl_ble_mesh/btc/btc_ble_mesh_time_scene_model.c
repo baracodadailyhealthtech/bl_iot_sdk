@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #include <string.h>
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "btc_ble_mesh_time_scene_model.h"
 #include "time_scene_client.h"

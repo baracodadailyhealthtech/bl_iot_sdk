@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -101,11 +101,18 @@ static void _dump_partition(void)
     }
 }
 
+uint32_t hal_boot2_get_pt_addr(void)
+{
+    if((*(volatile uint32_t *)0x40007074 >> 14) & 0x0F){
+        return 0x4202d000;
+    }else{
+        return 0x4202e094;
+    }
+}
+
 uint32_t hal_boot2_get_flash_addr(void)
 {
-    extern uint8_t __boot2_pt_addr_src;
-
-    return (uint32_t)&__boot2_pt_addr_src + 4 + 
+    return hal_boot2_get_pt_addr() + 4 + 
                      sizeof(PtTable_Config) + sizeof(PtTable_Entry_Config) * boot2_partition_table.table.ptTable.entryCnt + 4;
 }
 

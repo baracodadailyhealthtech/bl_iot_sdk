@@ -9,7 +9,7 @@ PROJECT_BOARD := evb
 export PROJECT_PATH PROJECT_BOARD
 #CONFIG_TOOLPREFIX :=
 
-BTBLECONTROLLER_LIBS := m1s1r m1s1rp m1s1p m2s1p m4s1p m8s1p m0s2p
+BTBLECONTROLLER_LIBS := m0s1p m0s1sp m0s2p m1s1p m0s1rp m2s1p m4s1p m8s1p
 BTBLECONTROLLER_LIB_DEFAULT := m1s1p
 BTBLECONTROLLER_LIB_PREFIX := btblecontroller_702l_
 
@@ -27,7 +27,17 @@ INCLUDE_COMPONENTS += newlibc hosal vfs yloop utils cli blog
 INCLUDE_COMPONENTS += blfdt
 INCLUDE_COMPONENTS += blmtd easyflash4
 INCLUDE_COMPONENTS += coredump
-INCLUDE_COMPONENTS += bl702l_rom_ext
+
+ifeq ($(CONFIG_BUILD_ROM_CODE),1)
+INCLUDE_COMPONENTS += bl702l_freertos
+else
+ifeq ($(CONFIG_CHIP_REVISION),A1)
+INCLUDE_COMPONENTS += bl702l_rom_a1
+else
+INCLUDE_COMPONENTS += bl702l_rom_a0
+endif
+endif
+
 ifeq ($(CONFIG_BLUETOOTH),1)
 ifeq ($(CONFIG_BTBLECONTROLLER_LIB),all)
 	INCLUDE_COMPONENTS += $(addprefix $(BTBLECONTROLLER_LIB_PREFIX), $(BTBLECONTROLLER_LIBS))
@@ -39,16 +49,16 @@ else
 	endif
 endif
 INCLUDE_COMPONENTS += blestack
+INCLUDE_COMPONENTS += btble_pds
+endif
 
 ifeq ($(CONFIG_BT_MESH),1)
 INCLUDE_COMPONENTS += blemesh
-
 ifeq ($(CONFIG_BT_MESH_MODEL),1)
 INCLUDE_COMPONENTS += blemesh_model
 endif
 endif
 
-endif
 INCLUDE_COMPONENTS += $(PROJECT_NAME)
 
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk
@@ -60,7 +70,6 @@ endif
 ifdef CONFIG_BLE_EM_SIZE
 EXTRA_LDFLAGS += -Wl,--defsym=__EM_SIZE=$(CONFIG_BLE_EM_SIZE)
 endif
-
 
 ifeq ($(CONFIG_BTBLECONTROLLER_LIB),all)
 LDFLAGS := $(filter-out $(addprefix -l$(BTBLECONTROLLER_LIB_PREFIX), $(filter-out $(BTBLECONTROLLER_LIB_DEFAULT), $(BTBLECONTROLLER_LIBS))), $(LDFLAGS))

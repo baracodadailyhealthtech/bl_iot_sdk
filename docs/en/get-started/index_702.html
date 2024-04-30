@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档</title>
+  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
   
 
   
@@ -40,7 +40,7 @@
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../index.html"/>
         <link rel="next" title="BL IOT SDK Development Guide" href="index_702L.html"/>
         <link rel="prev" title="BL702MIX 编程指南" href="../index.html"/> 
 
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1705-g429b6af2b
+                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
               </div>
             
           
@@ -105,7 +105,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#jtag-connection">JTAG Connection</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#software-installation">Software Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#software-installation">Software Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#set-compilation-environment">1. Set Compilation Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-environment-variables">2. Set Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-freedom-studio">3. Install Freedom Studio</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#project-compilation">Project Compilation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#firmware-programming">Firmware Programming</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#let-the-chip-enter-programming-mode">1. Let the chip enter programming mode</a></li>
@@ -269,17 +274,50 @@
 <blockquote>
 <div><p>Before starting to compile the project, please complete the installation of all the following tools correctly. The specific steps and environment variable settings are as follows:</p>
 <blockquote>
-<div><ul class="simple">
-<li><p><strong>MSYS2</strong>  <a class="reference external" href="./Developer_Environment_BL702/Windows-BL702/Quickstart_Windows_msys.html">MSYS32 Windows Platform Installation and Compilation</a></p></li>
-<li><p><strong>Freedom Studio</strong> <a class="reference external" href="./Developer_Environment_BL702/freedom_studio/freedom_studio.html">Freedom Studio + OpenOCD Installation and Debug</a></p></li>
-<li><p><strong>BLDevCube</strong> <a class="reference external" href="./Developer_Environment_BL702/BLFlashEnv/Burning_process.html">BLDevCube Firmare Programming</a></p></li>
-</ul>
-<div class="admonition important">
+<div><div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>Please pay attention to the settings of environment variables, drivers and other information in the document, which will avoid abnormal errors in subsequent operations.</p>
 </aside>
 </div></blockquote>
 </div></blockquote>
+<section id="set-compilation-environment">
+<h3>1. Set Compilation Environment<a class="headerlink" href="#set-compilation-environment" title="永久链接至标题"></a></h3>
+<ul>
+<li><p><a class="reference external" href="https://www.msys2.org/">Get the MSYS2 installation package and installation steps</a></p></li>
+<li><p>Open MSYS2 and install make, then enter the command: <code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code>,
+and follow the prompts until the installation is completed</p>
+<figure class="align-default">
+<img alt="" src="../_images/image150.png" />
+</figure>
+<figure class="align-default">
+<img alt="" src="../_images/image240.png" />
+</figure>
+</li>
+</ul>
+</section>
+<section id="set-environment-variables">
+<h3>2. Set Environment Variables<a class="headerlink" href="#set-environment-variables" title="永久链接至标题"></a></h3>
+<ul>
+<li><p>To compile using gcc, you need to add gcc to the environment variable in MSYS2. The method is as follows:</p>
+<blockquote>
+<div><p>1.(Recommended) Add the following instructions to the MSYS2 startup file home/xxx/.bash_profile:
+<code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=/yyy/zzz/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
+<p>2.(Not recommended, need to repeat this operation every time MSYS2 restarts) In the MSYS2 command line, directly enter the following command:
+<code class="docutils literal notranslate"><span class="pre">PATH=/yyy/zzz/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
+<p>Note: Here you need to replace the above yyy and zzz according to the actual path of the user's gcc, for example
+<code class="docutils literal notranslate"><span class="pre">PATH=/d/Work/Code/bl_iot_sdk/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="install-freedom-studio">
+<h3>3. Install Freedom Studio<a class="headerlink" href="#install-freedom-studio" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Freedom Studio</strong> <a class="reference external" href="./Developer_Environment_BL702/freedom_studio/freedom_studio.html">Freedom Studio + OpenOCD Install and Debug</a></p></li>
+</ul>
+</div></blockquote>
+</section>
 </section>
 <section id="project-compilation">
 <h2>Project Compilation<a class="headerlink" href="#project-compilation" title="永久链接至标题"></a></h2>
@@ -459,7 +497,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1705-g429b6af2b',
+            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

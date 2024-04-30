@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -39,8 +39,10 @@
 #include "bl616_glb.h"
 #include "wl_api.h"
 #include "bl616_pds.h"
+#include "bl616_mfg_media.h"
 #if defined(CFG_IOT_SDK)
 #include "bl_efuse.h"
+#include "bflb_efuse.h"
 #endif
 #define WL_API_RMEM_ADDR    0x20010600
 #endif
@@ -193,7 +195,7 @@ __attribute__((weak)) void btblecontroller_rf_restore()
 __attribute__((weak)) int btblecontroller_efuse_read_mac(uint8_t mac[6])
 {
     int status = 0;
-    uint8_t tmp[8];
+    uint8_t tmp[8] = {0};
 
     #if defined(CFG_IOT_SDK)
     #if defined(BL702L)
@@ -204,7 +206,7 @@ __attribute__((weak)) int btblecontroller_efuse_read_mac(uint8_t mac[6])
     status = bl_efuse_read_mac(tmp);
     #endif
     #else
-    bflb_efuse_get_chipid(tmp);
+    status = mfg_media_read_macaddr_with_lock(tmp, 1);
     #endif
     mac[0] = tmp[0];
     mac[1] = tmp[1];
@@ -230,5 +232,32 @@ __attribute__((weak)) void btblecontroller_pds_trim_rc32m()
 {
     PDS_Trim_RC32M();
 }
+
+__attribute__((weak)) int btblecontroller_printf(const char *fmt, ...)
+{
+    return 0;
+}
+
+__attribute__((weak)) uint8_t btblecontrolller_get_chip_version()
+{
+    extern void bflb_efuse_get_device_info(bflb_efuse_device_info_type *device_info);
+    bflb_efuse_device_info_type device_info;
+    bflb_efuse_get_device_info(&device_info);
+    return device_info.version;
+}
 #endif
+
+#if defined(CONFIG_BT_MFG_HCI_CMD) || defined(CONFIG_BLE_MFG_HCI_CMD)
+__attribute__((weak)) int btblecontroller_putchar(int c)
+{
+     #if defined(CFG_IOT_SDK)
+     extern int bl_putchar(int c);
+     return bl_putchar(c);
+     #else
+     extern int putchar(int c);
+     return putchar(c);
+     #endif
+}
+#endif
+
 

@@ -20,8 +20,3 @@ COMPONENT_SRCS := Src/usb_device.c \
 
 COMPONENT_OBJS := $(patsubst %.c,%.o, $(COMPONENT_SRCS))
 COMPONENT_SRCDIRS := Src
-
-##
-ifndef CONFIG_USE_STD_DRIVER
-CPPFLAGS += -DBFLB_USE_HAL_DRIVER
-endif

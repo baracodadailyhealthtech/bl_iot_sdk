@@ -11,7 +11,6 @@ CONFIG_PREFIX=otc
 
 CONFIG_LINK_METRICS=1
 CONFIG_CSL_RX=1
-CONFIG_ENABLE_FP=1
 # OPENTHREAD_TESTS_UNIT=1
 
 OPENTHREAD_RADIO=0
@@ -30,9 +29,8 @@ options="CONFIG_CPP_ENABLE=1 \
     CONFIG_FTD=$CONFIG_FTD \
     CONFIG_TIMESYNC=0 \
     CONFIG_LINK_METRICS=$CONFIG_LINK_METRICS \
-    CONFIG_CSL_RX=$CONFIG_CSL_RX"
-
-options=$options" CONFIG_ENABLE_FP=$CONFIG_ENABLE_FP"
+    CONFIG_CSL_RX=$CONFIG_CSL_RX \
+    CONFIG_CHIP_REVISION=A1"
 
 if [[ "$CONFIG_PREFIX" != "" ]]; then
     options=$options" CONFIG_PREFIX=\"$CONFIG_PREFIX\""
@@ -49,6 +47,7 @@ options=$options" CONFIG_OPENTHREAD_CLI_ENABLE=1"
 
 options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
 
-make $options -j2 $jobs 2>&1 | tee build_out/make.log
+#make $options -j2 $jobs 2>&1 | tee build_out/make.log
+make $options -j2 2>&1 | tee build_out/make.log
 
 exit $?

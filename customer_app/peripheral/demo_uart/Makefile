@@ -28,7 +28,7 @@ INCLUDE_COMPONENTS += $(SOC_DRV)_rf
 INCLUDE_COMPONENTS += $(SOC_DRV)_freertos
 else ifeq ("$(CONFIG_CHIP_NAME)", "BL702L")
 INCLUDE_COMPONENTS += $(SOC_DRV)_rf
-INCLUDE_COMPONENTS += $(SOC_DRV)_rom_ext
+INCLUDE_COMPONENTS += $(SOC_DRV)_freertos
 else ifeq ("$(CONFIG_CHIP_NAME)", "BL602")
 INCLUDE_COMPONENTS += freertos_riscv_ram
 endif

@@ -73,9 +73,8 @@ endif
 endif
 
 ifeq ($(CONFIG_THREAD), 1)
-INCLUDE_COMPONENTS += mbedtls_lts mdns openthread openthread_port 
-INCLUDE_COMPONENTS += openthread_utils_bl702 openthread_br 
-CONFIG_ETHERNET ?= 1
+INCLUDE_COMPONENTS += mbedtls_lts mdns openthread openthread_port
+INCLUDE_COMPONENTS += openthread_utils_bl702 openthread_br lwip
 endif
 
 ifeq ($(CONFIG_ETHERNET),1)

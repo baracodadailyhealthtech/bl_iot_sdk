@@ -60,7 +60,7 @@ enum {
 	BT_DEV_ADV_ADDRESS_IS_PUBLIC,
 #endif
 
-#if defined(CONFIG_AUTO_PTS)
+#if defined(CONFIG_BT_STACK_PTS) || defined(CONFIG_AUTO_PTS)
 	BT_DEV_SETTED_NON_RESOLV_ADDR, //The non-reslovable address have been set.
 #endif
 

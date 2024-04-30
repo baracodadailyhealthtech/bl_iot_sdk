@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档</title>
+  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
   
 
   
@@ -40,7 +40,7 @@
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../index.html"/>
         <link rel="next" title="API 参考" href="../api-reference/index.html"/>
         <link rel="prev" title="BL IOT SDK 开发指南" href="index_702.html"/> 
 
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1705-g429b6af2b
+                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
               </div>
             
           
@@ -101,16 +101,20 @@
 <li class="toctree-l2"><a class="reference internal" href="#section-1">概述</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#section-2">准备工作</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#section-3">硬件连接</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#section-4">软件安装</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#section-5">编译工程</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#section-6">烧录固件</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#section-7">1. 芯片进入烧写模式</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#bldevcube">2. 使用 BLDevCube 下载固件</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#section-8">3. 运行固件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-4">软件安装</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#section-5">1. 编译环境的建立</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#section-6">2. 设置环境变量</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#section-9">调试软件</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#section-10">1. 硬件跳线</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-7">编译工程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-8">烧录固件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#section-9">1. 芯片进入烧写模式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bldevcube">2. 使用 BLDevCube 下载固件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#section-10">3. 运行固件</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#section-11">调试软件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#section-12">1. 硬件跳线</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cklink">2. 安装和配置 CKLink</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#freedom-studio">3. 安装和使用 Freedom Studio</a></li>
 </ul>
@@ -233,19 +237,45 @@
 <blockquote>
 <div><p>在正式开始编译工程前，请先正确完成以下所有工具的安装，具体步骤以及环境变量设置如下:</p>
 <blockquote>
-<div><ul class="simple">
-<li><p><strong>MSYS2</strong>  <a class="reference external" href="./Developer_Environment_BL702/Windows-BL702/Quickstart_Windows_msys.html">MSYS32 Windows平台安装与编译</a></p></li>
-<li><p><strong>BLDevCube</strong> <a class="reference external" href="./Developer_Environment_BL702/BLFlashEnv/Burning_process.html">BLDevCube 固件烧录</a></p></li>
-</ul>
-<div class="admonition important">
+<div><div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>请您留意文档中，关于环境变量、驱动等信息的设置，这将避免后续操作的异常错误</p>
 </aside>
 </div></blockquote>
 </div></blockquote>
-</section>
 <section id="section-5">
-<h2>编译工程<a class="headerlink" href="#section-5" title="永久链接至标题"></a></h2>
+<h3>1. 编译环境的建立<a class="headerlink" href="#section-5" title="永久链接至标题"></a></h3>
+<ul>
+<li><p><a class="reference external" href="https://www.msys2.org/">获取MSYS2安装包和安装步骤</a></p></li>
+<li><p>打开MSYS2并安装make，输入命令：<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code>
+后回车，并根据提示直到安装完成</p>
+<figure class="align-default">
+<img alt="" src="../_images/image150.png" />
+</figure>
+<figure class="align-default">
+<img alt="" src="../_images/image240.png" />
+</figure>
+</li>
+</ul>
+</section>
+<section id="section-6">
+<h3>2. 设置环境变量<a class="headerlink" href="#section-6" title="永久链接至标题"></a></h3>
+<ul>
+<li><p>使用gcc进行编译，需要在MSYS2中将gcc添加至环境变量，方法如下：</p>
+<blockquote>
+<div><p>1.（推荐）在MSYS2的启动文件 home/xxx/.bash_profile 中添加如下指令：
+<code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=/yyy/zzz/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
+<p>2.（不推荐，每次MSYS2重启需要重复该操作）在MSYS2命令行中，直接输入如下指令：
+<code class="docutils literal notranslate"><span class="pre">PATH=/yyy/zzz/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
+<p>注：这里需要根据用户gcc所在实际路径替换上述yyy、zzz，例如
+<code class="docutils literal notranslate"><span class="pre">PATH=/d/Work/Code/bl_iot_sdk/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+<section id="section-7">
+<h2>编译工程<a class="headerlink" href="#section-7" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>本部分介绍如何编译 customer_app 目录下的 bl702l_demo_event 工程。</p>
 <ol class="arabic simple">
@@ -286,13 +316,13 @@
 </div></blockquote>
 </div></blockquote>
 </section>
-<section id="section-6">
-<h2>烧录固件<a class="headerlink" href="#section-6" title="永久链接至标题"></a></h2>
+<section id="section-8">
+<h2>烧录固件<a class="headerlink" href="#section-8" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>本部分介绍如何使用 <strong>BLDevCube</strong> 集成开发工具将固件烧写入 BL702L/704L DVK 开发板。</p>
 </div></blockquote>
-<section id="section-7">
-<h3>1. 芯片进入烧写模式<a class="headerlink" href="#section-7" title="永久链接至标题"></a></h3>
+<section id="section-9">
+<h3>1. 芯片进入烧写模式<a class="headerlink" href="#section-9" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>1.1 使用 <code class="docutils literal notranslate"><span class="pre">USB</span> <span class="pre">数据线</span></code> 连接 BL702L/704L DVK 开发板以后</p>
 <blockquote>
@@ -354,8 +384,8 @@
 </div></blockquote>
 </div></blockquote>
 </section>
-<section id="section-8">
-<h3>3. 运行固件<a class="headerlink" href="#section-8" title="永久链接至标题"></a></h3>
+<section id="section-10">
+<h3>3. 运行固件<a class="headerlink" href="#section-10" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>打开 PC 上安装的串口工具，选择 2000000 波特率</p></li>
@@ -372,13 +402,13 @@
 </div></blockquote>
 </section>
 </section>
-<section id="section-9">
-<h2>调试软件<a class="headerlink" href="#section-9" title="永久链接至标题"></a></h2>
+<section id="section-11">
+<h2>调试软件<a class="headerlink" href="#section-11" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>本部分介绍如何使用Freedom Studio进行代码的调试。</p>
 </div></blockquote>
-<section id="section-10">
-<h3>1. 硬件跳线<a class="headerlink" href="#section-10" title="永久链接至标题"></a></h3>
+<section id="section-12">
+<h3>1. 硬件跳线<a class="headerlink" href="#section-12" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>1.1 分别用跳线帽连接 BL702L/704L DVK 开发板上 <code class="docutils literal notranslate"><span class="pre">J3</span></code> 接插件的以下4组 JTAG 信号：</p>
 <blockquote>
@@ -389,7 +419,7 @@
 <li><p><strong>IO7(J3.18) - TDO(J3.16)</strong></p></li>
 </ul>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_images/image150.png"><img alt="../_images/image150.png" src="../_images/image150.png" style="width: 4in; height: 2in;" /></a>
+<a class="reference internal image-reference" href="../_images/image155.png"><img alt="../_images/image155.png" src="../_images/image155.png" style="width: 4in; height: 2in;" /></a>
 </figure>
 </div></blockquote>
 </div></blockquote>
@@ -402,7 +432,7 @@
 <p>2.3 将板子的 JTAG 引脚和 CKLink 调试器连接以后，点击 <code class="docutils literal notranslate"><span class="pre">三角</span></code> 按钮，如果变成 <code class="docutils literal notranslate"><span class="pre">圆圈</span></code>，则表示 JTAG 连接成功。如果失败，则需要检查 JTAG 线序是否正确。</p>
 <blockquote>
 <div><figure class="align-center">
-<a class="reference internal image-reference" href="../_images/image240.png"><img alt="../_images/image240.png" src="../_images/image240.png" style="width: 6in; height: 4in;" /></a>
+<a class="reference internal image-reference" href="../_images/image244.png"><img alt="../_images/image244.png" src="../_images/image244.png" style="width: 6in; height: 4in;" /></a>
 </figure>
 </div></blockquote>
 </div></blockquote>
@@ -430,7 +460,7 @@
 <a class="reference internal image-reference" href="../_images/image513.png"><img alt="../_images/image513.png" src="../_images/image513.png" style="width: 4in; height: 2in;" /></a>
 </figure>
 </div></blockquote>
-<p>3.6 如果想查看当前代码运行情况，请选择 <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch</span></code>；如果想从头执行代码，请选择 <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_bl702l.launch</span></code></p>
+<p>3.6 如果想查看当前代码运行情况，请选择 <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch</span></code>；如果想从头执行代码，请选择 <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_bl702l.launch</span></code>。点击 <code class="docutils literal notranslate"><span class="pre">Browse</span></code> 按钮更换elf文件，点击 <code class="docutils literal notranslate"><span class="pre">Debug</span></code> 按钮开始调试。</p>
 <blockquote>
 <div><figure class="align-center">
 <a class="reference internal image-reference" href="../_images/image65.png"><img alt="../_images/image65.png" src="../_images/image65.png" style="width: 9in; height: 4.8in;" /></a>
@@ -438,6 +468,10 @@
 <div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>使用 bl_iot_sdk_debug_freedom_studio_win_bl702l.launch 前需要让芯片进入烧写模式</p>
+</aside>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>由于低功耗固件会进低功耗模式造成JTAG不通，因此不可以使用bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch进行调试</p>
 </aside>
 </div></blockquote>
 </div></blockquote>
@@ -486,7 +520,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1705-g429b6af2b',
+            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

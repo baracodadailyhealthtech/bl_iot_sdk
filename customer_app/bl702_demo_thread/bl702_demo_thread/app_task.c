@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -38,7 +38,6 @@
 #include <bl_wdt.h>
 #include <hal_boot2.h>
 #include <hal_board.h>
-#include <hal_hwtimer.h>
 #include <hal_pds.h>
 #include <hal_tcal.h>
 #include <hosal_uart.h>

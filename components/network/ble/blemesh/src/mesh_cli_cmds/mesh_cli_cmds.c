@@ -3,10 +3,15 @@
 #include "gatt.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#if defined(CONFIG_SHELL)
+#include "shell.h"
+#else
 #include "cli.h"
+#endif /* CONFIG_SHELL */
+
 #include "mesh_cli_cmds.h"
 #include "src/include/mesh.h"
-#include "errno.h"
+#include "bt_errno.h"
 
 #include "src/mesh.h"
 #include "net.h"
@@ -16,7 +21,7 @@
 #include "adv.h"
 #include "beacon.h"
 #include "hci_core.h"
-#include "log.h"
+#include "bt_log.h"
 #if defined(CONFIG_BT_MESH_MODEL)
 #if (defined(CONFIG_BT_MESH_MODEL_GEN_SRV) || defined(CONFIG_BT_MESH_MODEL_GEN_CLI))
 #include "bfl_ble_mesh_generic_model_api.h"
@@ -26,6 +31,7 @@
 #endif
 #include "bfl_ble_mesh_local_data_operation_api.h"
 #include "bfl_ble_mesh_networking_api.h"
+#include "generic_server.h"
 #else
 #if defined(CONFIG_BT_MESH_MODEL_GEN_SRV)
 #include "gen_srv.h"
@@ -69,10 +75,16 @@ static struct {
 	.dst = BT_MESH_ADDR_UNASSIGNED,
 };
 
-#if defined(BL602) || defined(BL702) || defined(BL606P) || defined(BL616) ||defined(BL702L)
+#if defined(BL602) || defined(BL702) || defined(BL606P) || defined(BL616) || defined(BL808) || defined(BL702L)
 #define vOutputString(...)  printf(__VA_ARGS__)
 #else
 #define vOutputString(...)  bl_print(SYSTEM_UART_ID, PRINT_MODULE_CLI, __VA_ARGS__)
+#endif
+
+#if defined(CONFIG_SHELL)
+#define BLEMESH_CLI(func) static void blemeshcli_##func(int argc, char **argv)
+#else
+#define BLEMESH_CLI(func) static void blemeshcli_##func(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
 #endif
 
 static void prov_reset(void);
@@ -100,123 +112,127 @@ static int fault_test(struct bt_mesh_model *model, uint8_t test_id, uint16_t cid
 static void attn_on(struct bt_mesh_model *model);
 static void attn_off(struct bt_mesh_model *model);
 
-static void blemeshcli_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(init);
 #if defined(CONFIG_BT_MESH_PROVISIONER)
-static void blemeshcli_pvnr_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(pvnr_init);
 #endif
-static void blemeshcli_addr_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_set_dev_uuid(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_input_num(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_input_str(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(addr_get);
+BLEMESH_CLI(set_dev_uuid);
+BLEMESH_CLI(input_num);
+BLEMESH_CLI(input_str);
+#ifndef CFG_IOT_SDK
+BLEMESH_CLI(read_str);
+#endif
 #if defined(CONFIG_BT_MESH_MODEL)
 #if defined(CONFIG_BT_MESH_MODEL_GEN_CLI)
-static void blemeshcli_gen_oo_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(gen_oo_cli);
 #endif
 #if defined(CONFIG_BT_MESH_MODEL_LIGHT_CLI)
-static void blemeshcli_light_lgn_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_light_ctl_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_light_hsl_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(light_lgn_cli);
+BLEMESH_CLI(light_ctl_cli);
+BLEMESH_CLI(light_hsl_cli);
 #endif
 #if defined(CONFIG_BT_MESH_MODEL_VENDOR_CLI)
-static void blemeshcli_vendor_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(vendor_cli);
 #endif
+BLEMESH_CLI(models_cli);
 #endif /* CONFIG_BT_MESH_MODEL */
-static void blemeshcli_pb(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(pb);
 #if defined(CONFIG_BT_MESH_PB_ADV)
 #if defined(CONFIG_BT_MESH_PROVISIONER)
-static void blemeshcli_provision_adv(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(provision_adv);
 #endif /* CONFIG_BT_MESH_PROVISIONER */
 #endif /* CONFIG_BT_MESH_PB_ADV */
-static void blemeshcli_reset(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_net_send(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_seg_send(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_rpl_clr(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_ivu_test(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_iv_update(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
-static void blemeshcli_fault_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(reset);
+BLEMESH_CLI(net_send);
+BLEMESH_CLI(seg_send);
+BLEMESH_CLI(rpl_clr);
+BLEMESH_CLI(ivu_test);
+BLEMESH_CLI(iv_update);
+BLEMESH_CLI(fault_set);
 
 #if defined(CONFIG_BT_MESH_LOW_POWER)
-static void blemeshcli_lpn_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv);
+BLEMESH_CLI(lpn_set);
 #endif
 
 #if defined(CONFIG_BT_MESH_CDB)
-static void blemeshcli_cdb_create(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cdb_clear(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cdb_show(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cdb_node_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cdb_node_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cdb_subnet_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cdb_subnet_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cdb_app_key_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cdb_app_key_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(cdb_create);
+BLEMESH_CLI(cdb_clear);
+BLEMESH_CLI(cdb_show);
+BLEMESH_CLI(cdb_node_add);
+BLEMESH_CLI(cdb_node_del);
+BLEMESH_CLI(cdb_subnet_add);
+BLEMESH_CLI(cdb_subnet_del);
+BLEMESH_CLI(cdb_app_key_add);
+BLEMESH_CLI(cdb_app_key_del);
 #endif /* CONFIG_BT_MESH_CDB */
 #if defined(CONFIG_BT_MESH_PROVISIONER)
-static void blemeshcli_beacon_listen(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_provision(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_node_cfg(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(beacon_listen);
+BLEMESH_CLI(provision);
+BLEMESH_CLI(node_cfg);
 #endif /* CONFIG_BT_MESH_PROVISIONER */
 #if defined(CONFIG_BT_MESH_PROVISIONER)
-static void blemeshcli_get_comp(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_set_dst(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_krp_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_krp_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cfg_bcn_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cfg_bcn_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cfg_dttl_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cfg_dttl_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cfg_gpxy_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_cfg_gpxy_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_friend(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_relay(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_node_identify(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_node_reset(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_network_trans(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_lpn_timeout_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_net_key_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(get_comp);
+BLEMESH_CLI(set_dst);
+BLEMESH_CLI(krp_get);
+BLEMESH_CLI(krp_set);
+BLEMESH_CLI(cfg_bcn_get);
+BLEMESH_CLI(cfg_bcn_set);
+BLEMESH_CLI(cfg_dttl_get);
+BLEMESH_CLI(cfg_dttl_set);
+BLEMESH_CLI(cfg_gpxy_get);
+BLEMESH_CLI(cfg_gpxy_set);
+BLEMESH_CLI(friend);
+BLEMESH_CLI(relay);
+BLEMESH_CLI(node_identify);
+BLEMESH_CLI(node_reset);
+BLEMESH_CLI(network_trans);
+BLEMESH_CLI(lpn_timeout_get);
+BLEMESH_CLI(net_key_add);
 /* Added by bouffalo */
-static void blemeshcli_net_key_update(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_net_key_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_net_key_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_app_key_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(net_key_update);
+BLEMESH_CLI(net_key_get);
+BLEMESH_CLI(net_key_del);
+BLEMESH_CLI(app_key_add);
 /* Added by bouffalo */
-static void blemeshcli_app_key_update(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_app_key_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_app_key_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(app_key_update);
+BLEMESH_CLI(app_key_get);
+BLEMESH_CLI(app_key_del);
 /* Added by bouffalo */
-static void blemeshcli_kr_update(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_app_bind(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_app_unbind(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_app_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_sub_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_sub_ow(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_sub_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_sub_del_all(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_sub_add_va(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_sub_ow_va(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_sub_del_va(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_sub_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_mod_pub(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(kr_update);
+BLEMESH_CLI(mod_app_bind);
+BLEMESH_CLI(mod_app_unbind);
+BLEMESH_CLI(mod_app_get);
+BLEMESH_CLI(mod_sub_add);
+BLEMESH_CLI(mod_sub_ow);
+BLEMESH_CLI(mod_sub_del);
+BLEMESH_CLI(mod_sub_del_all);
+BLEMESH_CLI(mod_sub_add_va);
+BLEMESH_CLI(mod_sub_ow_va);
+BLEMESH_CLI(mod_sub_del_va);
+BLEMESH_CLI(mod_sub_get);
+BLEMESH_CLI(mod_pub);
 /* Added by bouffalo */
-static void blemeshcli_mod_pub_va(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_hb_sub(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_hb_pub(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(mod_pub_va);
+BLEMESH_CLI(hb_sub);
+BLEMESH_CLI(hb_pub);
 
-static void blemeshcli_clhm_fault(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_clhm_period(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_clhm_ats(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(clhm_fault);
+BLEMESH_CLI(clhm_period);
+BLEMESH_CLI(clhm_ats);
 #endif
 #if defined(CFG_NODE_SEND_CFGCLI_MSG) && defined(CONFIG_BT_MESH_CDB)
-static void blemeshcli_pvnr_devkey(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(pvnr_devkey);
 #endif
 #if defined(CONFIG_BT_MESH_SYNC)
-static void blemeshcli_sync_start(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
-static void blemeshcli_sync_stop(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(sync_start);
+BLEMESH_CLI(sync_stop);
 #endif
 
 #if defined(CONFIG_BT_MESH_TEST)
 static int nodelist_check(uint16_t addr);
 static int nodelist_check_clear();
-static void blemeshcli_nodelist_op(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[]);
+BLEMESH_CLI(nodelist_op);
 #endif /* CONFIG_BT_MESH_TEST */
 
 #if defined(CONFIG_BT_MESH_PROVISIONER)
@@ -373,11 +389,264 @@ struct bt_mesh_gen_onoff_srv onoff_srv = {
 #endif
 #endif /* CONFIG_BT_MESH_MODEL */
 
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
+
+#define MESH_MSG_LEN 20
+BFL_BLE_MESH_MODEL_PUB_DEFINE(level_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_level_srv_t level_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(onoff_pub_2, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_onoff_srv_t onoff_server_2 = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(level_pub_2, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_level_srv_t level_server_2 = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(def_trans_time_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_def_trans_time_srv_t def_trans_time_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(power_onoff_pub, MESH_MSG_LEN, ROLE_NODE);
+bfl_ble_mesh_gen_onpowerup_state_t onpowerup_state;
+static bfl_ble_mesh_gen_power_onoff_srv_t power_onoff_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &onpowerup_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(power_onoff_setup_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_power_onoff_setup_srv_t power_onoff_setup_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &onpowerup_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(power_level_pub, MESH_MSG_LEN, ROLE_NODE);
+bfl_ble_mesh_gen_power_level_state_t power_level_state;
+static bfl_ble_mesh_gen_power_level_srv_t power_level_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &power_level_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(power_level_setup_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_power_level_setup_srv_t power_level_setup_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &power_level_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(battery_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_battery_srv_t battery_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(location_pub, MESH_MSG_LEN, ROLE_NODE);
+bfl_ble_mesh_gen_location_state_t location_state;
+static bfl_ble_mesh_gen_location_srv_t location_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &location_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(location_setup_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_location_setup_srv_t location_setup_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &location_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(user_prop_pub, MESH_MSG_LEN, ROLE_NODE);
+u8_t net_buf_data_property_buf[16];
+struct net_buf_simple property_buf = {
+    .data   = net_buf_data_property_buf,
+    .len    = 2,
+    .size   = 16,
+    .__buf  = net_buf_data_property_buf,
+};
+bfl_ble_mesh_generic_property_t property = {
+    .id = 1,
+    .user_access = USER_ACCESS_READ_WRITE,
+    .admin_access = ADMIN_ACCESS_READ_WRITE,
+    .manu_access = MANU_ACCESS_READ,
+    .val = &property_buf,
+    };
+static bfl_ble_mesh_gen_user_prop_srv_t user_prop_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .property_count = 1,
+    .properties = &property,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(admin_prop_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_admin_prop_srv_t admin_prop_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .property_count = 1,
+    .properties = &property,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(manu_prop_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_gen_manu_prop_srv_t manu_prop_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .property_count = 1,
+    .properties = &property,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(client_prop_pub, MESH_MSG_LEN, ROLE_NODE);
+uint16_t property_ids;
+static bfl_ble_mesh_gen_client_prop_srv_t client_prop_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .id_count = 1,
+    .property_ids =  &property_ids,
+};
+bfl_ble_mesh_light_ctl_state_t light_ctl_state = {
+    .temperature_range_min = 0x320,
+    .temperature_range_max = 0x4E20,
+    .temperature = 0x320,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(lightness_setup_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_light_lightness_setup_srv_t lightness_setup_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &lightness_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_ctl_setup_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_light_ctl_setup_srv_t light_ctl_setup_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &light_ctl_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_ctl_temp_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_light_ctl_temp_srv_t light_ctl_temp_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &light_ctl_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_hsl_setup_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_light_hsl_setup_srv_t light_hsl_setup_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &hsl_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_hsl_hue_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_light_hsl_hue_srv_t light_hsl_hue_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &hsl_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_hsl_sat_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_light_hsl_sat_srv_t light_hsl_sat_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &hsl_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_xyl_setup_pub, MESH_MSG_LEN, ROLE_NODE);
+bfl_ble_mesh_light_xyl_state_t light_xyl_state;
+static bfl_ble_mesh_light_xyl_setup_srv_t light_xyl_setup_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &light_xyl_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_xyl_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_light_xyl_srv_t light_xyl_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .state = &light_xyl_state,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_lc_pub, MESH_MSG_LEN, ROLE_NODE);
+bfl_ble_mesh_light_control_t light_control;
+static bfl_ble_mesh_light_lc_srv_t light_lc_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .lc = &light_control,
+};
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_lc_setup_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_light_lc_setup_srv_t light_lc_setup_server = {
+    .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
+    .lc = &light_control,
+};
+
+BFL_BLE_MESH_MODEL_PUB_DEFINE(level_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t level_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(def_trans_time_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t def_trans_time_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(power_onoff_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t power_onoff_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(power_level_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t power_level_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(battery_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t battery_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(location_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t location_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(property_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t property_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_xyl_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t light_xyl_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_lc_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t light_lc_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_ctl_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t light_ctl_client;
+BFL_BLE_MESH_MODEL_PUB_DEFINE(light_hsl_cli_pub, MESH_MSG_LEN, ROLE_NODE);
+static bfl_ble_mesh_client_t light_hsl_client;
+#endif
 static struct bt_mesh_model sig_models[] = {
 	BT_MESH_MODEL_CFG_SRV(&cfg_srv),
 	BT_MESH_MODEL_CFG_CLI(&cfg_cli),
 	BT_MESH_MODEL_HEALTH_SRV(&health_srv, &health_pub),
 	BT_MESH_MODEL_HEALTH_CLI(&health_cli),
+
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
+
+	BFL_BLE_MESH_MODEL_GEN_ONOFF_SRV(&onoff_pub, &onoff_server),
+	BFL_BLE_MESH_MODEL_GEN_LEVEL_SRV(&level_pub, &level_server),
+	BFL_BLE_MESH_MODEL_LIGHT_LIGHTNESS_SRV(&lightness_pub, &lightness_server),
+	BFL_BLE_MESH_MODEL_GEN_DEF_TRANS_TIME_SRV(&def_trans_time_pub, &def_trans_time_server),
+	BFL_BLE_MESH_MODEL_GEN_POWER_ONOFF_SRV(&power_onoff_pub, &power_onoff_server),
+        BFL_BLE_MESH_MODEL_GEN_POWER_ONOFF_SETUP_SRV(&power_onoff_setup_pub, &power_onoff_setup_server),
+        BFL_BLE_MESH_MODEL_GEN_POWER_LEVEL_SRV(&power_level_pub, &power_level_server),
+        BFL_BLE_MESH_MODEL_GEN_POWER_LEVEL_SETUP_SRV(&power_level_setup_pub, &power_level_setup_server),
+        BFL_BLE_MESH_MODEL_GEN_BATTERY_SRV(&battery_pub, &battery_server),
+        BFL_BLE_MESH_MODEL_GEN_LOCATION_SRV(&location_pub, &location_server),
+        BFL_BLE_MESH_MODEL_GEN_LOCATION_SETUP_SRV(&location_setup_pub, &location_setup_server),
+        BFL_BLE_MESH_MODEL_GEN_USER_PROP_SRV(&user_prop_pub, &user_prop_server),
+        BFL_BLE_MESH_MODEL_GEN_ADMIN_PROP_SRV(&admin_prop_pub, &admin_prop_server),
+        BFL_BLE_MESH_MODEL_GEN_MANUFACTURER_PROP_SRV(&manu_prop_pub, &manu_prop_server),
+        BFL_BLE_MESH_MODEL_GEN_CLIENT_PROP_SRV(&client_prop_pub, &client_prop_server),
+
+	BFL_BLE_MESH_MODEL_GEN_ONOFF_CLI(&onoff_cli_pub, &onoff_client),
+	BFL_BLE_MESH_MODEL_GEN_LEVEL_CLI(&level_cli_pub, &level_client),
+	BFL_BLE_MESH_MODEL_GEN_DEF_TRANS_TIME_CLI(&def_trans_time_cli_pub, &def_trans_time_client),
+        BFL_BLE_MESH_MODEL_GEN_POWER_ONOFF_CLI(&power_onoff_cli_pub, &power_onoff_client),
+        BFL_BLE_MESH_MODEL_GEN_POWER_LEVEL_CLI(&power_level_cli_pub, &power_level_client),
+        BFL_BLE_MESH_MODEL_GEN_BATTERY_CLI(&battery_cli_pub, &battery_client),
+        BFL_BLE_MESH_MODEL_GEN_LOCATION_CLI(&location_cli_pub, &location_client),
+        BFL_BLE_MESH_MODEL_GEN_PROPERTY_CLI(&property_cli_pub, &property_client),
+
+        BFL_BLE_MESH_MODEL_LIGHT_LIGHTNESS_SRV(&lightness_pub, &lightness_server),
+        BFL_BLE_MESH_MODEL_LIGHT_LIGHTNESS_SETUP_SRV(&lightness_setup_pub, &lightness_setup_server),
+        BFL_BLE_MESH_MODEL_LIGHT_CTL_SRV(&ctl_pub, &ctl_server),
+        BFL_BLE_MESH_MODEL_LIGHT_CTL_SETUP_SRV(&light_ctl_setup_pub, &light_ctl_setup_server),
+        BFL_BLE_MESH_MODEL_LIGHT_CTL_TEMP_SRV(&light_ctl_temp_pub, &light_ctl_temp_server),
+        BFL_BLE_MESH_MODEL_LIGHT_HSL_SRV(&hsl_pub, &hsl_server),
+        BFL_BLE_MESH_MODEL_LIGHT_HSL_SETUP_SRV(&light_hsl_setup_pub, &light_hsl_setup_server),
+        BFL_BLE_MESH_MODEL_LIGHT_HSL_HUE_SRV(&light_hsl_hue_pub, &light_hsl_hue_server),
+        BFL_BLE_MESH_MODEL_LIGHT_HSL_SAT_SRV(&light_hsl_sat_pub, &light_hsl_sat_server),
+        BFL_BLE_MESH_MODEL_LIGHT_XYL_SRV(&light_xyl_pub, &light_xyl_server),
+        BFL_BLE_MESH_MODEL_LIGHT_XYL_SETUP_SRV(&light_xyl_setup_pub, &light_xyl_setup_server),
+        //todo
+        BFL_BLE_MESH_MODEL_LIGHT_LC_SRV(&light_lc_pub, &light_lc_server),
+        BFL_BLE_MESH_MODEL_LIGHT_LC_SETUP_SRV(&light_lc_setup_pub, &light_lc_setup_server),
+    
+   
+	BFL_BLE_MESH_MODEL_LIGHT_LIGHTNESS_CLI(&lightness_cli_pub, &lightness_client),
+	BFL_BLE_MESH_MODEL_LIGHT_CTL_CLI(&light_ctl_cli_pub, &light_ctl_client),
+	BFL_BLE_MESH_MODEL_LIGHT_HSL_CLI(&light_hsl_cli_pub, &light_hsl_client),
+	BFL_BLE_MESH_MODEL_LIGHT_XYL_CLI(&light_xyl_cli_pub, &light_xyl_client),
+	BFL_BLE_MESH_MODEL_LIGHT_LC_CLI(&light_lc_cli_pub, &light_lc_client),
+
+#else
+
 #if !defined(CONFIG_BT_MESH_MODEL)
 	#if defined(CONFIG_BT_MESH_MODEL_GEN_SRV)
 	BT_MESH_MODEL_GEN_ONOFF(&onoff_srv),
@@ -408,6 +677,8 @@ static struct bt_mesh_model sig_models[] = {
 	BFL_BLE_MESH_MODEL_LIGHT_HSL_CLI(&hsl_cli_pub, &hsl_client),
     #endif
 #endif /* CONFIG_BT_MESH_MODEL */
+
+#endif
 };
 
 struct vendor_data_t{
@@ -469,9 +740,24 @@ static struct bt_mesh_model vendor_models[] = {
 	BFL_BLE_MESH_MODEL_VND_SYNC_SRV(),
 #endif
 };
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
+static struct bt_mesh_model second_models[] = {
+	BFL_BLE_MESH_MODEL_GEN_ONOFF_SRV(&onoff_pub_2, &onoff_server_2),
+	BFL_BLE_MESH_MODEL_GEN_LEVEL_SRV(&level_pub_2, &level_server_2),
+	BFL_BLE_MESH_MODEL_LIGHT_CTL_TEMP_SRV(&light_ctl_temp_pub, &light_ctl_temp_server),
+	/* Need this mode to pass MMDL/SR/MLTEL/BV-01-C*/
+	BFL_BLE_MESH_MODEL_LIGHT_LC_SRV(&light_lc_pub, &light_lc_server),
+	BFL_BLE_MESH_MODEL_LIGHT_LC_SETUP_SRV(&light_lc_setup_pub, &light_lc_setup_server),
+};
+static struct bt_mesh_model second_vnd_models[0] = {
+};
+#endif
 
 static struct bt_mesh_elem elements[] = {
 	BT_MESH_ELEM(0, sig_models, vendor_models),
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
+	BT_MESH_ELEM(1, second_models, second_vnd_models),
+#endif
 };
 
 static const struct bt_mesh_comp comp = {
@@ -479,17 +765,129 @@ static const struct bt_mesh_comp comp = {
 	.elem = elements,
 	.elem_count = ARRAY_SIZE(elements),
 };
-
-#if defined(BL602) || defined(BL702) || defined(BL606P)||defined(BL702L)
+#if defined(CONFIG_SHELL)
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_init, blemesh_init, blemesh Initialize Parameter:[Null]);
+#if defined(CONFIG_BT_MESH_PROVISIONER)
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_pvnr_init, blemesh_pvnr_init, blemesh_pvnr Initialize Parameter:[Null]);
+#endif
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_addr_get, blemesh_addr_get, blemesh address get Parameter:[Null]);
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_set_dev_uuid, blemesh_set_dev_uuid, blemesh input number in provisionging procedure Parameter:[Size:16 Octets]);
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_pb, blemesh_pb, blemesh enable or disable provisioning Parameter:[bear: 1:adv bear; 2:gatt bear][enable: 0:disable provisioning; 1:enable provisioning]);
+#if defined(CONFIG_BT_MESH_PB_ADV)
+#if defined(CONFIG_BT_MESH_PROVISIONER)
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_provision_adv, blemesh_provision_adv, blemesh enable or disable provisioning Parameter:[bear: 1:adv bear; 2:gatt bear] [enable: 0:disable provisioning; 1:enable provisioning]);
+#endif
+#endif
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_reset, blemesh_reset, blemesh Reset the state of the local mesh node Parameter:[Null]);
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_net_send, blemesh_net_send, blemesh Send a network packet Parameter:[TTL CTL SRC DST]); 
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_seg_send, blemesh_seg_send, blemesh Send a segmented message Parameter:[SRC DST]);
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_rpl_clr, blemesh_rpl_clr, blemesh Clear replay protection list Parameter:[Null]);
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_ivu_test, blemesh_ivu_test, blemesh Enable or disable iv update procedure Parameter:[enable: 0:disable; 1:enable by sending secure network beacons]);
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_iv_update, blemesh_iv_update, blemesh Enable or disable iv update procedure Parameter:[enable: 0:disable; 1:enable by sending secure network beacons]) ;
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_fault_set, blemesh_fault_set, blemesh Set current fault or registered fault values Parameter:[type: 0:current fault; 1:registered fault][fault: fault array in hex format]);
+#if defined(CONFIG_BT_MESH_LOW_POWER)
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_lpn_set, blemesh_lpn_set, blemesh Enable or disable low power node Parameter:[enable: 0:disable lpn; 1:enable lpn]);
+#endif
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_input_num, blemesh_input_num, blemesh input number in provisionging procedure Parameter:[Max Size:16 Octets: e.g.112233445566778899AA]);
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_input_str, blemesh_input_str, blemesh input Alphanumeric in provisionging procedure Parameter:[Max Size:16 Characters: e.g.123ABC]);
+#if defined(CONFIG_BT_MESH_MODEL)
+#if defined(CONFIG_BT_MESH_MODEL_GEN_CLI)
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_gen_oo_cli, blemesh_gen_oo_cli, blemesh_gen_oo_cli Parameter:[cmd op app_idx opcode msg_role addr net_idx op_en_t onoff tid trans_time delay]);
+#endif
+#if defined(CONFIG_BT_MESH_MODEL_LIGHT_CLI)
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_light_lgn_cli, blemesh_light_lgn_cli, blemesh_light_lgn_cli Parameter:[cmd op app_idx opcode msg_role addr net_idx op_en_t lightness tid trans_time delay] );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_light_ctl_cli, blemesh_light_ctl_cli, blemesh_light_ctl_cli Parameter:[cmd op app_idx opcode msg_role addr net_idx op_en_t ctl_lightness ctl_temperatrue ctl_delta_uv tid trans_time delay]);
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_light_hsl_cli, blemesh_light_hsl_cli, blemesh_light_hsl_cli Parameter:[cmd op app_idx opcode msg_role addr net_idx op_en lightness hue saturation tid trans_time delay]);
+#endif
+#if defined(CONFIG_BT_MESH_MODEL_VENDOR_CLI)
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_vendor_cli, blemesh_vendor_cli, blemesh_vendor_cli Parameter:[cmd op app_idx opcode msg_role addr net_idx]);
+#endif
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_models_cli, blemesh_models_cli, blemesh_models_cli Parameter:[app_idx opcode addr net_idx models_id payload]);
+#endif
+#if defined(CONFIG_BT_MESH_CDB)
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_create, blemesh_cdb_create, );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_clear, blemesh_cdb_clear, );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_show, blemesh_cdb_show, );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_node_add, blemesh_cdb_node_add, );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_node_del, blemesh_cdb_node_del, );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_subnet_add, blemesh_cdb_subnet_add, );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_subnet_del, blemesh_cdb_subnet_del, );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_app_key_add, blemesh_cdb_app_key_add, );
+    SHELL_CMD_EXPORT_ALIAS(blemeshcli_cdb_app_key_del, blemesh_cdb_app_key_del, );
+#endif
+#if defined(CONFIG_BT_MESH_PROVISIONER)
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_beacon_listen, blemesh_beacon_listen, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_provision, blemesh_provision, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_node_cfg, blemesh_node_cfg, );
+#endif
+#if defined(CONFIG_BT_MESH_PROVISIONER)
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_get_comp, blemesh_get_comp, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_set_dst, blemesh_set_dst, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_net_key_add, blemesh_net_key_add, );
+     /* Added by bouffalo */
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_net_key_update, blemesh_net_key_update, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_net_key_get, blemesh_net_key_get, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_net_key_del, blemesh_net_key_del, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_app_key_add, blemesh_app_key_add, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_app_key_update, blemesh_app_key_update, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_app_key_get, blemesh_app_key_get, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_app_key_del, blemesh_app_key_del, ); 
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_kr_update, blemesh_kr_update, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_app_bind, blemesh_mod_app_bind, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_app_unbind, blemesh_mod_app_unbind, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_app_get, blemesh_mod_app_get, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_sub_add, blemesh_mod_sub_add, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_sub_ow, blemesh_mod_sub_ow, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_sub_del, blemesh_mod_sub_del, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_sub_del_all, blemesh_mod_sub_del_all, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_sub_add_va, blemesh_mod_sub_add_va, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_sub_ow_va, blemesh_mod_sub_ow_va, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_sub_del_va, blemesh_mod_sub_del_va, );     
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_sub_get, blemesh_mod_sub_get, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_pub, blemesh_mod_pub, );  
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_mod_pub_va, blemesh_mod_pub_va, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_hb_sub, blemesh_hb_sub, );     
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_hb_pub, blemesh_hb_pub, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_krp_get, blemesh_krp_get, );  
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_krp_set, blemesh_krp_set, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_cfg_bcn_get, blemesh_cfg_bcn_get, );     
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_cfg_bcn_set, blemesh_cfg_bcn_set, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_cfg_dttl_get, blemesh_cfg_dttl_get, );  
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_cfg_dttl_set, blemesh_cfg_dttl_set, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_cfg_gpxy_get, blemesh_cfg_gpxy_get, );     
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_cfg_gpxy_set, blemesh_cfg_gpxy_set, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_friend, blemesh_friend, );  
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_relay, blemesh_relay, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_node_identify, blemesh_node_identify, );     
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_node_reset, blemesh_node_reset, Parameter:[net_idx][dst addr]);
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_network_trans, blemesh_network_trans, ); 
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_lpn_timeout_get, blemesh_lpn_timeout_get, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_clhm_fault, blemesh_clhm_fault, ); 
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_clhm_period, blemesh_clhm_period, );
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_clhm_ats, blemesh_clhm_ats, ); 
+#endif
+#if defined(CFG_NODE_SEND_CFGCLI_MSG) && defined(CONFIG_BT_MESH_CDB)
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_pvnr_devkey, blemesh_pvnr_devkey);
+#endif
+#if defined(CONFIG_BT_MESH_SYNC)
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_sync_start, blemesh_sync_start, Parameter:[NULL]);
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_sync_stop, blemesh_sync_stop, Parameter:[NULL]);
+#endif
+#if defined(CONFIG_BT_MESH_TEST)
+     SHELL_CMD_EXPORT_ALIAS(blemeshcli_nodelist_op, blemesh_nodelist_op, );
+#endif
+	 SHELL_CMD_EXPORT_ALIAS(blemeshcli_read_str, blemesh_read_str, );
+#else
+#if defined(BL602) || defined(BL702) || defined(BL606P) || defined(BL702L)
 const struct cli_command btMeshCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
 #else
 const struct cli_command btMeshCmdSet[] = {
 #endif
-    {"blemesh_init", "blemesh_init:[Initialize]\r\n Parameter[Null]", blemeshcli_init},
+    {"blemesh_init", "blemesh Initialize\r\n Parameter[Null]", blemeshcli_init},
 #if defined(CONFIG_BT_MESH_PROVISIONER)
     {"blemesh_pvnr_init", "blemesh_pvnr_init:[Initialize]\r\n Parameter[Null]", blemeshcli_pvnr_init},
 #endif
-	{"blemesh_addr_get", "blemesh_pvnr_init:[Initialize]\r\n Parameter[Null]", blemeshcli_addr_get},
+	{"blemesh_addr_get", "blemesh_addr_get: Parameter[Null]", blemeshcli_addr_get},
 	{"blemesh_set_dev_uuid", "blemesh_input_num:[input number in provisionging procedure]\r\n\
      [Size:16 Octets, e.g.112233445566778899AA]", blemeshcli_set_dev_uuid},
     {"blemesh_pb", "blemesh_pb:[Enable or disable provisioning]\r\n\
@@ -538,67 +936,238 @@ const struct cli_command btMeshCmdSet[] = {
 #endif
 #endif /* CONFIG_BT_MESH_MODEL */
 #if defined(CONFIG_BT_MESH_CDB)
-	{"blemesh_cdb_create", "", blemeshcli_cdb_create},
-	{"blemesh_cdb_clear", "", blemeshcli_cdb_clear},
-	{"blemesh_cdb_show", "", blemeshcli_cdb_show},
-	{"blemesh_cdb_node_add", "", blemeshcli_cdb_node_add},
-	{"blemesh_cdb_node_del", "", blemeshcli_cdb_node_del},
-	{"blemesh_cdb_subnet_add", "", blemeshcli_cdb_subnet_add},
-	{"blemesh_cdb_subnet_del", "", blemeshcli_cdb_subnet_del},
-	{"blemesh_cdb_app_key_add", "", blemeshcli_cdb_app_key_add},
-	{"blemesh_cdb_app_key_del", "", blemeshcli_cdb_app_key_del},
+	{"blemesh_cdb_create", "blemesh_cdb_create:[Create Configuration Database. Input Parameter :[None will generate random netkey, else 16 Octets network key, e.g.112233445566778899AA] ", blemeshcli_cdb_create},
+	{"blemesh_cdb_clear", "blemesh_cdb_clear:[Clean Configuration Database.]", blemeshcli_cdb_clear},
+	{"blemesh_cdb_show", "blemesh_cdb_show:[Show Configuration Database.]", blemeshcli_cdb_show},
+	{"blemesh_cdb_node_add", "Add a node to the Configuration Database (CDB).Parameter: [ Node's UUID (hexadecimal string)\r\n\
+    [Node's address, decimal string]\r\n\
+	[Number of elements, decimal string]\r\n\
+	[Node's network index: decimal string]\r\n\
+	[(optional)Node's device key: hexadecimal string]\r\n", blemeshcli_cdb_node_add},
+	{"blemesh_cdb_node_del", "blemesh_cdb_node_del:[Delete a node from the Configuration Database (CDB). Parameter :[ Node's address, decimal string]", blemeshcli_cdb_node_del},
+	{"blemesh_cdb_subnet_add","blemesh_cdb_subnet_add: Adds subnet to the Configuration Database (CDB). Parameter :[ Network index of the subnet(decimal string)\r\n\
+	[Network key for the subnet (hexadecimal string)", blemeshcli_cdb_subnet_add},
+	{"blemesh_cdb_subnet_del", "blemesh_cdb_subnet_del: Delete subnet form the Configuration Database (CDB).Parameter :[ Network index of the subnet(decimal string)\r\n\
+	[Network key for the subnet (hexadecimal string)", blemeshcli_cdb_subnet_del},
+	{"blemesh_cdb_app_key_add", " Add aApplication Key to the Configuration Database (CDB).Parameter :[Network index of the subnet(decimal string)\r\n\
+	[Application index of the key (decimal string)\r\n\
+    [(optional): Application key (hexadecimal string)", blemeshcli_cdb_app_key_add},
+	{"blemesh_cdb_app_key_del", "blemesh_cdb_app_key_del:[Delete an Application Key from the Configuration Database (CDB).Parameter :[Application index of the key (decimal string)]", blemeshcli_cdb_app_key_del},
 #endif /* CONFIG_BT_MESH_CDB */
 #if defined(CONFIG_BT_MESH_PROVISIONER)
-	{"blemesh_beacon_listen", "", blemeshcli_beacon_listen},
-	{"blemesh_provision", "", blemeshcli_provision},
-	{"blemesh_node_cfg", "", blemeshcli_node_cfg},
+	{"blemesh_beacon_listen", "blemesh_beacon_listen:[Enables or disables listening for unprovisioned beacon.Parameter :[enable (1) or disable (0)]", blemeshcli_beacon_listen},
+	{"blemesh_provision", "blemesh_beacon_listen: provisioning a device is added to the network. Parameter:[network index in decimal format]\r\n\
+	[device address (addr) in decimal format]\r\n\
+    [(optional) IV Index in decimal format. If not provided, the default value is set to 0]", blemeshcli_provision},
+	{"blemesh_node_cfg", " blemesh_node_cfg: checks the configuration status of all nodes in the Configuration Database (CDB).", blemeshcli_node_cfg},
 #endif /* CONFIG_BT_MESH_PROVISIONER */
 #if defined(CONFIG_BT_MESH_PROVISIONER)
-	{"blemesh_get_comp", "", blemeshcli_get_comp},
-	{"blemesh_set_dst", "", blemeshcli_set_dst},
-	{"blemesh_net_key_add", "", blemeshcli_net_key_add},
+	{"blemesh_get_comp", "blemesh_get_comp: Get composition Data of a specific node. Parameter:[net_idx: Network index(hexadecimal format)]\r\n\
+    [Destination address(hexadecimal)]\r\n\
+	[Page number (hexadecimal)]", blemeshcli_get_comp},
+	{"blemesh_set_dst", "blemesh_set_dst: Sets the destination address. Parameter: [Net destination address (hexadecimal)]", blemeshcli_set_dst},
+	{"blemesh_net_key_add", "blemesh_net_key_add: Adding a NetKey to the Bluetooth Mesh network. Parameter: [net_idx:(hexadecimal format)]\r\n\
+	[Destination address (hexadecimal format)\r\n\
+	[NetKey Index (hexadecimal format)\r\n\
+	[NetKey value in hexadecimal format. Either provided as an argument or generated based on default values.]", blemeshcli_net_key_add},
 	/* Added by bouffalo */
-	{"blemesh_net_key_update", "", blemeshcli_net_key_update},
-	{"blemesh_net_key_get", "", blemeshcli_net_key_get},
-	{"blemesh_net_key_del", "", blemeshcli_net_key_del},
-	{"blemesh_app_key_add", "", blemeshcli_app_key_add},
+	{"blemesh_net_key_update", "blemesh_net_key_update: Update of a network key (NetKey) with a specified NetKey Index. Parameter:[net_idx:(hexadecimal formats)]\r\n\
+    [Destination address(hexadecimal formats)]\r\n\
+	[key_net_idx: (hexadecimal formats)]\r\n\
+	[key_val in (hexadecimal formats) New NetKey value in hexadecimal format. Either provided as an argument or generated based on default values.", blemeshcli_net_key_update},
+	{"blemesh_net_key_get", "blemesh_net_key_get: Get NetKeys known by a specified node. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+    [Destination address(hexadecimal formats)]", blemeshcli_net_key_get},
+	{"blemesh_net_key_del", "blemesh_net_key_del:  Delete NetKey a specified destination address. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[key_net_idx: (hexadecimal formats)]", blemeshcli_net_key_del},
+	{"blemesh_app_key_add", "blemesh_app_key_add: Add AppKey to a specified destination address. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[key_net_idx:(hexadecimal formats)]\r\n\
+	[key_app_idx:(hexadecimal formats)]\r\n\
+	[key_val (optional): Hexadecimal string representing the AppKey value]", blemeshcli_app_key_add},
 	/* Added by bouffalo */
-	{"blemesh_app_key_update", "", blemeshcli_app_key_update},
-	{"blemesh_app_key_get", "", blemeshcli_app_key_get},
-	{"blemesh_app_key_del", "", blemeshcli_app_key_del},
+	{"blemesh_app_key_update", "blemesh_app_key_update: Update AppKey to a specified destination address. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[key_net_idx:(hexadecimal formats)]\r\n\
+	[key_app_idx:(hexadecimal formats)]\r\n\
+	[key_val (optional): Hexadecimal string representing the AppKey value]", blemeshcli_app_key_update},
+	{"blemesh_app_key_get", "blemesh_app_key_get: Get AppKey known by a specified node. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[key_net_idx:(hexadecimal formats)]", blemeshcli_app_key_get},
+	{"blemesh_app_key_del", "blemesh_app_key_del: Delete AppKey known by a specified node. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[key_net_idx:(hexadecimal formats)]", blemeshcli_app_key_del},
 	/* Added by bouffalo */
-	{"blemesh_kr_update", "", blemeshcli_kr_update},
-	{"blemesh_mod_app_bind", "", blemeshcli_mod_app_bind},
-	{"blemesh_mod_app_unbind", "", blemeshcli_mod_app_unbind},
-	{"blemesh_mod_app_get", "", blemeshcli_mod_app_get},
-	{"blemesh_mod_sub_add", "", blemeshcli_mod_sub_add},
-	{"blemesh_mod_sub_ow", "", blemeshcli_mod_sub_ow},
-	{"blemesh_mod_sub_del", "", blemeshcli_mod_sub_del},
-	{"blemesh_mod_sub_del_all", "", blemeshcli_mod_sub_del_all},
-	{"blemesh_mod_sub_add_va", "", blemeshcli_mod_sub_add_va},
-	{"blemesh_mod_sub_ow_va", "", blemeshcli_mod_sub_ow_va},
-	{"blemesh_mod_sub_del_va", "", blemeshcli_mod_sub_del_va},
-	{"blemesh_mod_sub_get", "", blemeshcli_mod_sub_get},
-	{"blemesh_mod_pub", "", blemeshcli_mod_pub},
-	{"blemesh_mod_pub_va", "", blemeshcli_mod_pub_va},
-	{"blemesh_hb_sub", "", blemeshcli_hb_sub},
-	{"blemesh_hb_pub", "", blemeshcli_hb_pub},
-	{"blemesh_krp_get", "", blemeshcli_krp_get},
-	{"blemesh_krp_set", "", blemeshcli_krp_set},
-	{"blemesh_cfg_bcn_get", "", blemeshcli_cfg_bcn_get},
-	{"blemesh_cfg_bcn_set", "", blemeshcli_cfg_bcn_set},
-	{"blemesh_cfg_dttl_get", "", blemeshcli_cfg_dttl_get},
-	{"blemesh_cfg_dttl_set", "", blemeshcli_cfg_dttl_set},
-	{"blemesh_cfg_gpxy_get", "", blemeshcli_cfg_gpxy_get},
-	{"blemesh_cfg_gpxy_set", "", blemeshcli_cfg_gpxy_set},
-	{"blemesh_friend", "", blemeshcli_friend},
-	{"blemesh_relay", "", blemeshcli_relay},
-	{"blemesh_node_identify", "", blemeshcli_node_identify},
-	{"blemesh_node_reset", "[0]net_idx; [1]dst addr", blemeshcli_node_reset},
-	{"blemesh_network_trans", "", blemeshcli_network_trans},
-	{"blemesh_lpn_timeout_get", "", blemeshcli_lpn_timeout_get},
-	{"blemesh_clhm_fault", "", blemeshcli_clhm_fault},
-	{"blemesh_clhm_period", "", blemeshcli_clhm_period},
+	{"blemesh_kr_update", "blemesh_kr_update: updating the Key Refresh phase of a specific subnet. Parameter: [subnetidx(hexadecimal formats)Index of the subnet]\r\n\
+    [kr: New Key Refresh value(hexadecimal formats)]", blemeshcli_kr_update},
+	{"blemesh_mod_app_bind", " blemesh_mod_app_bind: binding an Application Key (AppKey) to a Model within a specific element of a node. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[mod_app_idx: (hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)] ", blemeshcli_mod_app_bind},
+	{"blemesh_mod_app_unbind", "blemesh_mod_app_unbind: unbinding an Application Key (AppKey) from a Model within a specific element of a node. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[mod_app_idx: (hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)] ", blemeshcli_mod_app_unbind},
+	{"blemesh_mod_app_get", "blemesh_mod_app_get: Retrieving the Application Keys (AppKeys) bound to a specific Model within a particular element of a node.Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_app_get},
+	{"blemesh_mod_sub_add", "blemesh_mod_sub_add : Add a group address to a SIG model's subscription list. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[sub_addr: (hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_sub_add},
+	{"blemesh_mod_sub_ow", "blemesh_mod_sub_ow: Deletes all subscriptions in the model's subscription list, and adds a single group address instead. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[sub_addr: (hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_sub_ow},
+	{"blemesh_mod_sub_del", "blemeshcli_mod_sub_del: Delete all group addresses in a SIG model's subscription list.Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[sub_addr: (hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_sub_del},
+	{"blemesh_mod_sub_del_all", "blemesh_mod_sub_del_all: Delete all group addresses in a SIG model's subscription list. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_sub_del_all},
+	{"blemesh_mod_sub_add_va", "blemesh_mod_sub_add_va: Add a virtual address to a SIG model's subscription list. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[label: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_sub_add_va},
+	{"blemesh_mod_sub_ow_va", "blemesh_mod_sub_ow_va: Deletes all subscriptions in the model's subscription list, and adds a single group address instead.Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[label: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_sub_ow_va},
+	{"blemesh_mod_sub_del_va", "blemesh_mod_sub_del_va: Delete a virtual address in a SIG model's subscription list. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[label: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_sub_del_va},
+	{"blemesh_mod_sub_get", "blemesh_mod_sub_get: Get the subscription list of a SIG model on the target node. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[elem_addr:(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_sub_get},
+	{"blemesh_mod_pub", " blemesh_mod_pub: Model Publication Set or Get. Set Parameter:[Destination address(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]\r\n\
+	[net_idx:(hexadecimal formats)]\r\n\
+	[pub.addr:(hexadecimal formats)]\r\n\
+	[pub.app_idx: (hexadecimal formats)]\r\n\
+	[pub.cred_flag: (hexadecimal formats)]\r\n\
+	[pub.ttl: (hexadecimal formats)]\r\n\
+	[pub.period: (hexadecimal formats)]\r\n\
+	[pub.count: (hexadecimal formats)]\r\n\
+	Get Parameter: [Destination address(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_pub},
+	{"blemesh_mod_pub_va", "blemeshcli_mod_pub_va: Model Publication Set or Get to virtual address.Set Parameter:[Destination address(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]\r\n\
+	[net_idx:(hexadecimal formats)]\r\n\
+	[pub.addr:(hexadecimal formats)]\r\n\
+	[pub.app_idx: (hexadecimal formats)]\r\n\
+	[pub.cred_flag: (hexadecimal formats)]\r\n\
+	[pub.ttl: (hexadecimal formats)]\r\n\
+	[pub.period: (hexadecimal formats)]\r\n\
+	[pub.count: (hexadecimal formats)]\r\n\
+	Get Parameter: [Destination address(hexadecimal formats)]\r\n\
+	[mod_id: (hexadecimal formats)]\r\n\
+	[cid (optional): Company ID(hexadecimal formats)]", blemeshcli_mod_pub_va},
+	{"blemesh_hb_sub", " blemesh_hb_sub: Heartbeat Subscription Get or Set. Set Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[sub.src:(hexadecimal formats)]\r\n\
+	[sub.dst:(hexadecimal formats)]\r\n\
+	[sub.period:(hexadecimal formats)]\r\n\
+	Get Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_hb_sub},
+	{"blemesh_hb_pub", "blemesh_hb_pub: Heartbeat Publication Set or Get. Set Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[pub.dst:(hexadecimal formats)]\r\n\
+	[pub.count: (hexadecimal formats)]\r\n\
+	[pub.period: (hexadecimal formats)]\r\n\
+	[pub.ttl: (hexadecimal formats)]\r\n\
+	[pub.feat: (hexadecimal formats)]\r\n\
+	[pub.net_idx: (hexadecimal formats)]\r\n\
+	Get Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_hb_pub},
+	{"blemesh_krp_get", "blemesh_krp_get: Getting Key Refresh Phase. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	krp_buf.NetKeyIndex(hexadecimal formats)]", blemeshcli_krp_get},
+	{"blemesh_krp_set", "blemesh_krp_set: Setting Key Refresh Phase. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	krp_buf.NetKeyIndex(hexadecimal formats)]\r\n\
+	krp_buf.Phase(hexadecimal formats)]", blemeshcli_krp_set},
+	{"blemesh_cfg_bcn_get", "blemesh_cfg_bcn_get :Getting Config Beacon Status. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_cfg_bcn_get},
+	{"blemesh_cfg_bcn_set", "blemesh_cfg_bcn_set :Setting Config Beacon Status. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[Value:(hexadecimal formats)]", blemeshcli_cfg_bcn_set},
+	{"blemesh_cfg_dttl_get", "blemesh_cfg_dttl_get :Getting Default TTL.Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_cfg_dttl_get},
+	{"blemesh_cfg_dttl_set", "blemesh_cfg_dttl_set :Setting Default TTL. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[Value:(hexadecimal formats)]", blemeshcli_cfg_dttl_set},
+	{"blemesh_cfg_gpxy_get", "blemesh_cfg_gpxy_get: Getting the GATT Proxy state.Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_cfg_gpxy_get},
+	{"blemesh_cfg_gpxy_set", "blemesh_cfg_gpxy_get: Setting the GATT Proxy state. Parameter: [net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[Value:(hexadecimal formats)]", blemeshcli_cfg_gpxy_set},
+	{"blemesh_friend", "blemesh_friend: getting or setting the Friend state. Set Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[Value:(hexadecimal formats)]\r\n\
+	Get Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_friend},
+	{"blemesh_relay", "blemesh_relay: Getting or setting the Relay state. Set Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[Value:(hexadecimal formats)]\r\n\
+	[Count:(hexadecimal formats)]\r\n\
+	[Interval:(hexadecimal formats)]\r\n\
+	Get Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_relay},
+	{"blemesh_node_identify", "blemesh_node_identify:Getting or setting the Node Identity state.Set Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[netkeyindex:(hexadecimal formats)]\r\n\
+	[Couidentitynt:(hexadecimal formats)]\r\n\
+	Get Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_node_identify},
+	{"blemesh_node_reset", "blemesh_node_reset: Mesh Node Reset. Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_node_reset},
+	{"blemesh_network_trans", "blemesh_network_trans:Network Transmit Get/Set. Set Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[Count:(hexadecimal formats)]\r\n\
+	[Interval:(hexadecimal formats)]\r\n\
+	Get Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]", blemeshcli_network_trans},
+	{"blemesh_lpn_timeout_get", "blemesh_lpn_timeout_get: Get poll timeout of LPN. Parameter:[net_idx:(hexadecimal formats)]\r\n\
+	[Destination address(hexadecimal formats)]\r\n\
+	[lpn_addr:(hexadecimal formats)]", blemeshcli_lpn_timeout_get},
+	{"blemesh_clhm_fault", "blemesh_clhm_fault: Getting or clear health_fault. Get Parameter: Get [Destination address(hexadecimal formats)]\r\n\
+	[net_idx:(hexadecimal formats)]\r\n\
+	[cid : Company ID(hexadecimal formats)]\r\n\
+	Clear Parameter: clear [Destination address(hexadecimal formats)]\r\n\
+	[net_idx:(hexadecimal formats)]\r\n\
+	[cid : Company ID(hexadecimal formats)]", blemeshcli_clhm_fault},
+	{"blemesh_clhm_period", "blemesh_clhm_period: Get or Set Health Period. Get Parameter: Get [Destination address(hexadecimal formats)]\r\n\
+	[app_idx:(hexadecimal formats)]\r\n\
+	Set Parameter: Set [Destination address(hexadecimal formats)]\r\n\
+	[app_idx:(hexadecimal formats)]\r\n\
+	[ updated_divisor: (hexadecimal formats)] ", blemeshcli_clhm_period},
 	{"blemesh_clhm_ats", "", blemeshcli_clhm_ats},
 #endif
 #if defined(CFG_NODE_SEND_CFGCLI_MSG) && defined(CONFIG_BT_MESH_CDB)
@@ -615,7 +1184,10 @@ const struct cli_command btMeshCmdSet[] = {
     {NULL, NULL, "No handler / Invalid command", NULL}
     #endif
 };
+#endif
 
+/* Read string from uart */
+#if defined(CFG_IOT_SDK)
 /* Read string from uart */
 static void read_str(char* str, u8_t size)
 {
@@ -630,10 +1202,56 @@ static void read_str(char* str, u8_t size)
 		vOutputString("%c", *str);
 		str++;
 	}
+   
 }
 
+#else
+
+static char* str_s = NULL;
+static struct k_sem read_sem;
+static void read_str(char* str, u8_t size)
+{
+	str_s=k_malloc(size);
+	if(str_s!=NULL)
+	{
+		k_sem_init(&read_sem,0,1);
+		k_sem_take(&read_sem,K_FOREVER);
+		memcpy(str,str_s,size);
+		k_free(str_s);
+		str_s =NULL;
+		k_sem_delete(&read_sem);
+	}
+	else
+	{
+		BT_WARN("Not support!");
+	}
+}
+
+BLEMESH_CLI(read_str)
+{
+	if(argc != 2){
+        vOutputString("Number of Parameters is not correct\r\n");
+        return;
+    }
+	else
+	{
+		if(str_s!=NULL)
+		{
+			memcpy(str_s,argv[1],sizeof(argv[1]));
+			k_sem_give(&read_sem);
+		}
+		else
+		{
+			BT_WARN("Not support!");
+		}
+	}
+
+}
+
+#endif
+
 #if defined(CONFIG_BT_MESH_LOW_POWER)
-static void blemeshcli_lpn_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(lpn_set)
 {
     static bool lpn_enabled;
     u8_t enable;
@@ -681,7 +1299,7 @@ static void lpn_cb(u16_t friend_addr, bool established)
 }
 #endif
 
-static void blemeshcli_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(init)
 {
     int err;
 
@@ -747,8 +1365,7 @@ static void blemeshcli_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, 
 #if defined(CONFIG_BT_MESH_PROVISIONER)
 static const u16_t net_idx = BT_MESH_NET_PRIMARY;
 static const u16_t app_idx = BT_MESH_APP_PRIMARY;
-#endif
-#if defined(CONFIG_BT_MESH_PROVISIONER)
+
 static u16_t self_addr = 1;
 static void setup_cdb(void)
 {
@@ -767,7 +1384,7 @@ static void setup_cdb(void)
 	}
 }
 
-static void blemeshcli_pvnr_init(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(pvnr_init)
 {
 	u8_t net_key[16], dev_key[16];
 	int err;
@@ -847,7 +1464,7 @@ static void blemeshcli_pvnr_init(char *pcWriteBuffer, int xWriteBufferLen, int a
 }
 #endif
 
-static void blemeshcli_addr_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(addr_get)
 {
 	extern u16_t bt_mesh_primary_addr(void);
 	if (!bt_mesh_is_provisioned()){
@@ -870,7 +1487,7 @@ static const char *bearer2str(bt_mesh_prov_bearer_t bearer)
 }
 
 #if defined(CONFIG_BT_MESH_PROV)
-static void blemeshcli_pb(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(pb)
 {
     int err;
     uint8_t bearer;
@@ -905,7 +1522,7 @@ static void blemeshcli_pb(char *pcWriteBuffer, int xWriteBufferLen, int argc, ch
 
 #if defined(CONFIG_BT_MESH_PB_ADV)
 #if defined(CONFIG_BT_MESH_PROVISIONER)
-static void blemeshcli_provision_adv(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(provision_adv)
 {
 	u8_t uuid[16];
 	u8_t attention_duration;
@@ -1083,11 +1700,11 @@ static void prov_reset(void)
 
 static void gen_dev_uuid(void)
 {
-//device uuid: 07af0000-1111-2222-3333-mac address(6 bytes)
+//device uuid: 0a380000-1111-2222-3333-mac address(6 bytes)
 
 	bt_addr_le_t adv_addr;
 	bt_get_local_public_address(&adv_addr);
-	u8_t uuid[16] = {0x07,0xaf,0x00,0x00,0x11,0x11,0x22,0x22,0x33,0x33,
+	u8_t uuid[16] = {0x0a,0x38,0x00,0x00,0x11,0x11,0x22,0x22,0x33,0x33,
 	                        adv_addr.a.val[5],
 	                        adv_addr.a.val[4],
 	                        adv_addr.a.val[3],
@@ -1098,7 +1715,7 @@ static void gen_dev_uuid(void)
 
 }
 
-static void blemeshcli_set_dev_uuid(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(set_dev_uuid)
 {
     if(argc != 2){
         vOutputString("Number of Parameters is not correct\r\n");
@@ -1109,7 +1726,7 @@ static void blemeshcli_set_dev_uuid(char *pcWriteBuffer, int xWriteBufferLen, in
     get_bytearray_from_string(&argv[1], dev_uuid,16);
 }
 
-static void blemeshcli_input_num(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(input_num)
 {
 	int err;
     uint32_t num;
@@ -1140,7 +1757,7 @@ static void blemeshcli_input_num(char *pcWriteBuffer, int xWriteBufferLen, int a
 	input_act = BT_MESH_NO_INPUT;
 }
 
-static void blemeshcli_input_str(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(input_str)
 {
 	int err;
 
@@ -1248,8 +1865,7 @@ void ble_mesh_generic_onoff_client_model_cb(bfl_ble_mesh_generic_client_cb_event
     //vOutputString("exit %s \n", __func__);
 }
 
-
-static void blemeshcli_gen_oo_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(gen_oo_cli)
 {
 	int err = BFL_OK;
 
@@ -1504,7 +2120,7 @@ void ble_mesh_light_client_model_cb(bfl_ble_mesh_light_client_cb_event_t event,
     vOutputString("exit %s \n", __func__);
 }
 
-static void blemeshcli_light_lgn_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(light_lgn_cli)
 {
 	int err = BFL_OK;
 
@@ -1575,7 +2191,7 @@ static void blemeshcli_light_lgn_cli(char *pcWriteBuffer, int xWriteBufferLen, i
     vOutputString("exit %s\n", __func__);
 }
 
-static void blemeshcli_light_ctl_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(light_ctl_cli)
 {
 	int err = BFL_OK;
 
@@ -1650,7 +2266,7 @@ static void blemeshcli_light_ctl_cli(char *pcWriteBuffer, int xWriteBufferLen, i
 	vOutputString("exit %s\n", __func__);
 }
 
-static void blemeshcli_light_hsl_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(light_hsl_cli)
 {
 	int err = BFL_OK;
 
@@ -1724,7 +2340,7 @@ static void blemeshcli_light_hsl_cli(char *pcWriteBuffer, int xWriteBufferLen, i
 }
 #endif
 #if defined(CONFIG_BT_MESH_MODEL_VENDOR_CLI)
-static void blemeshcli_vendor_cli(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(vendor_cli)
 {
     u16_t id;
     struct bt_mesh_msg_ctx ctx = {.send_ttl = 3};
@@ -1766,6 +2382,44 @@ static void blemeshcli_vendor_cli(char *pcWriteBuffer, int xWriteBufferLen, int 
 	}
 }
 #endif /* CONFIG_BT_MESH_MODEL_VENDOR_CLI */
+
+
+BLEMESH_CLI(models_cli)
+{
+	u32_t opcode;
+	u32_t model_id;
+	struct bt_mesh_msg_ctx ctx = {.send_ttl = 3};
+
+	if(argc != 6 && argc != 7){
+		vOutputString("Number of Parameters is not correct\r\n");
+		return;
+	}
+	get_uint16_from_string(&argv[1], &ctx.app_idx);
+	get_uint32_from_string(&argv[2], &opcode);
+	get_uint16_from_string(&argv[3], &ctx.addr);
+	get_uint16_from_string(&argv[4], &ctx.net_idx);
+	get_uint32_from_string(&argv[5], &model_id);
+	BT_MESH_MODEL_BUF_DEFINE(msg,opcode, 40);
+	bt_mesh_model_msg_init(&msg, opcode);
+
+	if(argc == 7){
+		uint8_t len = strlen(argv[6])>>1;
+		uint8_t val[40];
+		get_bytearray_from_string(&argv[6], val, len);
+		net_buf_simple_add_mem(&msg, val, len);
+		vOutputString("send data %s\r\n", bt_hex(msg.data, msg.len));
+	}
+	
+	struct bt_mesh_model* model_t;
+	model_t = bt_mesh_model_find(elements, model_id);
+	if(model_t == NULL){
+		BT_ERR("Unable to found model");
+	}
+
+	if (bt_mesh_model_send(model_t, &ctx, &msg, NULL, NULL)){
+		BT_ERR("Unable to send models cli command");
+	}
+}
 #endif /* CONFIG_BT_MESH_MODEL */
 
 static int input(bt_mesh_input_action_t act, u8_t size)
@@ -1801,7 +2455,7 @@ static int input(bt_mesh_input_action_t act, u8_t size)
 	return 0;
 }
 
-static void blemeshcli_reset(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(reset)
 {
 	if(!blemesh_inited){
 		vOutputString("blemesh not init\n");
@@ -1815,7 +2469,7 @@ static void blemeshcli_reset(char *pcWriteBuffer, int xWriteBufferLen, int argc,
 #endif
 }
 
-static void blemeshcli_net_send(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(net_send)
 {
     uint8_t ttl;
     uint8_t ctl;
@@ -1883,7 +2537,7 @@ static uint16_t get_app_idx(void)
     return BT_MESH_KEY_UNUSED;
 }
 
-static void blemeshcli_seg_send(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(seg_send)
 {
     NET_BUF_SIMPLE_DEFINE(sdu, BT_MESH_TX_SDU_MAX);
     uint16_t src;
@@ -1926,7 +2580,7 @@ static void blemeshcli_seg_send(char *pcWriteBuffer, int xWriteBufferLen, int ar
     bt_mesh_trans_send(&tx, &sdu, NULL, NULL);
 }
 
-static void blemeshcli_rpl_clr(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(rpl_clr)
 {
 #if defined(CONFIG_BT_SETTINGS)
 
@@ -1938,7 +2592,7 @@ static void blemeshcli_rpl_clr(char *pcWriteBuffer, int xWriteBufferLen, int arg
     memset(bt_mesh.rpl, 0, sizeof(bt_mesh.rpl));
 }
 
-static void blemeshcli_ivu_test(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(ivu_test)
 {
     uint8_t enable;
     
@@ -1960,7 +2614,7 @@ static void blemeshcli_ivu_test(char *pcWriteBuffer, int xWriteBufferLen, int ar
     }
 }
 
-static void blemeshcli_iv_update(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(iv_update)
 {
     uint8_t enable;
     
@@ -1995,7 +2649,7 @@ static void blemeshcli_iv_update(char *pcWriteBuffer, int xWriteBufferLen, int a
     }
 }
 
-static void blemeshcli_fault_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv)
+BLEMESH_CLI(fault_set)
 {
     uint8_t type;
     int i;
@@ -2153,7 +2807,7 @@ static void __attribute__((unused)) blemeshcli_ident(char *pcWriteBuffer, int xW
 #endif /* MESH_GATT_PROXY */
 
 #if defined(CONFIG_BT_MESH_CDB)
-static void blemeshcli_cdb_create(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_create)
 {
 	u8_t net_key[16];
 	size_t len;
@@ -2174,7 +2828,7 @@ static void blemeshcli_cdb_create(char *pcWriteBuffer, int xWriteBufferLen, int 
 	vOutputString("Net key:%s\n", bt_hex(net_key, 16));
 }
 
-static void blemeshcli_cdb_clear(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_clear)
 {
 	if(!blemesh_inited){
 		vOutputString("blemesh not init\n");
@@ -2262,7 +2916,7 @@ static void cdb_print_app_keys(void)
 	vOutputString("> Total app-keys: %d\n", total);
 }
 
-static void blemeshcli_cdb_show(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_show)
 {
 	if (!atomic_test_bit(bt_mesh_cdb.flags, BT_MESH_CDB_VALID)) {
 		vOutputString("No valid networks\n");
@@ -2279,7 +2933,7 @@ static void blemeshcli_cdb_show(char *pcWriteBuffer, int xWriteBufferLen, int ar
 	cdb_print_app_keys();
 }
 
-static void blemeshcli_cdb_node_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_node_add)
 {
 	struct bt_mesh_cdb_node *node;
 	u8_t uuid[16], dev_key[16];
@@ -2317,7 +2971,7 @@ static void blemeshcli_cdb_node_add(char *pcWriteBuffer, int xWriteBufferLen, in
 	vOutputString("Added node 0x%04x\n", addr);
 }
 
-static void blemeshcli_cdb_node_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_node_del)
 {
 	struct bt_mesh_cdb_node *node;
 	u16_t addr;
@@ -2335,7 +2989,7 @@ static void blemeshcli_cdb_node_del(char *pcWriteBuffer, int xWriteBufferLen, in
 	vOutputString("Deleted node 0x%04x\n", addr);
 }
 
-static void blemeshcli_cdb_subnet_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_subnet_add)
 {
 	struct bt_mesh_cdb_subnet *sub;
 	u8_t net_key[16];
@@ -2367,7 +3021,7 @@ static void blemeshcli_cdb_subnet_add(char *pcWriteBuffer, int xWriteBufferLen, 
 	vOutputString("Added Subnet 0x%03x\n", net_idx);
 }
 
-static void blemeshcli_cdb_subnet_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_subnet_del)
 {
 	struct bt_mesh_cdb_subnet *sub;
 	u16_t net_idx;
@@ -2385,7 +3039,7 @@ static void blemeshcli_cdb_subnet_del(char *pcWriteBuffer, int xWriteBufferLen, 
 	vOutputString("Deleted subnet 0x%03x\n", net_idx);
 }
 
-static void blemeshcli_cdb_app_key_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_app_key_add)
 {
 	struct bt_mesh_cdb_app_key *key;
 	u16_t net_idx, app_idx;
@@ -2418,7 +3072,7 @@ static void blemeshcli_cdb_app_key_add(char *pcWriteBuffer, int xWriteBufferLen,
 	vOutputString("Added AppKey 0x%03x\n", app_idx);
 }
 
-static void blemeshcli_cdb_app_key_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cdb_app_key_del)
 {
 	struct bt_mesh_cdb_app_key *key;
 	u16_t app_idx;
@@ -2466,7 +3120,7 @@ static void print_node_added(u16_t net_idx, u8_t uuid[16], u16_t addr, u8_t num_
 	
 }
 
-static void blemeshcli_beacon_listen(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(beacon_listen)
 {
 	u8_t val;
 	if(argc != 2){
@@ -2489,7 +3143,7 @@ static const u8_t default_key[16] = {
 	0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
 	0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
 };
-static void blemeshcli_provision(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(provision)
 {
 	const u8_t *net_key = default_key;
 	u16_t net_idx, addr;
@@ -2659,7 +3313,7 @@ static u8_t check_unconfigured(struct bt_mesh_cdb_node *node, void *data)
 }
 
 /*CONFIG node*/
-static void blemeshcli_node_cfg(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(node_cfg)
 {
 	if (argc < 1) {
 		return;
@@ -2673,7 +3327,7 @@ static void blemeshcli_node_cfg(char *pcWriteBuffer, int xWriteBufferLen, int ar
 #endif /* CONFIG_BT_MESH_PROVISIONER */
 
 #if defined(CONFIG_BT_MESH_PROVISIONER)
-static void blemeshcli_get_comp(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(get_comp)
 {
 	if (argc != 4) {
 		vOutputString("Number of Parameters is not correct\r\n");
@@ -2759,7 +3413,7 @@ static void blemeshcli_get_comp(char *pcWriteBuffer, int xWriteBufferLen, int ar
 }
 
 /* Add by bouffalo */
-static void blemeshcli_set_dst(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(set_dst)
 {
 	if (argc != 2) {
 		return;
@@ -2769,7 +3423,7 @@ static void blemeshcli_set_dst(char *pcWriteBuffer, int xWriteBufferLen, int arg
 }
 
 #define CID_NVAL   0xffff
-static void blemeshcli_net_key_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(net_key_add)
 {
 	bool has_key_val = (argc > 2);
 	u8_t key_val[16];
@@ -2845,7 +3499,7 @@ static const u8_t default_new_key[16] = {
 };
 
 /* Added by bouffalo */
-static void blemeshcli_net_key_update(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(net_key_update)
 {
 	bool has_key_val = (argc > 2);
 	u8_t key_val[16];
@@ -2887,7 +3541,7 @@ static void blemeshcli_net_key_update(char *pcWriteBuffer, int xWriteBufferLen, 
 	return;
 }
 
-static void blemeshcli_net_key_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(net_key_get)
 {
 	u16_t keys[16], net_idx, dst;
 	size_t cnt;
@@ -2911,7 +3565,7 @@ static void blemeshcli_net_key_get(char *pcWriteBuffer, int xWriteBufferLen, int
 	return;
 }
 
-static void blemeshcli_net_key_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(net_key_del)
 {
 	u16_t key_net_idx, net_idx, dst;
 	u8_t status;
@@ -2938,7 +3592,7 @@ static void blemeshcli_net_key_del(char *pcWriteBuffer, int xWriteBufferLen, int
 	return;
 }
 
-static void blemeshcli_app_key_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(app_key_add)
 {
 	u8_t key_val[16];
 	u16_t net_idx, dst, key_net_idx, key_app_idx;
@@ -3009,7 +3663,7 @@ static void blemeshcli_app_key_add(char *pcWriteBuffer, int xWriteBufferLen, int
 }
 
 /* Added by bouffalo */
-static void blemeshcli_app_key_update(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(app_key_update)
 {
 	u8_t key_val[16];
 	u16_t key_net_idx, key_app_idx, net_idx, dst;
@@ -3054,7 +3708,7 @@ static void blemeshcli_app_key_update(char *pcWriteBuffer, int xWriteBufferLen, 
 	return;
 }
 
-static void blemeshcli_app_key_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(app_key_get)
 {
 	u16_t key_net_idx, net_idx, dst;
 	u16_t keys[16];
@@ -3089,7 +3743,7 @@ static void blemeshcli_app_key_get(char *pcWriteBuffer, int xWriteBufferLen, int
 	return;
 }
 
-static void blemeshcli_app_key_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(app_key_del)
 {
 	u16_t key_net_idx, key_app_idx, net_idx, dst;
 	u8_t status;
@@ -3123,7 +3777,7 @@ static void blemeshcli_app_key_del(char *pcWriteBuffer, int xWriteBufferLen, int
 }
 
 /* Added bouffalo */
-static void blemeshcli_kr_update(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(kr_update)
 {
 	u16_t idx;
 	u8_t kr;
@@ -3140,8 +3794,7 @@ static void blemeshcli_kr_update(char *pcWriteBuffer, int xWriteBufferLen, int a
 	}
 }
 
-static void blemeshcli_mod_app_bind(char *pcWriteBuffer, int xWriteBufferLen, int argc,
-			    char *argv[])
+BLEMESH_CLI(mod_app_bind)
 {
 	u16_t elem_addr, mod_app_idx, mod_id, cid;
 	u8_t status;
@@ -3185,9 +3838,7 @@ static void blemeshcli_mod_app_bind(char *pcWriteBuffer, int xWriteBufferLen, in
 	return;
 }
 
-
-static void blemeshcli_mod_app_unbind(char *pcWriteBuffer, int xWriteBufferLen, int argc,
-			    char *argv[])
+BLEMESH_CLI(mod_app_unbind)
 {
 	u16_t elem_addr, mod_app_idx, mod_id, cid;
 	u8_t status;
@@ -3231,8 +3882,7 @@ static void blemeshcli_mod_app_unbind(char *pcWriteBuffer, int xWriteBufferLen, 
 	return;
 }
 
-static void blemeshcli_mod_app_get(char *pcWriteBuffer, int xWriteBufferLen, int argc,
-			      char *argv[])
+BLEMESH_CLI(mod_app_get)
 {
 	u16_t elem_addr, mod_id, cid, net_idx, dst;
 	u16_t apps[16];
@@ -3281,7 +3931,7 @@ static void blemeshcli_mod_app_get(char *pcWriteBuffer, int xWriteBufferLen, int
 	return;
 }
 
-static void blemeshcli_mod_sub_add(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(mod_sub_add)
 {
 	u16_t elem_addr, sub_addr, mod_id, cid, net_idx, dst;
 	u8_t status;
@@ -3326,7 +3976,7 @@ static void blemeshcli_mod_sub_add(char *pcWriteBuffer, int xWriteBufferLen, int
 /** Added by bouffalo 
  * Config Model Subscription Overwrite.
  **/
-static void blemeshcli_mod_sub_ow(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(mod_sub_ow)
 {
 	u16_t elem_addr, sub_addr, mod_id, cid, net_idx, dst;
 	u8_t status;
@@ -3367,8 +4017,7 @@ static void blemeshcli_mod_sub_ow(char *pcWriteBuffer, int xWriteBufferLen, int 
 	return;
 }
 
-
-static void blemeshcli_mod_sub_del(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(mod_sub_del)
 {
 	u16_t elem_addr, sub_addr, mod_id, cid, net_idx, dst;
 	u8_t status;
@@ -3408,7 +4057,7 @@ static void blemeshcli_mod_sub_del(char *pcWriteBuffer, int xWriteBufferLen, int
 	return;
 }
 
-static void blemeshcli_mod_sub_del_all(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(mod_sub_del_all)
 {
 	u16_t elem_addr, mod_id, cid, net_idx, dst;
 	u8_t status;
@@ -3448,8 +4097,7 @@ static void blemeshcli_mod_sub_del_all(char *pcWriteBuffer, int xWriteBufferLen,
 	return;
 }
 
-static void blemeshcli_mod_sub_add_va(char *pcWriteBuffer, int xWriteBufferLen, int argc,
-			      char *argv[])
+BLEMESH_CLI(mod_sub_add_va)
 {
 	u16_t elem_addr, sub_addr, mod_id, cid, net_idx, dst;
 	u8_t label[16];
@@ -3502,7 +4150,7 @@ static void blemeshcli_mod_sub_add_va(char *pcWriteBuffer, int xWriteBufferLen, 
 /** Added by bouffalo 
  * Config Model Subscription Overwrite.
  **/
-static void blemeshcli_mod_sub_ow_va(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(mod_sub_ow_va)
 {
 	u16_t elem_addr, mod_id, cid, net_idx, dst;
 	u8_t status;
@@ -3550,9 +4198,7 @@ static void blemeshcli_mod_sub_ow_va(char *pcWriteBuffer, int xWriteBufferLen, i
 	return;
 }
 
-
-static void blemeshcli_mod_sub_del_va(char *pcWriteBuffer, int xWriteBufferLen, int argc,
-			      char *argv[])
+BLEMESH_CLI(mod_sub_del_va)
 {
 	u16_t elem_addr, sub_addr, mod_id, cid, net_idx, dst;
 	u8_t label[16];
@@ -3600,8 +4246,7 @@ static void blemeshcli_mod_sub_del_va(char *pcWriteBuffer, int xWriteBufferLen, 
 	return;
 }
 
-static void blemeshcli_mod_sub_get(char *pcWriteBuffer, int xWriteBufferLen, int argc,
-			      char *argv[])
+BLEMESH_CLI(mod_sub_get)
 {
 	u16_t elem_addr, mod_id, cid, net_idx, dst;
 	u16_t subs[16];
@@ -3805,7 +4450,7 @@ static void mod_pub_va_set(u16_t addr, u16_t mod_id,
 	return;
 }
 
-static void blemeshcli_mod_pub(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(mod_pub)
 {
 	u16_t addr, mod_id, cid;
 
@@ -3838,7 +4483,7 @@ static void blemeshcli_mod_pub(char *pcWriteBuffer, int xWriteBufferLen, int arg
 	}
 }
 
-static void blemeshcli_mod_pub_va(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(mod_pub_va)
 {
 	u16_t addr, mod_id, cid;
 
@@ -3940,7 +4585,7 @@ static void hb_sub_set(size_t argc, char *argv[])
 	return;
 }
 
-static void blemeshcli_hb_sub(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(hb_sub)
 {
 	if (argc > 1) {
 		if (argc < 4) {
@@ -4017,7 +4662,7 @@ static void hb_pub_set(size_t argc, char *argv[])
 	return;
 }
 
-static void blemeshcli_hb_pub(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(hb_pub)
 {
 	if (argc > 1) {
 		if (argc < 7) {
@@ -4031,7 +4676,7 @@ static void blemeshcli_hb_pub(char *pcWriteBuffer, int xWriteBufferLen, int argc
 }
 
 /* Add by bouffalo */
-static void blemeshcli_krp_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(krp_get)
 {
 	struct bt_mesh_cfg_krp krp_buf;
 	u8_t status;
@@ -4066,7 +4711,7 @@ static void blemeshcli_krp_get(char *pcWriteBuffer, int xWriteBufferLen, int arg
 }
 
 /* Add by bouffalo */
-static void blemeshcli_krp_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(krp_set)
 {
 	struct bt_mesh_cfg_krp krp_buf;
 	u8_t status;
@@ -4102,7 +4747,7 @@ static void blemeshcli_krp_set(char *pcWriteBuffer, int xWriteBufferLen, int arg
 }
 
 /* Add by bouffalo */
-static void blemeshcli_cfg_bcn_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cfg_bcn_get)
 {
 	u8_t status = 0;
 	int err;
@@ -4127,7 +4772,7 @@ static void blemeshcli_cfg_bcn_get(char *pcWriteBuffer, int xWriteBufferLen, int
 }
 
 /* Add by bouffalo */
-static void blemeshcli_cfg_bcn_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cfg_bcn_set)
 {
 	u8_t status = 0;
 	int err;
@@ -4154,7 +4799,7 @@ static void blemeshcli_cfg_bcn_set(char *pcWriteBuffer, int xWriteBufferLen, int
 }
 
 /* Add by bouffalo */
-static void blemeshcli_cfg_dttl_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cfg_dttl_get)
 {
 	int err;
 	if (argc != 3) {
@@ -4179,7 +4824,7 @@ static void blemeshcli_cfg_dttl_get(char *pcWriteBuffer, int xWriteBufferLen, in
 }
 
 /* Add by bouffalo */
-static void blemeshcli_cfg_dttl_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cfg_dttl_set)
 {
 	int err;
 	if (argc != 4) {
@@ -4206,7 +4851,7 @@ static void blemeshcli_cfg_dttl_set(char *pcWriteBuffer, int xWriteBufferLen, in
 }
 
 /* Add by bouffalo */
-static void blemeshcli_cfg_gpxy_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cfg_gpxy_get)
 {
 	u8_t status = 0;
 	int err;
@@ -4221,17 +4866,15 @@ static void blemeshcli_cfg_gpxy_get(char *pcWriteBuffer, int xWriteBufferLen, in
 	
 	err = bt_mesh_cfg_gatt_proxy_get(net_idx, dst, &status);
 	if (err) {
-		vOutputString("Getting Default TTL failed (err %d)\n", err);
+		vOutputString("Getting the GATT Proxy state (err %d)\n", err);
 		return;
 	}
-
-	vOutputString("Got Default TTL for 0x%04x:\n", dst);
-	vOutputString("\tDefault TTL      0x%02x\n",
+	vOutputString("\tGetting the GATT Proxy state  0x%02x\n",
 		    status);
 }
 
 /* Add by bouffalo */
-static void blemeshcli_cfg_gpxy_set(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(cfg_gpxy_set)
 {
 	u8_t status = 0;
 	int err;
@@ -4257,7 +4900,7 @@ static void blemeshcli_cfg_gpxy_set(char *pcWriteBuffer, int xWriteBufferLen, in
 		    status);
 }
 
-static void blemeshcli_friend(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(friend)
 {
 	u8_t frnd;
 	int err = -1;
@@ -4291,7 +4934,7 @@ static void blemeshcli_friend(char *pcWriteBuffer, int xWriteBufferLen, int argc
 	return;
 }
 
-static void blemeshcli_relay(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(relay)
 {
 	u8_t relay, transmit;
 	int err;
@@ -4349,7 +4992,7 @@ static void blemeshcli_relay(char *pcWriteBuffer, int xWriteBufferLen, int argc,
 }
 
 /* Added by bouffalo */
-static void blemeshcli_node_identify(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(node_identify)
 {
 	u8_t status, identity;
 	u16_t netkeyindex, net_idx, dst;
@@ -4381,7 +5024,7 @@ static void blemeshcli_node_identify(char *pcWriteBuffer, int xWriteBufferLen, i
 }
 
 /* Added by bouffalo */
-static void blemeshcli_node_reset(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(node_reset)
 {
 	u16_t net_idx, dst;
 	if (argc != 3) {
@@ -4415,7 +5058,7 @@ static void blemeshcli_node_reset(char *pcWriteBuffer, int xWriteBufferLen, int 
 }
 
 /* Added by bouffalo */
-static void blemeshcli_network_trans(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(network_trans)
 {
 	u8_t count, interval;
 	u16_t net_idx, dst;
@@ -4445,7 +5088,7 @@ static void blemeshcli_network_trans(char *pcWriteBuffer, int xWriteBufferLen, i
 }
 
 /* Added by bouffalo */
-static void blemeshcli_lpn_timeout_get(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(lpn_timeout_get)
 {
 	u16_t lpn_addr, net_idx, dst;
 	u32_t poll_timeout;
@@ -4471,7 +5114,7 @@ static void blemeshcli_lpn_timeout_get(char *pcWriteBuffer, int xWriteBufferLen,
 }
 
 /* Added by bouffalo for health client fault state*/
-static void blemeshcli_clhm_fault(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(clhm_fault)
 {
 	int err = 0;
 	u16_t app_idx, cid, dst;
@@ -4522,7 +5165,7 @@ static void blemeshcli_clhm_fault(char *pcWriteBuffer, int xWriteBufferLen, int 
 }
 
 /* Added by bouffalo for health client period state*/
-static void blemeshcli_clhm_period(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(clhm_period)
 {
 	u8_t divisor, updated_divisor;
 	u16_t app_idx, dst;
@@ -4554,7 +5197,7 @@ static void blemeshcli_clhm_period(char *pcWriteBuffer, int xWriteBufferLen, int
 	}
 }
 /* Added by bouffalo for health client attention timer state*/
-static void blemeshcli_clhm_ats(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(clhm_ats)
 {
 	u8_t attention, updated_attention;
 	int err = -1;
@@ -4588,7 +5231,7 @@ static void blemeshcli_clhm_ats(char *pcWriteBuffer, int xWriteBufferLen, int ar
 #endif
 
 #if defined(CFG_NODE_SEND_CFGCLI_MSG) && defined(CONFIG_BT_MESH_CDB)
-static void blemeshcli_pvnr_devkey(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(pvnr_devkey)
 {
 	u8_t key[16], num_elem;
 	u16_t addr;
@@ -4608,12 +5251,12 @@ static void blemeshcli_pvnr_devkey(char *pcWriteBuffer, int xWriteBufferLen, int
 #endif /* CFG_NODE_SEND_CFGCLI_MSG */
 
 #if defined(CONFIG_BT_MESH_SYNC)
-static void blemeshcli_sync_start(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(sync_start)
 {
 	return blsync_blemesh_start();
 }
 
-static void blemeshcli_sync_stop(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(sync_stop)
 {
 	return blsync_blemesh_stop();
 }
@@ -4656,8 +5299,7 @@ static int nodelist_check_clear()
     return 0;
 }
 
-
-static void blemeshcli_nodelist_op(char *pcWriteBuffer, int xWriteBufferLen, int argc, char *argv[])
+BLEMESH_CLI(nodelist_op)
 {
     /** arg1: 1,add address from start to end; 2,add single address, 3,delete single address
      *  arg2: start address or single address.

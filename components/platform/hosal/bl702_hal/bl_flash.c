@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -380,6 +380,10 @@ int ATTR_TCM_SECTION bl_flash_init(void)
     uint32_t offset = 0;
     int ret = 0;
 
+    unsigned long mstatus_tmp;
+    mstatus_tmp = read_csr(mstatus);
+    clear_csr(mstatus, MSTATUS_MIE);
+
     // patch for SF2 swap
     *(volatile uint32_t *)0x40000130 |= (1U << 16);  // enable GPIO25 input
     *(volatile uint32_t *)0x40000134 |= (1U << 16);  // enable GPIO27 input
@@ -421,6 +425,8 @@ int ATTR_TCM_SECTION bl_flash_init(void)
     XIP_SFlash_Opt_Exit();
 
     L1C_Cache_Flush_Ext();
+
+    write_csr(mstatus, mstatus_tmp);
 
     return ret;
 }

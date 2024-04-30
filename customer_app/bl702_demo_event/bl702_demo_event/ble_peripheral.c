@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -34,7 +34,7 @@
 #include "hci_core.h"
 #include "bl_port.h"
 #include "ble_peripheral.h"
-#include "log.h"
+#include "bt_log.h"
 #include "app_common.h"
 
 #include <aos/kernel.h>

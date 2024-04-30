@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -144,7 +144,17 @@ float bl_adc_get_val(void)
     ADC_Stop();
     ADC_FIFO_Clear();
     
+    // Avoid calling ADC_Start after ADC_Stop without at least 1us delay
+    arch_delay_us(10);
+    
     return sum / ADC_SAMPLE_CNT;
+}
+
+int bl_adc_disable(void)
+{
+    ADC_Disable();
+    
+    return 0;
 }
 
 
@@ -208,6 +218,9 @@ float bl_adc_vbat_get_val(void)
     
     ADC_Stop();
     ADC_FIFO_Clear();
+    
+    // Avoid calling ADC_Start after ADC_Stop without at least 1us delay
+    arch_delay_us(10);
     
     return sum / VBAT_SAMPLE_CNT;
 }

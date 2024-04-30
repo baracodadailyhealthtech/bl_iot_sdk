@@ -22,12 +22,9 @@
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_MESH_DEBUG_PROV)
 #define LOG_MODULE_NAME bt_mesh_pb_adv
-#include "log.h"
-#include "errno.h"
+#include "bt_log.h"
+#include "bt_errno.h"
 
-#if defined(CONFIG_AUTO_PTS)
-#include "testing.h"
-#endif
 
 #define GPCF(gpc)           (gpc & 0x03)
 #define GPC_START(last_seg) (((last_seg) << 2) | 0x00)
@@ -833,7 +830,7 @@ void bt_mesh_pb_adv_recv(struct net_buf_simple *buf)
 		return;
 	}
 
-	BT_DBG("link_id 0x%08x xact_id 0x%x", rx.link_id, rx.xact_id);
+	BT_DBG("link_id 0x%08lx xact_id 0x%x", rx.link_id, rx.xact_id);
 
 	gen_prov_recv(&rx, buf);
 }

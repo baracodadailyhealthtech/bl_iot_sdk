@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -405,6 +405,10 @@ int ATTR_TCM_SECTION bl_flash_init(void)
     uint32_t offset = 0;
     int ret = 0;
 
+    unsigned long mstatus_tmp;
+    mstatus_tmp = read_csr(mstatus);
+    clear_csr(mstatus, MSTATUS_MIE);
+
     // get flash config from bootheader
     //L1C_Cache_Flush();
     //XIP_SFlash_Read_Via_Cache_Need_Lock(8 + BL702L_FLASH_XIP_BASE, (uint8_t *)&boot2_flashCfg, 4 + sizeof(SPI_Flash_Cfg_Type));
@@ -442,6 +446,8 @@ int ATTR_TCM_SECTION bl_flash_init(void)
     XIP_SFlash_Opt_Exit(aesEnable);
 
     L1C_Cache_Flush();
+
+    write_csr(mstatus, mstatus_tmp);
 
     return ret;
 }

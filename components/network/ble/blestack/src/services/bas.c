@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <stdbool.h>
 #include <zephyr/types.h>
 
@@ -21,7 +21,7 @@
 
 #if !defined(BFLB_BLE)
 #define LOG_LEVEL CONFIG_BT_GATT_BAS_LOG_LEVEL
-#include <logging/log.h>
+#include <logging/bt_log.h>
 LOG_MODULE_REGISTER(bas);
 #endif
 

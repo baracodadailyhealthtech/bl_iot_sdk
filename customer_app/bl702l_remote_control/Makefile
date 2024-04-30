@@ -9,7 +9,7 @@ PROJECT_BOARD := evb
 export PROJECT_PATH PROJECT_BOARD
 #CONFIG_TOOLPREFIX :=
 
-BTBLECONTROLLER_LIBS := m1s1r m1s1rp m1s1p m2s1p m4s1p m8s1p m0s2p
+BTBLECONTROLLER_LIBS := m0s1p m0s1sp m0s2p m1s1p m0s1rp m2s1p m4s1p m8s1p
 BTBLECONTROLLER_LIB_DEFAULT := m1s1p
 BTBLECONTROLLER_LIB_PREFIX := btblecontroller_702l_
 
@@ -30,9 +30,12 @@ INCLUDE_COMPONENTS += coredump
 
 ifeq ($(CONFIG_BUILD_ROM_CODE),1)
 INCLUDE_COMPONENTS += bl702l_freertos
-INCLUDE_COMPONENTS += lmac154
 else
-INCLUDE_COMPONENTS += bl702l_rom_ext
+ifeq ($(CONFIG_CHIP_REVISION),A1)
+INCLUDE_COMPONENTS += bl702l_rom_a1
+else
+INCLUDE_COMPONENTS += bl702l_rom_a0
+endif
 endif
 
 ifeq ($(CONFIG_BLUETOOTH),1)
@@ -46,13 +49,7 @@ else
 	endif
 endif
 INCLUDE_COMPONENTS += blestack
-endif
-
-ifeq ($(CONFIG_BT_MESH),1)
-INCLUDE_COMPONENTS += blemesh
-ifeq ($(CONFIG_BT_MESH_MODEL),1)
-INCLUDE_COMPONENTS += blemesh_model
-endif
+INCLUDE_COMPONENTS += btble_pds
 endif
 
 INCLUDE_COMPONENTS += $(PROJECT_NAME)

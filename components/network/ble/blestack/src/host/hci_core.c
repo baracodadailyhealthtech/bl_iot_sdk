@@ -10,7 +10,7 @@
 #include <zephyr.h>
 #include <string.h>
 #include <stdio.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <atomic.h>
 #include <misc/util.h>
 #include <misc/slist.h>
@@ -27,7 +27,7 @@
 #include <hci_driver.h>
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_HCI_CORE)
-#include "log.h"
+#include "bt_log.h"
 
 #include "rpa.h"
 #include "keys.h"
@@ -1168,14 +1168,6 @@ static void hci_disconn_complete(struct net_buf *buf)
 
 	bt_conn_unref(conn);
 
-#ifdef BFLB_BLE_PATCH_FREE_ALLOCATED_BUFFER_IN_OS
-    k_queue_free(&conn->tx_queue._queue);
-    conn->tx_queue._queue.hdl = NULL;
-    if(conn->update_work.timer.timer.hdl){
-        k_delayed_work_del_timer(&conn->update_work);
-    }
-#endif
-
 #if defined(BFLB_RELEASE_CMD_SEM_IF_CONN_DISC)
 	hci_release_conn_related_cmd();
 #endif
@@ -1579,11 +1571,15 @@ static void enh_conn_complete(struct bt_hci_evt_le_enh_conn_complete *evt)
 		 * this is how this le connection complete for slave occurred.
 		 */
 		if (atomic_test_bit(bt_dev.flags, BT_DEV_KEEP_ADVERTISING) &&
-		    BT_LE_STATES_SLAVE_CONN_ADV(bt_dev.le.states)) {
+			BT_LE_STATES_SLAVE_CONN_ADV(bt_dev.le.states)
+			#if defined(BFLB_BLE_REJECT_CONNECTABLE_ADV_IF_MAX_LINKS_REACH)
+			 && atomic_test_bit(bt_dev.flags,BT_DEV_ADVERTISING_CONNECTABLE) &&
+			(bt_conn_get_remote_dev_info(NULL) < CONFIG_BT_MAX_CONN)
+			#endif
+			) {
 			if (IS_ENABLED(CONFIG_BT_PRIVACY)) {
 				le_set_private_addr(bt_dev.adv_id);
 			}
-
 			set_advertise_enable(true);
 		}
 	}
@@ -1595,6 +1591,8 @@ static void enh_conn_complete(struct bt_hci_evt_le_enh_conn_complete *evt)
 		    atomic_test_bit(bt_dev.flags, BT_DEV_AUTO_CONN)) {
 			conn->id = BT_ID_DEFAULT;
 			atomic_clear_bit(bt_dev.flags, BT_DEV_AUTO_CONN);
+			/*bouffalo fix: it does bt_conn_unref at the end of enh_conn_complete.*/
+			bt_conn_ref(conn);
 		}
 
 		bt_addr_le_copy(&conn->le.resp_addr, &peer_addr);
@@ -1632,6 +1630,15 @@ static void enh_conn_complete(struct bt_hci_evt_le_enh_conn_complete *evt)
 	if (conn->state != BT_CONN_CONNECTED) {
 		goto done;
 	}
+
+	#if defined(BFLB_BLE_REJECT_CONNECTABLE_ADV_IF_MAX_LINKS_REACH)
+	if ((evt->role == BT_HCI_ROLE_MASTER) &&
+		atomic_test_bit(bt_dev.flags, BT_DEV_ADVERTISING) &&
+		atomic_test_bit(bt_dev.flags,BT_DEV_ADVERTISING_CONNECTABLE) &&
+		bt_conn_get_remote_dev_info(NULL) == CONFIG_BT_MAX_CONN){
+		err = bt_le_adv_stop();
+	}
+	#endif
 
 	if ((evt->role == BT_HCI_ROLE_MASTER) ||
 	    BT_FEAT_LE_SLAVE_FEATURE_XCHG(bt_dev.le.features)) {
@@ -1988,6 +1995,14 @@ static void check_pending_conn(const bt_addr_le_t *id_addr,
 	if (!conn) {
 		return;
 	}
+    
+	#if defined(BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK)
+	if(conn->disconnect_was_triggered == true){
+		bt_conn_unref(conn);
+		return;
+	}
+	conn->notPermit_disconnect = true;
+	#endif
 
 	if (atomic_test_bit(bt_dev.flags, BT_DEV_SCANNING) &&
 	    set_le_scan_enable(BT_HCI_LE_SCAN_DISABLE)) {
@@ -2000,10 +2015,16 @@ static void check_pending_conn(const bt_addr_le_t *id_addr,
 	}
 	
 	bt_conn_set_state(conn, BT_CONN_CONNECT);
+	#if defined(BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK)
+	conn->notPermit_disconnect = false;
+	#endif
 	bt_conn_unref(conn);
 	return;
 
 failed:
+	#if defined(BFLB_BLE_PATCH_AVOID_CONNECT_DISCONNECT_RISK)
+	conn->notPermit_disconnect = false;
+	#endif
 	conn->err = BT_HCI_ERR_UNSPECIFIED;
 	bt_conn_set_state(conn, BT_CONN_DISCONNECTED);
 	bt_conn_unref(conn);
@@ -2088,6 +2109,10 @@ int bt_unpair(u8_t id, const bt_addr_le_t *addr)
 		if (conn->type == BT_CONN_TYPE_LE) {
 			keys = conn->le.keys;
 			conn->le.keys = NULL;
+			#if defined(BFLB_BLE_PATCH_DO_GATT_CLEAR_IF_UNPAIRED)
+			if (bt_addr_le_cmp(addr, &conn->le.dst))
+			memcpy((void *)addr, (void *)&conn->le.dst, sizeof(bt_addr_le_t));
+			#endif
 		}
 
 		bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
@@ -2101,18 +2126,21 @@ int bt_unpair(u8_t id, const bt_addr_le_t *addr)
 		}
 	}
 
+    #if !defined(BFLB_BLE_PATCH_DO_GATT_CLEAR_IF_UNPAIRED)
+	if (IS_ENABLED(CONFIG_BT_SETTINGS))
+	#endif
+	{
+		bt_gatt_clear(id, addr);
+	}
+
 	if (IS_ENABLED(CONFIG_BT_SMP)) {
 		if (!keys) {
 			keys = bt_keys_find_addr(id, addr);
 		}
 
 		if (keys) {
-			bt_keys_clear(keys);
+			bt_keys_clear(keys);//will clear addr
 		}
-	}
-
-	if (IS_ENABLED(CONFIG_BT_SETTINGS)) {
-		bt_gatt_clear(id, addr);
 	}
 
 	return 0;
@@ -2472,13 +2500,8 @@ static void link_key_notify(struct net_buf *buf)
 	struct bt_hci_evt_link_key_notify *evt = (void *)buf->data;
 	struct bt_conn *conn;
 
-        printf("bredr link key: ");
-        for(int i = 0; i < 16; i++)
-        {
-            printf("0x%02x ", evt->link_key[i]);
-        }
-        printf("\n");
-
+        BT_WARN("BREDR Link Key: %s\r\n",bt_hex(evt->link_key,BT_SMP_MAX_ENC_KEY_SIZE));
+	
 	conn = bt_conn_lookup_addr_br(&evt->bdaddr);
 	if (!conn) {
 		BT_ERR("Can't find conn for %s", bt_addr_str(&evt->bdaddr));
@@ -3754,6 +3777,7 @@ static void le_ltk_request(struct net_buf *buf)
 
 	if (bt_smp_request_ltk(conn, evt->rand, evt->ediv, ltk)) {
 		le_ltk_reply(handle, ltk);
+		BT_WARN("BLE LTK: %s\r\n",bt_hex(ltk,BT_SMP_MAX_ENC_KEY_SIZE));
 	} else {
 		le_ltk_neg_reply(handle);
 	}
@@ -5126,7 +5150,7 @@ static int br_init(void)
 	}
 
 	name_cp = net_buf_add(buf, sizeof(*name_cp));
-	strncpy((char *)name_cp->local_name, CONFIG_BT_DEVICE_NAME,
+	strlcpy((char *)name_cp->local_name, CONFIG_BT_DEVICE_NAME,
 		sizeof(name_cp->local_name));
 
 	err = bt_hci_cmd_send_sync(BT_HCI_OP_WRITE_LOCAL_NAME, buf, NULL);
@@ -6489,7 +6513,7 @@ static inline int bt_le_name_update(const struct bt_data *ad, size_t ad_len)
 		for (i = 0; i < ad_len; i++) {
 			if (ad[i].type == BT_DATA_NAME_COMPLETE ||
 			    ad[i].type == BT_DATA_NAME_SHORTENED) {
-				strncpy(name,(char*)ad[i].data,ad[i].data_len);
+				strlcpy(name,(char*)ad[i].data,ad[i].data_len);
 				ret = bt_set_name(name);
 			}
 		}
@@ -6640,13 +6664,13 @@ int bt_le_adv_start_internal(const struct bt_le_adv_param *param,
 	if (param->options & BT_LE_ADV_OPT_CONNECTABLE) {
 		if (IS_ENABLED(CONFIG_BT_PRIVACY) &&
 		    !(param->options & BT_LE_ADV_OPT_USE_IDENTITY)) {
-		    #if defined(CONFIG_BT_STACK_PTS) || defined(CONFIG_AUTO_PTS)
-            if(param->addr_type == BT_ADDR_LE_RANDOM_ID)
-                err = le_set_private_addr(param->id);
-            else if(param->addr_type == BT_ADDR_LE_RANDOM)
-                err = le_set_non_resolv_private_addr(param->id);
+            #if defined(CONFIG_BT_STACK_PTS) || defined(CONFIG_AUTO_PTS)
+            if(param->addr_type == BT_ADDR_TYPE_RPA)
+              err = le_set_private_addr(param->id);
+            else if(param->addr_type == BT_ADDR_TYPE_NON_RPA)
+              err = le_set_non_resolv_private_addr(param->id);
             #else 
-                err = le_set_private_addr(param->id);
+              err = le_set_private_addr(param->id);
             #endif
 			if (err) {
 				return err;
@@ -6654,7 +6678,12 @@ int bt_le_adv_start_internal(const struct bt_le_adv_param *param,
 
 			if (BT_FEAT_LE_PRIVACY(bt_dev.le.features)) {
                 #if defined(CONFIG_BT_STACK_PTS) || defined(CONFIG_AUTO_PTS)
-                set_param.own_addr_type = param->addr_type;
+                if(param->addr_type == BT_ADDR_TYPE_RPA)
+                    set_param.own_addr_type = BT_ADDR_LE_RANDOM_ID;
+                else if(param->addr_type == BT_ADDR_TYPE_NON_RPA)
+                    set_param.own_addr_type = BT_ADDR_LE_RANDOM;
+                else if(param->addr_type == BT_ADDR_LE_PUBLIC)
+                    set_param.own_addr_type = BT_ADDR_LE_PUBLIC;
                 #else
 				set_param.own_addr_type =
 					BT_HCI_OWN_ADDR_RPA_OR_RANDOM;
@@ -6710,25 +6739,15 @@ int bt_le_adv_start_internal(const struct bt_le_adv_param *param,
 			set_param.own_addr_type = id_addr->type;
 		} else {
 		    #if defined(BFLB_BLE) && !defined(CONFIG_BT_MESH)
-            #if defined(CONFIG_BT_STACK_PTS) || defined(CONFIG_AUTO_PTS)
-            if(param->addr_type == BT_ADDR_LE_RANDOM_ID)
-                err = le_set_private_addr(param->id);
-            else if(param->addr_type == BT_ADDR_LE_RANDOM)
-                err = le_set_non_resolv_private_addr(param->id);
-            #else
-			//#if !defined(CONFIG_BT_ADV_WITH_PUBLIC_ADDR)
-			//err = le_set_private_addr(param->id);
-			//#endif
-            #endif//CONFIG_BT_STACK_PTS
-            #if defined(CONFIG_BT_STACK_PTS) || defined(CONFIG_AUTO_PTS)
-            set_param.own_addr_type = param->addr_type;
-			#else
-			    //set_param.own_addr_type = BT_ADDR_LE_RANDOM;
-				//#if defined(CONFIG_BT_ADV_WITH_PUBLIC_ADDR)
-			set_param.own_addr_type = BT_ADDR_LE_PUBLIC;
-				//#endif
-				#endif
-            #endif
+			if (IS_ENABLED(CONFIG_BT_PRIVACY))
+			{
+				err = le_set_private_addr(param->id);
+				set_param.own_addr_type = BT_ADDR_LE_RANDOM;
+			}else
+			{
+				set_param.own_addr_type = BT_ADDR_LE_PUBLIC;
+			}
+			#endif
 		}
 
 		if (err) {
@@ -6833,9 +6852,14 @@ int set_adv_enable(bool enable)
 		return -EAGAIN;
 	}
 
-    if (atomic_test_bit(bt_dev.flags, BT_DEV_ADVERTISING)) {
+    if (atomic_test_bit(bt_dev.flags, BT_DEV_ADVERTISING) && enable) {
 		return -EALREADY;
 	}
+    
+	#if defined(BFLB_BLE_REJECT_CONNECTABLE_ADV_IF_MAX_LINKS_REACH)
+	if (enable && atomic_test_bit(bt_dev.flags,BT_DEV_ADVERTISING_CONNECTABLE) && bt_conn_get_remote_dev_info(NULL) == CONFIG_BT_MAX_CONN)
+		return -EACCES;
+	#endif
     
 	err = set_advertise_enable(enable);
 	if (err) {
@@ -7115,6 +7139,13 @@ int bt_le_adv_start(const struct bt_le_adv_param *param,
 	if (param->options & BT_LE_ADV_OPT_DIR_MODE_LOW_DUTY) {
 		return -EINVAL;
 	}
+
+	#if defined(BFLB_BLE_REJECT_CONNECTABLE_ADV_IF_MAX_LINKS_REACH)
+	if(param->options & BT_LE_ADV_OPT_CONNECTABLE && bt_conn_get_remote_dev_info(NULL) == CONFIG_BT_MAX_CONN)
+	{
+		return -EACCES;
+	}
+	#endif
 
 	return bt_le_adv_start_internal(param, ad, ad_len, sd, sd_len, NULL);
 }
@@ -8330,5 +8361,15 @@ void bt_hci_reset_complete(struct net_buf *buf)
 void bt_register_host_assist_cb(struct blhast_cb *cb)
 {
     host_assist_cb = cb;
+}
+#endif
+
+#if defined(BFLB_BLE)
+bool ble_gap_event_ongoing(void)
+{
+    if(le_check_valid_conn() || le_check_valid_scan() || le_check_valid_adv())
+        return true;
+    else
+        return false;
 }
 #endif

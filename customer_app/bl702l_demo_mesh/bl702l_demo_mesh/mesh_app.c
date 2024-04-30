@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -35,7 +35,7 @@
 #include "cli.h"
 #include "mesh_cli_cmds.h"
 #include "include/mesh.h"
-#include "errno.h"
+#include "bt_errno.h"
 
 #include "mesh.h"
 #include "access.h"
@@ -46,13 +46,15 @@
 #include "adv.h"
 #include "beacon.h"
 #include "hci_core.h"
-#include "log.h"
+#include "bt_log.h"
+#if defined(CONFIG_BT_MESH_MODEL)
 #include "bfl_ble_mesh_generic_model_api.h"
 #include "bfl_ble_mesh_lighting_model_api.h"
 #include "bfl_ble_mesh_local_data_operation_api.h"
 #include "bfl_ble_mesh_networking_api.h"
 #include "bfl_ble_mesh_time_scene_model_api.h"
 #include "model_opcode.h"
+#endif /* CONFIG_BT_MESH_MODEL */
 #if defined(CONFIG_BT_SETTINGS)
 #include "easyflash.h"
 #include "settings.h"
@@ -61,6 +63,10 @@
 #endif
 #include <../../blestack/src/include/bluetooth/crypto.h>
 #include "hal_gpio.h"
+#if defined(CONFIG_BT_MESH_OTA_TARGET)
+#include "mesh_ota.h"
+#endif
+#include "pds_app.h"
 
 #define CUR_FAULTS_MAX 4
 
@@ -248,6 +254,7 @@ static struct bt_mesh_cfg_srv cfg_srv = {
 static struct bt_mesh_cfg_cli cfg_cli = {
 };
 
+#if defined(CONFIG_BT_MESH_MODEL)
 BFL_BLE_MESH_MODEL_PUB_DEFINE(onoff_pub, 2 + 3, ROLE_NODE);
 static bfl_ble_mesh_gen_onoff_srv_t onoff_server = {
     .rsp_ctrl.get_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
@@ -360,11 +367,20 @@ bfl_ble_mesh_scheduler_setup_srv_t scheduler_setup_server={
     .rsp_ctrl.set_auto_rsp = BFL_BLE_MESH_SERVER_AUTO_RSP,
     .state = &scheduler_state,
 };
+#endif /* CONFIG_BT_MESH_MODEL */
+
+#if defined(CONFIG_BT_MESH_OTA_TARGET)
+extern struct bt_mesh_dfu_srv dfu_srv;
+#endif
 
 static struct bt_mesh_model sig_models[] = {
     BT_MESH_MODEL_CFG_SRV(&cfg_srv),
     BT_MESH_MODEL_CFG_CLI(&cfg_cli),
     BT_MESH_MODEL_HEALTH_SRV(&health_srv, &health_pub),
+#if defined(CONFIG_BT_MESH_OTA_TARGET)
+    BT_MESH_MODEL_DFU_SRV(&dfu_srv),
+#endif
+#if defined(CONFIG_BT_MESH_MODEL)
     BFL_BLE_MESH_MODEL_GEN_ONOFF_SRV(&onoff_pub, &onoff_server),
     BFL_BLE_MESH_MODEL_GEN_ONOFF_CLI(&onoff_cli_pub, &onoff_client),
     BFL_BLE_MESH_MODEL_GEN_LEVEL_SRV(&level_pub, &level_server),
@@ -378,12 +394,7 @@ static struct bt_mesh_model sig_models[] = {
     BFL_BLE_MESH_MODEL_SCENE_SETUP_SRV(&scene_pub,&scene_setup_server),
     BFL_BLE_MESH_MODEL_SCHEDULER_SRV(&scheduler_pub,&scheduler_server),
     BFL_BLE_MESH_MODEL_SCHEDULER_SETUP_SRV(&scheduler_pub,&scheduler_setup_server),
-
-};
-
-static struct bt_mesh_model sig_models1[] = {
-    BFL_BLE_MESH_MODEL_GEN_LEVEL_SRV(&level1_pub, &level1_server),
-    BFL_BLE_MESH_MODEL_LIGHT_CTL_TEMP_SRV(&ctl_pub, &ctl_temp_server),
+#endif /* CONFIG_BT_MESH_MODEL */
 };
 
 struct vendor_data_t{
@@ -448,11 +459,9 @@ static struct bt_mesh_model vendor_models[] = {
     BT_MESH_MODEL_VND(BL_COMP_ID, BT_MESH_VND_MODEL_ID_DATA_CLI,
         vendor_data_op_cli, NULL, &vendor_data_cli),
 };
-static struct bt_mesh_model vendor_models1[0];
 
 static struct bt_mesh_elem elements[] = {
     BT_MESH_ELEM(0, sig_models, vendor_models),
-    BT_MESH_ELEM(1, sig_models1, vendor_models1),
 };
 
 static const struct bt_mesh_comp comp = {
@@ -513,12 +522,6 @@ static void prov_complete(u16_t net_idx, u16_t addr)
 static void prov_reset(void)
 {
     BT_WARN("The local node has been reset and needs reprovisioning");
-    if (!bt_mesh_is_provisioned()) 
-    {
-		BT_WARN("blemesh not init\n");
-		return;
-	}
-	bt_mesh_reset();
 }
 
 #if defined(CONFIG_BT_MESH_MODEL)
@@ -655,6 +658,12 @@ static void blemeshcli_reset(char *pcWriteBuffer,
     BT_WARN("Local node reset complete");
 }
 
+static void cmd_start_pds(char *buf, int len, int argc, char **argv)
+{
+    BT_WARN("Suspend %d", bt_mesh_suspend());
+    btble_pds_enable(1);  
+}
+
 static int input(bt_mesh_input_action_t act, u8_t size)
 {
     switch (act) {
@@ -762,6 +771,7 @@ static void attn_off(struct bt_mesh_model *model)
     BT_WARN("Attention timer off");
 }
 
+#if defined(CONFIG_BT_MESH_MODEL)
 static void model_gen_cb(uint8_t value)
 {
     value?hal_gpio_led_on():hal_gpio_led_off();
@@ -1089,6 +1099,7 @@ static void example_ble_mesh_time_scene_server_cb(
     }
 
 }
+#endif /* CONFIG_BT_MESH_MODEL */
 static void unprov_stop_work_timeout_ck(struct k_work *work)
 {
     BT_WARN("%d", bt_mesh_is_provisioned());
@@ -1104,6 +1115,7 @@ int mesh_app_init(void)
     static struct k_delayed_work unprov_stop_work;
     int err;
     bt_mesh_prov_bearer_t bearer = BT_MESH_PROV_GATT_ADV;
+    #if defined(CONFIG_BT_MESH_MODEL)
     #if defined(CONFIG_BT_SETTINGS)
     bt_settings_get_bin(NV_LOCAL_ID_SCENE, (uint8_t*)&scene_register, sizeof(scene_register), NULL);
     #endif
@@ -1112,6 +1124,7 @@ int mesh_app_init(void)
 
     bfl_ble_mesh_register_lighting_server_callback(example_ble_mesh_lighting_server_cb);
     bfl_ble_mesh_register_time_scene_server_callback(example_ble_mesh_time_scene_server_cb);
+    #endif /* CONFIG_BT_MESH_MODEL */
     /* For test */
     bt_addr_le_t adv_addr;
     bt_get_local_public_address(&adv_addr);
@@ -1135,6 +1148,10 @@ int mesh_app_init(void)
         mesh_commit();
     }
 
+    #if defined(CONFIG_BT_MESH_OTA_TARGET)
+    mesh_ota_target_init();
+    #endif
+    
     if (bt_mesh_is_provisioned()) {
         BT_WARN("Mesh network restored from flash");
     } else {
@@ -1158,8 +1175,11 @@ const struct cli_command btMeshCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
 const struct cli_command btMeshCmdSet[] = {
 #endif
     {"blemesh_reset", "", blemeshcli_reset},
+    {"pds_start", "enable pds", cmd_start_pds},
+    #if defined(CONFIG_BT_MESH_MODEL)
     {"blemesh_gen_oo_cli", "", blemeshcli_gen_oo_cli},
     {"blemesh_vendor_cli", "", blemeshcli_vendor_cli},
+    #endif /* CONFIG_BT_MESH_MODEL */
 #if defined(BL70X)
     {NULL, NULL, "No handler / Invalid command", NULL}
 #endif

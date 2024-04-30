@@ -38,3 +38,6 @@ CONFIG_MESH_APP =0:
 
 Please refer to the "Docs » Example » BLE » Mesh" section for more information.
 
+MESH method to enter pds:
+1. Add mesh nodes to the mesh network. Unprovisoned node cannot enter low power consumption.
+2. Use the pds_start command to put the node into a low-power state. After entering low-power state, you can use the serial port to wake up the node.

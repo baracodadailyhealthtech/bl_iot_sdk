@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "btc_ble_mesh_generic_model.h"
 #include "btc_ble_mesh_prov.h"
@@ -215,7 +215,7 @@ static void gen_onoff_set(struct bt_mesh_model *model,
 
     bt_mesh_server_start_transition(&srv->transition);
 
-#if defined(CONFIG_AUTO_PTS)
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
     if(srv->transition.counter){
         bt_mesh_generic_server_cb_evt_to_btc(
             BTC_BLE_MESH_EVT_GENERIC_SERVER_RECV_SET_MSG, model, ctx, NULL, 0);
@@ -404,7 +404,7 @@ static void gen_level_set(struct bt_mesh_model *model,
 
     bt_mesh_server_start_transition(&srv->transition);
 
-#if defined(CONFIG_AUTO_PTS)
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
     if(srv->transition.counter){
         bt_mesh_generic_server_cb_evt_to_btc(
             BTC_BLE_MESH_EVT_GENERIC_SERVER_RECV_SET_MSG, model, ctx, NULL, 0);
@@ -532,7 +532,7 @@ static void gen_delta_set(struct bt_mesh_model *model,
 
     bt_mesh_server_start_transition(&srv->transition);
 
-#if defined(CONFIG_AUTO_PTS)
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
     if(srv->transition.counter){
         bt_mesh_generic_server_cb_evt_to_btc(
             BTC_BLE_MESH_EVT_GENERIC_SERVER_RECV_SET_MSG, model, ctx, NULL, 0);
@@ -665,7 +665,7 @@ static void gen_move_set(struct bt_mesh_model *model,
 
     bt_mesh_server_start_transition(&srv->transition);
 
-#if defined(CONFIG_AUTO_PTS)
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
     if(srv->transition.counter){
         bt_mesh_generic_server_cb_evt_to_btc(
             BTC_BLE_MESH_EVT_GENERIC_SERVER_RECV_SET_MSG, model, ctx, NULL, 0);
@@ -1202,7 +1202,7 @@ static void gen_power_level_set(struct bt_mesh_model *model,
 
     bt_mesh_server_start_transition(&srv->transition);
 
-#if defined(CONFIG_AUTO_PTS)
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
     if(srv->transition.counter){
         bt_mesh_generic_server_cb_evt_to_btc(
             BTC_BLE_MESH_EVT_GENERIC_SERVER_RECV_SET_MSG, model, ctx, NULL, 0);
@@ -2377,7 +2377,7 @@ static int generic_server_init(struct bt_mesh_model *model)
         return -EINVAL;
     }
 
-#if defined(CONFIG_AUTO_PTS)
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
     if (model->pub) {
         model->pub->update = btc_ble_mesh_model_publish_update;
     }
@@ -2390,7 +2390,7 @@ static int generic_server_init(struct bt_mesh_model *model)
             bt_mesh_server_alloc_ctx(&srv->transition.timer.work);
             k_delayed_work_init(&srv->transition.timer, generic_onoff_work_handler);
         }
-        #if defined(CONFIG_AUTO_PTS)
+        #if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
         /* Add by bouffalo init publish message status with state */
         if (model->pub) {
             bt_mesh_model_msg_init(model->pub->msg, BLE_MESH_MODEL_OP_GEN_ONOFF_STATUS);

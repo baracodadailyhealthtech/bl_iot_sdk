@@ -8,7 +8,7 @@
 
 #include <zephyr.h>
 #include <string.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <atomic.h>
 #include <byteorder.h>
 #include <util.h>
@@ -20,18 +20,17 @@
 
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_L2CAP)
 #define LOG_MODULE_NAME bt_l2cap_br
-#include "log.h"
+#include "bt_log.h"
 
 #include "hci_core.h"
 #include "conn_internal.h"
 #include "l2cap_internal.h"
-#include "sdp_internal.h"
-#include "avdtp_internal.h"
-#include "a2dp_internal.h"
-#include "rfcomm_internal.h"
+#include "sdp.h"
+#include "a2dp.h"
 #include "hfp_hf.h"
 #include "avctp.h"
 #include "avrcp.h"
+#include "rfcomm.h"
 
 #define BR_CHAN(_ch) CONTAINER_OF(_ch, struct bt_l2cap_br_chan, chan)
 #define BR_CHAN_RTX(_w) CONTAINER_OF(_w, struct bt_l2cap_br_chan, chan.rtx_work)
@@ -77,7 +76,9 @@ enum {
 
 static sys_slist_t br_servers;
 static uint8_t ident;
-
+#if defined(BFLB_BR_DISABLE_STATIC_CHANNEL)
+static sys_slist_t br_channels;
+#endif
 
 /* Pool for outgoing BR/EDR signaling packets, min MTU is 48 */
 #if !defined(BFLB_DYNAMIC_ALLOC_MEM)
@@ -381,8 +382,13 @@ static uint8_t get_fixed_channels_mask(void)
 {
 	uint8_t mask = 0U;
 
+	#if defined(BFLB_BR_DISABLE_STATIC_CHANNEL)
+	struct bt_l2cap_br_fixed_chan *fchan;
+	SYS_SLIST_FOR_EACH_CONTAINER(&br_channels, fchan, node) {
+	#else
 	/* this needs to be enhanced if AMP Test Manager support is added */
 	Z_STRUCT_SECTION_FOREACH(bt_l2cap_br_fixed_chan, fchan) {
+	#endif
 		mask |= BIT(fchan->cid);
 	}
 
@@ -447,7 +453,12 @@ void bt_l2cap_br_connected(struct bt_conn *conn)
 {
 	struct bt_l2cap_chan *chan;
 
+	#if defined(BFLB_BR_DISABLE_STATIC_CHANNEL)
+	struct bt_l2cap_br_fixed_chan *fchan;
+	SYS_SLIST_FOR_EACH_CONTAINER(&br_channels, fchan, node) {
+	#else
 	Z_STRUCT_SECTION_FOREACH(bt_l2cap_br_fixed_chan, fchan) {
+	#endif
 		struct bt_l2cap_br_chan *ch;
 
 		if (!fchan->accept) {
@@ -1600,8 +1611,25 @@ static int l2cap_br_accept(struct bt_conn *conn, struct bt_l2cap_chan **chan)
 
 BT_L2CAP_BR_CHANNEL_DEFINE(br_fixed_chan, BT_L2CAP_CID_BR_SIG, l2cap_br_accept);
 
+#if defined(BFLB_BR_DISABLE_STATIC_CHANNEL)
+void bt_l2cap_br_fixed_chan_register(struct bt_l2cap_fixed_chan *chan)
+{
+	BT_DBG("CID 0x%04x", chan->cid);
+	sys_slist_append(&br_channels, &chan->node);
+}
+#endif
+
 void bt_l2cap_br_init(void)
 {
+	#if defined(BFLB_BR_DISABLE_STATIC_CHANNEL)
+	static struct bt_l2cap_br_fixed_chan chan = {
+		.cid	= BT_L2CAP_CID_BR_SIG,
+		.accept	= l2cap_br_accept,
+	};
+
+	bt_l2cap_br_fixed_chan_register(&chan);
+	#endif
+
 #if defined(BFLB_DYNAMIC_ALLOC_MEM)
 	net_buf_init(&br_sig_pool, CONFIG_BT_MAX_CONN, BT_L2CAP_BUF_SIZE(L2CAP_BR_MIN_MTU), NULL);
 #endif

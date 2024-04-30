@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include "rom_hal_ext.h"
-#include "rom_btble_ext.h"
 #include "cli.h"
 #include "ble_ota_app.h"
 #include "ble_ota_config.h"

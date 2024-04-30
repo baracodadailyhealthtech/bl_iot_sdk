@@ -1,5 +1,52 @@
 # Changes
 
+## 2024-03-18
+1.Optimize bl hci wrapper layer to fix the assert issue caused by lack of cache space during att rx test in a corner case.
+
+## 2024-03-15
+1.Fix rx acl len mismatch issue when pds is enabled in a corner case.
+
+## 2024-03-14
+1.Bring up A2DP source function
+
+## 2024-03-04
+1.Fix the issue that directed adv fails to be started because the conditions for checking whether adv can be initiated are inappropriate.
+
+## 2024-02-23
+1.Fix the assert issue in disconnection when master does auto connection from whitelist.
+
+## 2024-02-02
+1.Not force it to write ccc for existed subscriptions in blestack when connected to avoid the att timeout issue that happens when there are multiple subscriptions.
+  Make upper layer write ccc if needed when connected.
+2.Optimize ble tp service to trigger ble action in tp task not in blestack's callback to avoid att timeout issue.
+
+## 2024-01-25
+1.The connectable adv is rejected if the number of connections reaches the maximum number.
+2.Fix an assert issue caused by a risk that upper layer disconnect le connection in connection scan state in a corner case.
+
+## 2024-01-16
+1.Fix the issue that gatt ccc and sc are not removed if upper layer calls bt_unpair with the peer address which is not identity address.
+2.Fix the memory leak issue because conn_update timer is not freed in some corner case.
+3.Fix the assert issue in hci_tx_thread because conn_cleanup is called twice in some corner case.
+
+## 2024-01-11
+1.Fix an assert issue caused by a risk that upper layer disconnect le connection while target's adv has been received by host in connection scan state.
+
+## 2024-01-08
+1.Fix the issue that the att response of previous att request fails to be handled because the previous att request's req context is overwritten by the next att request in a corner case.
+
+## 2024-01-02
+1.Fix the issue that it fails to remove sc configurations from flash.
+
+## 2023-12-29
+1.Fix the issue that it fails to start gatt discovery in a new connection if gatt discovery returns error directly in previous connection.
+
+## 2023-12-26
+1.Fix the issue that gatt service changed configuration cannot be saved because sc entries are all used.
+
+## 2023-12-22
+1.Fix the assert issue that it still accesses connection tx queue which is cleaned and freed to initiate tx in le disconnected state in a corner case.
+
 ## 2023-11-28
 1.Fix an error that buf is released early when send gatt req, Occurs in a throughput test scene.
 

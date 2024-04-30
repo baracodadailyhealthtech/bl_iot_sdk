@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <errno.h>
+#include <bt_errno.h>
 
-#include "src/mesh.h"
+#include "../../../../blemesh/src/mesh.h"
 #include "access.h"
 #include "mesh_common.h"
 #include "generic_server.h"
@@ -96,7 +96,7 @@ int bt_mesh_get_light_lc_trans_time(struct bt_mesh_model *model, u8_t *trans_tim
      * transition time. Currently directly use Light LC Time Run On property value.
      * Unit: Millisecond, range: [0, 16777214(0xFFFFFE)]
      */
-    #if defined(CONFIG_AUTO_PTS)
+    #if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
     switch(srv->lc->state_machine.state){
         case LC_OFF:
             value = 0;

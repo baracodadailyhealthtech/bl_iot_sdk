@@ -27,14 +27,14 @@
 extern "C" {
 #endif
 
-const struct bt_mesh_model_cb bt_mesh_gen_onoff_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_level_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_def_trans_time_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_pwr_onoff_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_pwr_level_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_battery_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_location_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_property_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_onoff_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_level_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_def_trans_time_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_pwr_onoff_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_pwr_level_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_battery_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_location_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_property_cli_cb;
 
 /** @def    BFL_BLE_MESH_MODEL_GEN_ONOFF_CLI
  *
@@ -542,20 +542,20 @@ bfl_err_t bfl_ble_mesh_generic_client_set_state(bfl_ble_mesh_client_common_param
 /**
  * @brief Generic Server Models related context.
  */
-const struct bt_mesh_model_cb bt_mesh_gen_onoff_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_level_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_def_trans_time_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_power_onoff_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_power_onoff_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_power_level_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_power_level_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_battery_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_location_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_location_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_user_prop_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_admin_prop_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_manu_prop_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_gen_client_prop_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_onoff_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_level_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_def_trans_time_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_power_onoff_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_power_onoff_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_power_level_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_power_level_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_battery_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_location_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_location_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_user_prop_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_admin_prop_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_manu_prop_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_gen_client_prop_srv_cb;
 
 /** @def    BFL_BLE_MESH_MODEL_GEN_ONOFF_SRV
  *

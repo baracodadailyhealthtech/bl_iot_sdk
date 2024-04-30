@@ -4,12 +4,13 @@
 #include "conn_internal.h"
 #include "ble_rc_voice.h"
 #include "ble_rc_hog.h"
-#include "log.h"
+#include "bt_log.h"
 #include "adpcm.h"
 #include "bl_port.h"
 #include "gatt.h"
 #include "ble_rc_app.h"
 #include "ble_atv_voice.h"
+#include "bl_sys.h"
 #include "bl_uart.h"
 
 #define BLE_RC_VOICE_RAW_DATA_PRINT 0
@@ -168,9 +169,8 @@ void ble_rc_voice_task_destroy(void)
 
 int ble_rc_voice_start(void)
 {
-    #if defined(CFG_BLE_PDS)
-    GLB_Set_System_CLK(GLB_DLL_XTAL_32M, GLB_SYS_CLK_DLL128M);
-    HBN_Set_XCLK_CLK_Sel(HBN_XCLK_CLK_XTAL);
+    #if defined(CFG_PDS_ENABLE)
+    bl_sys_run_at_max_speed();
     arch_delay_ms(1);
     #endif
     if(rc_default_conn)
@@ -196,8 +196,8 @@ int ble_rc_voice_start(void)
 int ble_rc_voice_stop(void)
 {
     int err = bl_audio_stop();
-    #if defined(CFG_BLE_PDS)
-    GLB_Set_System_CLK(GLB_DLL_XTAL_32M, GLB_SYS_CLK_XTAL);
+    #if defined(CFG_PDS_ENABLE)
+    bl_sys_run_at_normal_speed();
     arch_delay_ms(1);
     #endif
     printf("%s\r\n", __func__);

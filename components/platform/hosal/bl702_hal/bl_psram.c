@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -62,6 +62,7 @@
 /** @defgroup  DUAL_CS_PSRAM_WRITE_THROUGH_Private_Variables
  *  @{
  */
+static uint8_t psramId[8];
 
 /*@} end of group DUAL_CS_PSRAM_WRITE_THROUGH_Private_Variables */
 
@@ -144,8 +145,6 @@ void ATTR_TCM_SECTION SF_Cfg_Init_Ext_Psram_Gpio(void)
 *******************************************************************************/
 void ATTR_TCM_SECTION bl_psram_init(void)
 {
-    uint8_t psramId[8];
-
     SPI_Psram_Cfg_Type apMemory1604 = {
         .readIdCmd = 0x9F,
         .readIdDmyClk = 0,
@@ -216,8 +215,10 @@ void ATTR_TCM_SECTION bl_psram_init(void)
 
     // set burst toggle to spi mode, fix psram random access issue
     BL_WR_WORD(0x4000B084, 0x08000000);
+}
 
-    printf("PSRAM ID: %02X %02X %02X %02X %02X %02X %02X %02X.\r\n",
-                psramId[0], psramId[1], psramId[2], psramId[3], psramId[4], psramId[5], psramId[6], psramId[7]);
-
+void bl_psram_dump_id(void)
+{
+    printf("PSRAM ID: %02X %02X %02X %02X %02X %02X %02X %02X\r\n",
+            psramId[0], psramId[1], psramId[2], psramId[3], psramId[4], psramId[5], psramId[6], psramId[7]);
 }

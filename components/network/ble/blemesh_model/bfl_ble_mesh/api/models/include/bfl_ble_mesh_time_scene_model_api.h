@@ -26,9 +26,9 @@
 extern "C" {
 #endif
 
-const struct bt_mesh_model_cb bt_mesh_time_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_scene_cli_cb;
-const struct bt_mesh_model_cb bt_mesh_scheduler_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_time_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_scene_cli_cb;
+extern const struct bt_mesh_model_cb bt_mesh_scheduler_cli_cb;
 
 /** @def    BFL_BLE_MESH_MODEL_TIME_CLI
  *
@@ -324,12 +324,12 @@ bfl_err_t bfl_ble_mesh_time_scene_client_set_state(bfl_ble_mesh_client_common_pa
         bfl_ble_mesh_time_scene_client_set_state_t *set_state);
 
 
-const struct bt_mesh_model_cb bt_mesh_time_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_time_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_scene_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_scene_setup_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_scheduler_srv_cb;
-const struct bt_mesh_model_cb bt_mesh_scheduler_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_time_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_time_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_scene_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_scene_setup_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_scheduler_srv_cb;
+extern const struct bt_mesh_model_cb bt_mesh_scheduler_setup_srv_cb;
 /**
  * @brief Time Scene Server Models related context.
  */

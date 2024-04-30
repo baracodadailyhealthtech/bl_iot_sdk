@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include "rom_hal_ext.h"
-#include "rom_btble_ext.h"
 #include "cli.h"
 #include "ble_app.h"
 #include "pds_app.h"
@@ -19,7 +17,7 @@ const struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
 void main(void)
 { 
     ble_stack_start();
-    #if defined(CFG_BLE_PDS)
+    #if defined(CFG_PDS_ENABLE)
     pdsapp_init();
     #endif
 }

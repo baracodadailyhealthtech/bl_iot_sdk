@@ -54,6 +54,7 @@
 			"depends": [
 				"bl702l_std",
 				"bl702l_ble",
+				"blbtble_pds",
 				"blfdt",
 				"blmtd",
 				"easyflash4",
@@ -95,11 +96,11 @@
 				"+<evb/src/vprint.c>"
 			],
 			"library_dirs": [
-				"components/platform/soc/bl702l/bl702l/evb/ld",
-				"components/platform/soc/bl702l/bl702l_rom_a0/bl702l_rom_ext/lib"
+				"components/platform/soc/bl702l/bl702l_rom_a0/lib",
+				"components/platform/soc/bl702l/bl702l/evb/ld/A0"
 			],
 			"link_libraries": [
-				"bl702l_rom_ext"
+				"bl702l_rom_a0"
 			],
 			"conditionals": {
 				"ifeq CONFIG_SYS_COMMON_MAIN_ENABLE 1": {
@@ -153,7 +154,6 @@
 				"-<*>",
 				"+<config/bl702l/device_table.c>",
 				"+<src/bflb_acomp.c>",
-				"+<src/bflb_cks.c>",
 				"+<src/bflb_cks.c>",
 				"+<src/bflb_ef_ctrl.c>",
 				"+<src/bflb_gpio.c>",
@@ -228,6 +228,7 @@
 				["CONFIG_BT_PERIPHERAL", 1],
 				["CONFIG_DISABLE_BT_HOST_PRIVACY", 1],
 				["CONFIG_LONG_RANG", 0],
+				["CONFIG_CLK_ACC", 0],
 				["CONFIG_PHY_UPDATE", 0],
 				["CONFIG_LE_PING", 0],
 				["CONFIG_PHY_UPDATE", 0],
@@ -245,6 +246,18 @@
 			"link_libraries": [
 				"btblecontroller_702l_<ble_stack>",
 				"bl702l_rf"
+			]
+		},
+		"blbtble_pds": {
+			"include_dirs": [
+				"components/network/ble/btble_pds/include"
+			],
+			"source_dir": "components/network/ble/btble_pds",
+			"library_dirs": [
+				"components/network/ble/btble_pds/lib"
+			],
+			"link_libraries": [
+				"btble_pds"
 			]
 		},
 		"bl702l_std": {
@@ -360,7 +373,6 @@
 				"+<bl702l_hal/hal_boot2.c>",
 				"+<bl702l_hal/hal_button.c>",
 				"+<bl702l_hal/hal_gpio.c>",
-				"+<bl702l_hal/hal_hbn.c>",
 				"+<bl702l_hal/hal_hwtimer.c>",
 				"+<bl702l_hal/hal_sys.c>",
 				"+<bl702l_hal/hal_tcal.c>",
@@ -377,6 +389,7 @@
 				"+<bl702l_hal/hosal_timer.c>",
 				"+<bl702l_hal/hosal_uart.c>",
 				"+<bl702l_hal/hosal_wdg.c>",
+				"+<bl702l_hal/bl_os_port.c>",
 				"+<sec_common/bl_sec_pka.c>",
 				"+<sec_common/bl_sec_aes.c>",
 				"+<sec_common/bl_sec_common.c>",
@@ -1022,7 +1035,6 @@
 				"+<bl702_hal/hal_boot2.c>",
 				"+<bl702_hal/hal_button.c>",
 				"+<bl702_hal/hal_gpio.c>",
-				"+<bl702_hal/hal_hbn.c>",
 				"+<bl702_hal/hal_hwtimer.c>",
 				"+<bl702_hal/hal_sys.c>",
 				"+<bl702_hal/hal_tcal.c>",
@@ -1039,6 +1051,7 @@
 				"+<bl702_hal/hosal_timer.c>",
 				"+<bl702_hal/hosal_uart.c>",
 				"+<bl702_hal/hosal_wdg.c>",
+				"+<bl702_hal/bl_os_port.c>",
 				"+<sec_common/bl_sec_pka.c>",
 				"+<sec_common/bl_sec_aes.c>",
 				"+<sec_common/bl_sec_common.c>",

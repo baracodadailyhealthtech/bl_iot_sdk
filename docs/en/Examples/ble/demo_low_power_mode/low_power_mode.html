@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档</title>
+  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
   
 
   
@@ -40,7 +40,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1705-g429b6af2b 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/>
         <link rel="up" title="BLE" href="../index.html"/>
         <link rel="next" title="BL702L_Ble_Remote_Control_Demo" href="../demo_ble_rc/ble_rc.html"/>
         <link rel="prev" title="Ble Introduction" href="../demo_ble/ble.html"/> 
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1705-g429b6af2b
+                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
               </div>
             
           
@@ -106,6 +106,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Low_Power_Mode_BL702L</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#low-power-mode">Low Power Mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memory-introduction">Memory Introduction</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../demo_ble_rc/ble_rc.html">Remote_Control</a></li>
@@ -257,6 +258,19 @@ Freertos is used in SDK. In Freertos’ idle task, it checks whether BL702L devi
 </li>
 </ul>
 </section>
+<section id="memory-introduction">
+<h2>Memory Introduction<a class="headerlink" href="#memory-introduction" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>The BL702L contains three parts of ram, i.e. tcm, ocram and hbnram.</p>
+<p>The total size of tcm is 16K bytes. The top 0K/4K/8K/12K/16K can be configured to be used as cache, while the left as ram. Its content can be retentive neither in PDS (Power Down Sleep) mode, nor in HBN (Hibernate) mode.</p>
+<p>The total size of ocram is 80K bytes. The bottom 0K/8K/16K can be configured to be used as EM (Exchange Memory), while the left as ram. Its content can be retentive in PDS mode, but not in HBN mode.</p>
+<p>The total size of hbnram is 4K bytes. Its content can be retentive either in PDS mode, or in HBN mode.</p>
+<p>Take ble_only/flash_rom_lp.ld as an example:</p>
+<p>tcm: 8K cache + 8K ram (non-retention data)</p>
+<p>ocram: 72K ram (static ram + heap + system stack) + 8K EM</p>
+<p>hbnram: 4K ram (common data and rf driver)</p>
+</div></blockquote>
+</section>
 </section>
 
 
@@ -300,7 +314,7 @@ Freertos is used in SDK. In Freertos’ idle task, it checks whether BL702L devi
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1705-g429b6af2b',
+            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

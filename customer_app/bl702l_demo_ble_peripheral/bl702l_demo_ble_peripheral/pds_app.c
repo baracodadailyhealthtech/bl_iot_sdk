@@ -121,8 +121,19 @@ void pdsapp_after_sleep_callback(void)
     }
 }
 
+#if !defined(CFG_USE_ROM_CODE) || defined(CFG_BUILD_FREERTOS)
+void vApplicationSleep(TickType_t xExpectedIdleTime)
+{
+    btble_vApplicationSleepExt(xExpectedIdleTime);
+}
+#endif
+
 void pdsapp_init(void)
 {
+    #if defined(CFG_USE_ROM_CODE) && !defined(CFG_BUILD_FREERTOS)
+    vApplicationSleep = btble_vApplicationSleepExt;
+    #endif
+
     btble_pds_init(&app_conf);
 
     pdsapp_gpio_irq_init();

@@ -11,7 +11,7 @@
 #include <risc-v/riscv_arch.h>
 #include <compiler/compiler_gcc.h>
 #include <compiler/compiler_ld.h>
-// #include "bflb_list.h"
+#include "bflb_name.h"
 #include "bflb_common.h"
 #include "bflb_mtimer.h"
 #include "bflb_irq.h"
@@ -30,11 +30,11 @@
 #error please define a supported chip
 #endif
 
-#ifdef CONFIG_PARAM_ASSERT
-#define ASSERT_PARAM(expr) ((expr) ? (void)0 : assert_func(__FILE__, __LINE__, __FUNCTION__, #expr))
-void assert_func(uint8_t *file, uint32_t line, uint8_t *function, uint8_t *string);
+#ifdef CONFIG_LHAL_PARAM_ASSERT
+#define LHAL_PARAM_ASSERT(expr) ((expr) ? (void)0 : bflb_lhal_assert_func(__FILE__, __LINE__, __FUNCTION__, #expr))
+void bflb_lhal_assert_func(const char *file, uint32_t line, const char *function, const char *string);
 #else
-#define ASSERT_PARAM(expr) ((void)0U)
+#define LHAL_PARAM_ASSERT(expr) ((void)0U)
 #endif
 
 #if defined(BL702)
@@ -111,15 +111,6 @@ extern "C" {
  * @return device handle
  */
 struct bflb_device_s *bflb_device_get_by_name(const char *name);
-
-/**
- * @brief Get device handle by type and index.
- *
- * @param [in] type device type
- * @param [in] idx device index
- * @return device handle
- */
-struct bflb_device_s *bflb_device_get_by_id(uint8_t type, uint8_t idx);
 
 /**
  * @brief Set user data into device handle.

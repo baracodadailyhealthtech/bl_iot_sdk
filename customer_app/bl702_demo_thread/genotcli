@@ -83,6 +83,7 @@ fi
 
 options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
 
-make $options -j2 $jobs 2>&1 | tee build_out/make.log
+#make $options -j2 $jobs 2>&1 | tee build_out/make.log
+make $options -j2 2>&1 | tee build_out/make.log
 
 exit $?

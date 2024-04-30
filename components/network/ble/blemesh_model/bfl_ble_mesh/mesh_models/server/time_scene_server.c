@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "btc_ble_mesh_time_scene_model.h"
 #include "btc_ble_mesh_prov.h"
@@ -1232,7 +1232,7 @@ static int time_scene_server_init(struct bt_mesh_model *model)
         return -EINVAL;
     }
 
-#if defined(CONFIG_AUTO_PTS)    
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)    
     if (model->pub) {
         model->pub->update = btc_ble_mesh_model_publish_update;
     }

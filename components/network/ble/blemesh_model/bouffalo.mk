@@ -14,7 +14,7 @@ COMPONENT_ADD_INCLUDEDIRS += ./ \
 							 bfl_ble_mesh/mesh_models/include \
 							 bfl_ble_mesh/mesh_models/server/include \
 							 bfl_ble_mesh/mesh_models/client/include \
-							 bfl_ble_mesh/mesh_models/common/include \
+							 bfl_ble_mesh/mesh_models/common/include
 
 ## not be exported to project level
 COMPONENT_PRIV_INCLUDEDIRS   :=
@@ -50,7 +50,7 @@ COMPONENT_SRCS += bfl_ble_mesh/mesh_models/client/generic_client.c \
 				  bfl_ble_mesh/mesh_models/client/lighting_client.c \
 				  bfl_ble_mesh/mesh_models/client/client_common.c \
 				  bfl_ble_mesh/mesh_models/client/sensor_client.c \
-				  bfl_ble_mesh/mesh_models/client/time_scene_client.c \
+				  bfl_ble_mesh/mesh_models/client/time_scene_client.c
 #for mesh model source end
 
 COMPONENT_OBJS   := $(patsubst %.c,%.o, $(COMPONENT_SRCS))

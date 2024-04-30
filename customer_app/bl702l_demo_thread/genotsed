@@ -6,7 +6,6 @@
 #       1, SSED device, CSL recevier enabled
 CONFIG_CSL_RX=0
 CONFIG_LINK_METRICS=1
-CONFIG_ENABLE_FP=1
 
 OPENTHREAD_RADIO=0
 CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=4
@@ -24,16 +23,17 @@ options="CONFIG_CPP_ENABLE=1 \
     CONFIG_FTD=0 \
     CONFIG_TIMESYNC=0 \
     CONFIG_LINK_METRICS=1 \
-    CONFIG_CSL_RX=$CONFIG_CSL_RX"
+    CONFIG_CSL_RX=$CONFIG_CSL_RX \
+    CONFIG_CHIP_REVISION=A1"
 
 options=$options" CONFIG_PDS_ENABLE=1"
-options=$options" CONFIG_ENABLE_FP=$CONFIG_ENABLE_FP"
 
 options=$options" CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=$CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION"
 options=$options" OPENTHREAD_RADIO=$OPENTHREAD_RADIO"
 
 options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
 
-make $options -j2 $jobs 2>&1 | tee build_out/make.log
+#make $options -j2 $jobs 2>&1 | tee build_out/make.log
+make $options -j2 2>&1 | tee build_out/make.log
 
 exit $?

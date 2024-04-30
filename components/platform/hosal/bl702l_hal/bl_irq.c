@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -111,9 +111,6 @@ void (*handler_list[2][16 + 64])(void) = {
     
 };
 
-ATTR_HBN_DATA_SECTION
-uint32_t bl_irq_systick32 = 0;
-
 
 static inline void _irq_num_check(int irqnum)
 {
@@ -184,8 +181,6 @@ void bl_irq_unregister(int irqnum, void *handler)
 
 void interrupt_entry(uint32_t mcause) 
 {
-    bl_irq_systick32 = *(volatile uint32_t *)0x0200BFF8;
-
     void *handler = NULL;
     mcause &= 0x7FFFFFF;
     if (mcause < sizeof(handler_list[0])/sizeof(handler_list[0][0])) {
@@ -428,6 +423,36 @@ void exception_entry(uint32_t mcause, uint32_t mepc, uint32_t mtval, uintptr_t *
             __asm__ volatile("add sp, x0, %0" ::"r"(&_sp_main));
             bl_coredump_run();
 #endif
+        }
+    }
+}
+
+void check_trap(uint32_t label_is_exception, uint32_t sp)
+{
+    uint32_t mcause;
+    uint32_t mepc;
+    uint32_t start_addr;
+    uint32_t end_addr;
+
+    /*check exception nest*/
+    mcause = read_csr(mcause);
+    if ((mcause >> 31) == 0) {
+        mepc = read_csr(mepc);
+        start_addr = (uint32_t)__builtin_return_address(0);
+        end_addr = label_is_exception;
+        if (mepc >= start_addr && mepc < end_addr) {
+            printf("Exception nested! mepc 0x%08lx\r\n", mepc);
+            while (1) {
+                /*dead loop now*/
+            }
+        }
+    }
+
+    /*check sp*/
+    if ((sp & 0x0FFFFFFF) < 0x0201C000) {
+        printf("Invalid sp 0x%08lx\r\n", sp);
+        while (1) {
+            /*dead loop now*/
         }
     }
 }

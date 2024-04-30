@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -33,8 +33,8 @@
 #include "btble_lib_api.h"
 #include "bluetooth.h"
 #include "hci_driver.h"
+#include "conn.h"
 #include "hci_core.h"
-#include "mesh_cli_cmds.h"
 #if defined(CONFIG_BT_OAD_SERVER)
 #include "oad_main.h"
 #endif
@@ -42,7 +42,9 @@
 #if defined(CONFIG_BT_STACK_CLI)
 #include"ble_cli_cmds.h"
 #endif
-#define CONFIG_MESH_APP  0
+#include "bt_log.h"
+
+#include "include/pds_app.h"
 
 #if defined(CFG_BLE_ENABLE)
 extern int mesh_app_init(void);
@@ -68,17 +70,18 @@ void bt_enable_cb(int err)
         #ifdef CONFIG_BT_STACK_CLI 
         ble_cli_register();
         #endif
-        #if CONFIG_MESH_APP
         mesh_app_init();
-        #else
-        blemesh_cli_register();
-        #endif
     }
 }
 void ble_init(void)
 {
 	 // Initialize BLE controller
     btble_controller_init(configMAX_PRIORITIES - 1);
+    #if defined(CFG_PDS_ENABLE)
+    btble_set_before_sleep_callback(pdsapp_before_sleep_callback);
+    btble_set_after_sleep_callback(pdsapp_after_sleep_callback);
+    btble_set_sleep_aborted_callback(pdsapp_sleep_aborted_callback);
+    #endif
     // Initialize BLE Host stack
     hci_driver_init();
     bt_enable(bt_enable_cb);
@@ -88,4 +91,7 @@ void ble_init(void)
 void main(void)
 { 
     ble_init();
+    #if defined(CFG_PDS_ENABLE)
+    pdsapp_init();
+    #endif
 }

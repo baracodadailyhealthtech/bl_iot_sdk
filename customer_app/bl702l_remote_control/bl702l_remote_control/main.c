@@ -1,26 +1,31 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include "rom_hal_ext.h"
-#include "rom_btble_ext.h"
 #include "cli.h"
 #include "bl_kys.h"
 #include "bl_adc.h"
 #include "ble_rc_app.h"
 #include "ble_rc_ir.h"
+#if defined(CFG_PDS_ENABLE)
+#include <FreeRTOS.h>
+#include "btble_pds.h"
+#endif
 
-static void cmd_start_pds(char *buf, int len, int argc, char **argv)
+#if defined(CFG_PDS_ENABLE)
+#if !defined(CFG_USE_ROM_CODE) || defined(CFG_BUILD_FREERTOS)
+void vApplicationSleep(TickType_t xExpectedIdleTime)
 {
-    ble_rc_pds_enable(1);  
+    btble_vApplicationSleepExt(xExpectedIdleTime);
 }
-
-const struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
-    {"pds_start", "enable pds", cmd_start_pds},
-};
+#endif
+#endif
 
 void main(void)
 {
-    #if defined(CFG_BLE_PDS)
+    #if defined(CFG_PDS_ENABLE)
+    #if defined(CFG_USE_ROM_CODE) && !defined(CFG_BUILD_FREERTOS)
+    vApplicationSleep = btble_vApplicationSleepExt;
+    #endif
     btble_pds_init(NULL);
     #endif
     ble_rc_kys_init();

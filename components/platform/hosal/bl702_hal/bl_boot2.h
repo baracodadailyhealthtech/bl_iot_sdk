@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -30,7 +30,7 @@
 #ifndef __BL_BOOT2_H__
 #define __BL_BOOT2_H__
 
-#include "stdint.h"
+#include <stdint.h>
 #include "bl702_sflash.h"
 #include "bl702_xip_sflash.h"
 

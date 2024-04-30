@@ -13,7 +13,7 @@
 #include <zephyr/types.h>
 #include <stddef.h>
 #include <string.h>
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include <zephyr.h>
 
 #include "settings.h"
@@ -28,7 +28,7 @@
 #if !defined(BFLB_BLE)
 #define BT_DBG_ENABLED IS_ENABLED(CONFIG_BT_DEBUG_SERVICE)
 #define LOG_MODULE_NAME bt_dis
-#include "log.h"
+#include "bt_log.h"
 #endif
 
 #if CONFIG_BT_GATT_DIS_PNP
@@ -54,7 +54,7 @@ struct dis_pnp {
 #define CONFIG_BT_GATT_DIS_HW_REV_STR    "0001"
 #define CONFIG_BT_GATT_DIS_SW_REV_STR    "123"
 
-#define CONFIG_BT_GATT_DIS_PNP_VID       0x07AF
+#define CONFIG_BT_GATT_DIS_PNP_VID       0x0A38
 #define CONFIG_BT_GATT_DIS_PNP_PID       0x707
 #define CONFIG_BT_GATT_DIS_PNP_VER       0x0000
 #endif

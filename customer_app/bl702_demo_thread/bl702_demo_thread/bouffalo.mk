@@ -18,11 +18,3 @@ include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
 ifeq ($(CONFIG_SYS_AOS_CLI_ENABLE),1)
 CPPFLAGS += -DSYS_AOS_CLI_ENABLE
 endif
-
-ifeq ($(CONFIG_USB_CDC),1)
-CPPFLAGS += -DCFG_USB_CDC_ENABLE
-endif
-
-ifeq ($(CONFIG_ETHERNET), 1)
-CPPFLAGS += -DCFG_ETHERNET_ENABLE
-endif

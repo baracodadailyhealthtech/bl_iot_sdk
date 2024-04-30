@@ -27,22 +27,15 @@ INCLUDE_COMPONENTS += openthread
 INCLUDE_COMPONENTS += openthread_port 
 INCLUDE_COMPONENTS += openthread_utils_bl702l 
 
-INCLUDE_COMPONENTS += bl702l_rom_ext
-
-ifeq ($(CONFIG_USE_PSRAM), 1)
-CPPFLAGS += -DCFG_USE_PSRAM=1
-endif
-
-ifeq ($(CONFIG_PDS_ENABLE), 1)
-CPPFLAGS += -DCFG_PDS_ENABLE=1
-CPPFLAGS += -DCFG_PDS_LEVEL=31
+ifeq ($(CONFIG_CHIP_REVISION),A1)
+INCLUDE_COMPONENTS += bl702l_rom_a1
+else
+INCLUDE_COMPONENTS += bl702l_rom_a0
 endif
 
 CPPFLAGS += -DCFG_CPP_ENABLE=1
 
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
-
-CPPFLAGS += -I$(BL60X_SDK_PATH)/components/platform/soc/bl702l/bl702l_rom_a0
 
 CPPFLAGS += -DOT_TASK_SIZE=1500
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk

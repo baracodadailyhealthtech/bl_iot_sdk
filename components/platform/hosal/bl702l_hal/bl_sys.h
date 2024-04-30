@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -42,8 +42,14 @@ typedef enum {
     BL_RST_SOFTWARE = 4,
 } BL_RST_REASON_E;
 
+typedef enum {
+    BL_CHIP_A0      = 0,
+    BL_CHIP_A1      = 1,
+} BL_CHIP_REVISION_E;
+
 void bl_sys_rstinfo_process(void);
 BL_RST_REASON_E bl_sys_rstinfo_get(void);
+BL_CHIP_REVISION_E bl_sys_chip_revision_get(void);
 int bl_sys_logall_enable(void);
 int bl_sys_logall_disable(void);
 int bl_sys_reset_por(void);
@@ -51,6 +57,8 @@ void bl_sys_reset_system(void);
 int bl_sys_isxipaddr(uint32_t addr);
 int bl_sys_em_config(void);
 int bl_sys_cache_config(void);
+int bl_sys_run_at_max_speed(void);
+int bl_sys_run_at_normal_speed(void);
 int bl_sys_early_init(void);
 int bl_sys_init(void);
 int bl_sys_wdt_rst_count_get();

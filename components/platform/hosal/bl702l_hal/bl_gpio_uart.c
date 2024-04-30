@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -58,7 +58,7 @@ int bl_gpio_uart_tx_init(uint8_t id, uint8_t tx_pin, uint32_t baudrate)
     
     uart_tx_ok[id] = 1;
     uart_tx_pin[id] = tx_pin;
-    uart_tx_bit_dur[id] = lround(2000000 / (float)baudrate);
+    uart_tx_bit_dur[id] = (2000000 * 10 / baudrate + 5) / 10;
     
     // here must set output level before output enable, otherwise will output low by default when output enable, which causes a start bit
     bl_gpio_output_set(tx_pin, 1);

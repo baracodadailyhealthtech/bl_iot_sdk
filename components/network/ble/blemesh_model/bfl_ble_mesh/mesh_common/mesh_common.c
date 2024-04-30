@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #include <string.h>
-#include <errno.h>
+#include <bt_errno.h>
 
 #include "include/main.h"
 #include "client_common.h"

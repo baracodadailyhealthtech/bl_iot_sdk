@@ -532,7 +532,7 @@ int bt_mesh_light_xyl_setup_srv_deinit(struct bt_mesh_model *model);
 int bt_mesh_light_lc_srv_deinit(struct bt_mesh_model *model);
 int bt_mesh_light_lc_setup_srv_deinit(struct bt_mesh_model *model);
 
-#if defined(CONFIG_AUTO_PTS)
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
 void state_machine_mode(struct bt_mesh_light_lc_srv* srv, uint8_t mode);
 void state_machine_om(struct bt_mesh_light_lc_srv * srv, uint8_t on);
 void state_machine_light(struct bt_mesh_light_lc_srv * srv, uint8_t on);

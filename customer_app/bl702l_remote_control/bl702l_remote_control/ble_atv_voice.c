@@ -14,7 +14,7 @@
 #include "conn.h"
 #include "uuid.h"
 #include "gatt.h"
-#include "log.h"
+#include "bt_log.h"
 #include "ble_rc_hog.h"
 #include "ble_rc_app.h"
 #include "ble_rc_voice.h"
@@ -168,7 +168,8 @@ static void ble_atvv_audio_start(u8_t reason)
     err = ble_atvv_send_audio_start(reason);
 
     UNUSED(err);
-}
+}
+
 
 static void ble_atvv_audio_stop(u8_t reason)
 {

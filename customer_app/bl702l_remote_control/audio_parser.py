@@ -48,16 +48,23 @@ if __name__ == '__main__':
         log_data = fr.read()
         raw_data = bytearray()
         
-        start_pattern = 'rawdata start' + '\x0D\x0A'
-        end_pattern = '\x0D\x0A' + 'rawdata end' + '\x0D\x0A'
+        start_pattern = 'rawdata start' + '\r\n'
+        end_pattern = '\r\n' + 'rawdata end'
         frame_size = 308*2
+        total_frame_cnt = 0
+        good_frame_cnt = 0
         
         while True:
             frame, log_data = find_frame(log_data, start_pattern, end_pattern, frame_size)
             if frame != None:
-                raw_data += frame
+                total_frame_cnt += 1
+                if len(frame) == frame_size:
+                    raw_data += frame
+                    good_frame_cnt += 1
             else:
                 break
+        
+        print('Total %d, Good %d, Bad %d' % (total_frame_cnt, good_frame_cnt, total_frame_cnt - good_frame_cnt))
         
     with open(output_file, 'wb') as fw:
         fw.write(raw_data)

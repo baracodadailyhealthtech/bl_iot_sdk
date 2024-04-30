@@ -1,6 +1,6 @@
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT: document.getElementById("documentation_options").getAttribute('data-url_root'),
-    VERSION: 'release_bl_iot_sdk_1.6.40-1705-g429b6af2b',
+    VERSION: 'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
     LANGUAGE: 'zh',
     COLLAPSE_INDEX: false,
     BUILDER: 'html',

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -46,7 +46,7 @@
 #include "adv.h"
 #include "beacon.h"
 #include "hci_core.h"
-#include "log.h"
+#include "bt_log.h"
 #include "bfl_ble_mesh_generic_model_api.h"
 #include "bfl_ble_mesh_lighting_model_api.h"
 #include "bfl_ble_mesh_local_data_operation_api.h"

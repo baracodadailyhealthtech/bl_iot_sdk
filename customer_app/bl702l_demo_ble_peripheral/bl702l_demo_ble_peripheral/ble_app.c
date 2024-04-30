@@ -6,12 +6,11 @@
 #include "conn_internal.h"
 #include "hci_driver.h"
 #include "hci_core.h"
-#include "log.h"
+#include "bt_log.h"
 #include "bl_port.h"
 #if defined(CONFIG_BT_STACK_CLI) 
 #include "ble_cli_cmds.h"
 #endif
-#include "rom_btble_ext.h"
 #include "ble_app.h"
 #include "pds_app.h"
 #if defined(CONFIG_BLE_TP_SERVER)
@@ -19,8 +18,8 @@
 #endif
 
 #define BLE_APP_DEV_NAME "BL702L_BLE"
-#define BLE_APP_ADV_INT_MIN 0x03c0
-#define BLE_APP_ADV_INT_MAX 0x03c0
+#define BLE_APP_ADV_INT_MIN 0x00A0 //100ms
+#define BLE_APP_ADV_INT_MAX 0x00A0 //100ms
 
 struct bt_conn *bleapp_default_conn;
 
@@ -234,7 +233,7 @@ void ble_stack_start(void)
 {
     // Initialize BLE controller
     btble_controller_init(configMAX_PRIORITIES - 1);
-    #if defined(CFG_BLE_PDS)
+    #if defined(CFG_PDS_ENABLE)
     btble_set_before_sleep_callback(pdsapp_before_sleep_callback);
     btble_set_after_sleep_callback(pdsapp_after_sleep_callback);
     btble_set_sleep_aborted_callback(pdsapp_sleep_aborted_callback);

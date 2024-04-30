@@ -19,15 +19,15 @@
 #else
 #include "partition.h"
 #include "hal_flash.h"
-#include <sys/errno.h>
+#include <bt_errno.h>
 #include "bl702_glb.h"
 #include "mbedtls/sha256.h"
 #endif
-#include "log.h"
+#include "bt_log.h"
 //#include "bl702.h"
 #include "softcrc.h"
 #if defined(CONFIG_BL_MCU_SDK)
-#define BL_SDK_VER "1.00"
+//#define BTBLE_SDK_VER "1.00"
 #define BOOT2_PARTITION_ADDR    (0x4202DC00)
 #endif //CONFIG_BL_MCU_SDK
 
@@ -65,7 +65,7 @@ static void oad_notify_image_info(struct bt_conn *conn)
     u8_t index = 0;
     char *build_date = __DATE__;
     char *build_time = __TIME__;
-    char *build_ver =  BL_SDK_VER;
+    char *build_ver =  BTBLE_SDK_VER;
 
     if(buf){
         memset(buf,0,256);

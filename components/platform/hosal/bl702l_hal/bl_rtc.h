@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Bouffalolab.
+ * Copyright (c) 2016-2024 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -31,7 +31,7 @@
 #define __BL_RTC_H__
 
 
-#include "bl702l_hbn.h"
+#include "bl702l_romdriver.h"
 
 
 #define BL_RTC_COUNTER_TO_MS(CNT)  ((uint64_t)(CNT)*1000/32768) // ((CNT)*(1024-16-8)/32768)
@@ -42,8 +42,8 @@
 void bl_rtc_init(void);
 uint64_t bl_rtc_get_counter(void);
 uint64_t bl_rtc_get_aligned_counter(void);
-uint64_t bl_rtc_get_timestamp_ms(void);
 uint64_t bl_rtc_get_delta_counter(uint64_t ref_cnt);
+uint64_t bl_rtc_get_timestamp_ms(void);
 uint64_t bl_rtc_get_delta_time_ms(uint64_t ref_cnt);
 
 
