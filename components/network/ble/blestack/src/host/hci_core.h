@@ -312,5 +312,5 @@ void bt_register_host_assist_cb(struct blhast_cb *cb);
 
 typedef void (*bredr_name_callback)(const char *name);
 int remote_name_req(const bt_addr_t *addr, bredr_name_callback cb);
-
+bool bt_is_ready(void);
 #endif

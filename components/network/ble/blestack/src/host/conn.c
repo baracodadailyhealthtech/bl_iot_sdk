@@ -403,6 +403,9 @@ static void conn_update_timeout(struct k_work *work)
 	BT_DBG("conn %p", conn);
 
 	if (conn->state == BT_CONN_DISCONNECTED) {
+		#ifdef BFLB_BLE_PATCH_FREE_ALLOCATED_BUFFER_IN_OS
+		k_delayed_work_free(&conn->update_work);
+		#endif
 		bt_l2cap_disconnected(conn);
 		#if !defined(BFLB_BLE)
 		notify_disconnected(conn);
@@ -1165,6 +1168,10 @@ int bt_conn_le_start_encryption(struct bt_conn *conn, u8_t rand[8],
 	struct bt_hci_cp_le_start_encryption *cp;
 	struct net_buf *buf;
 
+	if (len > sizeof(cp->ltk)) {
+		return -EINVAL;
+	}
+
 	buf = bt_hci_cmd_create(BT_HCI_OP_LE_START_ENCRYPTION, sizeof(*cp));
 	if (!buf) {
 		return -ENOBUFS;
@@ -1716,9 +1723,6 @@ static void conn_cleanup(struct bt_conn *conn)
     #ifdef BFLB_BLE_PATCH_FREE_ALLOCATED_BUFFER_IN_OS
     k_queue_free(&conn->tx_queue._queue);
     conn->tx_queue._queue.hdl = NULL;
-    if(conn->update_work.timer.timer.hdl){
-        k_delayed_work_del_timer(&conn->update_work);
-    }
     #endif
 }
 
@@ -2709,10 +2713,6 @@ int bt_conn_auth_cb_register(const struct bt_conn_auth_cb *cb)
 	if (!cb) {
 		bt_auth = NULL;
 		return 0;
-	}
-
-	if (bt_auth) {
-		return -EALREADY;
 	}
 
 	/* The cancel callback must always be provided if the app provides

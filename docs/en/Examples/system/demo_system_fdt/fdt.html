@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>FDT &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>FDT &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,21 +164,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="fdt">
+  <div class="section" id="fdt">
 <span id="fdt-index"></span><h1>FDT<a class="headerlink" href="#fdt" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何从fdt文件中获取相关的配置。</p>
-</section>
-<section id="section-2">
-<h2>使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_fdt</span></code> 工程并下载对应的bin文件；</p></li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">fdt</span></code> 命令将fdt文件中的wifi配置解析出来，并且打印出整个文件内容。</p></li>
 </ul>
-</section>
-<section id="section-3">
-<h2>应用实例<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
 <p>本实例为了方便测试，将dts文件转换成数组的形式存放，转换命令 <code class="docutils literal notranslate"><span class="pre">xxd</span> <span class="pre">-i</span> <span class="pre">demo.dts</span> <span class="pre">&gt;</span> <span class="pre">demo.c</span></code>。</p>
 <ul class="simple">
 <li><p>以wifi为例，通过 <code class="docutils literal notranslate"><span class="pre">wifi</span></code> 这个根节点获取其 <code class="docutils literal notranslate"><span class="pre">offset</span></code></p></li>
@@ -244,12 +243,12 @@ if (countindex &gt; 0) {
 <p>其中 <code class="docutils literal notranslate"><span class="pre">tc_wifi_dtb</span></code> 为数组的基地址， <code class="docutils literal notranslate"><span class="pre">TC_WIFI_DTB_LEN</span></code> 为数组的大小。</p>
 <p>下图为dump下来的部分信息，与源文件对应信息一致。</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image137.png" />
-</figure>
+</div>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -283,7 +282,7 @@ if (countindex &gt; 0) {
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

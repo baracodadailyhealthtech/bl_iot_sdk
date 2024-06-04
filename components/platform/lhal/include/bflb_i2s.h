@@ -69,7 +69,7 @@
   */
 #define I2S_CMD_CLEAR_TX_FIFO    (0x01)
 #define I2S_CMD_CLEAR_RX_FIFO    (0x02)
-#define I2S_CMD_RX_DEGLITCH      (0x03)
+#define I2S_CMD_SET_DEGLITCH_CNT (0x03)
 #define I2S_CMD_DATA_ENABLE      (0x04)
 #define I2S_CMD_CHANNEL_LR_MERGE (0x05)
 #define I2S_CMD_CHANNEL_LR_EXCHG (0x06)

@@ -74,6 +74,7 @@ void bl_kys_get_result(bl_kys_result_t *result)
     uint32_t tmpVal;
     uint8_t row_num;
     uint8_t col_num;
+    uint8_t key_num;
     uint8_t key_code;
     int i;
 
@@ -81,14 +82,15 @@ void bl_kys_get_result(bl_kys_result_t *result)
     row_num = BL_GET_REG_BITS_VAL(tmpVal, KYS_ROW_NUM) + 1;
     col_num = BL_GET_REG_BITS_VAL(tmpVal, KYS_COL_NUM) + 1;
 
+    tmpVal = BL_RD_REG(KYS_BASE, KYS_KEYFIFO_IDX);
+    key_num = (tmpVal >> 16) & 0x0F;
+
     if(result){
         tmpVal = BL_RD_REG(KYS_BASE, KYS_KS_INT_STS);
         result->ghost_det = (tmpVal >> 12) & 0x01;
         result->fifo_full = (tmpVal >> 8) & 0x01;
 
-        tmpVal = BL_RD_REG(KYS_BASE, KYS_KEYFIFO_IDX);
-        result->key_num = (tmpVal >> 16) & 0x0F;
-
+        result->key_num = key_num;
         for(i=0; i<result->key_num; i++){
             key_code = BL_RD_REG(KYS_BASE, KYS_KEYFIFO_VALUE) & 0x7F;
             result->key_code[i] = key_code;
@@ -99,6 +101,14 @@ void bl_kys_get_result(bl_kys_result_t *result)
 
     // Disable kys to perform one-shot mode, will clear interrupt status and key fifo
     KYS_Disable();
+
+    if(key_num > 0){
+        // Enable ks_done, fifo_full, ghost interrupt
+        BL_WR_REG(KYS_BASE, KYS_KS_INT_EN, (0x1<<7)|(0x1<<8)|(0x1<<12));
+    }else{
+        // Enable fifo_nonempty, fifo_full, ghost interrupt
+        BL_WR_REG(KYS_BASE, KYS_KS_INT_EN, (0x1<<11)|(0x1<<8)|(0x1<<12));
+    }
 
     // Patch for hardware ghost key detection
     if(result && bl_kys_sw_ghost_det_en){
@@ -191,8 +201,8 @@ void bl_kys_init(uint8_t row_num, uint8_t col_num, uint8_t row_pins[], uint8_t c
     KYS_Disable();
     KYS_Init(&kysCfg);
 
-    // Enable ks_done, fifo_full, ghost interrupt
-    BL_WR_REG(KYS_BASE, KYS_KS_INT_EN, (0x1<<7)|(0x1<<8)|(0x1<<12));
+    // Enable fifo_nonempty, fifo_full, ghost interrupt
+    BL_WR_REG(KYS_BASE, KYS_KS_INT_EN, (0x1<<11)|(0x1<<8)|(0x1<<12));
 
     bl_kys_gpio_init(row_num, col_num, row_pins, col_pins);
     bl_kys_matrix_init(row_num, col_num, row_pins, col_pins, row_num);
@@ -204,6 +214,9 @@ void bl_kys_trigger_poll(bl_kys_result_t *result)
 {
     bl_irq_disable(KYS_IRQn);
     bl_irq_pending_clear(KYS_IRQn);
+
+    // Enable ks_done, fifo_full, ghost interrupt
+    BL_WR_REG(KYS_BASE, KYS_KS_INT_EN, (0x1<<7)|(0x1<<8)|(0x1<<12));
 
     KYS_Enable();
     while(!KYS_GetIntStatus(KYS_INT_KS_DONE));

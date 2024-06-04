@@ -62,4 +62,5 @@ uint8_t btblecontrolller_get_chip_version();
 #if defined(CONFIG_BT_MFG_HCI_CMD) || defined(CONFIG_BLE_MFG_HCI_CMD)
 int btblecontroller_putchar(int c);
 #endif
+void btblecontroller_puts(const char *str);
 #endif

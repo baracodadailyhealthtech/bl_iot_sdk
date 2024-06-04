@@ -260,4 +260,10 @@ __attribute__((weak)) int btblecontroller_putchar(int c)
 }
 #endif
 
+__attribute__((weak)) void btblecontroller_puts(const char *str)
+{
+    extern int puts(const char *s);
+    puts(str);
+}
+
 

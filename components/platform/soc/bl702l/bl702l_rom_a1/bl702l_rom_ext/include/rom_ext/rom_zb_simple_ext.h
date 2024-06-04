@@ -12,6 +12,7 @@ typedef struct{
     uint8_t gpio_irq_restore; //1: restore gpio irq after pds wakeup; 0: do not restore gpio irq after pds wakeup
     uint8_t gpio_num;
     uint8_t gpio_index[4];
+    hosal_gpio_config_t pull_type[4];
     hosal_gpio_irq_trigger_t trigger_type[4];
 }zb_app_conf_t;
 

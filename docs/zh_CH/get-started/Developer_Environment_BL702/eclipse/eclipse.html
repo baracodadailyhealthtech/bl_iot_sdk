@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Eclipse &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>Eclipse &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,32 +164,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="eclipse">
+  <div class="section" id="eclipse">
 <h1>Eclipse<a class="headerlink" href="#eclipse" title="永久链接至标题"></a></h1>
 <p>本文档介绍Eclipse的使用。</p>
-<section id="section-1">
-<h2>导入工程<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>导入工程<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>首先启动 <code class="docutils literal notranslate"><span class="pre">eclipse</span></code> ，打开工具栏上的<code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">import</span></code>，选择<code class="docutils literal notranslate"><span class="pre">General</span></code>菜单下的<code class="docutils literal notranslate"><span class="pre">Existing</span> <span class="pre">Projects</span> <span class="pre">into</span> <span class="pre">Workspace</span></code>选项导入工程。</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image01.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image02.png" />
-</figure>
-</section>
-<section id="debug">
+</div>
+</div>
+<div class="section" id="debug">
 <h2>Debug<a class="headerlink" href="#debug" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>首先让板子跑起来，确认eclipse左上方的工具栏配置如下图1所示，然后点击第一个红色框框起来的图标<code class="docutils literal notranslate"><span class="pre">debug</span></code>按钮，eclipse会先编译工程，完成后eclipse下方的 <code class="docutils literal notranslate"><span class="pre">Console</span></code> 窗口可以看到如下图2所示log。</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image03.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image04.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>使用快捷键 <code class="docutils literal notranslate"><span class="pre">F8</span></code> resume一下，可以看到程序停在 <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">bl702_main()</span></code> 主函数处，此时可以点击下图中的3个按钮。其含义分别为</p>
 <ul>
@@ -200,26 +199,26 @@
 </ul>
 </li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image05.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image06.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>可以在 <code class="docutils literal notranslate"><span class="pre">c代码</span></code> 窗口最左边橙色条处双击增加、删除断点。</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image08.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>还可以通过查看右边的 <code class="docutils literal notranslate"><span class="pre">Disassembly</span></code> 窗口查看对应的汇编（该窗口没有的话可以通过最上方工具栏 <code class="docutils literal notranslate"><span class="pre">Window</span> <span class="pre">&gt;</span> <span class="pre">show</span> <span class="pre">view</span> <span class="pre">&gt;</span> <span class="pre">Disassembly</span></code> 添加）。</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image07.png" />
-</figure>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -253,7 +252,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

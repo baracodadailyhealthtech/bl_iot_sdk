@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>zsed_demo &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>zsed_demo &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
         <link rel="up" title="Zigbee" href="../index.html"/>
         <link rel="next" title="Ethernet" href="../../network/index.html"/>
         <link rel="prev" title="Zigbee" href="../demo_zigbee/zigbee.html"/> 
@@ -75,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -105,12 +104,12 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Zigbee</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../demo_zigbee/zigbee.html">Zigbee</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ZSED_Demo</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#section-1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#demo">Demo介绍</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#zsed">ZSED工作模式</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#section-2">低功耗流程</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#section-3">测试准备</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#section-4">测试流程</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">低功耗流程</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">测试准备</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">测试流程</a></li>
 </ul>
 </li>
 </ul>
@@ -189,13 +188,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="zsed-demo">
+  <div class="section" id="zsed-demo">
 <span id="zigbee-index"></span><h1>zsed_demo<a class="headerlink" href="#zsed-demo" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何使用BL702L ZSED Sensor Demo。</p>
-</section>
-<section id="demo">
+</div>
+<div class="section" id="demo">
 <h2>Demo介绍<a class="headerlink" href="#demo" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>ZSED Sensor Demo主要是ZigBee Sleepy End device作为sensor的简单应用例子，供应用参考。在该Demo中，低功耗模式是PDS31。
@@ -209,8 +208,8 @@ ZSED上电后依次执行如下流程：</p>
 </ol>
 </li>
 </ul>
-</section>
-<section id="zsed">
+</div>
+<div class="section" id="zsed">
 <h2>ZSED工作模式<a class="headerlink" href="#zsed" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>ZSED唤醒后，可以工作在以下2种模式。</p>
@@ -229,9 +228,9 @@ ZSED上电后依次执行如下流程：</p>
 </ol>
 </li>
 </ul>
-</section>
-<section id="section-2">
-<h2>低功耗流程<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>低功耗流程<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>打开低功耗功能</p>
 <p>通过zb_pds_enable API来打开ZSED低功耗的功能。</p>
@@ -259,9 +258,9 @@ ZSED上电后依次执行如下流程：</p>
 </ol>
 </li>
 </ul>
-</section>
-<section id="section-3">
-<h2>测试准备<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id3">
+<h2>测试准备<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>BL702L ZSED</p>
 <p>使用SDK customer_app/bl702l_demo_product/bl702l_demo_sensor_zsed目录下的genromapzsedstartupwithpds31脚本编译出ZSED固件。</p>
@@ -276,9 +275,9 @@ ZSED上电后依次执行如下流程：</p>
 <p>烧写完后，按ZC上的reset键。</p>
 </li>
 </ul>
-</section>
-<section id="section-4">
-<h2>测试流程<a class="headerlink" href="#section-4" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id4">
+<h2>测试流程<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>ZSED加入到ZC网络中</p>
 <ul>
@@ -318,8 +317,8 @@ ZSED上电后依次执行如下流程：</p>
 <p>配置成功后，ZSED会32s 向ZC report一次battery voltage。</p>
 </li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -362,7 +361,7 @@ ZSED上电后依次执行如下流程：</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

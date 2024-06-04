@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>快速入门 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>快速入门 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,49 +164,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="section-1">
-<h1>快速入门<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h1>
+  <div class="section" id="id1">
+<h1>快速入门<a class="headerlink" href="#id1" title="永久链接至标题"></a></h1>
 <p>本文档旨在指导用户搭建 BL602 (BL-HWC-G1)硬件开发的windows软件环境，通过一个简单的示例展示如何编译、下载固件至 BL602 开发板等步骤。</p>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
 <p>BL602-IoT-DVK-3S模组windows环境搭建请参考 <a class="reference external" href="../get_started_3S_windows/get_started_3S_windows.html">DVK-3S模组windows环境搭建</a></p>
-</aside>
-<section id="section-2">
-<h2>概述<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>概述<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <p>BL602 是一款Wi-Fi +
 BLE组合的芯片组，用于低功耗和高性能应用开发。无线子系统包含2.4G无线电，Wi-Fi
 802.11b/g/n和BLE 5.0
 基带/MAC设计。微控制器子系统包含一个低功耗的32位RISC-V
 CPU，高速缓存和存储器。电源管理单元控制低功耗模式。此外，还支持各种安全性能。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-120.png" />
-</figure>
-</section>
-<section id="section-3">
-<h2>准备工作<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>准备工作<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
 <p>硬件：</p>
 <ul class="simple">
 <li><p>一款 <strong>BL602</strong> 开发板</p></li>
 <li><p><strong>USB 数据线</strong> （usb转type-c）</p></li>
 <li><p>电脑（<a class="reference external" href="../../index_602.html">linux环境搭建</a> ）</p></li>
 </ul>
-</section>
-<section id="section-4">
-<h2>开发板实物图<a class="headerlink" href="#section-4" title="永久链接至标题"></a></h2>
-<figure class="align-default">
-<img alt="" src="../../../_images/bl_hwc_g1.svg" /></figure>
-</section>
-<section id="section-5">
-<h2>详细安装步骤<a class="headerlink" href="#section-5" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id4">
+<h2>开发板实物图<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
+<div class="figure align-default">
+<img alt="" src="../../../_images/bl_hwc_g1.svg" /></div>
+</div>
+<div class="section" id="id5">
+<h2>详细安装步骤<a class="headerlink" href="#id5" title="永久链接至标题"></a></h2>
 <p>请根据下方详细步骤，完成安装过程。</p>
-<section id="section-6">
-<h3>编译环境的建立及代码的获取<a class="headerlink" href="#section-6" title="永久链接至标题"></a></h3>
+<div class="section" id="id6">
+<h3>编译环境的建立及代码的获取<a class="headerlink" href="#id6" title="永久链接至标题"></a></h3>
 <ul class="simple">
 <li><p>安装驱动jtag转usb驱动（驱动安装前先将设备连接电脑可以自动识别到相关设备），驱动下载网站：<a class="reference external" href="https://zadig.akeo.ie/">https://zadig.akeo.ie/</a></p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/驱动安装2.png" />
-</figure>
+</div>
 <ul>
 <li><p>安装串口工具，网上搜索串口工具 <code class="docutils literal notranslate"><span class="pre">sscom5.13.1</span></code>下载使用</p></li>
 <li><p>获取MSYS2安装包<a class="reference external" href="https://sourceforge.net/projects/msys2/files/Base/x86_64/">https://sourceforge.net/projects/msys2/files/Base/x86_64/</a></p></li>
@@ -219,101 +218,101 @@ CPU，高速缓存和存储器。电源管理单元控制低功耗模式。此�
 </div>
 </li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-37.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-46.png" />
-</figure>
+</div>
 <p>安装成功后会在相应的<code class="docutils literal notranslate"><span class="pre">usr-&gt;bin</span></code>路径下看到安装的工具。</p>
-</section>
-<section id="section-7">
-<h3>配置系统环境变量<a class="headerlink" href="#section-7" title="永久链接至标题"></a></h3>
+</div>
+<div class="section" id="id7">
+<h3>配置系统环境变量<a class="headerlink" href="#id7" title="永久链接至标题"></a></h3>
 <p>在windows的搜索中，搜索系统环境变量，打开</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-56.png" />
-</figure>
+</div>
 <p>然后选择<code class="docutils literal notranslate"><span class="pre">高级-&gt;环境变量</span></code>，打开新的界面，操作如下图：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-76.png" />
-</figure>
+</div>
 <p>双击<code class="docutils literal notranslate"><span class="pre">PATH</span></code>新添系统环境变量，此过程操作是通过界面进行操作的，还可以直接通过Windows终端命令行直接进行添加，在这就不介绍了。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-86.png" />
-</figure>
+</div>
 <p>将安装的<code class="docutils literal notranslate"><span class="pre">msys64</span></code>的路径下的<code class="docutils literal notranslate"><span class="pre">usr/bin</span></code>添加到Path中，添加完成后一路确定退出便可，操作如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-96.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-105.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-1110.png" />
-</figure>
+</div>
 <p>然后在命令终端输入path便可以查看到新添的环境变量了，现象如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-126.png" />
-</figure>
-</section>
-</section>
-<section id="section-8">
-<h2>下载代码进行编译<a class="headerlink" href="#section-8" title="永久链接至标题"></a></h2>
+</div>
+</div>
+</div>
+<div class="section" id="id8">
+<h2>下载代码进行编译<a class="headerlink" href="#id8" title="永久链接至标题"></a></h2>
 <p>打开编译工具，切换到您要保存代码的工作目录，操作如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-136.png" />
-</figure>
+</div>
 <p>下载代码，使用 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:bouffalolab/bl_iot_sdk.git</span></code>
 命令克隆远程仓库(如果)</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-146.png" />
-</figure>
+</div>
 <p>成功后，使用命令 <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">bl_iot_sdk/</span></code>进入到下载的代码目录，使用命令
 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span> <span class="pre">--recursive</span></code>进行子仓库同步，操作如下显示：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-155.png" />
-</figure>
+</div>
 <p>同步完成后，便可以进入到对应的app目录进行编译了，操作如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-166.png" />
-</figure>
+</div>
 <p>成功现象如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-175.png" />
-</figure>
+</div>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
 <p>如果编译失败，需要将编译工具链加入环境变量，如msys安装在C:msys64目录下，用户名是：admin，SDK在/d/bl_iot_sdk目录下，那么修改环境变量，在C：msys64homeadmin.bashrc中添加
 <code class="docutils literal notranslate"><span class="pre">PATH=/d/bl_iot_sdk/toolchain/riscv/MSYS/bin:$PATH</span></code> 并重启电脑。</p>
-</aside>
-</section>
-<section id="section-9">
-<h2>下载编译好的程序到板卡<a class="headerlink" href="#section-9" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="id9">
+<h2>下载编译好的程序到板卡<a class="headerlink" href="#id9" title="永久链接至标题"></a></h2>
 <p>打开 <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk/tools/flash_tool</span></code> 文件中的 <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>\程序</p>
 <p><code class="docutils literal notranslate"><span class="pre">chip</span> <span class="pre">type</span></code> 选择 <code class="docutils literal notranslate"><span class="pre">BL602/604</span></code> ，打开后界面参数参考下图配置：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-184.png" />
-</figure>
+</div>
 <p>成功后会有log打印信息，现象如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-193.png" />
-</figure>
-</section>
-<section id="section-10">
-<h2>使用串口工具查看<a class="headerlink" href="#section-10" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>使用串口工具查看<a class="headerlink" href="#id10" title="永久链接至标题"></a></h2>
 <p>针对与loT DVK
 3S-MB和BL-HWC-G1两个板卡需要对串口的流控进行设置，既RTS和DTR两个引脚设置如下图：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-204.png" />
-</figure>
+</div>
 <p>设置成功打开如下显示：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-216.png" />
-</figure>
+</div>
 <p><strong>恭喜，您已完成BL602的入门学习！</strong>
 现在，您可以尝试使用 <a class="reference external" href="../eclipse_windows/eclipse_windows.html">Eclipse</a> 或 <a class="reference external" href="../freedom_windows/freedom_windows.html">Freedom studio</a> 进行debug。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -347,7 +346,7 @@ CPU，高速缓存和存储器。电源管理单元控制低功耗模式。此�
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Httpc client &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>Httpc client &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,37 +164,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="httpc-client">
+  <div class="section" id="httpc-client">
 <span id="httpc-index"></span><h1>Httpc client<a class="headerlink" href="#httpc-client" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何通过tcp的方式访问Http服务器获取数据的过程。</p>
-</section>
-<section id="section-2">
-<h2>准备和使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>准备和使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>使用之前需要准备可用的URL以及网络。</p></li>
 <li><p>使用步骤：</p>
 <ul>
 <li><p>在终端输入开启wifi的命令： <code class="docutils literal notranslate"><span class="pre">stack_wifi</span></code> ，会打印下图一log（部分），然后输入连接wifi的命令： <code class="docutils literal notranslate"><span class="pre">wifi_sta_connect</span> <span class="pre">&lt;name&gt;</span> <span class="pre">&lt;key&gt;</span></code> ，并确认wifi连接成功（如输入：wifi_sta_connect bl_test_005 12345678）；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image132.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image227.png" />
-</figure>
+</div>
 </li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">httpc</span></code> 命令进行下载。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image320.png" />
-</figure>
+</div>
 </li>
 </ul>
 </li>
 </ul>
-</section>
-<section id="section-3">
-<h2>应用实例<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>主要实现过程</p></li>
 </ul>
@@ -214,8 +213,8 @@
 </pre></div>
 </div>
 <p>cb_httpc_result()次回调函数会在http传输完成后调用，打印获取的消息内容长度；cb_httpc_headers_done_fn()回调函数会在接收到http headers时调用，打印headers的大小；用户可以在cb_altcp_recv_fn()回调函数中处理接收到的消息。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -249,7 +248,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

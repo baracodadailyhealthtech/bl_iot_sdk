@@ -669,7 +669,7 @@ void btcli_enable_cb(int err)
         bt_addr_le_t bt_addr;
         bt_conn_cb_register(&conn_callbacks);
         bt_get_local_public_address(&bt_addr);
-        printf("BD_ADDR:(MSB)%02x:%02x:%02x:%02x:%02x:%02x(LSB) \n",
+        printf("BD_ADDR:(MSB)%02x:%02x:%02x:%02x:%02x:%02x(LSB) \r\n",
             bt_addr.a.val[5], bt_addr.a.val[4], bt_addr.a.val[3], bt_addr.a.val[2], bt_addr.a.val[1], bt_addr.a.val[0]);
     }else{
          printf("bt_enable_failed\n");

@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../index.html"/>
         <link rel="next" title="BL IOT SDK Development Guide" href="index_702L.html"/>
         <link rel="prev" title="BL702MIX 编程指南" href="../index.html"/> 
 
@@ -74,7 +73,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -191,17 +190,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bl-iot-sdk-development-guide">
+  <div class="section" id="bl-iot-sdk-development-guide">
 <h1>BL IOT SDK Development Guide<a class="headerlink" href="#bl-iot-sdk-development-guide" title="永久链接至标题"></a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>The BL702/704/706 series chip is a general purpose microcontroller which is developed by Bouffalo Lab Technology, and based on <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> processor. It has a main frequency of up to 144MHz and rich peripherals. It also supports BLE 5.0, Zigbee 3.0, Ethernet and other functions, and can be widely used in IoT and other low-power fields.</p>
 <p>The <a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> is an IOT software development kit specially provided by Bouffalo Lab team for BL60X, BL70X and subsequent chips.</p>
 <p>This article uses a simple example to show how to build a development environment, compile example code, burn firmware and view output in a Windows environment, aiming to guide users to build a complete BL70X IOT application development environment.</p>
 </div></blockquote>
-</section>
-<section id="preparation">
+</div>
+<div class="section" id="preparation">
 <h2>Preparation<a class="headerlink" href="#preparation" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>Before starting this example, the required development environment includes:</p>
@@ -219,57 +218,57 @@
 <li><p><strong>Freedom Studio</strong>  (Windows debug tool)</p></li>
 <li><p><strong>BLDevCube</strong>       (Firmware programming tool)</p></li>
 </ul>
-<figure class="align-center">
+<div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/bl706_iot.png"><img alt="../_images/bl706_iot.png" src="../_images/bl706_iot.png" style="width: 4.5in; height: 5in;" /></a>
-</figure>
+</div>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="hardware-connection">
+</div>
+<div class="section" id="hardware-connection">
 <h2>Hardware Connection<a class="headerlink" href="#hardware-connection" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>The BL702/704/706 DVK board reserves rich communication interfaces for the chip, and supports programming firmware and debugging software through USB, UART, JTAG and other connection methods.</p>
 </div></blockquote>
-<section id="usb-connection">
+<div class="section" id="usb-connection">
 <h3>USB Connection<a class="headerlink" href="#usb-connection" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>The BL702/704/706 series of chips all contain a USB 2.0 IP. After enabling the USB virtual USB-CDC serial port in the software, functions such as software programming and serial communication can be easily realized through the USB interface on the DVK board.</p>
 <blockquote>
-<div><figure class="align-center">
+<div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/index-10.jpg"><img alt="../_images/index-10.jpg" src="../_images/index-10.jpg" style="width: 4.5in; height: 5in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="uart-connection">
+</div>
+<div class="section" id="uart-connection">
 <h3>UART Connection<a class="headerlink" href="#uart-connection" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>The BL702/704/706 DVK board pulls out UART0 TX/RX pins, and the chip enables the UART0 function by default. When the USB-CDC serial port is not opened, UART0 communication is automatically used to realize software programming, serial communication and other functions.</p>
 <blockquote>
-<div><figure class="align-center">
+<div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/index-12.jpg"><img alt="../_images/index-12.jpg" src="../_images/index-12.jpg" style="width: 4.5in; height: 5in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="jtag-connection">
+</div>
+<div class="section" id="jtag-connection">
 <h3>JTAG Connection<a class="headerlink" href="#jtag-connection" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>The BL702/704/706 DVK board pulls out the JTAG interface from the bottom board, which is connected to the PC through the Sipeed RV-Debugger Plus debugger, which can conveniently realize the online debugging function of the chip.</p>
 <blockquote>
-<div><figure class="align-center">
+<div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/index-11.jpg"><img alt="../_images/index-11.jpg" src="../_images/index-11.jpg" style="width: 4.5in; height: 5in;" /></a>
-</figure>
+</div>
 <div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>For Sipeed RV-Debugger Plus Debugger Installation please refer to <a class="reference external" href="./Developer_Environment_BL702/Sipeed-RV-Debugger-Plus/sipeed-rv-debugger-plus.html">Sipeed RV-Debugger Plus Installation</a> .</p>
-</aside>
+</div>
 </div></blockquote>
 </div></blockquote>
-</section>
-</section>
-<section id="software-installation">
+</div>
+</div>
+<div class="section" id="software-installation">
 <h2>Software Installation<a class="headerlink" href="#software-installation" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>Before starting to compile the project, please complete the installation of all the following tools correctly. The specific steps and environment variable settings are as follows:</p>
@@ -277,25 +276,25 @@
 <div><div class="admonition important">
 <p class="admonition-title">重要</p>
 <p>Please pay attention to the settings of environment variables, drivers and other information in the document, which will avoid abnormal errors in subsequent operations.</p>
-</aside>
+</div>
 </div></blockquote>
 </div></blockquote>
-<section id="set-compilation-environment">
+<div class="section" id="set-compilation-environment">
 <h3>1. Set Compilation Environment<a class="headerlink" href="#set-compilation-environment" title="永久链接至标题"></a></h3>
 <ul>
 <li><p><a class="reference external" href="https://www.msys2.org/">Get the MSYS2 installation package and installation steps</a></p></li>
 <li><p>Open MSYS2 and install make, then enter the command: <code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code>,
 and follow the prompts until the installation is completed</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../_images/image150.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../_images/image240.png" />
-</figure>
+</div>
 </li>
 </ul>
-</section>
-<section id="set-environment-variables">
+</div>
+<div class="section" id="set-environment-variables">
 <h3>2. Set Environment Variables<a class="headerlink" href="#set-environment-variables" title="永久链接至标题"></a></h3>
 <ul>
 <li><p>To compile using gcc, you need to add gcc to the environment variable in MSYS2. The method is as follows:</p>
@@ -309,17 +308,17 @@ and follow the prompts until the installation is completed</p>
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="install-freedom-studio">
+</div>
+<div class="section" id="install-freedom-studio">
 <h3>3. Install Freedom Studio<a class="headerlink" href="#install-freedom-studio" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>Freedom Studio</strong> <a class="reference external" href="./Developer_Environment_BL702/freedom_studio/freedom_studio.html">Freedom Studio + OpenOCD Install and Debug</a></p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-<section id="project-compilation">
+</div>
+</div>
+<div class="section" id="project-compilation">
 <h2>Project Compilation<a class="headerlink" href="#project-compilation" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>This section describes how to compile the bl702_demo_event project under the customer_app directory.</p>
@@ -330,9 +329,9 @@ and follow the prompts until the installation is completed</p>
 <div><ul class="simple">
 <li><p>Command: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/d/bl_iot_sdk/customer_app/bl702_demo_event/</span></code></p></li>
 </ul>
-<figure class="align-center">
+<div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image164.png"><img alt="../_images/image164.png" src="../_images/image164.png" style="width: 6in; height: 3.5in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 <ol class="arabic simple" start="2">
 <li><p>Execute the script <strong>genblem1s1</strong> to start compiling the project</p></li>
@@ -341,32 +340,32 @@ and follow the prompts until the installation is completed</p>
 <div><ul class="simple">
 <li><p>Command: <code class="docutils literal notranslate"><span class="pre">./genblem1s1</span></code></p></li>
 </ul>
-<figure class="align-center">
+<div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image174.png"><img alt="../_images/image174.png" src="../_images/image174.png" style="width: 6in; height: 3.5in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 <ol class="arabic simple" start="3">
 <li><p>After the compilation is complete, a <code class="docutils literal notranslate"><span class="pre">build_out</span></code> folder with the following files are added to the current directory:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><a href="#system-message-1"><span class="problematic" id="problematic-1">**</span></a>bl702_demo_event.bin: ** Binary firmware for programming into the chip</p></li>
-<li><p><a href="#system-message-2"><span class="problematic" id="problematic-2">**</span></a>bl702_demo_event.elf: ** Executable file for debugging software</p></li>
-<li><p><a href="#system-message-3"><span class="problematic" id="problematic-3">**</span></a>bl702_demo_event.map: ** Map file for analysis of functions and memory usage</p></li>
+<li><p><a href="#id1"><span class="problematic" id="id2">**</span></a>bl702_demo_event.bin: ** Binary firmware for programming into the chip</p></li>
+<li><p><a href="#id3"><span class="problematic" id="id4">**</span></a>bl702_demo_event.elf: ** Executable file for debugging software</p></li>
+<li><p><a href="#id5"><span class="problematic" id="id6">**</span></a>bl702_demo_event.map: ** Map file for analysis of functions and memory usage</p></li>
 </ul>
 <p><a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab Parse Tool For Windows</a> is a map file analysis software provided by Bouffalo Lab team, which can be used for memory analysis</p>
-<figure class="align-center">
+<div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image183.png"><img alt="../_images/image183.png" src="../_images/image183.png" style="width: 6in; height: 3.8in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="firmware-programming">
+</div>
+<div class="section" id="firmware-programming">
 <h2>Firmware Programming<a class="headerlink" href="#firmware-programming" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>This section introduces how to use <strong>BLDevCube</strong> integrated development tool to program firmware into BL702/704/706 DVK board.</p>
 </div></blockquote>
-<section id="let-the-chip-enter-programming-mode">
+<div class="section" id="let-the-chip-enter-programming-mode">
 <h3>1. Let the chip enter programming mode<a class="headerlink" href="#let-the-chip-enter-programming-mode" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>1.1 After connecting to BL702/704/706 DVK board with <code class="docutils literal notranslate"><span class="pre">USB</span> <span class="pre">cable</span></code></p>
@@ -379,21 +378,21 @@ and follow the prompts until the installation is completed</p>
 <p>After the chip successfully enters the <code class="docutils literal notranslate"><span class="pre">UART/USB</span> <span class="pre">programming</span> <span class="pre">mode</span></code>, you can confirm that the USB-CDC of the DVK board has been successfully recognized through the <strong>Windows Device Manager</strong> of the PC.</p>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="download-firmware-using-bldevcube">
+</div>
+<div class="section" id="download-firmware-using-bldevcube">
 <h3>2. Download firmware using BLDevCube<a class="headerlink" href="#download-firmware-using-bldevcube" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><p>2.1 Open <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>, select <code class="docutils literal notranslate"><span class="pre">BL702/704/706``in</span> <span class="pre">the</span> <span class="pre">drop-down</span> <span class="pre">box</span> <span class="pre">of</span> <span class="pre">``Chip</span></code>, click <code class="docutils literal notranslate"><span class="pre">Finish</span></code> and enter the main interface of <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Cube</span></code></p>
 <blockquote>
-<div><figure class="align-center">
+<div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/chipselection1.png"><img alt="../_images/chipselection1.png" src="../_images/chipselection1.png" style="width: 2.5in; height: 4in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 <p>2.2 After entering the main interface, enter the <code class="docutils literal notranslate"><span class="pre">IOT</span></code> download interface by default</p>
 <blockquote>
-<div><figure class="align-center">
+<div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image203.png"><img alt="../_images/image203.png" src="../_images/image203.png" style="width: 9in; height: 4.8in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 <p>2.3  Configure BLDevCube</p>
 <blockquote>
@@ -418,19 +417,19 @@ and follow the prompts until the installation is completed</p>
 </ul>
 </li>
 </ul>
-<figure class="align-center">
+<div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image2112.png"><img alt="../_images/image2112.png" src="../_images/image2112.png" style="width: 9in; height: 4.8in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 <p>2.4  After completing the above configuraiton correctly, click <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">&amp;</span> <span class="pre">Download</span></code> for downloading，after the successful download, you can see the status bar turns green</p>
 <blockquote>
-<div><figure class="align-center">
+<div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image2212.png"><img alt="../_images/image2212.png" src="../_images/image2212.png" style="width: 9in; height: 4.8in;" /></a>
-</figure>
+</div>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="run-firmware">
+</div>
+<div class="section" id="run-firmware">
 <h3>3. Run firmware<a class="headerlink" href="#run-firmware" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -438,23 +437,23 @@ and follow the prompts until the installation is completed</p>
 <li><p>Press the <code class="docutils literal notranslate"><span class="pre">RST</span></code> key on the DVK board</p></li>
 <li><p>The program is executed correctly, and the PC-side serial port tool will see the following print</p></li>
 </ul>
-<figure class="align-center">
+<div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image2310.png"><img alt="../_images/image2310.png" src="../_images/image2310.png" style="width: 6in; height: 4in;" /></a>
-</figure>
+</div>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
 <p>During the burning, if there are abnormalities such as unable to burn, burning failed, and no printing after burning successfully, refer to <a class="reference external" href="https://dev.bouffalolab.com/media/doc/faq/702/html/content/FAQ.html#bl702">BL702 FAQ Summary</a> .</p>
-</aside>
+</div>
 </div></blockquote>
-</section>
-</section>
-<section id="debug-software">
+</div>
+</div>
+<div class="section" id="debug-software">
 <h2>Debug Software<a class="headerlink" href="#debug-software" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>Select <code class="docutils literal notranslate"><span class="pre">Freedom</span> <span class="pre">Studio</span> <span class="pre">+</span> <span class="pre">OpenOCD</span></code> for debug. For detailed debug method please refer to <a class="reference external" href="./Developer_Environment_BL702/freedom_studio/freedom_studio.html">Freedom Studio</a> .</p>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -497,7 +496,7 @@ and follow the prompts until the installation is completed</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

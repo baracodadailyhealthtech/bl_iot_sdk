@@ -250,6 +250,7 @@ env.Append(
     CPPDEFINES = defines + redefines + [
         "ARCH_RISCV",
         "_GNU_SOURCE",
+        ("__int64_t_defined", 1),
         ("BL_SDK_VER", "\\\"" + f"{SDKDATA['sdk']['version']}" + "\\\""),
         ("BL_SDK_STDDRV_VER", "\\\"" + f"{SDKDATA['sdk']['version']}" + "\\\""),
         ("BL_SDK_STDCOM_VER", "\\\"" + f"{SDKDATA['sdk']['version']}" + "\\\""),

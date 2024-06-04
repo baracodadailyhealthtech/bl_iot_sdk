@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bflb_iot_tool使用方法 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>bflb_iot_tool使用方法 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,11 +164,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bflb-iot-tool">
+  <div class="section" id="bflb-iot-tool">
 <h1>bflb_iot_tool使用方法<a class="headerlink" href="#bflb-iot-tool" title="永久链接至标题"></a></h1>
 <p>在tools/flash_tool目录下有两个可执行文件: bflb_iot_tool和bflb_iot_tool.exe,分别对应linux和windows环境，通过传入不同的参数，我们可以以命令行的形式自定义烧录，具体使用方法如下，以linux环境为例。</p>
-<section id="section-1">
-<h2>参数列表<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>参数列表<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>--chipname：芯片名字BL602或者BL702 <strong>必填</strong></p></li>
 <li><p>--interface：默认uart</p></li>
@@ -186,9 +185,9 @@
 <li><p>--config：eflash_loader_cfg.ini</p></li>
 <li><p>--ota： 指定ota文件生成目录</p></li>
 </ul>
-</section>
-<section id="section-2">
-<h2>示例<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>示例<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <p>比如我们要在602平台烧录customer_app/bl602_demo_event/build_out/bl602_demo_event.bin,参数分别如下：</p>
 <ul class="simple">
 <li><p>chipname=BL602</p></li>
@@ -204,11 +203,11 @@
 <ul class="simple">
 <li><p>执行命令  <strong>./tools/flash_tool/bflb_iot_tool --chipname=BL602 --port=/dev/ttyUSB1 --baudrate=2000000 --dts=customer_app/bl602_demo_event/img_conf/bl_factory_params_IoTKitA_40M.dts --pt=customer_app/bl602_demo_event/img_conf/partition_cfg_2M.toml --firmware=customer_app/bl602_demo_event/build_out/bl602_demo_event.bin</strong>, 出现下图所示表明烧录成功。</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/1.png" />
-</figure>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -242,7 +241,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL libc &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>BL libc &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../index.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,10 +164,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bl-libc">
+  <div class="section" id="bl-libc">
 <h1>BL libc<a class="headerlink" href="#bl-libc" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<span id="target-1"></span><h2>1. 背景<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<span id="id2"></span><h2>1. 背景<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p><strong>问题</strong></p>
 <ul class="simple">
 <li><p>在使用编译器自带的newlibc中的C库函数时，会出现stack溢出的现象</p></li>
@@ -176,278 +175,278 @@
 api的情况下，错误的使用C库函数自带的API，比如<code class="docutils literal notranslate"><span class="pre">malloc</span></code></p></li>
 </ul>
 <p>为了解决这些问题，将编译器的newlibc改为newlibc-nano，并使用sdk现有API适配部分C库函数，以提高sdk接口通用性，减少客户使用过程中可能出现的错误。</p>
-</section>
-<section id="api-1">
-<span id="api"></span><h2>2. API<a class="headerlink" href="#api-1" title="永久链接至标题"></a></h2>
-<section id="support-1">
-<span id="support"></span><h3>2.1 Support<a class="headerlink" href="#support-1" title="永久链接至标题"></a></h3>
-<section id="mkdir">
+</div>
+<div class="section" id="api">
+<span id="id3"></span><h2>2. API<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
+<div class="section" id="support">
+<span id="id4"></span><h3>2.1 Support<a class="headerlink" href="#support" title="永久链接至标题"></a></h3>
+<div class="section" id="mkdir">
 <h4>mkdir<a class="headerlink" href="#mkdir" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>创建目录</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w">  </span><span class="nf">mkdir</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">_path</span><span class="p">,</span><span class="w"> </span><span class="kt">mode_t</span><span class="w"> </span><span class="n">__mode</span><span class="w"> </span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w">  </span><span class="nf">mkdir</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">_path</span><span class="p">,</span><span class="w"> </span><span class="kt">mode_t</span><span class="w"> </span><span class="n">__mode</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_mkdir</span><span class="p">(</span><span class="n">_path</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_mkdir</span><span class="p">(</span><span class="n">_path</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="open">
+</div>
+<div class="section" id="open">
 <h4>open<a class="headerlink" href="#open" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>打开文件</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_open_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">flags</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">mode</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_open_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">flags</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">mode</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="clsoe">
+</div>
+<div class="section" id="clsoe">
 <h4>clsoe<a class="headerlink" href="#clsoe" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>关闭文件</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_close_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_close_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">aos_close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">aos_close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="read">
+</div>
+<div class="section" id="read">
 <h4>read<a class="headerlink" href="#read" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>读取数据到buf</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">_ssize_t</span><span class="w"> </span><span class="nf">_read_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">_ssize_t</span><span class="w"> </span><span class="nf">_read_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="n">_ssize_t</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_ssize_t</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="write">
+</div>
+<div class="section" id="write">
 <span id="write-1"></span><h4>write<a class="headerlink" href="#write" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>写数据到文件</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">_ssize_t</span><span class="w"> </span><span class="nf">_write_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">_ssize_t</span><span class="w"> </span><span class="nf">_write_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="n">_ssize_t</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_ssize_t</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="rename">
+</div>
+<div class="section" id="rename">
 <h4>rename<a class="headerlink" href="#rename" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>重命名文件</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_rename_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">new</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_rename_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">new</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_rename</span><span class="p">(</span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="n">new</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_rename</span><span class="p">(</span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="n">new</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="lseek">
+</div>
+<div class="section" id="lseek">
 <h4>lseek<a class="headerlink" href="#lseek" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>改变读写一个文件时读写指针位置</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">_off_t</span><span class="w"> </span><span class="nf">_lseek_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">_off_t</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">whence</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">_off_t</span><span class="w"> </span><span class="nf">_lseek_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">_off_t</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">whence</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="n">_off_t</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">_off_t</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_lseek</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">whence</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_lseek</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">whence</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="stat">
+</div>
+<div class="section" id="stat">
 <h4>stat<a class="headerlink" href="#stat" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>获取文件状态</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_stat_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">stat</span><span class="w"> </span><span class="o">*</span><span class="n">pstat</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_stat_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">stat</span><span class="w"> </span><span class="o">*</span><span class="n">pstat</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_stat</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">pstat</span><span class="p">);</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aos_stat</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">pstat</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="unlink">
+</div>
+<div class="section" id="unlink">
 <h4>unlink<a class="headerlink" href="#unlink" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>删除文件</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_unlink_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_unlink_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 <span class="cp">#ifndef CONF_VFS_ENABLE</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#else</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">aos_unlink</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">aos_unlink</span><span class="p">(</span><span class="n">file</span><span class="p">);</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="malloc">
+</div>
+<div class="section" id="malloc">
 <h4>malloc<a class="headerlink" href="#malloc" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>申请内存</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_malloc_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_malloc_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortMalloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortMalloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="free">
+</div>
+<div class="section" id="free">
 <h4>free<a class="headerlink" href="#free" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>释放内存</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">_free_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">addr</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="n">vPortFree</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">_free_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">addr</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">vPortFree</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="realloc">
+</div>
+<div class="section" id="realloc">
 <h4>realloc<a class="headerlink" href="#realloc" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>重新申请内存</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_realloc_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">newlen</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_realloc_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">newlen</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortRealloc</span><span class="p">(</span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="n">newlen</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortRealloc</span><span class="p">(</span><span class="n">old</span><span class="p">,</span><span class="w"> </span><span class="n">newlen</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="calloc">
+</div>
+<div class="section" id="calloc">
 <h4>calloc<a class="headerlink" href="#calloc" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>申请空内存</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_calloc_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_calloc_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortCalloc</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">pvPortCalloc</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="abort">
+</div>
+<div class="section" id="abort">
 <h4>abort<a class="headerlink" href="#abort" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>退出程序<code class="docutils literal notranslate"><span class="pre">abort()</span></code>、<code class="docutils literal notranslate"><span class="pre">exit()</span></code></p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">__attribute__</span><span class="w"> </span><span class="p">((</span><span class="k">noreturn</span><span class="p">))</span><span class="w"> </span><span class="n">_exit</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">status</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="n">portABORT</span><span class="p">();</span>
-<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">__attribute__</span><span class="w"> </span><span class="p">((</span><span class="k">noreturn</span><span class="p">))</span><span class="w"> </span><span class="n">_exit</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">portABORT</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="random">
+</div>
+<div class="section" id="random">
 <h4>random<a class="headerlink" href="#random" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>生成一个<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">&lt;</span> <span class="pre">num</span> <span class="pre">&lt;</span> <span class="pre">RAND_MAX</span></code>的随机数</p></li>
@@ -455,26 +454,26 @@ api的情况下，错误的使用C库函数自带的API，比如<code class="doc
 <blockquote>
 <div><p>使用RNG模块</p>
 </div></blockquote>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">long</span><span class="w"> </span><span class="nf">random</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">g_bl_sec_sha_mutex</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">bl_sec_init</span><span class="p">();</span>
-<span class="w">    </span><span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">long</span><span class="w"> </span><span class="nf">random</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">g_bl_sec_sha_mutex</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">bl_sec_init</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">bl_rand</span><span class="p">();</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">bl_rand</span><span class="p">();</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="not-support-1">
-<span id="not-support"></span><h3>2.2 Not support<a class="headerlink" href="#not-support-1" title="永久链接至标题"></a></h3>
+</div>
+</div>
+<div class="section" id="not-support">
+<span id="id5"></span><h3>2.2 Not support<a class="headerlink" href="#not-support" title="永久链接至标题"></a></h3>
 <p>以下函数仅提供符号，未实现实际功能</p>
-<section id="sbrk">
+<div class="section" id="sbrk">
 <h4>sbrk<a class="headerlink" href="#sbrk" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>调整<code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">segment</span></code>大小</p></li>
@@ -482,57 +481,57 @@ api的情况下，错误的使用C库函数自带的API，比如<code class="doc
 <blockquote>
 <div><p>大部分我们使用的是malloc和free函数来分配和释放内存。这样能够提高程序的性能，不是每次分配内存都调用brk或sbrk，而是重用前面空闲的内存空间。brk和sbrk分配的堆空间类似于缓冲池，每次malloc从缓冲池获得内存，如果缓冲池不够了，再调用brk或sbrk扩充缓冲池，直到达到缓冲池大小的上限，free则将应用程序使用的内存空间归还给缓冲池。</p>
 </div></blockquote>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_sbrk_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">ptrdiff_t</span><span class="w"> </span><span class="n">incr</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_sbrk_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">ptrdiff_t</span><span class="w"> </span><span class="n">incr</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="getpid">
+</div>
+<div class="section" id="getpid">
 <h4>getpid<a class="headerlink" href="#getpid" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>取得进程识别码</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_sbrk_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">ptrdiff_t</span><span class="w"> </span><span class="n">incr</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ret</span><span class="p">;</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span>
-<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">-1</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">_sbrk_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">ptrdiff_t</span><span class="w"> </span><span class="n">incr</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ret</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="execve">
+</div>
+<div class="section" id="execve">
 <h4>execve<a class="headerlink" href="#execve" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>execve（执行文件）在父进程中fork一个子进程，在子进程中调用exec函数启动新的程序</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_execve_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">env</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_execve_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="fcntl">
+</div>
+<div class="section" id="fcntl">
 <h4>fcntl<a class="headerlink" href="#fcntl" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>改变文件性质</p></li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_fcntl_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">arg</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_fcntl_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="fstat">
+</div>
+<div class="section" id="fstat">
 <h4>fstat<a class="headerlink" href="#fstat" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p>由文件描述词取得文件状态</p></li>
@@ -541,33 +540,38 @@ api的情况下，错误的使用C库函数自带的API，比如<code class="doc
 <div><p>fstat与stat区别在于fstat系统调用接受的是
 一个“文件描述符”，stat可以调用完整的文件路径</p>
 </div></blockquote>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_fstat_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">stat</span><span class="w"> </span><span class="o">*</span><span class="n">pstat</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span>
-<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">_fstat_r</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">_reent</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">stat</span><span class="w"> </span><span class="o">*</span><span class="n">pstat</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/* return &quot;not supported&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">_errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOSYS</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="srandom">
+</div>
+<div class="section" id="srandom">
 <h4>srandom<a class="headerlink" href="#srandom" title="永久链接至标题"></a></h4>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">srandom</span></code>
 函数将其参数设置为由<code class="docutils literal notranslate"><span class="pre">random</span></code>返回的新伪随机整数序列的种子，同一个种子会得到相同的随机数</p></li>
 </ul>
-</section>
-</section>
-</section>
-<section id="section-2">
-<span id="target-2"></span><h2>3. 测试<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+</div>
+</div>
+<div class="section" id="id6">
+<span id="id7"></span><h2>3. 测试<a class="headerlink" href="#id6" title="永久链接至标题"></a></h2>
 <p><strong>$BL_IOT_SDK_PATH/customer_app/sdk_app_libc</strong></p>
-<section id="stack-used-1">
-<span id="stack-used"></span><h3>3.1 stack used<a class="headerlink" href="#stack-used-1" title="永久链接至标题"></a></h3>
+<div class="section" id="stack-used">
+<span id="id8"></span><h3>3.1 stack used<a class="headerlink" href="#stack-used" title="永久链接至标题"></a></h3>
 <ul class="simple">
 <li><p>Task stack: 10*1024(Kb)</p></li>
 </ul>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 31%" />
+<col style="width: 18%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Func</p></th>
 <th class="head"><p>newlibc-nano</p></th>
@@ -593,11 +597,15 @@ api的情况下，错误的使用C库函数自带的API，比如<code class="doc
 </tr>
 </tbody>
 </table>
-</section>
-<section id="io-1">
-<span id="io"></span><h3>3.2 IO<a class="headerlink" href="#io-1" title="永久链接至标题"></a></h3>
+</div>
+<div class="section" id="io">
+<span id="id9"></span><h3>3.2 IO<a class="headerlink" href="#io" title="永久链接至标题"></a></h3>
 <p>Write data to the serial port</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Func</p></th>
 <th class="head"><p>result</p></th>
@@ -621,31 +629,35 @@ api的情况下，错误的使用C库函数自带的API，比如<code class="doc
 </tr>
 </tbody>
 </table>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">cmd_write</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Usage: write DATA to /dev/ttyS0</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="k">return</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">cmd_write</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Usage: write DATA to /dev/ttyS0</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/ttyS0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]));</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/ttyS0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fd</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]));</span><span class="w"></span>
 
-<span class="w">        </span><span class="n">fsync</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+<span class="w">        </span><span class="n">fsync</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">        </span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
+<span class="w">        </span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="random-2">
-<span id="random-1"></span><h3>3.3 random<a class="headerlink" href="#random-2" title="永久链接至标题"></a></h3>
+</div>
+<div class="section" id="id10">
+<span id="id11"></span><h3>3.3 random<a class="headerlink" href="#id10" title="永久链接至标题"></a></h3>
 <p>Generate random numbers</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Func</p></th>
 <th class="head"><p>result</p></th>
@@ -657,21 +669,25 @@ api的情况下，错误的使用C库函数自带的API，比如<code class="doc
 </tr>
 </tbody>
 </table>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">cmd_random</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">cmd_random</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">random</span><span class="p">();</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">random</span><span class="p">();</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">**********random test rand[%08x]**************</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">**********random test rand[%08x]**************</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-<section id="memory-1">
-<span id="memory"></span><h3>3.4 memory<a class="headerlink" href="#memory-1" title="永久链接至标题"></a></h3>
+</div>
+<div class="section" id="memory">
+<span id="id12"></span><h3>3.4 memory<a class="headerlink" href="#memory" title="永久链接至标题"></a></h3>
 <p>Malloc memory and free</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 54%" />
+<col style="width: 46%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Func</p></th>
 <th class="head"><p>result</p></th>
@@ -689,24 +705,24 @@ api的情况下，错误的使用C库函数自带的API，比如<code class="doc
 </tr>
 </tbody>
 </table>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">cmd_mem</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">cmd_mem</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
-<span class="w">        </span><span class="n">merror</span><span class="p">(</span><span class="s">&quot;malloc (10) failed.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">merror</span><span class="p">(</span><span class="s">&quot;malloc (10) failed.&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/* realloc (p, 0) == free (p).  */</span>
-<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">realloc</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
-<span class="w">        </span><span class="n">merror</span><span class="p">(</span><span class="s">&quot;realloc (p, 0) failed.&quot;</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="cm">/* realloc (p, 0) == free (p).  */</span><span class="w"></span>
+<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">realloc</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">merror</span><span class="p">(</span><span class="s">&quot;realloc (p, 0) failed.&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -740,7 +756,7 @@ api的情况下，错误的使用C库函数自带的API，比如<code class="doc
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BLE &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>BLE &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../genindex.html"/>
         <link rel="search" title="搜索" href="../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../index.html"/>
         <link rel="up" title="&lt;no title&gt;" href="index.html"/>
         <link rel="next" title="QA" href="../../QA/index.html"/>
         <link rel="prev" title="&lt;no title&gt;" href="index.html"/> 
@@ -75,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -107,9 +106,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../Middleware/devicetree_702.html">dts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Middleware/blog.html">blog</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ble_stack</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#section-1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">概述</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#api">API参考</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#section-2">数据结构参考</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">数据结构参考</a></li>
 </ul>
 </li>
 </ul>
@@ -184,10 +183,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ble">
+  <div class="section" id="ble">
 <span id="ble-index"></span><h1>BLE<a class="headerlink" href="#ble" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>概述<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>BLE支持的特性：</p>
 <blockquote>
@@ -220,9 +219,9 @@
 <li><p>BLE协议栈的架构：</p>
 <blockquote>
 <div><blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="../../_images/image1.png" src="../../_images/image1.png" />
-</figure>
+</div>
 </div></blockquote>
 <ul>
 <li><p>总共有3个主要层，共同构成了一个完整的蓝牙低能耗协议栈</p>
@@ -244,9 +243,9 @@
 <li><p>主控Host：</p>
 <blockquote>
 <div><blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="../../_images/image2.png" src="../../_images/image2.png" />
-</figure>
+</div>
 </div></blockquote>
 <ul>
 <li><p>蓝牙Host层实现了所有高级协议和配置文件，最重要的是它为应用程序提供了高级API</p>
@@ -297,8 +296,8 @@
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2>API参考<a class="headerlink" href="#api" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>API介绍</p></li>
@@ -611,39 +610,39 @@
 */
 </pre></div>
 </div>
-</section>
-<section id="section-2">
-<h2>数据结构参考<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>数据结构参考<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">bt_le_adv_param</span></code>数据结构：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** LE Advertising Parameters. */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">bt_le_adv_param</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="cm">/** Local identity */</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">id</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** LE Advertising Parameters. */</span><span class="w"></span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">bt_le_adv_param</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/** Local identity */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">id</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/** Bit-field of advertising options */</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">options</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/** Bit-field of advertising options */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">options</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/** Minimum Advertising Interval (N * 0.625) */</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval_min</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/** Minimum Advertising Interval (N * 0.625) */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval_min</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/** Maximum Advertising Interval (N * 0.625) */</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval_max</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/** Maximum Advertising Interval (N * 0.625) */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval_max</span><span class="p">;</span><span class="w"></span>
 
 <span class="w">    </span><span class="cp">#if defined(CONFIG_BT_STACK_PTS)</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">addr_type</span><span class="p">;</span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">addr_type</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="cp">#endif</span>
-<span class="p">};</span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p>此数据结构用来配置广播参数，包括本地识别id、广播选项位域、广播间隔等，其中广播选项位域有如下枚举类型参数可选:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="cm">/** Convenience value when no options are specified. */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_NONE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/** Convenience value when no options are specified. */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_NONE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 
 <span class="w">    </span><span class="cm">/** Advertise as connectable. Type of advertising is determined by</span>
 <span class="cm">        * providing SCAN_RSP data and/or enabling local privacy support.</span>
-<span class="cm">        */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_CONNECTABLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+<span class="cm">        */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_CONNECTABLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
 
 <span class="w">    </span><span class="cm">/** Don&#39;t try to resume connectable advertising after a connection.</span>
 <span class="cm">        *  This option is only meaningful when used together with</span>
@@ -652,23 +651,23 @@
 <span class="cm">        *  connection happens. If this option is not set the stack will</span>
 <span class="cm">        *  take care of keeping advertising enabled even as connections</span>
 <span class="cm">        *  occur.</span>
-<span class="cm">        */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_ONE_TIME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="cm">        */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_ONE_TIME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
 
 <span class="w">    </span><span class="cm">/** Advertise using the identity address as the own address.</span>
 <span class="cm">        *  @warning This will compromise the privacy of the device, so care</span>
 <span class="cm">        *           must be taken when using this option.</span>
-<span class="cm">        */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_USE_IDENTITY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="cm">        */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_USE_IDENTITY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/** Advertise using GAP device name */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_USE_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+<span class="w">    </span><span class="cm">/** Advertise using GAP device name */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_USE_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"></span>
 
 <span class="w">    </span><span class="cm">/** Use low duty directed advertising mode, otherwise high duty mode</span>
 <span class="cm">        *  will be used. This option is only effective when used with</span>
 <span class="cm">        *  bt_conn_create_slave_le().</span>
-<span class="cm">        */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_DIR_MODE_LOW_DUTY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+<span class="cm">        */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_DIR_MODE_LOW_DUTY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span><span class="w"></span>
 
 <span class="w">    </span><span class="cm">/** Enable use of Resolvable Private Address (RPA) as the target address</span>
 <span class="cm">        *  in directed advertisements when CONFIG_BT_PRIVACY is not enabled.</span>
@@ -678,79 +677,79 @@
 <span class="cm">        *  It is the responsibility of the application to check that the remote</span>
 <span class="cm">        *  device supports address resolution of directed advertisements by</span>
 <span class="cm">        *  reading its Central Address Resolution characteristic.</span>
-<span class="cm">        */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_DIR_ADDR_RPA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+<span class="cm">        */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_DIR_ADDR_RPA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="w"></span>
 
 <span class="w">    </span><span class="cm">/** Use whitelist to filter devices that can request scan response</span>
 <span class="cm">        *  data.</span>
-<span class="cm">        */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_FILTER_SCAN_REQ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span>
+<span class="cm">        */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_FILTER_SCAN_REQ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/** Use whitelist to filter devices that can connect. */</span>
-<span class="w">    </span><span class="n">BT_LE_ADV_OPT_FILTER_CONN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span>
-<span class="p">};</span>
+<span class="w">    </span><span class="cm">/** Use whitelist to filter devices that can connect. */</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_LE_ADV_OPT_FILTER_CONN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p>如果需要发送一个广播包，配置可以如下：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">param</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="n">param</span><span class="p">.</span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">BT_LE_ADV_OPT_CONNECTABLE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BT_LE_ADV_OPT_USE_NAME</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BT_LE_ADV_OPT_ONE_TIME</span><span class="p">);</span>
-<span class="n">param</span><span class="p">.</span><span class="n">interval_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x00a0</span><span class="p">;</span>
-<span class="n">param</span><span class="p">.</span><span class="n">interval_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x00f0</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">param</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="n">param</span><span class="p">.</span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">BT_LE_ADV_OPT_CONNECTABLE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BT_LE_ADV_OPT_USE_NAME</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BT_LE_ADV_OPT_ONE_TIME</span><span class="p">);</span><span class="w"></span>
+<span class="n">param</span><span class="p">.</span><span class="n">interval_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x00a0</span><span class="p">;</span><span class="w"></span>
+<span class="n">param</span><span class="p">.</span><span class="n">interval_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x00f0</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">bt_data</span></code>数据结构：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_data</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w"> </span><span class="n">type</span><span class="p">;</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w"> </span><span class="n">data_len</span><span class="p">;</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">u8_t</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">;</span>
-<span class="p">};</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_data</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w"> </span><span class="n">data_len</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">u8_t</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p>此数据结构用来填充广播包中的数据，具体的数据包类型可以参考如下：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">Service</span><span class="w"> </span><span class="n">UUID</span>
-<span class="n">Local</span><span class="w"> </span><span class="n">Name</span>
-<span class="n">Flags</span>
-<span class="n">Manufacturer</span><span class="w"> </span><span class="n">Specific</span><span class="w"> </span><span class="n">Data</span>
-<span class="n">TX</span><span class="w"> </span><span class="n">Power</span><span class="w"> </span><span class="n">Level</span>
-<span class="n">Secure</span><span class="w"> </span><span class="n">Simple</span><span class="w"> </span><span class="n">Pairing</span><span class="w"> </span><span class="n">OOB</span>
-<span class="n">Security</span><span class="w"> </span><span class="n">Manager</span><span class="w"> </span><span class="n">OOB</span>
-<span class="n">Security</span><span class="w"> </span><span class="n">Manager</span><span class="w"> </span><span class="n">TK</span><span class="w"> </span><span class="n">Value</span>
-<span class="n">Slave</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="n">Interval</span><span class="w"> </span><span class="n">Range</span>
-<span class="n">Service</span><span class="w"> </span><span class="n">Solicitation</span>
-<span class="n">Service</span><span class="w"> </span><span class="n">Data</span>
-<span class="n">Appearance</span>
-<span class="n">Public</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="n">Address</span>
-<span class="n">Random</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="n">Address</span>
-<span class="n">Advertising</span><span class="w"> </span><span class="n">Interval</span>
-<span class="n">LE</span><span class="w"> </span><span class="n">Bluetooth</span><span class="w"> </span><span class="n">Device</span><span class="w"> </span><span class="n">Address</span>
-<span class="n">LE</span><span class="w"> </span><span class="n">Role</span>
-<span class="n">Uniform</span><span class="w"> </span><span class="n">Resource</span><span class="w"> </span><span class="n">Identifier</span>
-<span class="n">LE</span><span class="w"> </span><span class="n">Supported</span><span class="w"> </span><span class="n">Features</span>
-<span class="n">Channel</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="n">Indication</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">Service</span><span class="w"> </span><span class="n">UUID</span><span class="w"></span>
+<span class="n">Local</span><span class="w"> </span><span class="n">Name</span><span class="w"></span>
+<span class="n">Flags</span><span class="w"></span>
+<span class="n">Manufacturer</span><span class="w"> </span><span class="n">Specific</span><span class="w"> </span><span class="n">Data</span><span class="w"></span>
+<span class="n">TX</span><span class="w"> </span><span class="n">Power</span><span class="w"> </span><span class="n">Level</span><span class="w"></span>
+<span class="n">Secure</span><span class="w"> </span><span class="n">Simple</span><span class="w"> </span><span class="n">Pairing</span><span class="w"> </span><span class="n">OOB</span><span class="w"></span>
+<span class="n">Security</span><span class="w"> </span><span class="n">Manager</span><span class="w"> </span><span class="n">OOB</span><span class="w"></span>
+<span class="n">Security</span><span class="w"> </span><span class="n">Manager</span><span class="w"> </span><span class="n">TK</span><span class="w"> </span><span class="n">Value</span><span class="w"></span>
+<span class="n">Slave</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="n">Interval</span><span class="w"> </span><span class="n">Range</span><span class="w"></span>
+<span class="n">Service</span><span class="w"> </span><span class="n">Solicitation</span><span class="w"></span>
+<span class="n">Service</span><span class="w"> </span><span class="n">Data</span><span class="w"></span>
+<span class="n">Appearance</span><span class="w"></span>
+<span class="n">Public</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="n">Address</span><span class="w"></span>
+<span class="n">Random</span><span class="w"> </span><span class="n">Target</span><span class="w"> </span><span class="n">Address</span><span class="w"></span>
+<span class="n">Advertising</span><span class="w"> </span><span class="n">Interval</span><span class="w"></span>
+<span class="n">LE</span><span class="w"> </span><span class="n">Bluetooth</span><span class="w"> </span><span class="n">Device</span><span class="w"> </span><span class="n">Address</span><span class="w"></span>
+<span class="n">LE</span><span class="w"> </span><span class="n">Role</span><span class="w"></span>
+<span class="n">Uniform</span><span class="w"> </span><span class="n">Resource</span><span class="w"> </span><span class="n">Identifier</span><span class="w"></span>
+<span class="n">LE</span><span class="w"> </span><span class="n">Supported</span><span class="w"> </span><span class="n">Features</span><span class="w"></span>
+<span class="n">Channel</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="n">Indication</span><span class="w"></span>
 </pre></div>
 </div>
 <p>用该数据结构配置一个广播包数据，如下所示：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_data</span><span class="w"> </span><span class="n">ad_discov</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">BT_DATA_BYTES</span><span class="p">(</span><span class="n">BT_DATA_FLAGS</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">BT_LE_AD_GENERAL</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BT_LE_AD_NO_BREDR</span><span class="p">)),</span>
-<span class="w">    </span><span class="n">BT_DATA</span><span class="p">(</span><span class="n">BT_DATA_NAME_COMPLETE</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BL602-BLE-DEV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">),</span>
-<span class="p">};</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_data</span><span class="w"> </span><span class="n">ad_discov</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_DATA_BYTES</span><span class="p">(</span><span class="n">BT_DATA_FLAGS</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">BT_LE_AD_GENERAL</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BT_LE_AD_NO_BREDR</span><span class="p">)),</span><span class="w"></span>
+<span class="w">    </span><span class="n">BT_DATA</span><span class="p">(</span><span class="n">BT_DATA_NAME_COMPLETE</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BL602-BLE-DEV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">),</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">bt_le_scan_param</span></code>数据结构：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** LE scan parameters */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">bt_le_scan_param</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="cm">/** Scan type (BT_LE_SCAN_TYPE_ACTIVE or BT_LE_SCAN_TYPE_PASSIVE) */</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">type</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** LE scan parameters */</span><span class="w"></span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">bt_le_scan_param</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/** Scan type (BT_LE_SCAN_TYPE_ACTIVE or BT_LE_SCAN_TYPE_PASSIVE) */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">type</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/** Bit-field of scanning filter options. */</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">filter_dup</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/** Bit-field of scanning filter options. */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">filter_dup</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/** Scan interval (N * 0.625 ms) */</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/** Scan interval (N * 0.625 ms) */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/** Scan window (N * 0.625 ms) */</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">window</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="w">    </span><span class="cm">/** Scan window (N * 0.625 ms) */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">window</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p>此数据结构用来填充扫描参数，
@@ -759,105 +758,105 @@ filter_dup：0x00,除定向广告外，接受所有广播和扫描响应，0x01,
 interval：扫描间隙。
 window：扫描窗口。</p>
 <p>如果开启扫描请求，可以配置如下：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">scan_param</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BT_LE_SCAN_TYPE_PASSIVE</span>
-<span class="n">scan_param</span><span class="p">.</span><span class="n">filter_dup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x00</span>
-<span class="n">interval</span><span class="o">=</span><span class="n">BT_GAP_SCAN_SLOW_INTERVAL_1</span>
-<span class="n">window</span><span class="o">=</span><span class="n">BT_GAP_SCAN_SLOW_WINDOW_1</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">scan_param</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BT_LE_SCAN_TYPE_PASSIVE</span><span class="w"></span>
+<span class="n">scan_param</span><span class="p">.</span><span class="n">filter_dup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x00</span><span class="w"></span>
+<span class="n">interval</span><span class="o">=</span><span class="n">BT_GAP_SCAN_SLOW_INTERVAL_1</span><span class="w"></span>
+<span class="n">window</span><span class="o">=</span><span class="n">BT_GAP_SCAN_SLOW_WINDOW_1</span><span class="w"></span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">bt_le_conn_param</span></code>数据结构：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Connection parameters for LE connections */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">bt_le_conn_param</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval_min</span><span class="p">;</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval_max</span><span class="p">;</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">latency</span><span class="p">;</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">timeout</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Connection parameters for LE connections */</span><span class="w"></span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">bt_le_conn_param</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval_min</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">interval_max</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">latency</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w"> </span><span class="n">timeout</span><span class="p">;</span><span class="w"></span>
 
 <span class="w">    </span><span class="cp">#if defined(CONFIG_BT_STACK_PTS)</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">own_address_type</span><span class="p">;</span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">  </span><span class="n">own_address_type</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="cp">#endif</span>
-<span class="p">};</span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p>此数据结构用来填充连接参数，interval_min：连接间隙最少值（0x0018），interval_max：连接间隙最大值(0x0028)，
 latency：指定为连接事件数的连接允许的最大从延迟。
 timeout：连接超时时间。</p>
 <p>配置该数据结构，如下：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">interval_min</span><span class="o">=</span><span class="n">BT_GAP_INIT_CONN_INT_MIN</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">)</span>
-<span class="n">interval_max</span><span class="o">=</span><span class="n">BT_GAP_INIT_CONN_INT_MAX</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">)</span>
-<span class="n">latency</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">timeout</span><span class="o">=</span><span class="mi">400</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">interval_min</span><span class="o">=</span><span class="n">BT_GAP_INIT_CONN_INT_MIN</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">)</span><span class="w"></span>
+<span class="n">interval_max</span><span class="o">=</span><span class="n">BT_GAP_INIT_CONN_INT_MAX</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">)</span><span class="w"></span>
+<span class="n">latency</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
+<span class="n">timeout</span><span class="o">=</span><span class="mi">400</span><span class="w"></span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">bt_conn</span></code>数据结构：</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">u16_t</span><span class="w">                   </span><span class="n">handle</span><span class="p">;</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">type</span><span class="p">;</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">role</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w">                   </span><span class="n">handle</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">type</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">role</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">ATOMIC_DEFINE</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span><span class="w"> </span><span class="n">BT_CONN_NUM_FLAGS</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ATOMIC_DEFINE</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span><span class="w"> </span><span class="n">BT_CONN_NUM_FLAGS</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/* Which local identity address this connection uses */</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">id</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Which local identity address this connection uses */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">id</span><span class="p">;</span><span class="w"></span>
 
 <span class="cp">#if defined(CONFIG_BT_SMP) || defined(CONFIG_BT_BREDR)</span>
-<span class="w">    </span><span class="n">bt_security_t</span><span class="w">           </span><span class="n">sec_level</span><span class="p">;</span>
-<span class="w">    </span><span class="n">bt_security_t</span><span class="w">           </span><span class="n">required_sec_level</span><span class="p">;</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">encrypt</span><span class="p">;</span>
-<span class="cp">#endif </span><span class="cm">/* CONFIG_BT_SMP || CONFIG_BT_BREDR */</span>
+<span class="w">    </span><span class="n">bt_security_t</span><span class="w">           </span><span class="n">sec_level</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">bt_security_t</span><span class="w">           </span><span class="n">required_sec_level</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">encrypt</span><span class="p">;</span><span class="w"></span>
+<span class="cp">#endif </span><span class="cm">/* CONFIG_BT_SMP || CONFIG_BT_BREDR */</span><span class="cp"></span>
 
-<span class="w">    </span><span class="cm">/* Connection error or reason for disconnect */</span>
-<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">err</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Connection error or reason for disconnect */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u8_t</span><span class="w">                    </span><span class="n">err</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">bt_conn_state_t</span><span class="w">         </span><span class="n">state</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bt_conn_state_t</span><span class="w">         </span><span class="n">state</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">u16_t</span><span class="w">                   </span><span class="n">rx_len</span><span class="p">;</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">net_buf</span><span class="w">          </span><span class="o">*</span><span class="n">rx</span><span class="p">;</span>
+<span class="w">    </span><span class="n">u16_t</span><span class="w">                   </span><span class="n">rx_len</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">net_buf</span><span class="w">          </span><span class="o">*</span><span class="n">rx</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/* Sent but not acknowledged TX packets with a callback */</span>
-<span class="w">    </span><span class="n">sys_slist_t</span><span class="w">             </span><span class="n">tx_pending</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Sent but not acknowledged TX packets with a callback */</span><span class="w"></span>
+<span class="w">    </span><span class="n">sys_slist_t</span><span class="w">             </span><span class="n">tx_pending</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="cm">/* Sent but not acknowledged TX packets without a callback before</span>
 <span class="cm">    * the next packet (if any) in tx_pending.</span>
-<span class="cm">    */</span>
-<span class="w">    </span><span class="n">u32_t</span><span class="w">                   </span><span class="n">pending_no_cb</span><span class="p">;</span>
+<span class="cm">    */</span><span class="w"></span>
+<span class="w">    </span><span class="n">u32_t</span><span class="w">                   </span><span class="n">pending_no_cb</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/* Completed TX for which we need to call the callback */</span>
-<span class="w">    </span><span class="n">sys_slist_t</span><span class="w">             </span><span class="n">tx_complete</span><span class="p">;</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_work</span><span class="w">           </span><span class="n">tx_complete_work</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Completed TX for which we need to call the callback */</span><span class="w"></span>
+<span class="w">    </span><span class="n">sys_slist_t</span><span class="w">             </span><span class="n">tx_complete</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_work</span><span class="w">           </span><span class="n">tx_complete_work</span><span class="p">;</span><span class="w"></span>
 
 
-<span class="w">    </span><span class="cm">/* Queue for outgoing ACL data */</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_fifo</span><span class="w">           </span><span class="n">tx_queue</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Queue for outgoing ACL data */</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_fifo</span><span class="w">           </span><span class="n">tx_queue</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/* Active L2CAP channels */</span>
-<span class="w">    </span><span class="n">sys_slist_t</span><span class="w">             </span><span class="n">channels</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Active L2CAP channels */</span><span class="w"></span>
+<span class="w">    </span><span class="n">sys_slist_t</span><span class="w">             </span><span class="n">channels</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">atomic_t</span><span class="w">                </span><span class="n">ref</span><span class="p">;</span>
+<span class="w">    </span><span class="n">atomic_t</span><span class="w">                </span><span class="n">ref</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="cm">/* Delayed work for connection update and other deferred tasks */</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_delayed_work</span><span class="w">   </span><span class="n">update_work</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Delayed work for connection update and other deferred tasks */</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_delayed_work</span><span class="w">   </span><span class="n">update_work</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn_le</span><span class="w">   </span><span class="n">le</span><span class="p">;</span>
+<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn_le</span><span class="w">   </span><span class="n">le</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#if defined(CONFIG_BT_BREDR)</span>
-<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn_br</span><span class="w">   </span><span class="n">br</span><span class="p">;</span>
-<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn_sco</span><span class="w">  </span><span class="n">sco</span><span class="p">;</span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn_br</span><span class="w">   </span><span class="n">br</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn_sco</span><span class="w">  </span><span class="n">sco</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
 
 <span class="cp">#if defined(CONFIG_BT_REMOTE_VERSION)</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn_rv</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">u8_t</span><span class="w">  </span><span class="n">version</span><span class="p">;</span>
-<span class="w">        </span><span class="n">u16_t</span><span class="w"> </span><span class="n">manufacturer</span><span class="p">;</span>
-<span class="w">        </span><span class="n">u16_t</span><span class="w"> </span><span class="n">subversion</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="n">rv</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">bt_conn_rv</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">u8_t</span><span class="w">  </span><span class="n">version</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">u16_t</span><span class="w"> </span><span class="n">manufacturer</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">u16_t</span><span class="w"> </span><span class="n">subversion</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="n">rv</span><span class="p">;</span><span class="w"></span>
 <span class="cp">#endif</span>
-<span class="p">};</span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p>此数据结构为当前连接数据结构，其中包括BLE蓝牙连接相关的参数，连接成功后该数据结构可以被用户调用。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -900,7 +899,7 @@ timeout：连接超时时间。</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

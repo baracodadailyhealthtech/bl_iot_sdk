@@ -65,3 +65,8 @@ endif
 ifeq ($(CONFIG_USE_XTAL32K),1)
 CPPFLAGS += -DCFG_USE_XTAL32K
 endif
+
+LDFLAGS += -Wl,--print-memory-usage
+ifdef CONFIG_CACHE_SIZE
+LDFLAGS += -Wl,--defsym=__CACHE_SIZE=$(CONFIG_CACHE_SIZE)
+endif

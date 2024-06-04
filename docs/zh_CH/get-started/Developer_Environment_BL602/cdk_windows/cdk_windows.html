@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cdk调试指导 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>cdk调试指导 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,41 +164,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="cdk">
+  <div class="section" id="cdk">
 <h1>cdk调试指导<a class="headerlink" href="#cdk" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<span id="target-1"></span><h2>1.下载安装<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<span id="id2"></span><h2>1.下载安装<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>下载地址：<a class="reference external" href="https://occ.t-head.cn/development/series/download?id=3864775351511420928&amp;type=kind&amp;softPlatformType=4#sticky">基础软件平台-剑池CDK
 (t-head.cn)</a></p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-13.png" />
-</figure>
-</section>
-<section id="workspace-1">
-<span id="workspace"></span><h2>1. 创建工程的workspace<a class="headerlink" href="#workspace-1" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="workspace">
+<span id="id3"></span><h2>1. 创建工程的workspace<a class="headerlink" href="#workspace" title="永久链接至标题"></a></h2>
 <p>打开cdk软件，点击<code class="docutils literal notranslate"><span class="pre">file-&gt;new-&gt;Multi-Project</span> <span class="pre">Workspace</span></code>新建工程的workspace,操作如下图：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-1.png" />
-</figure>
+</div>
 <p>设置workspace的名字和工作目录</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-2.png" />
-</figure>
+</div>
 <p>成功后如下显示：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-12.png" />
-</figure>
-</section>
-<section id="workspacesoc-project-1">
-<span id="workspacesoc-project"></span><h2>2.在workspace下创建一个SOC project<a class="headerlink" href="#workspacesoc-project-1" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="workspacesoc-project">
+<span id="id4"></span><h2>2.在workspace下创建一个SOC project<a class="headerlink" href="#workspacesoc-project" title="永久链接至标题"></a></h2>
 <p>右键生成的workspace，添加一个SOC project，操作如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-3.png" />
-</figure>
+</div>
 <p>添加project的名字和相关硬件的信息和相关的描述，点击ok完成配置，操作如下图：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-4.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>1号区：工程名字</p></li>
 <li><p>2号区：编程语言类型</p></li>
@@ -210,68 +209,68 @@
 <li><p>7号区：硬件RAM相关地址与大小</p></li>
 </ul>
 <p>成功后如下显示：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-5.png" />
-</figure>
-</section>
-<section id="project-1">
-<span id="project"></span><h2>3.向project添加相关代码<a class="headerlink" href="#project-1" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="project">
+<span id="id5"></span><h2>3.向project添加相关代码<a class="headerlink" href="#project" title="永久链接至标题"></a></h2>
 <p>右键新建成功的<code class="docutils literal notranslate"><span class="pre">project-&gt;Add</span> <span class="pre">Source</span> <span class="pre">Folder</span></code>，之后选择代码所在目录便可，现象如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-6.png" />
-</figure>
+</div>
 <p>成功后现象如下图，下图软件是新添加的：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-7.png" />
-</figure>
-</section>
-<section id="section-2">
-<span id="target-2"></span><h2>4.配置工程相关参数，进行调试<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="id6">
+<span id="id7"></span><h2>4.配置工程相关参数，进行调试<a class="headerlink" href="#id6" title="永久链接至标题"></a></h2>
 <p>右键工程，点击<code class="docutils literal notranslate"><span class="pre">Options</span> <span class="pre">for...</span></code></p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-8.png" />
-</figure>
-</section>
-<section id="debug-1">
-<span id="debug"></span><h2>5.配置debug相关参数<a class="headerlink" href="#debug-1" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="debug">
+<span id="id8"></span><h2>5.配置debug相关参数<a class="headerlink" href="#debug" title="永久链接至标题"></a></h2>
 <p>下图是要配置的各个参数：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-9.png" />
-</figure>
+</div>
 <p>关于openocd的<code class="docutils literal notranslate"><span class="pre">settings...</span></code>的相关配置参数：</p>
 <p><code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">Option：</span></code>2号区，填写的是相关tools的配置，是debug目录下的关于openocd的配置文件，参数是：</p>
 <p><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">worksapce\bl_demo_event\tools\debug\openocd_cfg\if_bflb_link_DVK.cfg</span></code>
 和<code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">worksapce\bl_demo_event\tools\debug\602</span></code>，此处要填写这两个文件的绝对路径否则软件找不到</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-10.png" />
-</figure>
-</section>
-<section id="elf-1">
-<span id="elf"></span><h2>6.替换elf文件<a class="headerlink" href="#elf-1" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="elf">
+<span id="id9"></span><h2>6.替换elf文件<a class="headerlink" href="#elf" title="永久链接至标题"></a></h2>
 <p>将其他平台上编译生成的elf文件放到工程下面的obj文件下，替换cdk这边的编译生成的文件，如下图所示：</p>
 <p>其中<code class="docutils literal notranslate"><span class="pre">bl_demo_event.elf</span></code>之前叫bl602_demo_event.elf，现在是替换了当前工程生成的文件。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-11.png" />
-</figure>
-</section>
-<section id="debug-3">
-<span id="debug-2"></span><h2>7.debug调试<a class="headerlink" href="#debug-3" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="id10">
+<span id="id11"></span><h2>7.debug调试<a class="headerlink" href="#id10" title="永久链接至标题"></a></h2>
 <p>配置完成后点击主页的下载调试，进行debug调试，操作如下：</p>
 <ul class="simple">
 <li><p>左侧是调试下载程序到板卡，快捷键是<code class="docutils literal notranslate"><span class="pre">&lt;Ctrl</span> <span class="pre">+</span> <span class="pre">F5&gt;</span></code></p></li>
 <li><p>右侧是调试不下载，快捷键是<code class="docutils literal notranslate"><span class="pre">&lt;Ctrl</span> <span class="pre">+</span> <span class="pre">Shift</span> <span class="pre">+</span> <span class="pre">F5&gt;</span></code></p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-14.png" />
-</figure>
+</div>
 <p>下载成功后会显示如下界面：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-15.png" />
-</figure>
+</div>
 <p>1号区：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-16.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>全局断点（F9）</p></li>
 <li><p>使能全部断点</p></li>
@@ -279,65 +278,65 @@
 <li><p>清除单个断点（Ctrl + Shift + F9）</p></li>
 </ul>
 <p>2号区</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-17.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>Step Into（F11）</p></li>
 <li><p>Step Over（F10）</p></li>
 <li><p>Step Out （Ctrl + F11）</p></li>
 </ul>
 <p>3号区</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-18.png" />
-</figure>
+</div>
 <p>cpu内部寄存器</p>
 <p>4号区：</p>
 <ul class="simple">
 <li><p>Locals：当前调试所在位置的相关变量</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-19.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>Watches:用户想要查看追踪的变量信息</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-20.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>Callstack：该标签是查看当前堆栈相关的函数调用的相关信息</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-21.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>Memory：该标签是对硬件内存的查看，可以添加相关硬件地址，可以看到该地区数据的变化。</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-22.png" />
-</figure>
+</div>
 <p>5号区</p>
 <ul class="simple">
 <li><p>断点</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-23.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>所处线程：当前PC指针所处的线程</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-24.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>Disassemble：PC指针所处位置</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-25.png" />
-</figure>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -371,7 +370,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

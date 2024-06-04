@@ -30,7 +30,7 @@ COMPONENT_SRCS += src/bflb_irq.c src/bflb_l1c.c src/bflb_mtimer.c
 
 CHIP_NAME = $(shell echo $(CONFIG_CHIP_NAME) | tr A-Z a-z)
 
-COMPONENT_SRCS += config/$(CHIP_NAMFAE)/device_table.c
+COMPONENT_SRCS += config/$(CHIP_NAME)/device_table.c
 COMPONENT_ADD_INCLUDEDIRS += config/$(CHIP_NAME)
 
 CFLAGS += -D$(CONFIG_CHIP_NAME)

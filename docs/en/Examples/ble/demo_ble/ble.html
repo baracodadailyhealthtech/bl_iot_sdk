@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Ble Introduction &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>Ble Introduction &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
         <link rel="up" title="BLE" href="../index.html"/>
         <link rel="next" title="Low_Power_Mode_BL702L" href="../demo_low_power_mode/low_power_mode.html"/>
         <link rel="prev" title="BLE" href="../index.html"/> 
@@ -75,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -189,13 +188,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ble-introduction">
+  <div class="section" id="ble-introduction">
 <span id="ble-index"></span><h1>Ble Introduction<a class="headerlink" href="#ble-introduction" title="永久链接至标题"></a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="永久链接至标题"></a></h2>
 <p>This example mainly intoduces how to use ble.</p>
-</section>
-<section id="steps-for-usage">
+</div>
+<div class="section" id="steps-for-usage">
 <h2>Steps for Usage<a class="headerlink" href="#steps-for-usage" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>For BL602, enter <code class="docutils literal notranslate"><span class="pre">customer_app/bl602_demo_event</span></code> project, compile with script <code class="docutils literal notranslate"><span class="pre">genromap</span></code> , and dowload the bin file. Use <code class="docutils literal notranslate"><span class="pre">stack_ble</span></code> cli command to enable ble. This Demo doesn't start any ble behavior by default. If you need to start ble advertising or ble scan or initiate a ble connection, please use the cli commands to initiate the corresponding behavior.</p></li>
@@ -208,36 +207,36 @@ into low power mode. If you do not need to enable adv at this time, you can disa
 <ul>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">ble_init</span></code> 、 <code class="docutils literal notranslate"><span class="pre">ble_auth</span></code> to register releated callbacks。</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image21.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image3.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">ble_start_adv</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0x80</span> <span class="pre">0x80</span></code> to start ble adv。</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image4.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Use mobile app <code class="docutils literal notranslate"><span class="pre">nRF</span> <span class="pre">Connect</span></code> to scan nearby ble devices，and find out our devices.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image5.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image6.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">ble_conn_update</span> <span class="pre">0x6</span> <span class="pre">0x6</span> <span class="pre">0x0</span> <span class="pre">0x1f4</span></code> to update connection parameters.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image7.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>During SMP process, different commands are used according to different security level. Describe the cases of security level 2 and 3 as follows.</p></li>
@@ -246,54 +245,54 @@ into low power mode. If you do not need to enable adv at this time, you can disa
 <div><ul>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">ble_security</span> <span class="pre">2</span></code> to initiate SMP after ble connection is established.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image8.png" />
-</figure>
+</div>
 </div></blockquote>
 <ul>
 <li><p>Once <code class="docutils literal notranslate"><span class="pre">Confirm</span> <span class="pre">passkey</span> <span class="pre">for</span> <span class="pre">xx:xx:xx:xx:xx:xx</span> <span class="pre">(public)：xxxxxx</span></code> is printed out on serial port, input <code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code> to confirm passkey.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image37.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">Bonded</span> <span class="pre">with</span> <span class="pre">xx:xx:xx:xx:xx:xx</span> <span class="pre">(public)</span></code> is printed out , SMP is completed successfully.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image10.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">ble_security</span> <span class="pre">3</span></code> to initiate SMP after ble connection is established.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image36.png" />
-</figure>
+</div>
 </div></blockquote>
 <ul>
 <li><p>Once <code class="docutils literal notranslate"><span class="pre">Confirm</span> <span class="pre">passkey</span> <span class="pre">for</span> <span class="pre">xx:xx:xx:xx:xx:xx</span> <span class="pre">(public)：xxxxxx</span></code> is printed out on serial port, input <code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code> to confirm passkey.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image37.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">Bonded</span> <span class="pre">with</span> <span class="pre">xx:xx:xx:xx:xx:xx</span> <span class="pre">(public)</span></code> is printed out , SMP is completed successfully.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image38.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="steps-for-ota">
+</div>
+<div class="section" id="steps-for-ota">
 <h2>Steps for OTA<a class="headerlink" href="#steps-for-ota" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><ul>
@@ -322,24 +321,24 @@ into low power mode. If you do not need to enable adv at this time, you can disa
 <li><p>Take the project bl702_demo_event as an example, add print information in version_cmd function in cli.c file to see whether OTA is successful. The content of compilation script is <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">CONFIG_BT=1</span> <span class="pre">CONFIG_BLECONTROLLER_LIB=m1s1</span>
 <span class="pre">CONFIG_BT_OAD_SERVER=1</span> <span class="pre">-j</span></code> , and generate bin file.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image41.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Open Dev Cube tool to download firmware. Choose related parameters as follows, and Firmware Bin is the OTA file generated in step 3. For Partition Table, select <code class="docutils literal notranslate"><span class="pre">partition_cfg_1M.toml</span></code> in which 1M flash is used. For Factory Params, select <code class="docutils literal notranslate"><span class="pre">bl_factory_params_IoTKitA_32M.dts</span></code>.
 Then, click <code class="docutils literal notranslate"><span class="pre">Creat</span> <span class="pre">&amp;</span> <span class="pre">Download</span></code> button (The purpose of this step is to create an OTA image, no actual download, no need to connect the hardware board, and the download failure prompt can be ignored.). If there are prompts <code class="docutils literal notranslate"><span class="pre">FW</span> <span class="pre">OTA</span> <span class="pre">bin</span> <span class="pre">is</span> <span class="pre">Done</span></code> and <code class="docutils literal notranslate"><span class="pre">FW</span> <span class="pre">OTA</span> <span class="pre">xz</span> <span class="pre">is</span> <span class="pre">Done</span></code> in the log, then the OTA file is generated successfully.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image40.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Find out the generated OTA file in file directory of Dev cube. <code class="docutils literal notranslate"><span class="pre">FW_OTA.bin.hash</span></code> is a file without compression. <code class="docutils literal notranslate"><span class="pre">FW_OTA.bin.xz.hash</span></code> is a compressed file. In this example, <code class="docutils literal notranslate"><span class="pre">FW_OTA.bin.xz.hash</span></code> is used for OTA upgrade, and need to be put on the phone.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image39.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
@@ -350,69 +349,69 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <div><ul>
 <li><p>On the phone, open APP to select related service, and scan ble devices (automatic scan is enabled by default).</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image42.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image43.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image44.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image45.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Select device with name <code class="docutils literal notranslate"><span class="pre">BL702-BLE-DEV</span></code> to connect.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image46.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Click <code class="docutils literal notranslate"><span class="pre">设备升级</span></code> buttion in APP；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image47.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Select the file to be upgraded in the file directory, file is <code class="docutils literal notranslate"><span class="pre">FW_OTA.bin.xz.hash</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image48.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image49.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Click <code class="docutils literal notranslate"><span class="pre">SEND</span> <span class="pre">VER</span> <span class="pre">REQ</span></code> button to send a version request to obtain information about current bin file.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image50.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image51.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Click <code class="docutils literal notranslate"><span class="pre">START</span> <span class="pre">OTA</span></code> to do OTA.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image52.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image53.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>Reset BL702 device, then enter the cli command <code class="docutils literal notranslate"><span class="pre">sysver</span></code>, and find the added print information in step3 from the serial log. If the added info is found out, it means OTA is successful.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image54.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
@@ -420,10 +419,10 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="cli-command-introduction">
+</div>
+<div class="section" id="cli-command-introduction">
 <h2>Cli command introduction<a class="headerlink" href="#cli-command-introduction" title="永久链接至标题"></a></h2>
-<section id="ble-init">
+<div class="section" id="ble-init">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_init</span></code><a class="headerlink" href="#ble-init" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -431,15 +430,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters：None.</p></li>
 <li><p>Example：Input <code class="docutils literal notranslate"><span class="pre">ble_init</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image21.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-auth">
+</div>
+<div class="section" id="ble-auth">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_auth</span></code><a class="headerlink" href="#ble-auth" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -447,15 +446,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters：None.</p></li>
 <li><p>Example：Input <code class="docutils literal notranslate"><span class="pre">ble_auth</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image3.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-unpair">
+</div>
+<div class="section" id="ble-unpair">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_unpair</span></code><a class="headerlink" href="#ble-unpair" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -472,15 +471,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter1: Address value of remote device. If set to 0, it means to clear all remote devices.</p></li>
 <li><p>Example: Input <code class="docutils literal notranslate"><span class="pre">ble_unpair</span> <span class="pre">0</span> <span class="pre">0</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image211.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-start-adv">
+</div>
+<div class="section" id="ble-start-adv">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_start_adv</span></code><a class="headerlink" href="#ble-start-adv" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -509,15 +508,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter13: Maxmum advertising interval. Range: 0x0020 to 0x4000. Unit:0.625 msec.</p></li>
 <li><p>Example：Input <code class="docutils literal notranslate"><span class="pre">ble_start_adv</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0x80</span> <span class="pre">0x80</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image4.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-stop-adv">
+</div>
+<div class="section" id="ble-stop-adv">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_stop_adv</span></code><a class="headerlink" href="#ble-stop-adv" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -525,15 +524,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example：Input <code class="docutils literal notranslate"><span class="pre">ble_stop_adv</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image17.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-start-scan">
+</div>
+<div class="section" id="ble-start-scan">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_start_scan</span></code><a class="headerlink" href="#ble-start-scan" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -560,15 +559,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter3: LE scan window. Range: 0x0004 to 0x4000, Unit: 0.625 msed. Scan window shall be less tha or equal to scan interval.</p></li>
 <li><p>Example：Input <code class="docutils literal notranslate"><span class="pre">ble_start_scan</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0x80</span> <span class="pre">0x40</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image111.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-stop-scan">
+</div>
+<div class="section" id="ble-stop-scan">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_stop_scan</span></code><a class="headerlink" href="#ble-stop-scan" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -576,15 +575,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example: Input <code class="docutils literal notranslate"><span class="pre">ble_stop_scan</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image14.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-conn-update">
+</div>
+<div class="section" id="ble-conn-update">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_conn_update</span></code><a class="headerlink" href="#ble-conn-update" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -595,15 +594,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter3: Supervision timeout for the LE link. Range: 0x000A to 0x0C80, Unit: 10 msec.</p></li>
 <li><p>Example: After a successful connection, input <code class="docutils literal notranslate"><span class="pre">ble_conn_update</span> <span class="pre">0x28</span> <span class="pre">0x28</span> <span class="pre">0x0</span> <span class="pre">0xf4</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image7.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-security">
+</div>
+<div class="section" id="ble-security">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_security</span></code><a class="headerlink" href="#ble-security" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -618,15 +617,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>3：Encryption and authentication (MITM).</p></li>
 <li><p>4： Authenticated Secure Connections and 128-bit key.</p></li>
 <li><p>Example: After a successful connection, input <code class="docutils literal notranslate"><span class="pre">ble_security</span> <span class="pre">2</span></code>.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image8.png" />
-</figure>
+</div>
 </li>
 </ul>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="ble-get-device-name">
+</div>
+<div class="section" id="ble-get-device-name">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_get_device_name</span></code><a class="headerlink" href="#ble-get-device-name" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -634,15 +633,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example: Input <code class="docutils literal notranslate"><span class="pre">ble_get_device_name</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image12.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-set-device-name">
+</div>
+<div class="section" id="ble-set-device-name">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_set_device_name</span></code><a class="headerlink" href="#ble-set-device-name" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -650,15 +649,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter0：device name.</p></li>
 <li><p>Example: Input <code class="docutils literal notranslate"><span class="pre">ble_set_device_name</span> <span class="pre">bl602</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image13.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-read-local-address">
+</div>
+<div class="section" id="ble-read-local-address">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_read_local_address</span></code><a class="headerlink" href="#ble-read-local-address" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -666,15 +665,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example: Input <code class="docutils literal notranslate"><span class="pre">ble_read_local_address</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image15.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-set-adv-channel">
+</div>
+<div class="section" id="ble-set-adv-channel">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_set_adv_channel</span></code><a class="headerlink" href="#ble-set-adv-channel" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -691,15 +690,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <ul>
 <li><p>Example: Input <code class="docutils literal notranslate"><span class="pre">ble_set_adv_channel</span> <span class="pre">7</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image16.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-connect">
+</div>
+<div class="section" id="ble-connect">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_connect</span></code><a class="headerlink" href="#ble-connect" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -718,15 +717,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Prameter1: The address value of remote device, with more significant bytes first.</p></li>
 <li><p>Example：Input <code class="docutils literal notranslate"><span class="pre">ble_connect</span> <span class="pre">0</span> <span class="pre">18B905DE96E0</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image18.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-disconnect">
+</div>
+<div class="section" id="ble-disconnect">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_disconnect</span></code><a class="headerlink" href="#ble-disconnect" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -743,15 +742,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Prameter1: The address value of remote device, with more significant bytes first.</p></li>
 <li><p>Example：After a successful connection, input <code class="docutils literal notranslate"><span class="pre">ble_disconnect</span> <span class="pre">0</span> <span class="pre">18B905DE96E0</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image19.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-select-conn">
+</div>
+<div class="section" id="ble-select-conn">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_select_conn</span></code><a class="headerlink" href="#ble-select-conn" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -768,15 +767,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Prameter1: The address value of remote device, with more significant bytes first.</p></li>
 <li><p>Example：After multiple devices are successfully connected, input <code class="docutils literal notranslate"><span class="pre">ble_select_conn</span> <span class="pre">1</span> <span class="pre">5F10546C8D83</span></code> to set the selected connection object as the current connection object. Subsequent connection related operations such as <code class="docutils literal notranslate"><span class="pre">ble_read</span></code> will be performed on this connection.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image20.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-auth-cancel">
+</div>
+<div class="section" id="ble-auth-cancel">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_auth_cancel</span></code><a class="headerlink" href="#ble-auth-cancel" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -784,15 +783,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example：During SMP process，input <code class="docutils literal notranslate"><span class="pre">ble_auth_cancel</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image22.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-auth-passkey-confirm">
+</div>
+<div class="section" id="ble-auth-passkey-confirm">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_auth_passkey_confirm</span></code><a class="headerlink" href="#ble-auth-passkey-confirm" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -800,15 +799,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example：Once <code class="docutils literal notranslate"><span class="pre">Confirm</span> <span class="pre">passkey</span> <span class="pre">for</span> <span class="pre">48:95:E6:73:1C:1A</span> <span class="pre">(random):</span> <span class="pre">745491`</span> <span class="pre">is</span> <span class="pre">printed</span> <span class="pre">out</span> <span class="pre">locally,</span> <span class="pre">input</span> <span class="pre">``ble_auth_passkey_confirm</span></code> to confirm passkey if the passkey is correct.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image9.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-auth-pairing-confirm">
+</div>
+<div class="section" id="ble-auth-pairing-confirm">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_auth_pairing_confirm</span></code><a class="headerlink" href="#ble-auth-pairing-confirm" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -816,15 +815,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example：Once <code class="docutils literal notranslate"><span class="pre">Confirm</span> <span class="pre">pairing</span> <span class="pre">for</span> <span class="pre">00:1B:DC:F2:20:E9</span> <span class="pre">(public)</span></code> is printed out locally, input <code class="docutils literal notranslate"><span class="pre">ble_auth_pairing_confirm</span></code> to accept the pairing. .</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image23.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-auth-passkey">
+</div>
+<div class="section" id="ble-auth-passkey">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_auth_passkey</span></code><a class="headerlink" href="#ble-auth-passkey" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -832,15 +831,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter0：Entered passkey, Range:0 to 999999.</p></li>
 <li><p>Example：Once <code class="docutils literal notranslate"><span class="pre">Enter</span> <span class="pre">passkey</span> <span class="pre">for</span> <span class="pre">XX:XX:XX:XX:XX:XX</span> <span class="pre">(public)</span></code> is printed out locally, input <code class="docutils literal notranslate"><span class="pre">ble_auth_passkey</span> <span class="pre">111111</span></code> to enter passkey.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image24.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-exchange-mtu">
+</div>
+<div class="section" id="ble-exchange-mtu">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_exchange_mtu</span></code><a class="headerlink" href="#ble-exchange-mtu" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -848,15 +847,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example: After a successful BLE connection, input <code class="docutils literal notranslate"><span class="pre">ble_exchange_mtu</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image25.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-discover">
+</div>
+<div class="section" id="ble-discover">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_discover</span></code><a class="headerlink" href="#ble-discover" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -878,15 +877,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter3: Service end handle</p></li>
 <li><p>Example: After a successful BLE connection, input <code class="docutils literal notranslate"><span class="pre">ble_discover</span> <span class="pre">0</span> <span class="pre">0x1800</span> <span class="pre">0x1</span> <span class="pre">0xffff</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image26.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-read">
+</div>
+<div class="section" id="ble-read">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_read</span></code><a class="headerlink" href="#ble-read" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -895,15 +894,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter1: Attribute data offset.</p></li>
 <li><p>Example: After a successful BLE connection, input <code class="docutils literal notranslate"><span class="pre">ble_read</span> <span class="pre">0x5</span> <span class="pre">0</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image27.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-write">
+</div>
+<div class="section" id="ble-write">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_write</span></code><a class="headerlink" href="#ble-write" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -914,15 +913,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter3: Data to be written.</p></li>
 <li><p>Example: After a successful BLE connection, input <code class="docutils literal notranslate"><span class="pre">ble_write</span> <span class="pre">0xf</span> <span class="pre">0</span> <span class="pre">2</span> <span class="pre">0102</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image28.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-write-without-rsp">
+</div>
+<div class="section" id="ble-write-without-rsp">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_write_without_rsp</span></code><a class="headerlink" href="#ble-write-without-rsp" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -941,15 +940,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter3: Data to be written.</p></li>
 <li><p>Example: After a successful BLE connection, input <code class="docutils literal notranslate"><span class="pre">ble_write_without_rsp</span> <span class="pre">0</span> <span class="pre">0xf</span> <span class="pre">2</span> <span class="pre">0102</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image29.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-subscribe">
+</div>
+<div class="section" id="ble-subscribe">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_subscribe</span></code><a class="headerlink" href="#ble-subscribe" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -967,15 +966,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <ul>
 <li><p>Example: After a successful BLE connection, input <code class="docutils literal notranslate"><span class="pre">ble_subscribe</span> <span class="pre">0xf</span> <span class="pre">0xd</span> <span class="pre">0x1</span></code> if user wants to enable the characteristic's notification function.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image30.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-unsubscribe">
+</div>
+<div class="section" id="ble-unsubscribe">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_unsubscribe</span></code><a class="headerlink" href="#ble-unsubscribe" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -983,15 +982,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example: Input <code class="docutils literal notranslate"><span class="pre">ble_unsubscribe</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image31.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-set-data-len">
+</div>
+<div class="section" id="ble-set-data-len">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_set_data_len</span></code><a class="headerlink" href="#ble-set-data-len" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -1000,15 +999,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter1: Preferred maximum number of microseconds that the local controller should use to transmit a single link layer data channel PDU. Range: 0x0148 - 0x4290</p></li>
 <li><p>Example：After a successful BLE connection, input <code class="docutils literal notranslate"><span class="pre">ble_set_data_len</span> <span class="pre">0xfb</span> <span class="pre">0x0848</span></code>.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image32.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-conn-info">
+</div>
+<div class="section" id="ble-conn-info">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_conn_info</span></code><a class="headerlink" href="#ble-conn-info" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -1016,15 +1015,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example：After a successful BLE connection, input <code class="docutils literal notranslate"><span class="pre">ble_conn_info</span></code> to get the remote device's information.</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image33.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-disable">
+</div>
+<div class="section" id="ble-disable">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_disable</span></code><a class="headerlink" href="#ble-disable" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -1032,15 +1031,15 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameters: None</p></li>
 <li><p>Example：Input <code class="docutils literal notranslate"><span class="pre">ble_disable</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image34.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ble-set-tx-pwr">
+</div>
+<div class="section" id="ble-set-tx-pwr">
 <h3><code class="docutils literal notranslate"><span class="pre">ble_set_tx_pwr</span></code><a class="headerlink" href="#ble-set-tx-pwr" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -1048,16 +1047,16 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
 <li><p>Parameter0: ble tx power value.</p></li>
 <li><p>Example：Input <code class="docutils literal notranslate"><span class="pre">ble_set_tx_pwr</span> <span class="pre">0xa</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image35.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -1100,7 +1099,7 @@ Then, click <code class="docutils literal notranslate"><span class="pre">Creat</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

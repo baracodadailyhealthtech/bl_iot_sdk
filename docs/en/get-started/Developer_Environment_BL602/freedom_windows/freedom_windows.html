@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.下载安装freedom &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>1.下载安装freedom &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,76 +164,76 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="freedom-1">
-<span id="freedom"></span><h1>1.下载安装freedom<a class="headerlink" href="#freedom-1" title="永久链接至标题"></a></h1>
+  <div class="section" id="freedom">
+<span id="id1"></span><h1>1.下载安装freedom<a class="headerlink" href="#freedom" title="永久链接至标题"></a></h1>
 <p>该软件是已经由sifive公司配置完成直接下载后移动到安装目录便可。</p>
 <p>下载地址：<a class="reference external" href="https://www.sifive.com/software">https://www.sifive.com/software</a></p>
-</section>
-<section id="section-1">
-<span id="target-1"></span><h1>2.加载工程<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h1>
+</div>
+<div class="section" id="id2">
+<span id="id3"></span><h1>2.加载工程<a class="headerlink" href="#id2" title="永久链接至标题"></a></h1>
 <p>打开软件，选择工作目录</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-116.png" />
-</figure>
+</div>
 <p>加载文件路径</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-213.png" />
-</figure>
+</div>
 <p>加载代码文件路径</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-35.png" />
-</figure>
-</section>
-<section id="debug-1">
-<span id="debug"></span><h1>3.配置debug调试环境<a class="headerlink" href="#debug-1" title="永久链接至标题"></a></h1>
+</div>
+</div>
+<div class="section" id="debug">
+<span id="id4"></span><h1>3.配置debug调试环境<a class="headerlink" href="#debug" title="永久链接至标题"></a></h1>
 <p>右键工程，选择<code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">As</span> <span class="pre">&gt;Debug</span> <span class="pre">Configurations...</span></code>操作界面如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-44.png" />
-</figure>
+</div>
 <p>main界面配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-54.png" />
-</figure>
+</div>
 <p>Target配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-64.png" />
-</figure>
+</div>
 <p>Debugger界面配置</p>
 <ul class="simple">
 <li><p>openocd配置文件和调试硬件配置相关文件（<code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">tools/debug/openocd_cfg/if_bflb_link_DVK.cfg</span></code>
 和<code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">tools/debug/602/tgt_602_xip.cfg</span></code>）（在debug文件夹下有相应的README介绍对应相应的硬件版本）</p></li>
 <li><p>调试硬件初始化文件配置（<code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">tools/debug/602/602.init</span></code>）</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-74.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-84.png" />
-</figure>
+</div>
 <p>Startup配置界面</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-94.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-103.png" />
-</figure>
+</div>
 <p>Config配置界面</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-117.png" />
-</figure>
+</div>
 <p>Common界面配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-124.png" />
-</figure>
-</section>
-<section id="debug-3">
-<span id="debug-2"></span><h1>4.debug<a class="headerlink" href="#debug-3" title="永久链接至标题"></a></h1>
+</div>
+</div>
+<div class="section" id="id5">
+<span id="id6"></span><h1>4.debug<a class="headerlink" href="#id5" title="永久链接至标题"></a></h1>
 <p>首先让板子跑起来，使用快捷键 F11 启动 Debug，Freedom
 Studio会先编译工程(注意使用快捷键时确认使用的.launch文件名是自己配置的launch文件，可以通过工具栏
 Run &gt; Debug As &gt; 进行查看)，调试功能如下图所示：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-134.png" />
-</figure>
+</div>
 <p>1号区功能介绍，从左向右</p>
 <ul class="simple">
 <li><p>按钮 <code class="docutils literal notranslate"><span class="pre">Resume</span></code>（ F8）一下，如果Debug
@@ -251,35 +250,35 @@ Return就可以执行完子函数余下部分，并返回上一层函数。</p><
 </ul>
 <p>2号功能区</p>
 <p>Registers：该标签是对cpu通用寄存器的显示，pc，sp等寄存器；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-144.png" />
-</figure>
+</div>
 <p>3号功能介绍，标签从左向右</p>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Breakp</span></code>是对断点的显示，全局有多少断点都会显示在此处；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-153.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Variable</span></code>是对环境变量的显示，当调试暂停时，你的鼠标暂停在某变量时，该标签便会显示相关参数的数据信息；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-164.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Express</span></code>
 可以添加相关想要查看到变量，该标签添加完变量时，变量的信息会实时的变化；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-173.png" />
-</figure>
+</div>
 <p>4号功能区</p>
 <p>Memory该标签是对硬件内存的查看，可以添加相关硬件地址，可以看到该地区数据的变化。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-182.png" />
-</figure>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -313,7 +312,7 @@ Return就可以执行完子函数余下部分，并返回上一层函数。</p><
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

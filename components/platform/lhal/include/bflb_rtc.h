@@ -2,6 +2,7 @@
 #define _BFLB_RTC_H
 
 #include "bflb_core.h"
+#include <time.h>
 
 /** @addtogroup LHAL
   * @{
@@ -10,7 +11,6 @@
 /** @addtogroup RTC
   * @{
   */
- typedef uint64_t time_t;
 
 #define BFLB_RTC_SEC2TIME(s)    (s * 32768)
 #define BFLB_RTC_TIME2SEC(time) (time / 32768)

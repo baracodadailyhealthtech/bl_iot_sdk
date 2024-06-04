@@ -52,7 +52,8 @@ btble_app_conf_t app_conf =
     .gpio_irq_restore = 1, //1: restore gpio irq after pds wakeup; 0: do not restore gpio irq after pds wakeup
     .gpio_num = 1, //3,
     .gpio_index = {16, 20, 24},
-    .trigger_type = {HOSAL_IRQ_TRIG_NEG_POS_PULSE, HOSAL_IRQ_TRIG_NEG_PULSE, HOSAL_IRQ_TRIG_POS_PULSE},
+    .pull_type = {INPUT_PULL_DOWN, INPUT_PULL_DOWN, INPUT_PULL_DOWN},
+    .trigger_type = {HOSAL_IRQ_TRIG_SYNC_FALLING_RISING_EDGE, HOSAL_IRQ_TRIG_SYNC_FALLING_EDGE, HOSAL_IRQ_TRIG_SYNC_RISING_EDGE},
 };
 
 uint8_t wakeup_group4_pin_list[] = {16};
@@ -88,7 +89,7 @@ void pdsapp_gpio_irq_init(void)
     for(int i=0; i<app_conf.gpio_num; i++)
     {
         key.port = app_conf.gpio_index[i];
-        key.config = INPUT_PULL_DOWN;
+        key.config = app_conf.pull_type[i];
         hosal_gpio_init(&key);
         hosal_gpio_irq_set(&key, app_conf.trigger_type[i], pdsapp_gpio_handler, &app_conf.gpio_index[i]);
     }

@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>WiFi &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>WiFi &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,61 +164,61 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="wifi">
+  <div class="section" id="wifi">
 <span id="wifi-index"></span><h1>WiFi<a class="headerlink" href="#wifi" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍与wifi相关命令的功能。</p>
-</section>
-<section id="section-2">
-<h2>使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/bl602_demo_wifi</span></code> 工程并下载对应的bin文件；</p></li>
 <li><p>成功启动IoT Board之后在终端输入命令 <code class="docutils literal notranslate"><span class="pre">stack_wifi</span></code> 创建wifi任务。</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image117.png" />
-</figure>
-</section>
-<section id="section-3">
-<h2>功能<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>功能<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>连接wifi：</p></li>
 </ul>
 <p>命令： <code class="docutils literal notranslate"><span class="pre">wifi_sta_connect</span> <span class="pre">&lt;ssid&gt;</span> <span class="pre">&lt;pwd&gt;</span></code> ，如在终端输入 <code class="docutils literal notranslate"><span class="pre">wifi_sta_connect</span> <span class="pre">bl_test_005</span> <span class="pre">12345678</span></code> ，成功连接wifi会打印wifi和memory相关信息，如下图中可以看到wifi的IP，MASK等信息，memory剩余大小信息 。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image214.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>断开wifi：</p></li>
 </ul>
 <p>命令： <code class="docutils literal notranslate"><span class="pre">wifi_sta_disconnect</span></code> ，成功断开连接后会打印断开连接的log。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image314.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>扫描wifi：</p></li>
 </ul>
 <p>命令： <code class="docutils literal notranslate"><span class="pre">wifi_scan</span></code> ，扫描成功后会打印scan list，用户可以看到成功搜索的wifi信息。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image413.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>开启ap模式：</p></li>
 </ul>
 <p>命令： <code class="docutils literal notranslate"><span class="pre">wifi_ap_start</span></code> ，成功开启后打印ssid，pwd，channel等相关信息，并且可以在手机上搜索到相应名字的wifi。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image510.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>关闭ap模式：</p></li>
 </ul>
 <p>命令： <code class="docutils literal notranslate"><span class="pre">wifi_ap_stop</span></code> 。成功关闭ap模式后手机无法搜索到对应wifi。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image62.png" />
-</figure>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -253,7 +252,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -282,8 +282,8 @@ struct net_buf_simple *bt_mesh_server_get_pub_msg(struct bt_mesh_model *model, u
 
     buf = model->pub->msg;
     if (buf->size < msg_len) {
-        BT_ERR("%s, Too small publication msg size %d, model 0x%04x",
-               __func__, buf->size, model->id);
+        BT_ERR("%s, Too small publication msg size %d,msg_len %d model 0x%04x",
+               __func__, buf->size, msg_len, model->id);
         return NULL;
     }
 

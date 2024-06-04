@@ -19,6 +19,7 @@
 #include <bl_irq.h>
 #include <bl_rtc.h>
 #include <bl_sec.h>
+#include <bl_wdt.h>
 #include <hal_boot2.h>
 #include <hal_board.h>
 #include <hal_tcal.h>
@@ -109,10 +110,11 @@ void __attribute__((weak)) user_vApplicationMallocFailedHook(void)
 #if !defined(CFG_USE_ROM_CODE) || defined(CFG_BUILD_FREERTOS)
 void __attribute__((weak)) vApplicationIdleHook(void)
 {
+    bl_wdt_feed();
+
     __asm volatile(
             "   wfi     "
     );
-    /*empty*/
 }
 
 #if ( configUSE_TICKLESS_IDLE != 0 )
@@ -373,6 +375,10 @@ static void system_early_init(void)
 
 #ifdef SYS_DMA_ENABLE
     hosal_dma_init();
+#endif
+
+#ifdef CFG_WATCHDOG_ENABLE
+    bl_wdt_init(4000);
 #endif
 
     /* To be added... */

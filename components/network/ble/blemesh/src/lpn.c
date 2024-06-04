@@ -173,7 +173,11 @@ static const struct bt_mesh_send_cb clear_sent_cb = {
 	.end = friend_clear_sent,
 };
 
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
+int send_friend_clear(void)
+#else
 static int send_friend_clear(void)
+#endif
 {
 	struct bt_mesh_msg_ctx ctx = {
 		.net_idx     = bt_mesh.sub[0].net_idx,
@@ -298,7 +302,11 @@ static const struct bt_mesh_send_cb friend_req_sent_cb = {
 	.start = friend_req_sent,
 };
 
+#if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
+int send_friend_req(struct bt_mesh_lpn *lpn)
+#else
 static int send_friend_req(struct bt_mesh_lpn *lpn)
+#endif
 {
 	const struct bt_mesh_comp *comp = bt_mesh_comp_get();
 	struct bt_mesh_msg_ctx ctx = {

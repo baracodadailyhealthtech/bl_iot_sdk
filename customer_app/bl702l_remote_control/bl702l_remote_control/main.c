@@ -4,6 +4,7 @@
 #include "cli.h"
 #include "bl_kys.h"
 #include "bl_adc.h"
+#include "btble_lib_api.h"
 #include "ble_rc_app.h"
 #include "ble_rc_ir.h"
 #if defined(CFG_PDS_ENABLE)
@@ -19,6 +20,13 @@ void vApplicationSleep(TickType_t xExpectedIdleTime)
 }
 #endif
 #endif
+
+void _dump_lib_info(void)
+{
+    puts("BTBLE Controller LIB Version: ");
+    puts(btble_controller_get_lib_ver());
+    puts("\r\n");
+}
 
 void main(void)
 {

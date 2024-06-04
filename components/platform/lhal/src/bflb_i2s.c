@@ -298,7 +298,7 @@ int bflb_i2s_feature_control(struct bflb_device_s *dev, int cmd, size_t arg)
             putreg32(regval, reg_base + I2S_FIFO_CONFIG_0_OFFSET);
             break;
 
-        case I2S_CMD_RX_DEGLITCH:
+        case I2S_CMD_SET_DEGLITCH_CNT:
             /* set rx deglitch, arg: deglitch cycle count (unit: cycle of I2S kernel clock) */
             regval = getreg32(reg_base + I2S_IO_CONFIG_OFFSET);
             if (arg) {

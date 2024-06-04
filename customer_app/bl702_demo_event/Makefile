@@ -115,10 +115,6 @@ ifeq ($(CONFIG_ZIGBEE), 1)
 include $(BL60X_SDK_PATH)/components/network/zigbee/zigbee_def.mk
 endif
 
-ifdef CONFIG_CACHE_SIZE
-EXTRA_LDFLAGS += -Wl,--defsym=__CACHE_SIZE=$(CONFIG_CACHE_SIZE)
-endif
-
 ifeq ($(CONFIG_BLECONTROLLER_LIB),all)
 LDFLAGS := $(filter-out $(addprefix -l$(BLECONTROLLER_LIB_PREFIX), $(filter-out $(BLECONTROLLER_LIB_DEFAULT), $(BLECONTROLLER_LIBS))), $(LDFLAGS))
 endif

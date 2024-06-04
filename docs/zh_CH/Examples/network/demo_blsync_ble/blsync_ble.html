@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BLSYNC-BLE &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>BLSYNC-BLE &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,133 +164,133 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="blsync-ble">
+  <div class="section" id="blsync-ble">
 <span id="blsync-ble-index"></span><h1>BLSYNC-BLE<a class="headerlink" href="#blsync-ble" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何使用ble进行wifi配网。</p>
-</section>
-<section id="app">
+</div>
+<div class="section" id="app">
 <h2>APP使用步骤<a class="headerlink" href="#app" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_ble_sync</span></code> 工程并下载工程固件；</p></li>
 <li><p>固件上电运行会自动开启ble广播，等待手机APP连接配网，如下所示；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image114.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>打开手机APP搜索蓝牙设备，搜索到设备名“BL602-BLE-DEV”；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image212.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>点击连接设备后，点击APP中的扫描，等待数秒后APP会显示开发板扫描到的wifi设备列表；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image312.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image410.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>用户可以通过扫描出来的设备列表对进行需要配网的wifi进行连接；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image55.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>当用户确定配网完成时，不需要再使用配网功能，可以使用“blsync_ble_stop”命令将其关闭。</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image61.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="section-2">
-<h2>微信小程序使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>微信小程序使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_ble_sync</span></code> 工程并下载工程固件；</p></li>
 <li><p>固件上电运行会自动开启ble广播，等待手机APP连接配网，如下所示；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image114.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>打开微信小程序搜索蓝牙设备，搜索到设备名“BL602-BLE-DEV”；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image71.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>点击“BL602-BLE-DEV”连接设备，连接上设备BLE后会获取到BLE的服务，点击第一个服务，再选择“写通知“；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image81.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>点击小程序中的”点击配网“，小程序会回显获取到的wifi列表，；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image91.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>用户可以通过扫描出来的设备列表对进行需要配网的wifi进行连接，点击需要连接的wifi名称；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image101.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>接着在输入框输入wifi密码，点击”发送密码“，即可连接wifi；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image115.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>点击小程序中的”获取状态“按钮，获取wifi当前的连接状态；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image121.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>当前已经连接wifi，则会显示”已经连接“并弹出板子的ip地址等信息；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image131.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>点击”断开wifi“按钮，即可断开wifi，再次点击”获取状态“按钮可以获取当前wifi已经断开；</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image141.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>当用户确定配网完成时，不需要再使用配网功能，可以使用“blsync_ble_stop”命令将其关闭。</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image61.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -325,7 +324,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

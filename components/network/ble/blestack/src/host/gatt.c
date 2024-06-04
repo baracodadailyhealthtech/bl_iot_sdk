@@ -5490,7 +5490,14 @@ int bt_gatts_del_service(uint16_t svc_id)
 #endif
 #endif
 
+#if defined(BFLB_BLE)
+void bt_gatt_sc_indicate(u16_t start, u16_t end)
+{
+    sc_indicate(start, end);
+}
+
 void bt_gap_set_local_device_appearance(u16_t device_appearance)
 {
 	gap_appearance = device_appearance;
 }
+#endif

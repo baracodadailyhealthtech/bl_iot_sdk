@@ -1,3 +1,5 @@
 #!/bin/sh
-make CONFIG_BLUETOOTH=1 CONFIG_PDS_ENABLE=1 CONFIG_BUILD_ROM_CODE=1 CONFIG_BTBLECONTROLLER_LIB=m1s1p CONFIG_BLE_EM_SIZE=8K CONFIG_BLE_TP_SERVER=1 -j2
+make CONFIG_BLUETOOTH=1 CONFIG_PDS_ENABLE=1 CONFIG_BUILD_ROM_CODE=1 CONFIG_BTBLECONTROLLER_LIB=m1s1p CONFIG_BLE_EM_SIZE=8K CONFIG_BLE_TP_SERVER=1 -j
+python3.11 /usr/local/lib/python3.11/site-packages/bflb_iot_tool/__main__.py --chipname bl702l --xtal 32M --port /dev/cu.usbmodem14202 --baud 2000000 --firmware /Users/will/Development/Kaeretch/bl_iot_sdk_bl702/customer_app/bl702l_demo_ble_peripheral/build_out/bl702l_demo_ble_peripheral.bin --dts /Users/will/Development/Kaeretch/sensor-platform/app/bsp/board/dvk/bl_factory_params_IoTKitA_32M.dts --pt /Users/will/Development/Kaeretch/sensor-platform/app/bsp/board/dvk/partition_cfg_2M.toml  
+python3.11 /usr/local/lib/python3.11/site-packages/serial/tools/miniterm.py  /dev/cu.usbmodem14202 2000000
 exit $?

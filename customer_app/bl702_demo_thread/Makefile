@@ -84,8 +84,3 @@ CPPFLAGS += -DCFG_CPP_ENABLE=1
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
 
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk
-
-EXTRA_LDFLAGS += -Wl,--print-memory-usage
-ifdef CONFIG_CACHE_SIZE
-EXTRA_LDFLAGS += -Wl,--defsym=__CACHE_SIZE=$(CONFIG_CACHE_SIZE)
-endif

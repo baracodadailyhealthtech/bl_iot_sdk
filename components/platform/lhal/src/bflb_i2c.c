@@ -563,14 +563,14 @@ int bflb_i2c_feature_control(struct bflb_device_s *dev, int cmd, size_t arg)
             }
             putreg32(regval, reg_base + I2C_CONFIG_OFFSET);
             break;
-        case I2C_CMD_SET_DEGLITCH:
+        case I2C_CMD_SET_DEGLITCH_CNT:
             regval = getreg32(reg_base + I2C_CONFIG_OFFSET);
             regval &= ~I2C_CR_I2C_DEG_CNT_MASK;
             if (arg == 0) {
                 regval &= ~I2C_CR_I2C_DEG_EN;
             } else {
                 regval |= I2C_CR_I2C_DEG_EN;
-                regval |= ((arg - 1) << I2C_CR_I2C_DEG_CNT_SHIFT);
+                regval |= (arg << I2C_CR_I2C_DEG_CNT_SHIFT);
             }
             putreg32(regval, reg_base + I2C_CONFIG_OFFSET);
             break;

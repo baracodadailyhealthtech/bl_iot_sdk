@@ -675,7 +675,7 @@ int bflb_uart_feature_control(struct bflb_device_s *dev, int cmd, size_t arg)
             putreg32(rx_tmp, reg_base + UART_URX_CONFIG_OFFSET);
             break;
 #endif
-        case UART_CMD_SET_GLITCH_VALUE:
+        case UART_CMD_SET_DEGLITCH_CNT:
             rx_tmp = getreg32(reg_base + UART_URX_CONFIG_OFFSET);
             rx_tmp &= ~UART_CR_URX_DEG_CNT_MASK;
             rx_tmp &= ~UART_CR_URX_DEG_EN;

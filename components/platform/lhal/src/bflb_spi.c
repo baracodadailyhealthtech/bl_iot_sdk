@@ -752,6 +752,18 @@ int bflb_spi_feature_control(struct bflb_device_s *dev, int cmd, size_t arg)
             }
             break;
 
+        case SPI_CMD_SET_DEGLITCH_CNT:
+            /* set de-glitch function cycle count, 0 for disable de-glitch function */
+            regval = getreg32(reg_base + SPI_CONFIG_OFFSET);
+            regval &= ~SPI_CR_SPI_DEG_CNT_MASK;
+            regval &= ~SPI_CR_SPI_DEG_EN;
+            if (arg) {
+                regval |= (arg << SPI_CR_SPI_DEG_CNT_SHIFT) & SPI_CR_SPI_DEG_CNT_MASK;
+                regval |= SPI_CR_SPI_DEG_EN;
+            }
+            putreg32(regval, reg_base + SPI_CONFIG_OFFSET);
+            break;
+
         default:
             ret = -EPERM;
             break;

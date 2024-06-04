@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>windows下eclipse调试记录 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>windows下eclipse调试记录 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,66 +164,66 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="windowseclipse">
+  <div class="section" id="windowseclipse">
 <h1>windows下eclipse调试记录<a class="headerlink" href="#windowseclipse" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>硬件准备工作<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>硬件准备工作<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>安装jtag转usb驱动（驱动安装前先将设备连接电脑可以自动识别到相关设备），驱动下载网站：<a class="reference external" href="https://zadig.akeo.ie/">https://zadig.akeo.ie/</a></p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/驱动安装.png" />
-</figure>
-</section>
-<section id="eclipse">
+</div>
+</div>
+<div class="section" id="eclipse">
 <h2>1.下载安装eclipse<a class="headerlink" href="#eclipse" title="永久链接至标题"></a></h2>
 <p>下载地址: <a class="reference external" href="https://www.eclipse.org/downloads/">https://www.eclipse.org/downloads/</a></p>
 <p>下载后双击安装就行,配置如下:</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-112.png" />
-</figure>
+</div>
 <p>选择安装的jdk版本和要安装的路径,点击install安装.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-27.png" />
-</figure>
-</section>
-<section id="section-2">
-<span id="target-1"></span><h2>2. 加载工作代码<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="id2">
+<span id="id3"></span><h2>2. 加载工作代码<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <p>新建makefile的project文件，操作如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-32.png" />
-</figure>
+</div>
 <p>选择路径和设置新的工程名字，点击<code class="docutils literal notranslate"><span class="pre">Finish</span></code>，工程便导入到了工作空间。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-42.png" />
-</figure>
+</div>
 <p>成功后，现象如下:</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-52.png" />
-</figure>
-</section>
-<section id="section-3">
-<span id="target-2"></span><h2>3. 配置编译环境<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="id4">
+<span id="id5"></span><h2>3. 配置编译环境<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
 <p>1.下载windows环境下编译linux的工具包</p>
 <p>工具地址：<a class="reference external" href="https://sourceforge.net/projects/msys2/files/Base/x86_64/">https://sourceforge.net/projects/msys2/files/Base/x86_64/</a></p>
 <p>安装步骤: <a class="reference external" href="https://www.msys2.org/">https://www.msys2.org/</a></p>
 <p>打开MSYS2并安装make，输入命令：
 <code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code>后回车，并根据提示直到安装完成，当前我的安装路径是C盘。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-62.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-72.png" />
-</figure>
+</div>
 <p>安装成功后会在相应的<code class="docutils literal notranslate"><span class="pre">usr-&gt;bin</span></code>路径下看到安装的工具。</p>
 <p>2.打开eclipse，选择标签<code class="docutils literal notranslate"><span class="pre">window-&gt;</span> <span class="pre">Preferences</span></code>，操作如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-82.png" />
-</figure>
+</div>
 <p>打开之后如下现象：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-92.png" />
-</figure>
+</div>
 <p>3.配置编译开发编译和调试工具的相关路径</p>
 <p>主要配置的选项如下</p>
 <ul class="simple">
@@ -234,15 +233,15 @@ Path：是编译工具，可以根据需要选择，此处选择的是make工具
 Path：是一个开源的片上调试器，旨在提供针对嵌入式设备的调试、系统编程和边界扫描功能；</p></li>
 <li><p>ToolsChains Path：构建工具，根据硬件选择不同的硬件选项工具;</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-102.png" />
-</figure>
+</div>
 <p>1）配置<code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">Tools</span> <span class="pre">Path</span></code></p>
 <p>添加build
 Tools是编译工具路径，就是最初安装没有sys2的路径，此处我的路径是:<code class="docutils literal notranslate"><span class="pre">C:\msys64\usr\bin</span></code>。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-113.png" />
-</figure>
+</div>
 <p>配置完成后点击Apply，点击Apply and Close。</p>
 <p>2）配置<code class="docutils literal notranslate"><span class="pre">OpenOcd</span> <span class="pre">Path</span></code></p>
 <ul class="simple">
@@ -257,82 +256,82 @@ GitHub</a></p>
 FilesEclipseembedcpp-2021-06eclipseopenocdxpack-openocd-0.11.0-1bin</p>
 <ul>
 <li><p>eclipse配置openocd的开发路径</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-122.png" />
-</figure>
+</div>
 <p>配置完成后点击Apply，点击Apply and Close。</p>
 </li>
 </ul>
 <p>2）配置<code class="docutils literal notranslate"><span class="pre">Riscv</span> <span class="pre">ToolsChains</span> <span class="pre">Path</span></code></p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-132.png" />
-</figure>
+</div>
 <p>配置完成后点击Apply，点击Apply and Close。</p>
-</section>
-<section id="build-1">
-<span id="build"></span><h2>4.配置build编译标签<a class="headerlink" href="#build-1" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="build">
+<span id="id6"></span><h2>4.配置build编译标签<a class="headerlink" href="#build" title="永久链接至标题"></a></h2>
 <p>配置build的选项</p>
 <ol class="arabic simple">
 <li><p>右键工程，选择<code class="docutils literal notranslate"><span class="pre">Properties-&gt;C/C++Build-&gt;Manage</span> <span class="pre">Configuration</span></code></p></li>
 </ol>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-142.png" />
-</figure>
+</div>
 <ol class="arabic simple">
 <li><p>在<code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Configuration</span></code>下新建一个配置标签，这样以后就不用再进行配置，直接选择标签进行编译就行了。</p></li>
 </ol>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-152.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-162.png" />
-</figure>
+</div>
 <ol class="arabic simple">
 <li><p>点击OK，退出界面，再点击OK退出界面。</p></li>
 <li><p>选择新建的标签</p></li>
 </ol>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-171.png" />
-</figure>
+</div>
 <ol class="arabic simple">
 <li><p>配置该标签的<code class="docutils literal notranslate"><span class="pre">Builder</span> <span class="pre">Settings</span></code>，其中Build
 directory选择你要编译的工程，此处选的是bl602_demo_event。</p></li>
 </ol>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-181.png" />
-</figure>
+</div>
 <ol class="arabic simple">
 <li><p>配置Behavior。</p></li>
 </ol>
 <p>其中<code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">arguments</span></code>:填写为<code class="docutils literal notranslate"><span class="pre">CONFIG_CHIP_NAME=BL602</span> <span class="pre">CONFIG_LINK_ROM=1</span> <span class="pre">-j4</span></code></p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-191.png" />
-</figure>
+</div>
 <ol class="arabic simple">
 <li><p>配置Refresh Policy</p></li>
 </ol>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-202.png" />
-</figure>
+</div>
 <ol class="arabic simple">
 <li><p>配置完成后点击Apply，点击Apply and Close。</p></li>
 <li><p>配置完成后，在主页面的小锤子下面就有自己配置的标签了，就可以选择自己需要的标签进行编译了。</p></li>
 </ol>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-212.png" />
-</figure>
-</section>
-<section id="debug-1">
-<span id="debug"></span><h2>5.配置debug调试环境<a class="headerlink" href="#debug-1" title="永久链接至标题"></a></h2>
+</div>
+</div>
+<div class="section" id="debug">
+<span id="id7"></span><h2>5.配置debug调试环境<a class="headerlink" href="#debug" title="永久链接至标题"></a></h2>
 <p>右键工程，选择<code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">As</span> <span class="pre">&gt;Debug</span> <span class="pre">Configurations...</span></code>操作界面如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-221.png" />
-</figure>
+</div>
 <p>打开后新建一个调试平台，点击<code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">launch</span> <span class="pre">configuration</span></code>，新建debug标签，然后配置，请按照下面所示图进行配置，大致如下：</p>
 <p>main界面配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-231.png" />
-</figure>
+</div>
 <p>Debugger配置</p>
 <ul class="simple">
 <li><p>openocd工具相关路径（选择上面安装的openocd路径）</p></li>
@@ -342,28 +341,28 @@ directory选择你要编译的工程，此处选的是bl602_demo_event。</p></l
 <li><p>gdb调试工具（<code class="docutils literal notranslate"><span class="pre">${project_loc}\toolchain\riscv\MSYS\bin\riscv64-unknown-elf-gdb.exe</span></code>）</p></li>
 <li><p>调试硬件初始化文件配置（<code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">tools/debug/602/602.init</span></code>）</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-241.png" />
-</figure>
+</div>
 <p>Startup配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-251.png" />
-</figure>
+</div>
 <p>Common配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-261.png" />
-</figure>
+</div>
 <p>SVD Path配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-271.png" />
-</figure>
+</div>
 <p>配置完成后点击Apply。</p>
-</section>
-<section id="debug-3">
-<span id="debug-2"></span><h2>6.debug<a class="headerlink" href="#debug-3" title="永久链接至标题"></a></h2>
-<figure class="align-default">
+</div>
+<div class="section" id="id8">
+<span id="id9"></span><h2>6.debug<a class="headerlink" href="#id8" title="永久链接至标题"></a></h2>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-28.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>按钮 <code class="docutils literal notranslate"><span class="pre">Resume</span></code>（ F8）一下，如果Debug
 congfiguration中有配置,可以看到程序停在 bfl_main()
@@ -379,36 +378,36 @@ Return就可以执行完子函数余下部分，并返回上一层函数。</p><
 </ul>
 <p>2号功能区</p>
 <p>Registers：该标签是对cpu通用寄存器的显示，pc，sp等寄存器；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-29.png" />
-</figure>
+</div>
 <p>3号功能介绍，标签从左向右</p>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Breakp</span></code>是对断点的显示，全局有多少断点都会显示在此处；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-30.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Variable</span></code>是对环境变量的显示，当调试暂停时，你的鼠标暂停在某变量时，该标签便会显示相关参数的数据信息；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-311.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Express</span></code>
 可以添加相关想要查看到变量，该标签添加完变量时，变量的信息会实时的变化；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-321.png" />
-</figure>
+</div>
 <p>4号功能区</p>
 <p>Memory该标签是对硬件内存的查看，可以添加相关硬件地址，可以看到该地区数据的变化。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-33.png" />
-</figure>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -442,7 +441,7 @@ Return就可以执行完子函数余下部分，并返回上一层函数。</p><
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

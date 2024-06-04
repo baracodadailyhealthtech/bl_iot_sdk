@@ -33,6 +33,7 @@ COMPONENT_SRCS := bl702l_hal/bl_adc.c \
                   bl702l_hal/bl_uart.c \
                   bl702l_hal/bl_wdt.c \
                   bl702l_hal/bl_wireless.c \
+                  bl702l_hal/hal_anti_rollback.c \
                   bl702l_hal/hal_board.c \
                   bl702l_hal/hal_boot2.c \
                   bl702l_hal/hal_button.c \

@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Ethernet OTA &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>Ethernet OTA &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
         <link rel="up" title="Ethernet" href="../index.html"/>
         <link rel="next" title="Components" href="../../../Components/index.html"/>
         <link rel="prev" title="Ethernet_IP" href="../demo_ethernet/ethernet_IP.html"/> 
@@ -75,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -106,8 +105,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Ethernet</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../demo_ethernet/ethernet_IP.html">Ethernet_IP</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Ethernet_OTA</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#section-1">总览</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#section-2">使用步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">使用步骤</a></li>
 </ul>
 </li>
 </ul>
@@ -185,35 +184,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ethernet-ota">
+  <div class="section" id="ethernet-ota">
 <span id="ota-index"></span><h1>Ethernet OTA<a class="headerlink" href="#ethernet-ota" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何使用702的ota功能。</p>
-</section>
-<section id="section-2">
-<h2>使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>将702板子插上网线。</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 包含了ota的相关命令，由条件编译控制，我们要打开编译的宏，子目录中的geneth编译脚本完成了此项工作，我们只需用geneth脚本编译即可，编译好下载工程，ota文件在我们点击烧写工具的  <code class="docutils literal notranslate"><span class="pre">creat</span> <span class="pre">&amp;</span> <span class="pre">download</span></code> 的时候生成并保存在tools/flash_tool/bl702/ota目录下。</p></li>
 <li><p>打开电脑终端，进入你的工程目录，执行 <code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">tools/flash_tool/bl702/ota/FW_OTA.bin.xz.hash</span> <span class="pre">|</span> <span class="pre">nc</span> <span class="pre">-l</span> <span class="pre">3333</span></code> 命令，监听3333端口的连接准备发送数据。</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/img1.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>打开串口，输入命令 <code class="docutils literal notranslate"><span class="pre">ota_tcp_api</span> <span class="pre">&lt;你的pc</span> <span class="pre">ip地址&gt;</span> <span class="pre">&lt;ota</span> <span class="pre">文件大小&gt;</span></code> , 可以在tools/flash_tool/bl702/ota目录下右键属性查看ota文件大小，对于此命令我们只关心FW_OTA.bin.xz.hash文件的大小。</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/img2.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><p>ota完成之后会自动重启。</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -256,7 +255,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>PSM &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>PSM &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,45 +164,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="psm">
+  <div class="section" id="psm">
 <span id="psm-index"></span><h1>PSM<a class="headerlink" href="#psm" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本文档主要介绍PSM的使用，其主要是依赖Easyflash库来实现的，包括数据的存储、获取、dump和擦除功能。</p>
-</section>
-<section id="section-2">
-<h2>使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_psm</span></code> 工程并下载bin文件。</p></li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">psm_set</span> <span class="pre">&lt;key&gt;</span> <span class="pre">&lt;value&gt;</span></code> 命令向指定ENV_name中写入数据，如输入 <code class="docutils literal notranslate"><span class="pre">psm_set</span> <span class="pre">data_test</span> <span class="pre">12345678</span></code> 命令表示将ENV_name为 <code class="docutils literal notranslate"><span class="pre">data_test</span></code> 的值设为 <code class="docutils literal notranslate"><span class="pre">12345678</span></code> ；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image133.png" />
-</figure>
+</div>
 </li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">psm_get</span> <span class="pre">&lt;key&gt;</span></code>  命令读出指定ENV_name中存储的值，如读取上面写入的数据，输入命令：psm_get data_test；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image228.png" />
-</figure>
+</div>
 </li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">psm_unset</span> <span class="pre">&lt;key&gt;</span></code> 命令清除指定ENV_name中存储的值，如清除上面写入的数据，输入命令：psm_unset data_test；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image322.png" />
-</figure>
+</div>
 </li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">psm_dump</span></code> 命令可以将所有ENV_name存储的信息dunmp出来，如输入命令：psm_dump，可以看到mode。size等相关信息；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image418.png" />
-</figure>
+</div>
 </li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">psm_erase</span></code> 命令可以将所有ENV_name存储的信息清除。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image511.png" />
-</figure>
+</div>
 </li>
 </ul>
-</section>
-<section id="section-3">
-<h2>应用实例<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>初始化</p></li>
 </ul>
@@ -245,8 +244,8 @@
 </pre></div>
 </div>
 <p>调用此接口将擦除保存在psm中所有的数据。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -280,7 +279,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

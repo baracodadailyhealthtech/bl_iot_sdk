@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Http client &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>Http client &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,38 +164,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="http-client">
+  <div class="section" id="http-client">
 <span id="http-index"></span><h1>Http client<a class="headerlink" href="#http-client" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何创建一个socket并连接到指定的Http服务器获取数据的过程。</p>
-</section>
-<section id="section-2">
-<h2>准备和使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>准备和使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>使用之前需要准备可用的URL以及网络。</p></li>
 <li><p>使用步骤：</p>
 <ul>
 <li><p>编译 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_http_client_socket</span></code> 工程并下载工程；</p></li>
 <li><p>在终端输入开启wifi的命令： <code class="docutils literal notranslate"><span class="pre">stack_wifi</span></code> ，输入连接wifi的命令： <code class="docutils literal notranslate"><span class="pre">wifi_sta_connect</span> <span class="pre">&lt;name&gt;</span> <span class="pre">&lt;key&gt;</span></code> ，并确认wifi连接成功（如输入：wifi_sta_connect bl_test_005 12345678）；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image130.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image226.png" />
-</figure>
+</div>
 </li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">http</span></code> 命令通过socket的方式进行下载。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image319.png" />
-</figure>
+</div>
 </li>
 </ul>
 </li>
 </ul>
-</section>
-<section id="section-3">
-<h2>应用实例<a class="headerlink" href="#section-3" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id3">
+<h2>应用实例<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
 <ul class="simple">
 <li><p>通过 <code class="docutils literal notranslate"><span class="pre">hostname</span></code> 获取 <code class="docutils literal notranslate"><span class="pre">hostinfo</span></code></p></li>
 </ul>
@@ -277,8 +276,8 @@ if (!hostinfo) {
 <ul class="simple">
 <li><p>在 <code class="docutils literal notranslate"><span class="pre">customer_app/sdk_app_http_client_socket/sdk_app_http_client_socket/demo.c</span></code> 中 <code class="docutils literal notranslate"><span class="pre">static</span> <span class="pre">void</span> <span class="pre">_cli_init()</span></code> 的函数里调用 <code class="docutils literal notranslate"><span class="pre">http_client_cli_init()</span></code> 初始化http命令</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -312,7 +311,7 @@ if (!hostinfo) {
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

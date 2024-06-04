@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Zigbee &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>Zigbee &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
         <link rel="up" title="Zigbee" href="../index.html"/>
         <link rel="next" title="zsed_demo" href="../BL702L_ZSED_Sensor/app_demo.html"/>
         <link rel="prev" title="Zigbee" href="../index.html"/> 
@@ -75,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -104,8 +103,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../ble/index.html">BLE</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Zigbee</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Zigbee</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#section-1">总览</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#section-2">使用步骤</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">总览</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">使用步骤</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cli">Cli命令介绍</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ota">OTA使用说明</a></li>
 </ul>
@@ -187,93 +186,93 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="zigbee">
+  <div class="section" id="zigbee">
 <span id="zigbee-index"></span><h1>Zigbee<a class="headerlink" href="#zigbee" title="永久链接至标题"></a></h1>
-<section id="section-1">
-<h2>总览<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h2>
+<div class="section" id="id1">
+<h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <p>本示例主要介绍如何使用zigbee。</p>
-</section>
-<section id="section-2">
-<h2>使用步骤<a class="headerlink" href="#section-2" title="永久链接至标题"></a></h2>
+</div>
+<div class="section" id="id2">
+<h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程并通过 <code class="docutils literal notranslate"><span class="pre">genzb</span></code> 脚本命令编译，完成后下载Bin文件，toml文件对应customer_app/bl702_demo_event/partition_cfg_1M_NoOta.toml；</p></li>
 <li><ol class="arabic simple">
 <li><p>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0007</span> <span class="pre">0x00</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0007, input cluster 0个, output cluster 7个</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/ZC-RegisterEP.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><ol class="arabic simple" start="2">
 <li><p>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">0</span></code> 命令设置设备类型ZC; 使用 <code class="docutils literal notranslate"><span class="pre">zb_form</span> <span class="pre">15</span> <span class="pre">0xaaaa</span></code> 创建信道15，PANID 0xaaaa的ZHA网络 ,打印的部分log如下。</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/ZC-Startup.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><ol class="arabic simple" start="3">
 <li><p>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span> <span class="pre">120</span></code> 开放网络120秒；</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_nwk_permit_join.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><ol class="arabic simple" start="4">
 <li><p>Device2 使用 <code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0102</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span> <span class="pre">0x00</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0102, input cluster 7个, output cluster 0个; 如果Device2要做touchlink target，input cluster中需要注册touchlink cluster, touchlink cluster id 为0x1000，例如zb_register_dev 1 0x0104 0x0102 0x08 0x0000 0x0003 0x0004 0x0005 0x0006 0x0008 0x0300 0x1000 0x00。</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/ZR-RegisterEP.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><ol class="arabic simple" start="5">
 <li><p>Device2 使用 <code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">1</span></code> 命令设置设备类型ZR， 使用 <code class="docutils literal notranslate"><span class="pre">zb_start</span></code> 自动搜索zigbee网络，找到网络后打印的部分log如下。</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/ZR-Startup.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><ol class="arabic simple" start="6">
 <li><p>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_zcl_onoff</span> <span class="pre">2</span> <span class="pre">0x6d4e</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">2</span></code> 命令向Device2 ep1 发送zcl:toggle 命令,地址模式为短地址</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/ZC-SendOnOff.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><ol class="arabic simple" start="7">
 <li><p>Device1/2 使用 <code class="docutils literal notranslate"><span class="pre">zb_reset</span></code>, 擦除zigbee flash存储内容。</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/Device_reset.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 <li><ol class="arabic simple" start="8">
 <li><p>Device1/2 使用 <code class="docutils literal notranslate"><span class="pre">zb_reboot</span></code>, 重启程序。</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/Device_reboot.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
-</section>
-<section id="cli">
+</div>
+<div class="section" id="cli">
 <h2>Cli命令介绍<a class="headerlink" href="#cli" title="永久链接至标题"></a></h2>
-<section id="zb-register-dev">
+<div class="section" id="zb-register-dev">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_register_dev</span></code><a class="headerlink" href="#zb-register-dev" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -300,14 +299,14 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;inputClsN...&gt;</span> <span class="pre">&lt;outputClsNum&gt;</span> <span class="pre">&lt;outputCls1&gt;</span> <span class="pre">&lt;outputClsN...&gt;\r\n&quot;</span></code></p></li>
 </ul>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_register_dev.png" />
-</figure>
+</div>
 </div></blockquote>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="zb-set-role">
+</div>
+<div class="section" id="zb-set-role">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_set_role</span></code><a class="headerlink" href="#zb-set-role" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -322,15 +321,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_set_role</span> <span class="pre">&lt;nDeviceRole&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_set_role.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-change-role">
+</div>
+<div class="section" id="zb-change-role">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_change_role</span></code><a class="headerlink" href="#zb-change-role" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -345,15 +344,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_change_role</span> <span class="pre">&lt;nDeviceRole&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_change_role.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-set-channel">
+</div>
+<div class="section" id="zb-set-channel">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_set_channel</span></code><a class="headerlink" href="#zb-set-channel" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -368,15 +367,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_set_channel</span> <span class="pre">&lt;channel&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_set_channel.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-form">
+</div>
+<div class="section" id="zb-form">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_form</span></code><a class="headerlink" href="#zb-form" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -392,15 +391,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_form</span> <span class="pre">&lt;channel&gt;</span> <span class="pre">&lt;PANID&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_form.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-nwk-permit-join">
+</div>
+<div class="section" id="zb-nwk-permit-join">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span></code><a class="headerlink" href="#zb-nwk-permit-join" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -415,15 +414,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_nwk_permit_join</span> <span class="pre">&lt;duration&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_nwk_permit_join.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-start">
+</div>
+<div class="section" id="zb-start">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_start</span></code><a class="headerlink" href="#zb-start" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -431,15 +430,15 @@
 <li><p>参数：无</p></li>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_start\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_start.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-reset">
+</div>
+<div class="section" id="zb-reset">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_reset</span></code><a class="headerlink" href="#zb-reset" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -447,15 +446,15 @@
 <li><p>参数：无</p></li>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_reset\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_reset.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-reboot">
+</div>
+<div class="section" id="zb-reboot">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_reboot</span></code><a class="headerlink" href="#zb-reboot" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -463,15 +462,15 @@
 <li><p>参数：无</p></li>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_reboot\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_reboot.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-get-mac">
+</div>
+<div class="section" id="zb-get-mac">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_get_mac</span></code><a class="headerlink" href="#zb-get-mac" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul>
@@ -479,15 +478,15 @@
 <li><p>参数：无</p></li>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_get_mac\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_get_mac.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-set-tx-power">
+</div>
+<div class="section" id="zb-set-tx-power">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_set_tx_power</span></code><a class="headerlink" href="#zb-set-tx-power" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -502,15 +501,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_set_tx_power</span> <span class="pre">&lt;power&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_set_tx_power.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zdp-node-desc-req">
+</div>
+<div class="section" id="zb-zdp-node-desc-req">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_node_desc_req</span></code><a class="headerlink" href="#zb-zdp-node-desc-req" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -526,15 +525,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_node_desc_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_node_desc_req.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zdp-nwk-addr-req">
+</div>
+<div class="section" id="zb-zdp-nwk-addr-req">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_nwk_addr_req</span></code><a class="headerlink" href="#zb-zdp-nwk-addr-req" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -549,15 +548,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_nwk_addr_req</span> <span class="pre">&lt;ieeeAddr&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_nwk_addr_req.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zdp-ieee-addr-req">
+</div>
+<div class="section" id="zb-zdp-ieee-addr-req">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_ieee_addr_req</span></code><a class="headerlink" href="#zb-zdp-ieee-addr-req" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -573,15 +572,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_ieee_addr_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_ieee_addr_req.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zdp-power-desc-req">
+</div>
+<div class="section" id="zb-zdp-power-desc-req">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_power_desc_req</span></code><a class="headerlink" href="#zb-zdp-power-desc-req" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -597,15 +596,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_power_desc_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_power_desc_req.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zdp-simple-des-req">
+</div>
+<div class="section" id="zb-zdp-simple-des-req">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_simple_des_req</span></code><a class="headerlink" href="#zb-zdp-simple-des-req" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -622,15 +621,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_simple_des_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;</span> <span class="pre">&lt;dst_ep&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_simple_des_req.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zdp-active-ep-req">
+</div>
+<div class="section" id="zb-zdp-active-ep-req">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_active_ep_req</span></code><a class="headerlink" href="#zb-zdp-active-ep-req" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -646,15 +645,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_active_ep_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;nwk_addr&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_active_ep_req.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zdp-bind">
+</div>
+<div class="section" id="zb-zdp-bind">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_bind</span></code><a class="headerlink" href="#zb-zdp-bind" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -674,15 +673,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_bind</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;clusterID&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;src_mac&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_mac&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_bind.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zdp-unbind">
+</div>
+<div class="section" id="zb-zdp-unbind">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_unbind</span></code><a class="headerlink" href="#zb-zdp-unbind" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -702,15 +701,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_unbind</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;clusterID&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;src_mac&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_mac&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_unbind.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zcl-set-dir">
+</div>
+<div class="section" id="zb-zcl-set-dir">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_set_dir</span></code><a class="headerlink" href="#zb-zcl-set-dir" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -726,8 +725,8 @@
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_set_dir</span> <span class="pre">&lt;dir&gt;\r\n&quot;</span></code></p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-get-local-attr">
+</div>
+<div class="section" id="zb-get-local-attr">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_get_local_attr</span></code><a class="headerlink" href="#zb-get-local-attr" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -745,15 +744,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_get_local_attr</span> <span class="pre">&lt;ep&gt;</span> <span class="pre">&lt;dir&gt;</span> <span class="pre">&lt;clusterId&gt;</span> <span class="pre">&lt;attrId&gt;&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_get_local_attr.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-set-local-attr">
+</div>
+<div class="section" id="zb-set-local-attr">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_set_local_attr</span></code><a class="headerlink" href="#zb-set-local-attr" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -777,15 +776,15 @@
 <div><ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;zb_set_local_attr</span> <span class="pre">&lt;ep&gt;</span> <span class="pre">&lt;dir&gt;</span> <span class="pre">&lt;clusterId&gt;</span> <span class="pre">&lt;attrId&gt;</span> <span class="pre">&lt;type&gt;</span> <span class="pre">&lt;octstr&gt;&quot;</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;例如，设置identify</span> <span class="pre">time为15s:</span> <span class="pre">#</span> <span class="pre">zb_set_local_attr</span> <span class="pre">1</span> <span class="pre">0</span> <span class="pre">0x0003</span> <span class="pre">0x0000</span> <span class="pre">0x21</span> <span class="pre">0f00&quot;</span></code></p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/zb_set_local_attr.png" />
-</figure>
+</div>
 </li>
 </ul>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="zb-zcl-read">
+</div>
+<div class="section" id="zb-zcl-read">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_read</span></code><a class="headerlink" href="#zb-zcl-read" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -804,15 +803,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_read</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cluster&gt;</span> <span class="pre">[attr1]</span> <span class="pre">[attr2]</span> <span class="pre">[...]\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_read.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zcl-write">
+</div>
+<div class="section" id="zb-zcl-write">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_write</span></code><a class="headerlink" href="#zb-zcl-write" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -839,8 +838,8 @@
 </ul>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="zb-zcl-cfg-report">
+</div>
+<div class="section" id="zb-zcl-cfg-report">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_cfg_report</span></code><a class="headerlink" href="#zb-zcl-cfg-report" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -876,8 +875,8 @@
 </ul>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="zb-zcl-read-report-cfg">
+</div>
+<div class="section" id="zb-zcl-read-report-cfg">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_read_report_cfg</span></code><a class="headerlink" href="#zb-zcl-read-report-cfg" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -904,8 +903,8 @@
 </ul>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="zb-zcl-disc-attr">
+</div>
+<div class="section" id="zb-zcl-disc-attr">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_disc_attr</span></code><a class="headerlink" href="#zb-zcl-disc-attr" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -931,14 +930,14 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;start_attr_id&gt;</span> <span class="pre">&lt;attr</span> <span class="pre">num</span> <span class="pre">to</span> <span class="pre">read&gt;\r\n&quot;</span></code></p></li>
 </ul>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_disc_attr.png" />
-</figure>
+</div>
 </div></blockquote>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="zb-zcl-identify">
+</div>
+<div class="section" id="zb-zcl-identify">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_identify</span></code><a class="headerlink" href="#zb-zcl-identify" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -956,15 +955,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_identify</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;identify_time&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_identify.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zcl-identify-query">
+</div>
+<div class="section" id="zb-zcl-identify-query">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_identify_query</span></code><a class="headerlink" href="#zb-zcl-identify-query" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -981,15 +980,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_identify_query</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_identify_query.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zcl-group-add">
+</div>
+<div class="section" id="zb-zcl-group-add">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_group_add</span></code><a class="headerlink" href="#zb-zcl-group-add" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -1008,15 +1007,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_group_add</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;groupid&gt;</span> <span class="pre">&lt;grp_name&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_group_add.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zcl-group-remove">
+</div>
+<div class="section" id="zb-zcl-group-remove">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_group_remove</span></code><a class="headerlink" href="#zb-zcl-group-remove" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -1034,15 +1033,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_group_remove</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;groupid&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_group_remove.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zcl-group-removeall">
+</div>
+<div class="section" id="zb-zcl-group-removeall">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_group_removeAll</span></code><a class="headerlink" href="#zb-zcl-group-removeall" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -1059,15 +1058,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_group_removeAll</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;dst_addr&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_group_removeAll.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zcl-onoff">
+</div>
+<div class="section" id="zb-zcl-onoff">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_onoff</span></code><a class="headerlink" href="#zb-zcl-onoff" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -1086,15 +1085,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zcl_onoff</span> <span class="pre">&lt;addr_mode&gt;</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;src_ep&gt;</span> <span class="pre">&lt;dst_ep&gt;</span> <span class="pre">&lt;cmd_id&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_onoff.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-zcl-move-to-level-with-onoff">
+</div>
+<div class="section" id="zb-zcl-move-to-level-with-onoff">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zcl_move_to_level_with_onoff</span></code><a class="headerlink" href="#zb-zcl-move-to-level-with-onoff" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -1119,14 +1118,14 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;level&gt;</span> <span class="pre">&lt;transition_time&gt;\r\n&quot;</span></code></p></li>
 </ul>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zcl_move_to_level_with_onoff.png" />
-</figure>
+</div>
 </div></blockquote>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="zb-zdp-leave-req">
+</div>
+<div class="section" id="zb-zdp-leave-req">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_zdp_leave_req</span></code><a class="headerlink" href="#zb-zdp-leave-req" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -1144,15 +1143,15 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_zdp_leave_req</span> <span class="pre">&lt;dst_addr&gt;</span> <span class="pre">&lt;uint8_t</span> <span class="pre">array[8]&gt;</span> <span class="pre">&lt;removeChildren&gt;</span> <span class="pre">&lt;rejoin&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_zdp_leave_req.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="zb-rejoin">
+</div>
+<div class="section" id="zb-rejoin">
 <h3><code class="docutils literal notranslate"><span class="pre">zb_rejoin</span></code><a class="headerlink" href="#zb-rejoin" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -1167,32 +1166,32 @@
 <ul>
 <li><p>示例：<code class="docutils literal notranslate"><span class="pre">&quot;zb_rejoin</span> <span class="pre">&lt;bRejoinSecured&gt;\r\n&quot;</span></code></p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/zb_rejoin.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-<section id="ota">
+</div>
+</div>
+<div class="section" id="ota">
 <h2>OTA使用说明<a class="headerlink" href="#ota" title="永久链接至标题"></a></h2>
 <p>本文介绍如何对Zigbee设备进行OTA升级，具体包含以下内容：</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#ota-1">OTA升级流程介绍</a></p></li>
-<li><p><a class="reference internal" href="#ota-2">制作OTA升级文件</a></p></li>
+<li><p><a class="reference internal" href="#id3">OTA升级流程介绍</a></p></li>
+<li><p><a class="reference internal" href="#id4">制作OTA升级文件</a></p></li>
 <li><p><a class="reference internal" href="#ota-server">配置OTA Server</a></p></li>
-<li><p><a class="reference internal" href="#ota-3">OTA升级过程演示</a></p></li>
+<li><p><a class="reference internal" href="#id5">OTA升级过程演示</a></p></li>
 </ul>
 <p>文中，使用BL706 ZR作为OTA Client，使用BL706 ZC作为OTA Server。</p>
-<section id="ota-1">
-<h3>OTA升级流程介绍<a class="headerlink" href="#ota-1" title="永久链接至标题"></a></h3>
+<div class="section" id="id3">
+<h3>OTA升级流程介绍<a class="headerlink" href="#id3" title="永久链接至标题"></a></h3>
 <p>Zigbee OTA升级流程如下如所示：</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="../../../_images/ota-flow.png" src="../../../_images/ota-flow.png" />
-</figure>
+</div>
 </div></blockquote>
 <ol class="arabic">
 <li><p>Image Notify: OTA Server发送Image Notify通知OTA Client可以开始OTA升级</p></li>
@@ -1222,15 +1221,15 @@
 <ol class="arabic simple" start="6">
 <li><p>Upgrade End Response: OTA Server通过回复Upgrade End Reqeust告知OTA Client设备可以切换到新镜像并指定切换时间。</p></li>
 </ol>
-</section>
-<section id="ota-2">
-<h3>制作OTA升级文件<a class="headerlink" href="#ota-2" title="永久链接至标题"></a></h3>
+</div>
+<div class="section" id="id4">
+<h3>制作OTA升级文件<a class="headerlink" href="#id4" title="永久链接至标题"></a></h3>
 <ul>
 <li><p>OTA 文件格式</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="../../../_images/ota-file-format.png" src="../../../_images/ota-file-format.png" />
-</figure>
+</div>
 </div></blockquote>
 <p>OTA 文件格式如上图所示，通常OTA文件只需要包含OTA Header和Upgrade Image两部分。</p>
 </li>
@@ -1240,20 +1239,20 @@
 <li><p>OTA Header: BL Zigbee设备OTA Header包含以下内容</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">_zclOtaHeader</span><span class="p">{</span>
-<span class="w"> </span><span class="kt">uint32_t</span><span class="w">    </span><span class="n">fileIdentifier</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">headerVersion</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">headerSize</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">headerFieldControl</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">manufacturerID</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">imageType</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint32_t</span><span class="w">    </span><span class="n">fileVersion</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">zigBeeStackVersion</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">char</span><span class="w">        </span><span class="n">headerStr</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
-<span class="w"> </span><span class="kt">uint32_t</span><span class="w">    </span><span class="n">imageSize</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">minHWVersion</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">maxHWVersion</span><span class="p">;</span>
-<span class="p">};</span>
+<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">_zclOtaHeader</span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint32_t</span><span class="w">    </span><span class="n">fileIdentifier</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">headerVersion</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">headerSize</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">headerFieldControl</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">manufacturerID</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">imageType</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint32_t</span><span class="w">    </span><span class="n">fileVersion</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">zigBeeStackVersion</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">char</span><span class="w">        </span><span class="n">headerStr</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint32_t</span><span class="w">    </span><span class="n">imageSize</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">minHWVersion</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">maxHWVersion</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -1269,25 +1268,25 @@
 <ul>
 <li><p>生成OTA文件</p>
 <p>可以使用Bouffalo Lab提供的OTA文件生成工具（ota-image-builder.exe）来生成OTA文件，命令行参数如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="../../../_images/ota-image-builder.png" src="../../../_images/ota-image-builder.png" />
-</figure>
+</div>
 <p>示例</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="../../../_images/ota-build-example.png" src="../../../_images/ota-build-example.png" />
-</figure>
+</div>
 </li>
 </ul>
-</section>
-<section id="ota-server">
+</div>
+<div class="section" id="ota-server">
 <h3>配置OTA Server<a class="headerlink" href="#ota-server" title="永久链接至标题"></a></h3>
 <p>这里介绍使用BL706开发板作为OTA Server的使用方法。</p>
 <ul>
 <li><p>烧写OTA文件到MFG分区</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="../../../_images/ota-upload.png" src="../../../_images/ota-upload.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>Chip Erase选择False</p></li>
 <li><p>Factory Param选择bl_factory_params_IoTKitA_32M.dts</p></li>
@@ -1299,22 +1298,22 @@
 </div></blockquote>
 </li>
 <li><p>加载OTA文件</p></li>
-<li><figure class="align-default">
+<li><div class="figure align-default">
 <img alt="../../../_images/ota-load.png" src="../../../_images/ota-load.png" />
-</figure>
+</div>
 <p>如上图所示，在开发板上输入&quot;zb_zcl_ota_load_ota_image&quot; CLI命令加载OTA文件。</p>
 </li>
 </ul>
-</section>
-<section id="ota-3">
-<h3>OTA升级过程演示<a class="headerlink" href="#ota-3" title="永久链接至标题"></a></h3>
+</div>
+<div class="section" id="id5">
+<h3>OTA升级过程演示<a class="headerlink" href="#id5" title="永久链接至标题"></a></h3>
 <ul>
 <li><p>第一步：生成OTA文件</p></li>
 <li><p>第二步：配置OTA Server</p></li>
 <li><p>第三步：发送Image Notify通知Client设备开始升级</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="../../../_images/ota-notify.png" src="../../../_images/ota-notify.png" />
-</figure>
+</div>
 <p>OTA Server端输入&quot;zb_zcl_ota_image_notify 0x89b5 1 1 0x00 10&quot; CLI命令来发送Image Notify， 其中0x89b5为OTA Client短地址。</p>
 </li>
 <li><p>第四步：OTA Client询问OTA Server是否有可升级的OTA文件</p></li>
@@ -1341,30 +1340,30 @@
 <li><p>OTA Server端串口会打印收到的Image Block Reqeust</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="../../../_images/ota-srv-progress.png" src="../../../_images/ota-srv-progress.png" />
-</figure>
+</div>
 </div></blockquote>
 <ol class="loweralpha" start="2">
 <li><p>OTA Client端串口会打印OTA升级进度</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="../../../_images/ota-client-progress.png" src="../../../_images/ota-client-progress.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ol>
 </div></blockquote>
 <ul>
 <li><p>第六步：OTA文件传输完毕后，OTA Client会对OTA文件进行SHA256 hash校验，校验成功会切换到新image</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="../../../_images/ota-succ.png" src="../../../_images/ota-succ.png" />
-</figure>
+</div>
 </li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -1407,7 +1406,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

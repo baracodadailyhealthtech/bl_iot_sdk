@@ -56,14 +56,6 @@ INCLUDE_COMPONENTS += $(PROJECT_NAME)
 
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk
 
-ifdef CONFIG_CACHE_SIZE
-EXTRA_LDFLAGS += -Wl,--defsym=__CACHE_SIZE=$(CONFIG_CACHE_SIZE)
-endif
-
-ifdef CONFIG_BLE_EM_SIZE
-EXTRA_LDFLAGS += -Wl,--defsym=__EM_SIZE=$(CONFIG_BLE_EM_SIZE)
-endif
-
 ifeq ($(CONFIG_BTBLECONTROLLER_LIB),all)
 LDFLAGS := $(filter-out $(addprefix -l$(BTBLECONTROLLER_LIB_PREFIX), $(filter-out $(BTBLECONTROLLER_LIB_DEFAULT), $(BTBLECONTROLLER_LIBS))), $(LDFLAGS))
 endif

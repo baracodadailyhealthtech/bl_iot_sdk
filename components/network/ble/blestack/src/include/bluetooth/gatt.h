@@ -1386,7 +1386,6 @@ int bt_gatt_unsubscribe(struct bt_conn *conn,
  *  @param params Requested params address.
  */
 void bt_gatt_cancel(struct bt_conn *conn, void *params);
-
 #if defined(BFLB_BLE_MTU_CHANGE_CB)
 typedef void (*bt_gatt_mtu_changed_cb_t)(struct bt_conn *conn, int mtu);
 void bt_gatt_register_mtu_callback(bt_gatt_mtu_changed_cb_t cb);
@@ -1407,6 +1406,12 @@ void bt_gatt_register_notification_callback(bt_notification_all_cb_t cb);
  *  @param void.
  */
 void bt_gatt_ccc_load(void);
+/** @brief Send service changed indication.
+ *
+ *  @param start start attribute handle.
+ *  @param end end attribute handle.
+*/
+void bt_gatt_sc_indicate(u16_t start, u16_t end);
 #endif
 #if defined(BFLB_BLE_DYNAMIC_SERVICE)
 #if defined(CONFIG_BT_PERIPHERAL)

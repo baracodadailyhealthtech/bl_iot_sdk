@@ -1,4 +1,10 @@
 # Changes
+## 2024-05-14
+1.[bl702L][bl616]Fix an assert issue caused by an unexpected adv parameter field in a corner case.
+
+## 2024-04-01
+1.[bl702L]In mfg test,use a weak funtion to print out logging instead of using printf directly.
+
 ## 2024-03-15
 1.[bl702L]Bring up BL702L_A1 with btblecontroller rom code.
 

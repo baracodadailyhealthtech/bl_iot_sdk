@@ -118,6 +118,7 @@
 #define SPI_CMD_GET_BIT_ORDER        (0x0C)
 #define SPI_CMD_SET_BYTE_ORDER       (0x0E)
 #define SPI_CMD_GET_BYTE_ORDER       (0x0F)
+#define SPI_CMD_SET_DEGLITCH_CNT     (0x10)
 
 /**
   * @}

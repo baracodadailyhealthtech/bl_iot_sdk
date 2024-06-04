@@ -121,6 +121,11 @@
 #endif //CONFIG_BT_MESH
 #endif
 
+#if defined(CONFIG_BT_MESH_PTS)
+//#define MESH_LCTL_BIND_WITH_GENLVL   //Lighting CTL Temperature state bind with Genneric Level
+//#define MESH_LHSLH_BIND_WITH_GENLVL  //Lighting HSL Hue state bind with Genneric Level
+//#define MESH_LHSLSA_BIND_WITH_GENLVL //Lighting HSL Saturation state bind with Genneric Level
+#endif
 /**
 * CONFIG_BT_RX_BUF_RSV_COUNT: number of buffer that HCI_LE_EVENT reserved
 * events,range 1 to CONFIG_BT_RX_BUF_COUNT
@@ -603,14 +608,9 @@
 
 /*******************************Bouffalo Lab Modification******************************/
 
-#if defined(CFG_IOT_SDK) || defined(BL_MCU_SDK)
 //#define BFLB_BLE_DISABLE_STATIC_ATTR
 //#define BFLB_BLE_DISABLE_STATIC_CHANNEL
-#else/* CFG_IOT_SDK BL_MCU_SDK */
-#define BFLB_BLE_DISABLE_STATIC_ATTR
-#define BFLB_BLE_DISABLE_STATIC_CHANNEL
-#define BFLB_BR_DISABLE_STATIC_CHANNEL
-#endif /* CFG_IOT_SDK BL_MCU_SDK */
+
 #define BFLB_DISABLE_BT
 #define BFLB_FIXED_IRK 0
 #define BFLB_DYNAMIC_ALLOC_MEM
@@ -723,7 +723,6 @@ BT_SMP_DIST_ENC_KEY bit is not cleared while remote ENC_KEY is received.*/
  */
 #define BFLB_BLE_PATCH_ATT_SEND_REQ_WHEN_TX_SEM_BUSY_BUF_ERR
 
-#define BR_EDR_PTS_TEST 0
 #define BFLB_BLE_ENABLE_TEST_PSM 0
 #define BFLB_BREDR_SCO_TYPE_FIX
 #define BFLB_BLE_PATCH_FORCE_UPDATE_GAP_DEVICE_NAME

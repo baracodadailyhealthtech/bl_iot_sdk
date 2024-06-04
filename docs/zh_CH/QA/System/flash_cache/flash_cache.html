@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>配置Flash频率和cache大小 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>配置Flash频率和cache大小 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
         <link rel="up" title="&lt;no title&gt;" href="../index.html"/>
         <link rel="next" title="backtrace工具使用" href="../backtrace/backtrace.html"/>
         <link rel="prev" title="&lt;no title&gt;" href="../index.html"/> 
@@ -75,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -181,31 +180,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="flashcache">
+  <div class="section" id="flashcache">
 <h1>配置Flash频率和cache大小<a class="headerlink" href="#flashcache" title="永久链接至标题"></a></h1>
-<section id="flash">
+<div class="section" id="flash">
 <h2>配置Flash频率<a class="headerlink" href="#flash" title="永久链接至标题"></a></h2>
 <p>配置文件路径 <code class="docutils literal notranslate"><span class="pre">tools/flash_tool/chips/bl602/img_create_iot/efuse_bootheader_cfg.ini</span></code> ，配置文件
 <code class="docutils literal notranslate"><span class="pre">efuse_bootheader_cfg.ini``(如没有该配置文件，需要先打开烧录工具后该目录中才会存在此配置文件)</span>
 <span class="pre">，如下图所示，当前Flash时钟源为80M，分频为2分频（1+1），所以当前Flash时钟频率为40MHz，其中\</span> <span class="pre">``flash_clk_type</span></code>
 表示Flash的时钟源，<code class="docutils literal notranslate"><span class="pre">flash_clk_div</span></code> 表示分频因子（分频数 =
 flash_clk_div + 1）</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image138.png" />
-</figure>
-</section>
-<section id="cache-size">
+</div>
+</div>
+<div class="section" id="cache-size">
 <h2>配置cache size<a class="headerlink" href="#cache-size" title="永久链接至标题"></a></h2>
 <p>配置文件路径 <code class="docutils literal notranslate"><span class="pre">tools/flash_tool/chips/bl602/img_create_iot/efuse_bootheader_cfg.ini</span></code> ，配置文件
 <code class="docutils literal notranslate"><span class="pre">efuse_bootheader_cfg.ini``(如没有该配置文件，需要先打开烧录工具后该目录中才会存在此配置文件)</span>
 <span class="pre">，cache最大为32k，分为4条way，每条way是8k，调整的单位也是1条way，如下图所示，\</span> <span class="pre">``cache_enable</span></code>
 表示cache是否开启，<code class="docutils literal notranslate"><span class="pre">cache_way_disable</span></code>
 表示关闭way的数目，可以设置为0x01，0x03，0x07，0xFF，分别表示关闭1，2，3，4条way。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image233.png" />
-</figure>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -248,7 +247,7 @@ flash_clk_div + 1）</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

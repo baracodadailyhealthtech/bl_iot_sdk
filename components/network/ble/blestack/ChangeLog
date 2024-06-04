@@ -1,4 +1,30 @@
 # Changes
+##2024-5-24
+1.Add an api to check if bt is ready.
+2.Make bt_auth callback can be updated if needed.
+
+##2024-5-23
+1.[L2CAP][BR]Fix l2cap l2cap_br_conf_rsp parameter incorrect
+
+##2024-05-22
+1.SBC CVE-2024-1638 and CVE-2024-3077. URL:https://android.googlesource.com/platform/packages/modules/Bluetooth/+/7b126f346ba0990eca5c80e958685f75fd5c7fd1%5E%21/
+
+##2024-04-23
+1.Add api to make upper layer can send gatt servie changed indication.
+
+## 2024-04-16
+1.Fix the assert issue in a corner case casued by connection update timer which is not deleted completely.
+2.Not unblock hci tx thread when hci number complete event is received to optimize code.
+
+## 2024-04-10
+1.Change the max adv length from 30 to 31 bytes in set_ad_and_rsp_d function
+
+## 2024-04-8
+1.Fix an error when enable disable ble repeatedly(bouffalo sdk).
+
+## 2024-03-27
+1.Fix CVE Cases :cve-2021-3436, cve-2022-1041, cve-2022-1042, cve-2022-2993, cve-2023-4264, cve-2023-5753
+2.BREDR Add auth callback related command
 
 ## 2024-03-18
 1.Optimize bl hci wrapper layer to fix the assert issue caused by lack of cache space during att rx test in a corner case.

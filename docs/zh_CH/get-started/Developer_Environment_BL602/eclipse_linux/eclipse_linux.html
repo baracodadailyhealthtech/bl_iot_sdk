@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>eclipse调试 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>eclipse调试 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/> 
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -165,46 +164,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="eclipse">
+  <div class="section" id="eclipse">
 <h1>eclipse调试<a class="headerlink" href="#eclipse" title="永久链接至标题"></a></h1>
-</section>
-<section id="eclipse-2">
-<span id="eclipse-1"></span><h1>1.下载安装eclipse<a class="headerlink" href="#eclipse-2" title="永久链接至标题"></a></h1>
+</div>
+<div class="section" id="id1">
+<span id="id2"></span><h1>1.下载安装eclipse<a class="headerlink" href="#id1" title="永久链接至标题"></a></h1>
 <p>下载地址: <a class="reference external" href="https://www.eclipse.org/downloads/">https://www.eclipse.org/downloads/</a></p>
 <p>下载后双击安装就行,配置如下:</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-201.png" />
-</figure>
+</div>
 <p>选择安装的jdk版本和要安装的路径,点击install安装.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-211.png" />
-</figure>
-</section>
-<section id="eclipse-4">
-<span id="eclipse-3"></span><h1>3.工程到eclipse<a class="headerlink" href="#eclipse-4" title="永久链接至标题"></a></h1>
+</div>
+</div>
+<div class="section" id="id3">
+<span id="id4"></span><h1>3.工程到eclipse<a class="headerlink" href="#id3" title="永久链接至标题"></a></h1>
 <p>新建makefile的project文件，操作如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-110.png" />
-</figure>
+</div>
 <p>点击<code class="docutils literal notranslate"><span class="pre">Browse...</span></code>选择要加载的代码路径和设置新的工程名字，点击<code class="docutils literal notranslate"><span class="pre">Finish</span></code>，工程便导入到了工作空间。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-26.png" />
-</figure>
-</section>
-<section id="section-1">
-<span id="target-1"></span><h1>3. 调试配置<a class="headerlink" href="#section-1" title="永久链接至标题"></a></h1>
+</div>
+</div>
+<div class="section" id="id5">
+<span id="id6"></span><h1>3. 调试配置<a class="headerlink" href="#id5" title="永久链接至标题"></a></h1>
 <p>右键工程，选择<code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">As</span> <span class="pre">&gt;Debug</span> <span class="pre">Configurations...</span></code>操作界面如下：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-31.png" />
-</figure>
-<figure class="align-default">
+</div>
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-41.png" />
-</figure>
+</div>
 <p>打开后新建一个调试平台，点击<code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">launch</span> <span class="pre">configuration</span></code>，然后配置，请按照下面所示图进行配置，大致如下：</p>
 <p>main界面配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-51.png" />
-</figure>
+</div>
 <p>Debugger配置</p>
 <ul class="simple">
 <li><p>openocd工具相关路径（<code class="docutils literal notranslate"><span class="pre">${project_loc}/tools/ide/openocd/linux64/bin/openocd</span></code>）</p></li>
@@ -214,30 +213,30 @@
 <li><p>gdb调试工具（<code class="docutils literal notranslate"><span class="pre">${project_loc}/toolchain/riscv/Linux/bin/riscv64-unknown-elf-gdb</span></code>）</p></li>
 <li><p>调试硬件初始化文件配置（<code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">tools/debug/602/602.init</span></code>）</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-61.png" />
-</figure>
+</div>
 <p>Startup配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-71.png" />
-</figure>
+</div>
 <p>Common配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-81.png" />
-</figure>
+</div>
 <p>SVD Path配置</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-91.png" />
-</figure>
-</section>
-<section id="debug-1">
-<span id="debug"></span><h1>4. debug<a class="headerlink" href="#debug-1" title="永久链接至标题"></a></h1>
+</div>
+</div>
+<div class="section" id="debug">
+<span id="id7"></span><h1>4. debug<a class="headerlink" href="#debug" title="永久链接至标题"></a></h1>
 <p>首先让板子跑起来，使用快捷键 F11 启动 Debug，Freedom
 Studio会先编译工程(注意使用快捷键时确认使用的.launch文件名是自己配置的launch文件，可以通过工具栏
 Run &gt; Debug As &gt; 进行查看)，调试功能如下图所示：</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-101.png" />
-</figure>
+</div>
 <p>1号区功能介绍，从左向右</p>
 <ul class="simple">
 <li><p>按钮 <code class="docutils literal notranslate"><span class="pre">Resume</span></code>（ F8）一下，如果Debug
@@ -254,41 +253,41 @@ Return就可以执行完子函数余下部分，并返回上一层函数。</p><
 </ul>
 <p>2号功能区</p>
 <p>Registers：该标签是对cpu通用寄存器的显示，pc，sp等寄存器；</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-111.png" />
-</figure>
+</div>
 <p>3号功能介绍，标签从左向右</p>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Breakp</span></code>是对断点的显示，全局有多少断点都会显示在此处；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-121.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Variable</span></code>是对环境变量的显示，当调试暂停时，你的鼠标暂停在某变量时，该标签便会显示相关参数的数据信息；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-131.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">Express</span></code>
 可以添加相关想要查看到变量，该标签添加完变量时，变量的信息会实时的变化；</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-141.png" />
-</figure>
+</div>
 <ul class="simple">
 <li><p>标签<code class="docutils literal notranslate"><span class="pre">periphe</span></code>是对底层硬件寄存器的查看，该数据是和上面配置的vsd文件有关，如果上面没有配置该文件，此处将是空白显示，勾选的标签将会在内存的标签中显示。</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-151.png" />
-</figure>
+</div>
 <p>4号区</p>
 <p>Memory该标签是对硬件内存的查看，可以添加相关硬件地址，可以看到该地区数据的变化。</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="" src="../../../_images/image-161.png" />
-</figure>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -322,7 +321,7 @@ Return就可以执行完子函数余下部分，并返回上一层函数。</p><
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

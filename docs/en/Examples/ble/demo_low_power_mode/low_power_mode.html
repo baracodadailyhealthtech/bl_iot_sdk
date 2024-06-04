@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档</title>
+  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
   
 
   
@@ -40,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1917-gddebf7caa 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
         <link rel="up" title="BLE" href="../index.html"/>
         <link rel="next" title="BL702L_Ble_Remote_Control_Demo" href="../demo_ble_rc/ble_rc.html"/>
         <link rel="prev" title="Ble Introduction" href="../demo_ble/ble.html"/> 
@@ -75,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1917-gddebf7caa
+                release_bl_iot_sdk_1.6.40-1973-g7970cf316
               </div>
             
           
@@ -188,13 +187,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="low-power-mode-bl702l">
+  <div class="section" id="low-power-mode-bl702l">
 <span id="ble-index"></span><h1>Low_Power_Mode_BL702L<a class="headerlink" href="#low-power-mode-bl702l" title="永久链接至标题"></a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="永久链接至标题"></a></h2>
 <p>This example mainly intoduces how to use ble low power mode.</p>
-</section>
-<section id="low-power-mode">
+</div>
+<div class="section" id="low-power-mode">
 <h2>Low Power Mode<a class="headerlink" href="#low-power-mode" title="永久链接至标题"></a></h2>
 <ul>
 <li><p>Low Power Flow</p>
@@ -248,17 +247,17 @@ Freertos is used in SDK. In Freertos’ idle task, it checks whether BL702L devi
 </li>
 <li><p>How to measure current and average power consumption</p>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <img alt="" src="../../../_images/image110.png" />
-</figure>
+</div>
 </div></blockquote>
 <p>Refer to the above schematic diagram,</p>
 <p>1.When using a multimeter to measure current, connect the positive pole of the multimeter to <code class="docutils literal notranslate"><span class="pre">VDD33</span></code> on <code class="docutils literal notranslate"><span class="pre">J2</span></code> , and connect the negative pole of the multimeter to <code class="docutils literal notranslate"><span class="pre">VDD33_MOD</span></code> on <code class="docutils literal notranslate"><span class="pre">J2</span></code> .</p>
 <p>2.When using the power monitor to measure average power consumption, the development board is generally powered through the power monitor. The positive pole of the power monitor is connected to <code class="docutils literal notranslate"><span class="pre">VDD33_MOD</span></code> on <code class="docutils literal notranslate"><span class="pre">J2</span></code> , and the negative pole of the power monitor is connected to <code class="docutils literal notranslate"><span class="pre">GND</span></code> on <code class="docutils literal notranslate"><span class="pre">J2</span></code> .</p>
 </li>
 </ul>
-</section>
-<section id="memory-introduction">
+</div>
+<div class="section" id="memory-introduction">
 <h2>Memory Introduction<a class="headerlink" href="#memory-introduction" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>The BL702L contains three parts of ram, i.e. tcm, ocram and hbnram.</p>
@@ -270,8 +269,8 @@ Freertos is used in SDK. In Freertos’ idle task, it checks whether BL702L devi
 <p>ocram: 72K ram (static ram + heap + system stack) + 8K EM</p>
 <p>hbnram: 4K ram (common data and rf driver)</p>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -314,7 +313,7 @@ Freertos is used in SDK. In Freertos’ idle task, it checks whether BL702L devi
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1917-gddebf7caa',
+            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

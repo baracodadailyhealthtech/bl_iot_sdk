@@ -800,8 +800,11 @@ static void hci_acl(struct net_buf *buf)
 	u8_t flags;
 
 	BT_DBG("buf %p", buf);
-
-	BT_ASSERT(buf->len >= sizeof(*hdr));
+	if (buf->len < sizeof(*hdr)) {
+		BT_ERR("Invalid HCI ACL packet size (%u)", buf->len);
+		net_buf_unref(buf);
+		return;
+	}
 
 	hdr = net_buf_pull_mem(buf, sizeof(*hdr));
 	len = sys_le16_to_cpu(hdr->len);
@@ -900,9 +903,6 @@ static void hci_num_completed_packets(struct net_buf *buf)
 
 			k_work_submit(&conn->tx_complete_work);
 			k_sem_give(bt_conn_get_pkts(conn));
-#if defined(BFLB_BLE)
-            k_sem_give(&g_poll_sem);
-#endif
 		}
 
 		bt_conn_unref(conn);
@@ -4382,7 +4382,11 @@ static void hci_event(struct net_buf *buf)
 {
 	struct bt_hci_evt_hdr *hdr;
 
-	BT_ASSERT(buf->len >= sizeof(*hdr));
+	if (buf->len < sizeof(*hdr)) {
+		BT_ERR("Invalid HCI ACL packet size (%u)", buf->len);
+		net_buf_unref(buf);
+		return;
+	}
 
 	hdr = net_buf_pull_mem(buf, sizeof(*hdr));
 	BT_DBG("event 0x%02x", hdr->evt);
@@ -5584,7 +5588,11 @@ int bt_recv_prio(struct net_buf *buf)
 	bt_monitor_send(bt_monitor_opcode(buf), buf->data, buf->len);
 
 	BT_ASSERT(bt_buf_get_type(buf) == BT_BUF_EVT);
-	BT_ASSERT(buf->len >= sizeof(*hdr));
+	if (buf->len < sizeof(*hdr)) {
+		BT_ERR("Invalid HCI ACL packet size (%u)", buf->len);
+		net_buf_unref(buf);
+		return 0;
+	}
 
 	hdr = net_buf_pull_mem(buf, sizeof(*hdr));
 	BT_ASSERT(bt_hci_evt_is_prio(hdr->evt));
@@ -5792,6 +5800,14 @@ static void hci_rx_thread(void)
 }
 #endif /* !CONFIG_BT_RECV_IS_RX_THREAD */
 
+bool bt_is_ready(void)
+{
+    if(atomic_test_bit(bt_dev.flags, BT_DEV_READY))
+        return true;
+    else
+        return false;
+}
+
 int bt_enable(bt_ready_cb_t cb)
 {
 	int err;
@@ -5995,7 +6011,7 @@ int bt_disable_action(void)
     //delete sem
     k_sem_delete(&bt_dev.ncmd_sem);
     k_sem_delete(&g_poll_sem);
-    #if defined(CONFIG_BT_SMP)
+    #if defined(CONFIG_BT_ECC) && defined(CONFIG_BT_SMP)
     k_sem_delete(&sc_local_pkey_ready);
     #endif
     #if defined(CONFIG_BT_CONN)
@@ -7050,7 +7066,7 @@ int set_ad_and_rsp_d(u16_t hci_op, u8_t *data, u32_t ad_len)
 		memset(set_data, 0, size);
 		set_data->len = ad_len;	
 
-		if (set_data->len > 30) {
+		if (set_data->len > 31) {
 			net_buf_unref(buf);
 			return -ENOBUFS;
 		}
@@ -7064,7 +7080,7 @@ int set_ad_and_rsp_d(u16_t hci_op, u8_t *data, u32_t ad_len)
 
 		set_data->len = ad_len;	
 
-		if (set_data->len > 30) {
+		if (set_data->len > 31) {
 			net_buf_unref(buf);
 			return -ENOBUFS;
 		}
