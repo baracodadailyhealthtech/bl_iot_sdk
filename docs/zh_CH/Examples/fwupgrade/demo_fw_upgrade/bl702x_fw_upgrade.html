@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BL70X 固件升级流程 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../../../index.html"/>
+        <link rel="up" title="Upgrade" href="../index.html"/>
+        <link rel="next" title="Components" href="../../../Components/index.html"/>
+        <link rel="prev" title="Upgrade" href="../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API 参考</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../ble/index.html">BLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zigbee/index.html">Zigbee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">FW Upgrade</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">FW_Upgrade</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#flash">Flash 分区介绍</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">固件升级流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Example</a> &raquo;</li>
+        
+          <li><a href="../index.html">Upgrade</a> &raquo;</li>
+        
+      <li>BL70X 固件升级流程</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/fwupgrade/demo_fw_upgrade/bl702x_fw_upgrade.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bl70x">
+<span id="bl702-flash-ota"></span><h1>BL70X 固件升级流程<a class="headerlink" href="#bl70x" title="永久链接至标题"></a></h1>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
+<p>BL70X 系列芯片采用双分区的方式实现固件升级，即在 Flash 中维护两个独立的固件分区, 升级时新固件被写入未使用的分区，而当前运行的固件保持不变。</p>
+<p>升级成功后，重启系统，引导加载程序 (Bootloader) 会切换到新分区运行新固件。如果升级失败，系统可以回滚到旧的工作分区 (使能回滚功能)，保证系统不会因为升级失败而无法使用。</p>
+</div>
+<div class="section" id="flash">
+<h2>Flash 分区介绍<a class="headerlink" href="#flash" title="永久链接至标题"></a></h2>
+<p>BL70X 系列芯片配备了多种容量的内置 Flash，以满足不同产品的存储需求。以下以 <cite>partition_cfg_1M.toml</cite> 配置文件为例，介绍在 1M Flash 中的内容以及分区设置：</p>
+<ul>
+<li><p><strong>引导头 (Boot Header)</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>地址: 0x0000</p></li>
+<li><p>大小: 4 KB</p></li>
+<li><p>存储引导参数，芯片启动时从这里获取参数完成启动流程，包括 Flash 配置、固件校验和回滚等参数。</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>分区表 (Partition Table)</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>地址: 0x1000 和 0x2000</p></li>
+<li><p>大小: 4 KB（每个分区表）</p></li>
+<li><p>双备份分区表，用于存储 Flash 分区信息。芯片启动时，启动代码会自动加载最新的一份分区表来引导启动。</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>固件 (FW)</strong>:</p>
+<ul class="simple">
+<li><p><strong>FW0</strong>:</p>
+<ul>
+<li><p>地址: 0x3000</p></li>
+<li><p>大小: 0x90000</p></li>
+</ul>
+</li>
+<li><p><strong>FW1</strong>:</p>
+<ul>
+<li><p>地址: 0x93000</p></li>
+<li><p>大小: 0x66000</p></li>
+<li><p>双备份固件，用于存储主固件和备份固件。</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>产测固件 (MFG)</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>地址: 0x93000</p></li>
+<li><p>大小: 0x66000</p></li>
+<li><p>用于存储产测固件，配合 BL70X 系列的启动引导程序，可实现双固件存储以及自动切换. 产测结束后，产测固件失效，该区域用作 FW1 分区。</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>用户数据 (PSM)</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>地址: 0xF9000</p></li>
+<li><p>大小: 8 KB</p></li>
+<li><p>用于存储用户数据。使用 EasyFlash 时，建议此区域大小不小于 8 KB。</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>媒体 (Media)</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>地址: 0xFB000</p></li>
+<li><p>大小: 16 KB</p></li>
+<li><p>对于 Zigbee 应用，存放网络信息；对于 BLE 应用，目前保留为空。</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>设备树 (Factory)</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>地址: 0xFF000</p></li>
+<li><p>大小: 4 KB</p></li>
+<li><p>存储设备树信息，用于存储硬件配置，非必要时可删除。</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>总大小</strong> 1 MB (0x100000)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">pt_table</span><span class="p">]]</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0x1000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mh">0x2000</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;FW&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0x3000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x90000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mh">0x93000</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mh">0x65000</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;mfg&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0x93000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x65000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;PSM&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0xF8000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x2000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;backup&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0xFA000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x1000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;media&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0xFB000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x4000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;factory&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0xFF000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x1000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p><em>partition_cfg_1M.toml</em></p>
+</div>
+<div class="section" id="id2">
+<h2>固件升级流程<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>BL70X 支持多种固件升级方法，包括 UART 串口升级、BLE OTA 升级和 Zigbee OTA 升级。</p>
+<p>以下介绍升级的主要步骤和API, 用户可参考 <code class="docutils literal notranslate"><span class="pre">hosal_ota.c</span></code>, <code class="docutils literal notranslate"><span class="pre">oad_main.c</span></code> 和 <code class="docutils literal notranslate"><span class="pre">zb_ota.c</span></code> 等代码实现UART 串口升级、BLE OTA 升级和 Zigbee OTA 升级固件的完整流程。</p>
+<ol class="arabic">
+<li><p><strong>软件流程概述</strong></p>
+<ul class="simple">
+<li><p>获取当前分区表中的备份固件 Flash 地址。</p></li>
+<li><p>将新固件写到备份固件 Flash 地址。</p></li>
+<li><p>备份分区的内容校验。</p></li>
+<li><p>更新未使用的分区表，标记新固件为最新分区。</p></li>
+<li><p>重启设备，启动代码会根据最新分区表完成引导和 OTA 流程。</p></li>
+</ul>
+</li>
+<li><p><strong>主要API</strong>:</p>
+<ul>
+<li><p><strong>获取活动分区表</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">pt_table_get_active_partition_need_lock()</span>
+<span class="pre">`</span></code></p>
+</li>
+<li><p><strong>写入固件到 Flash</strong>:</p>
+<ul>
+<li><p>使用以下函数获取新镜像地址和大小：</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">pt_table_get_active_entries_by_name()</span>
+<span class="pre">`</span></code></p>
+</li>
+<li><p>使用以下函数擦除 Flash 备份分区：</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">bflb_flash_erase()</span>
+<span class="pre">`</span></code></p>
+</li>
+<li><p>使用以下函数写入固件数据：</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">bflb_flash_write()</span>
+<span class="pre">`</span></code></p>
+</li>
+</ul>
+</li>
+<li><p><strong>固件哈希检查</strong>:</p>
+<p>计算备份固件的 SHA256 哈希并与存储的哈希进行比较：</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">fw_check_hash256()</span>
+<span class="pre">`</span></code></p>
+<p>如果验证失败，退出升级流程。</p>
+</li>
+<li><p><strong>更新分区表</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">pt_table_update_entry()</span>
+<span class="pre">`</span></code></p>
+</li>
+<li><p><strong>重启设备</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">GLB_SW_POR_Reset()</span>
+<span class="pre">`</span></code></p>
+</li>
+</ul>
+</li>
+<li><p><strong>备份固件</strong>:</p>
+<p>使用 <cite>devCube</cite> 软件，点击 &quot;Create &amp; Download&quot; 按钮，会自动生成备份固件并保存以下文件 <code class="docutils literal notranslate"><span class="pre">BouffaloLabDevCube-v1.8.9/chips/bl702/ota/FW_OTA.bin.xz.hash</span></code>。该文件不仅包含备份固件，还添加了升级相关信息，如固件的SHA256 哈希值。</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../Components/index.html" class="btn btn-neutral float-right" title="Components" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Upgrade" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

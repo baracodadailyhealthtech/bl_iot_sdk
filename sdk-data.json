@@ -156,7 +156,6 @@
 				"+<src/bflb_gpio.c>",
 				"+<src/bflb_i2c.c>",
 				"+<src/bflb_dma.c>",
-				"+<src/bflb_rtc.c>",
 				"+<src/bflb_sec_aes.c>",
 				"+<src/bflb_sec_sha.c>",
 				"+<src/bflb_sec_trng.c>",
@@ -229,7 +228,7 @@
 				["CONFIG_PHY_UPDATE", 0],
 				["CONFIG_LE_PING", 0],
 				["CONFIG_PHY_UPDATE", 0],
-				["CFG_CON", 4]
+				["CFG_CON", 1]
 			],
 			"include_dirs": [
 				"components/network/ble/btblecontroller/btble_inc",
@@ -410,7 +409,8 @@
  				["CONFIG_BT_KEYS_SAVE_AGING_COUNTER_ON_PAIRING", 1],
  				["CONFIG_BT_BONDABLE", 1],
 				["CONFIG_DISABLE_BLE_CONTROLLER_TEST_MODE", 1],
-				["CONFIG_BT_GAP_PERIPHERAL_PREF_PARAMS", 1]
+				["CONFIG_BT_GAP_PERIPHERAL_PREF_PARAMS", 1],
+				["CONFIG_CLI_DISABLE", 1]
 			],
 			"include_dirs": [
 				"components/network/ble/blestack/src",
@@ -460,7 +460,6 @@
 				"+<src/common/tinycrypt/source/ecc_platform_specific.c>",
 				"+<src/common/tinycrypt/source/hmac.c>",
 				"+<src/common/tinycrypt/source/hmac_prng.c>",
-				"+<src/common/tinycrypt/source/sha256.c>",
 				"+<src/common/tinycrypt/source/utils.c>",
 				"+<src/bl_hci_wrapper/bl_hci_wrapper.c>",
 				"+<src/hci_onchip/hci_driver.c>",

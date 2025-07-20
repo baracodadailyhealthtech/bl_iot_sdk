@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BL70X Firmware Upgrade &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../../../index.html"/>
+        <link rel="up" title="Upgrade" href="../index.html"/>
+        <link rel="next" title="Components" href="../../../Components/index.html"/>
+        <link rel="prev" title="Upgrade" href="../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API 参考</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../ble/index.html">BLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zigbee/index.html">Zigbee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">FW Upgrade</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">FW_Upgrade</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#flash-layout">Flash Layout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#firmware-upgrade-process">Firmware Upgrade Process</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Example</a> &raquo;</li>
+        
+          <li><a href="../index.html">Upgrade</a> &raquo;</li>
+        
+      <li>BL70X Firmware Upgrade</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Examples/fwupgrade/demo_fw_upgrade/bl702x_fw_upgrade.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bl70x-firmware-upgrade">
+<span id="bl702-flash-ota"></span><h1>BL70X Firmware Upgrade<a class="headerlink" href="#bl70x-firmware-upgrade" title="永久链接至标题"></a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="永久链接至标题"></a></h2>
+<p>The BL70X uses a dual-partition structure to perform firmware upgrades. Two independent firmware partitions (FW0 and FW1) are maintained in the flash. During upgrades, the new firmware is written to the inactive partition while the currently running firmware remains unchanged.</p>
+<p>After a successful upgrade, the bootloader switches to the new partition at the next system reboot. If the upgrade fails, the system can roll back to the previous working partition (rollback feature enabled), ensuring the system remains functional.</p>
+</div>
+<div class="section" id="flash-layout">
+<h2>Flash Layout<a class="headerlink" href="#flash-layout" title="永久链接至标题"></a></h2>
+<p>The BL70X series offers various flash capacities. Below is a layout example for a 1 MB configuration <code class="docutils literal notranslate"><span class="pre">partition_cfg_1M.toml</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Boot Header</strong>:</p>
+<ul>
+<li><p>Address: 0x0000</p></li>
+<li><p>Size: 4 KB</p></li>
+<li><p>Holds boot parameters, including flash configuration, firmware verification, and rollback settings.</p></li>
+</ul>
+</li>
+<li><p><strong>Partition Table</strong>:</p>
+<ul>
+<li><p>Address: 0x1000 and 0x2000</p></li>
+<li><p>Size: 4 KB each</p></li>
+<li><p>Dual-backup partition tables store flash partitions, with the latest table loaded at startup. Upon upgrade, the unused table is updated and designated as current.</p></li>
+</ul>
+</li>
+<li><p><strong>Firmware (FW)</strong>:</p>
+<ul>
+<li><p><strong>FW0</strong>:</p>
+<ul>
+<li><p>Address: 0x3000</p></li>
+<li><p>Size: 0x90000</p></li>
+</ul>
+</li>
+<li><p><strong>FW1</strong>:</p>
+<ul>
+<li><p>Address: 0x93000</p></li>
+<li><p>Size: 0x66000</p></li>
+<li><p>Dual-backup firmware, used to store the main and backup firmware images.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Manufacturing Firmware (MFG)</strong>:</p>
+<ul>
+<li><p>Address: 0x93000</p></li>
+<li><p>Size: 0x66000</p></li>
+<li><p>Stores manufacturing test firmware, which used for dual-firmware storage and automatic switching during manufacturing tests. Once manufacturing tests conclude, this firmware becomes inactive, and this space serves as the FW1 partition.</p></li>
+</ul>
+</li>
+<li><p><strong>User Data (PSM)</strong>:</p>
+<ul>
+<li><p>Address: 0xF9000</p></li>
+<li><p>Size: 8 KB</p></li>
+<li><p>Stores user data. For EasyFlash, minimum size is 8 KB.</p></li>
+</ul>
+</li>
+<li><p><strong>Media</strong>:</p>
+<ul>
+<li><p>Address: 0xFB000</p></li>
+<li><p>Size: 16 KB</p></li>
+<li><p>Stores network data for Zigbee, it is reserved and can be removed for BLE applications.</p></li>
+</ul>
+</li>
+<li><p><strong>Factory</strong> (Device Tree Information):</p>
+<ul>
+<li><p>Address: 0xFF000</p></li>
+<li><p>Size: 4 KB</p></li>
+<li><p>Stores hardware configuration data, deletable if unused.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Total Size</strong> 1 MB (0x100000)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">pt_table</span><span class="p">]]</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0x1000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mh">0x2000</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;FW&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0x3000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x90000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mh">0x93000</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mh">0x65000</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;mfg&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0x93000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x65000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;PSM&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0xF8000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x2000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;backup&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0xFA000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x1000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;media&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0xFB000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x4000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="p">[[</span><span class="n">pt_entry</span><span class="p">]]</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;factory&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">address0</span> <span class="o">=</span> <span class="mh">0xFF000</span>
+<span class="n">size0</span> <span class="o">=</span> <span class="mh">0x1000</span>
+<span class="n">address1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">len</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">activeindex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p><em>partition_cfg_1M.toml</em></p>
+</div>
+<div class="section" id="firmware-upgrade-process">
+<h2>Firmware Upgrade Process<a class="headerlink" href="#firmware-upgrade-process" title="永久链接至标题"></a></h2>
+<p>The BL70X supports multiple firmware upgrade methods, including UART upgrades, BLE OTA upgrades, and Zigbee OTA upgrades.</p>
+<p>The following outlines the upgrade process and key APIs. For complete implementation, refer to the source code in <code class="docutils literal notranslate"><span class="pre">hosal_ota.c</span></code>, <code class="docutils literal notranslate"><span class="pre">oad_main.c</span></code>, and <code class="docutils literal notranslate"><span class="pre">zbapp_otaClientHandler.c</span></code>, which detail the firmware upgrade flows for each method.</p>
+<ol class="arabic">
+<li><p><strong>Software Flow</strong></p>
+<ul class="simple">
+<li><p>Retrieve the inactive firmware's flash address from the active partition table.</p></li>
+<li><p>Write the new firmware to the inactive flash address.</p></li>
+<li><p>Verify the content of the backup partition.</p></li>
+<li><p>Update the inactive partition table, marking the new firmware as active.</p></li>
+<li><p>Reboot the device. The bootloader will apply the new partition table and complete the OTA process.</p></li>
+</ul>
+</li>
+<li><p><strong>Key APIs</strong>:</p>
+<ul>
+<li><p><strong>Get Active Partition Table</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">pt_table_get_active_partition_need_lock()</span>
+<span class="pre">`</span></code></p>
+</li>
+<li><p><strong>Write Firmware to Flash</strong>:</p>
+<ul>
+<li><p>Retrieve the images address and size from active partition table:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">pt_table_get_active_entries_by_name()</span>
+<span class="pre">`</span></code></p>
+</li>
+<li><p>Erase the inactive flash partition:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">bflb_flash_erase()</span>
+<span class="pre">`</span></code></p>
+</li>
+<li><p>Write the firmware data:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">bflb_flash_write()</span>
+<span class="pre">`</span></code></p>
+</li>
+</ul>
+</li>
+<li><p><strong>Verify New Firmware</strong>:</p>
+<p>Calculate the SHA256 hash of the inactive flash partition, compare it with the hash stored in the firmware. If verification fails, the upgrade process should exit.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">utils_sha256_init()</span>
+<span class="pre">`</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">utils_sha256_starts()</span>
+<span class="pre">`</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">utils_sha256_update()</span>
+<span class="pre">`</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">utils_sha256_finish()</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+</li>
+<li><p><strong>Update Partition Table</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">pt_table_update_entry()</span>
+<span class="pre">`</span></code></p>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Reboot Device</strong>:</p></li>
+</ul>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">GLB_SW_POR_Reset()</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p><strong>Generating Backup Firmware</strong>:</p></li>
+</ol>
+<blockquote>
+<div><p>When using the <cite>devCube</cite> software, clicking the &quot;Create &amp; Download&quot; button will automatically generate and save the following files:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">BouffaloLabDevCube-v1.8.9/chips/bl702/ota/FW_OTA.bin.xz.hash</span>
+<span class="pre">`</span></code></p>
+<p>This file contains the firmware image and upgrade header information, as well as the SHA256 hash.</p>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../Components/index.html" class="btn btn-neutral float-right" title="Components" accesskey="n">下一页 <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Upgrade" accesskey="p"><span class="fa fa-arrow-circle-left"></span> 上一页</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

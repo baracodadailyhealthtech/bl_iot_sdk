@@ -17,10 +17,7 @@ genzcstartup:      build Zigbee Coordinator image. After boot, factory new ZC wi
 genzcstartuppsram: build Zigbee Coordinator image with psram support.
 genzrstartup:      build Zigbee Router image. After boot, device will scan and join a network automatically if haven't join a network, otherwise, restore network and resume operation.
 genznsedstartup:   build Zigbee Non-Sleepy End Device image. After boot, device will scan and join a network automatically if haven't join a network, otherwise, restore network and resume operation.
-genzsedstartupwithhbn:          build Zigbee Sleepy End Device image. After boot, device will scan and join a network automatically if haven't join a network, otherwise, restore network and resume operation. If device is not active in a zigbee network, it enters into pds31 when it can sleep. If device is active in a zigbee network,it enters into hbn0 when it can sleep.
-genzsedstartupwithpds:          build Zigbee Sleepy End Device image. After boot, device will scan and join a network automatically if haven't join a network, otherwise, restore network and resume operation. Device enters into pds31 when it can sleep.
-genzsedstartupwithpds3:         build Zigbee Sleepy End Device image. After boot, device will scan and join a network automatically if haven't join a network, otherwise, restore network and resume operation. Device enters into pds3 when it can sleep.
-genzsedstartupblescanwithpds3:  build image that supports both Zigbee Sleepy End Device and ble observer. After boot,Device will do zigbee scan and join a zigbee network automatically if haven't join a zigbee network, otherwise, restore network and resume operation. At the meantime, device will do ble scan. Device enters into pds3 when it can sleep.
+genzcclone:        build Zigbee Coordinator image with clone feature. 
 
 #Common Flags
 CONFIG_PDS_ENABLE: To make device be able to enter into Power Dwon Sleep mode.

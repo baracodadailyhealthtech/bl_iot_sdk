@@ -9,10 +9,6 @@ PROJECT_BOARD := evb
 export PROJECT_PATH PROJECT_BOARD
 #CONFIG_TOOLPREFIX :=
 
-BLECONTROLLER_LIBS := m1s1 m0s1 m0s1s m0s1p m16s1 m0s0sp
-BLECONTROLLER_LIB_DEFAULT := m1s1
-BLECONTROLLER_LIB_PREFIX := blecontroller_702_
-
 -include ./proj_config.mk
 
 ifeq ($(origin BL60X_SDK_PATH), undefined)
@@ -35,17 +31,10 @@ ifeq ($(CONFIG_USB_CDC),1)
 INCLUDE_COMPONENTS += bl702_usb_cdc
 endif
 
-ifeq ($(CONFIG_BT),1)
-ifeq ($(CONFIG_BLECONTROLLER_LIB),all)
-    INCLUDE_COMPONENTS += $(addprefix $(BLECONTROLLER_LIB_PREFIX), $(BLECONTROLLER_LIBS))
-else
-    ifeq ($(findstring $(CONFIG_BLECONTROLLER_LIB), $(BLECONTROLLER_LIBS)),)
-        INCLUDE_COMPONENTS += $(addprefix $(BLECONTROLLER_LIB_PREFIX), $(BLECONTROLLER_LIB_DEFAULT))
-    else
-        INCLUDE_COMPONENTS += $(addprefix $(BLECONTROLLER_LIB_PREFIX), $(CONFIG_BLECONTROLLER_LIB))
-    endif
-endif
-INCLUDE_COMPONENTS += blestack
+ifeq ($(CONFIG_LITTLEFS), 1)
+    INCLUDE_COMPONENTS += littlefs
+else ifeq ($(CONFIG_EASYFLASH_ENABLE), 1)
+    INCLUDE_COMPONENTS += easyflash4
 endif
 
 ifeq ($(CONFIG_USE_WIFI_BR), 1)
@@ -63,39 +52,11 @@ else
     endif
 endif
 
-ifeq ($(CONFIG_BT),1)
-INCLUDE_COMPONENTS += blestack blecontroller blsync_ble cjson
-endif
-
-INCLUDE_COMPONENTS += openthread_port openthread_utils_bl702 openthread
-INCLUDE_COMPONENTS += mdns openthread_br
+INCLUDE_COMPONENTS += thread openthread_port openthread_utils_bl702 openthread_br
 INCLUDE_COMPONENTS += $(PROJECT_NAME)
 
-CPPFLAGS += -DCFG_CPP_ENABLE=1
-CPPFLAGS += -DMEMP_NUM_UDP_PCB=20
-
-ifeq ($(CONFIG_LWIP_DEBUG), 1)
-# LWIP_DBG_ON
-CPPFLAGS += -DLWIP_DEBUG=1
-CPPFLAGS += -DDHCP6_DEBUG=LWIP_DBG_ON
-CPPFLAGS += -DICMP_DEBUG=LWIP_DBG_ON
-CPPFLAGS += -DIP6_DEBUG=LWIP_DBG_ON
-CPPFLAGS += -DUDP_DEBUG=LWIP_DBG_ON
-CPPFLAGS += -DNETIF_DEBUG=LWIP_DBG_ON
-CPPFLAGS += -DDHCP_DEBUG=LWIP_DBG_ON
-CPPFLAGS += -DETHARP_DEBUG=LWIP_DBG_ON
-endif
-
-CPPFLAGS += -DPBUF_POOL_SIZE=20
-CPPFLAGS += -DPBUF_POOL_BUFSIZE=1600
-CPPFLAGS += -DCFG_TCPIP_STACKSIZE=1536
-
-CPPFLAGS += -DOTRADIO_RX_FRAME_BUFFER_NUM=12
 CPPFLAGS += -DINCLUDE_xTaskGetHandle=1
 
-#CPPFLAGS += -DOPENTHREAD_CONFIG_LOG_LEVEL=OT_LOG_LEVEL_DEBG
-
-include $(BL60X_SDK_PATH)/components/network/thread/openthread_br/otbr_config.mk
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
 
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk

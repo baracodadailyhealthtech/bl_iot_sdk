@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -89,7 +89,7 @@ uint32_t hal_pds_enter_with_time_compensation(uint32_t pdsLevel, uint32_t pdsSle
     uint64_t rtcRefCnt;
     uint32_t rtcDeltaCnt;
     uint32_t actualSleepDuration_ms;
-    uint32_t mtimerClkCycles;
+    uint64_t mtimerClkCycles;
     uint32_t ulCurrentTimeHigh, ulCurrentTimeLow;
     
     *pullMachineTimerCompareRegister = -1;  // avoid mtimer interrupt pending
@@ -111,11 +111,10 @@ uint32_t hal_pds_enter_with_time_compensation(uint32_t pdsLevel, uint32_t pdsSle
     *pullMachineTimerCompareRegister = -1;
     *(volatile uint8_t *)configCLIC_TIMER_ENABLE_ADDRESS = 0;
     
-    mtimerClkCycles = actualSleepDuration_ms * 1000 * MTIMER_TICKS_PER_US;
-    ulCurrentTimeLow += mtimerClkCycles;
-    if(ulCurrentTimeLow < mtimerClkCycles){
-        ulCurrentTimeHigh++;
-    }
+    mtimerClkCycles = ((uint64_t)ulCurrentTimeHigh << 32) | ulCurrentTimeLow;
+    mtimerClkCycles += (uint64_t)actualSleepDuration_ms * 1000 * MTIMER_TICKS_PER_US;
+    ulCurrentTimeHigh = mtimerClkCycles >> 32;
+    ulCurrentTimeLow = mtimerClkCycles & 0xFFFFFFFF;
     
     *pulTimeLow = 0;
     *pulTimeHigh = ulCurrentTimeHigh;

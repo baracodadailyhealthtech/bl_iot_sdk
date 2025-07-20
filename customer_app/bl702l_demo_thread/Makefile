@@ -21,21 +21,28 @@ endif
 INCLUDE_COMPONENTS += $(PROJECT_NAME)
 INCLUDE_COMPONENTS += bl702l bl702l_std newlibc bl702l_rf hosal vfs yloop utils cli blog
 INCLUDE_COMPONENTS += blmtd blfdt
-INCLUDE_COMPONENTS += easyflash4 coredump mbedtls_lts
+INCLUDE_COMPONENTS += coredump mbedtls_lts
 
-INCLUDE_COMPONENTS += openthread 
-INCLUDE_COMPONENTS += openthread_port 
-INCLUDE_COMPONENTS += openthread_utils_bl702l 
-
-ifeq ($(CONFIG_CHIP_REVISION),A1)
-INCLUDE_COMPONENTS += bl702l_rom_a1
-else
-INCLUDE_COMPONENTS += bl702l_rom_a0
+ifeq ($(CONFIG_LITTLEFS), 1)
+    INCLUDE_COMPONENTS += littlefs
+else ifeq ($(CONFIG_EASYFLASH_ENABLE), 1)
+    INCLUDE_COMPONENTS += easyflash4
 endif
 
-CPPFLAGS += -DCFG_CPP_ENABLE=1
+INCLUDE_COMPONENTS += thread openthread_port 
+ifdef OT_NCP
+    INCLUDE_COMPONENTS += openthread_ncp
+endif
+
+ifeq ($(CONFIG_BUILD_ROM_CODE), 1)
+    INCLUDE_COMPONENTS += bl702_freertos lmac154_bl702l openthread_utils_bl702l
+else
+    ifeq ($(CONFIG_CHIP_REVISION), A1)
+        INCLUDE_COMPONENTS += bl702l_rom_a1 openthread_utils_bl702l_rom
+    else
+        $(error BL702L_A0 doesn't support Thread ROM Code.)
+    endif
+endif
 
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
-
-CPPFLAGS += -DOT_TASK_SIZE=1500
 include $(BL60X_SDK_PATH)/make_scripts_riscv/project.mk

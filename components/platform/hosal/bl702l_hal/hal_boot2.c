@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -33,6 +33,7 @@
 
 #include "bl_boot2.h"
 #include "bl_flash.h"
+#include "bl_hbn.h"
 #include "hal_boot2.h"
 
 #include <blog.h>
@@ -101,8 +102,26 @@ static void _dump_partition(void)
     }
 }
 
+ATTR_HBN_CODE_SECTION
+static uint32_t hal_boot2_get_bootcfg(void)
+{
+    uint32_t bootcfg;
+
+    RomDriver_L1C_Cache_Flush();
+    RomDriver_XIP_SFlash_Read_Via_Cache_Need_Lock(0x74, (uint8_t *)&bootcfg, 4);
+    RomDriver_L1C_Cache_Flush();
+
+    return bootcfg;
+}
+
 uint32_t hal_boot2_get_pt_addr(void)
 {
+    uint32_t bootcfg = hal_boot2_get_bootcfg();
+
+    if(((bootcfg >> 19) & 0x01) == 0){
+        return 0x42033c00;
+    }
+
     if((*(volatile uint32_t *)0x40007074 >> 14) & 0x0F){
         return 0x4202d000;
     }else{
@@ -266,6 +285,16 @@ uint32_t hal_boot2_get_active_partition_age(void)
     return boot2_partition_table.table.ptTable.age;
 }
 
+uint32_t hal_boot2_get_fw_age(void)
+{
+    PtTable_Entry_Config ptEntry = {
+        .age = -1,
+    };
+
+    PtTable_Get_Active_Entries(&boot2_partition_table.table, 0, &ptEntry);
+    return ptEntry.age;
+}
+
 int hal_boot2_get_active_entries_byname(uint8_t *name, HALPartition_Entry_Config *ptEntry_hal) 
 {
     PtTable_Entry_Config *ptEntry = (PtTable_Entry_Config*)ptEntry_hal;
@@ -298,6 +327,12 @@ int hal_boot2_init(void)
     );
     _dump_partition();
     bl_flash_config_update();
+
+    uint32_t addr, size;
+    if (hal_boot2_partition_addr_active("FW", &addr, &size) == 0) {
+        bl_flash_fw_protect_set(1, addr, size);
+        blog_info("[HAL] [BOOT2] Enable fw protection, start_addr 0x%08lx, end_addr 0x%08lx\r\n", addr, addr + size);
+    }
 
     return 0;
 }

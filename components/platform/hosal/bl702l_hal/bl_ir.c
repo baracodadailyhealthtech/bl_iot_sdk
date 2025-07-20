@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -144,7 +144,7 @@ void bl_ir_nec_tx_cfg(void)
         DISABLE,         /* Disable signal of logic 0 pulse inverse */
         ENABLE,          /* Enable signal of data pulse */
         ENABLE,          /* Enable signal of output modulation */
-#if !defined(IR_OUTPUT_INVERSE)
+#if !defined(CFG_IR_OUTPUT_INVERT)
         DISABLE,         /* Disable signal of output inverse */
 #else
         ENABLE,          /* Enable signal of output inverse */
@@ -186,7 +186,7 @@ void bl_ir_rc5_tx_cfg(void)
         DISABLE,         /* Disable signal of logic 0 pulse inverse */
         ENABLE,          /* Enable signal of data pulse */
         ENABLE,          /* Enable signal of output modulation */
-#if !defined(IR_OUTPUT_INVERSE)
+#if !defined(CFG_IR_OUTPUT_INVERT)
         DISABLE,         /* Disable signal of output inverse */
 #else
         ENABLE,          /* Enable signal of output inverse */
@@ -258,7 +258,7 @@ void bl_ir_swm_tx_cfg(float freq_hz, float duty_cycle)
         DISABLE,                                             /* Don't care when SWM is enabled */
         DISABLE,                                             /* Don't care when SWM is enabled */
         ENABLE,                                              /* Enable signal of output modulation */
-#if !defined(IR_OUTPUT_INVERSE)
+#if !defined(CFG_IR_OUTPUT_INVERT)
         DISABLE,                                             /* Disable signal of output inverse */
 #else
         ENABLE,                                              /* Enable signal of output inverse */

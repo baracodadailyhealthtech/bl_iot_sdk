@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Zigbee &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
+  <title>Zigbee &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../../../index.html"/>
         <link rel="up" title="Zigbee" href="../index.html"/>
         <link rel="next" title="zsed_demo" href="../BL702L_ZSED_Sensor/app_demo.html"/>
         <link rel="prev" title="Zigbee" href="../index.html"/> 
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1973-g7970cf316
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
               </div>
             
           
@@ -113,6 +113,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fwupgrade/index.html">FW Upgrade</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
@@ -190,125 +191,111 @@
 <span id="zigbee-index"></span><h1>Zigbee<a class="headerlink" href="#zigbee" title="永久链接至标题"></a></h1>
 <div class="section" id="id1">
 <h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
-<p>本示例主要介绍Zigbee样例程序的基本使用方法。</p>
+<p>本示例主要介绍如何使用zigbee。</p>
 </div>
 <div class="section" id="id2">
 <h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
-<ul class="simple">
-<li><p>进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程，分别使用 <code class="docutils literal notranslate"><span class="pre">genzcstartup</span></code> 脚本和 <code class="docutils literal notranslate"><span class="pre">genzrstartup</span></code> 脚本编译ZC和ZR两种Zigbee设备类型的固件，完成后烧写固件到702开发板中。</p></li>
+<p>进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程并通过 <code class="docutils literal notranslate"><span class="pre">genzb</span></code> 脚本命令编译，完成后下载Bin文件；</p>
+<ul>
+<li><ol class="arabic">
+<li><p>Device1 使用</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0007</span> <span class="pre">0x00</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0007, input cluster 0个, output cluster 7个</p>
+<div class="figure align-default">
+<img alt="" src="../../../_images/ZC-RegisterEP.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><ol class="arabic" start="2">
+<li><p>Device1 使用</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">0</span></code> 命令设置设备类型ZC;</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_form</span> <span class="pre">15</span> <span class="pre">0xaaaa</span></code> 创建信道15，PANID 0xaaaa的ZHA网络 ,打印的部分log如下。</p>
+<div class="figure align-default">
+<img alt="" src="../../../_images/ZC-Startup.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><ol class="arabic" start="3">
+<li><p>Device1 使用</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span> <span class="pre">120</span></code> 开放网络120秒；</p>
+<div class="figure align-default">
+<img alt="" src="../../../_images/zb_nwk_permit_join.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><ol class="arabic" start="4">
+<li><p>Device2 使用</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0102</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span> <span class="pre">0x00</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0102, input cluster 7个, output cluster 0个;</p>
+<p>如果Device2要做touchlink target，input cluster中需要注册touchlink cluster, touchlink cluster id 为0x1000，例如zb_register_dev 1 0x0104 0x0102 0x08 0x0000 0x0003 0x0004 0x0005 0x0006 0x0008 0x0300 0x1000 0x00。</p>
+<div class="figure align-default">
+<img alt="" src="../../../_images/ZR-RegisterEP.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><ol class="arabic" start="5">
+<li><p>Device2 使用</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">1</span></code> 命令设置设备类型ZR;</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_start</span></code> 自动搜索zigbee网络，找到网络后打印的部分log如下。</p>
+<div class="figure align-default">
+<img alt="" src="../../../_images/ZR-Startup.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><ol class="arabic" start="6">
+<li><p>Device1 使用</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_zcl_onoff</span> <span class="pre">2</span> <span class="pre">0x6d4e</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">2</span></code> 命令向Device2 ep1 发送zcl:toggle 命令,地址模式为短地址</p>
+<div class="figure align-default">
+<img alt="" src="../../../_images/ZC-SendOnOff.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><ol class="arabic" start="7">
+<li><p>Device1/2 使用</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_reset</span></code>, 擦除zigbee flash存储内容。</p>
+<div class="figure align-default">
+<img alt="" src="../../../_images/Device_reset.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><ol class="arabic" start="8">
+<li><p>Device1/2 使用</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_reboot</span></code>, 重启程序。</p>
+<div class="figure align-default">
+<img alt="" src="../../../_images/Device_reboot.png" />
+</div>
+</div></blockquote>
+</li>
+</ol>
+</li>
 </ul>
 <div class="admonition important">
 <p class="admonition-title">重要</p>
-<p>由于样例程序默认使能了CLI等调试功能，编译出的固件较大，因此使用1M Flash版本的开发板时，分区表请使用customer_app/bl702_demo_event/partition_cfg_1M_NoOta.toml。</p>
-</div>
-<ul>
-<li><ol class="arabic simple">
-<li><p>ZC设备第一次启动后，会自动建立Zigbee网络，可以使用 <code class="docutils literal notranslate"><span class="pre">zb_info</span></code> 串口命令查看网络信息。</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span>[14:00:43.731]收←◆zb_startup_complete_cb: 0x0, 0x0
-Start as ZC: 0x0000
-
-[14:00:52.493]发→◇zb_info
-□
-[14:00:52.497]收←◆zb_info
-Mac address: c4d7fdcbe9280000
-Node type: ZC
-Status: joined
-Channel: 25
-Network address: 0x0000
-PanId: 0x3c4e
-Extended PanId: 0x6bea76a3561daa80
-</pre></div>
-</div>
-</div></blockquote>
-</li>
-<li><ol class="arabic simple" start="2">
-<li><p>ZC端，使用 <code class="docutils literal notranslate"><span class="pre">zb_zdp_permit_join</span> <span class="pre">0xFFFC</span> <span class="pre">180</span></code> 串口命令开放网络180秒。</p></li>
-</ol>
-</li>
-<li><ol class="arabic simple" start="3">
-<li><p>ZR设备上电后，会自动扫描并加入网络。</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span>[14:22:53.868]收←◆zb_startup_complete_cb: 0x0, 0x1
-Start as ZR: 0x7dc3
-
-[14:23:03.921]发→◇zb_info
-□
-[14:23:03.922]收←◆zb_info
-Mac address: 0xc4d7fdcbe8bf0000
-Node type: ZR
-Status: joined
-Channel: 25
-Network address: 0x7dc3
-PanId: 0x3c4e
-Extended PanId: 0x6bea76a3561daa80
-</pre></div>
-</div>
-</div></blockquote>
-</li>
-<li><ol class="arabic simple" start="4">
-<li><p>ZC端， 使用 <code class="docutils literal notranslate"><span class="pre">zb_zdp_active_ep_req</span> <span class="pre">0x7dc3</span> <span class="pre">0x7dc3</span></code> 串口命令发送Active Endpoints Request请求，查看ZR设备所支持的Endpoint列表。</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span>#
-[14:33:41.160]发→◇zb_zdp_active_ep_req 0x7dc3 0x7dc3
-□
-[14:33:41.168]收←◆zb_zdp_active_ep_req 0x7dc3 0x7dc3
-
-#
-[14:33:41.202]收←◆zdp_activeEpRspCb: 0x7dc3
-zdp_activeEpRspCb status:0x0, nwk:0x7dc3, activeEPCnt:0x2
-active ep[0] 0x1
-active ep[1] 0xf2
-</pre></div>
-</div>
-</div></blockquote>
-</li>
-<li><ol class="arabic simple" start="5">
-<li><p>ZC端， 使用 <code class="docutils literal notranslate"><span class="pre">zb_zdp_simple_des_req</span> <span class="pre">0x7dc3</span> <span class="pre">0x7dc3</span> <span class="pre">1</span></code> 串口命令发送Simple Descriptor Request请求，查看ZR设备Endpoint 1的设备类型和支持的cluster列表。</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span>[14:43:30.215]发→◇zb_zdp_simple_des_req 0x7dc3 0x7dc3 1
-□
-[14:43:30.217]收←◆zb_zdp_simple_des_req 0x7dc3 0x7dc3 1
-
-#
-[14:43:30.257]收←◆zdp_simpleDescRspCb status 0x00, addr:0x7dc3
-device id: 0x010d
-input cluster[0]: 0x0000
-input cluster[1]: 0x0003
-input cluster[2]: 0x0004
-input cluster[3]: 0x0005
-input cluster[4]: 0x0006
-input cluster[5]: 0x0008
-input cluster[6]: 0x0300
-input cluster[7]: 0x0406
-input cluster[8]: 0x0b05
-input cluster[9]: 0x1000
-input cluster[10]: 0xfc00
-output cluster[0]: 0x0019
-</pre></div>
-</div>
-</div></blockquote>
-</li>
-<li><ol class="arabic simple" start="6">
-<li><p>ZC端， 使用 <code class="docutils literal notranslate"><span class="pre">zb_zcl_onoff</span> <span class="pre">2</span> <span class="pre">0x7dc3</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">2</span></code> 串口命令向ZR设备的EndPoint 1上发送Toggle命令。</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span>[14:47:42.310]发→◇zb_zcl_onoff 2 0x7dc3 1 1 2
-□
-[14:47:42.312]收←◆zb_zcl_onoff 2 0x7dc3 1 1 2
-
-#
-[14:47:42.356]收←◆recived aps_confirm 0x0
-In response message,responderAddr:0x7dc3, cmdId : 0x02, status : 0x00
-</pre></div>
-</div>
-</div></blockquote>
-</li>
+<ul class="simple">
+<li><p>由于样例程序默认使能了CLI等调试功能，编译出的固件较大，因此使用1M Flash版本的开发板时，分区表请使用customer_app/bl702_demo_event/partition_cfg_1M_NoOta.toml。</p></li>
+<li><p><a class="reference external" href="https://dev.bouffalolab.com/media/doc/faq/702/html/content/FAQ.html#bl702flash">BL70x/BL70xL 分区表</a>，在正常工作状态下, Zigbee Stack 使用到 <strong>&lt;&lt;backup&gt;&gt;</strong>， <strong>&lt;&lt;media&gt;&gt;</strong>, <strong>&lt;&lt;factory&gt;&gt;</strong> 这三个分区。由于软件需要，这三个分区被放置在flash的最后24K，因此用户增大，减小或改变分区表时，需要根据实际flash大小，将以上分区调整至末尾位置，并保持相对关系不变。</p></li>
 </ul>
+</div>
 </div>
 <div class="section" id="cli">
 <h2>Cli命令介绍<a class="headerlink" href="#cli" title="永久链接至标题"></a></h2>
@@ -1446,7 +1433,7 @@ In response message,responderAddr:0x7dc3, cmdId : 0x02, status : 0x00
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

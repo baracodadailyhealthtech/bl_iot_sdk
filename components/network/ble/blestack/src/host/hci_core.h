@@ -36,6 +36,8 @@ enum {
 	BT_DEV_PUB_KEY_BUSY,
 
 	BT_DEV_ADVERTISING,
+	BT_DEV_ADVERTISING2,
+	BT_DEV_ADVERTISING2_SETTING,
 	BT_DEV_ADVERTISING_NAME,
 	BT_DEV_ADVERTISING_CONNECTABLE,
 	BT_DEV_KEEP_ADVERTISING,
@@ -230,6 +232,19 @@ typedef enum __packed{
 #endif 
 
 extern struct bt_dev bt_dev;
+
+#if !defined(BL602) && !defined(BL702)
+struct bt_controller_sdk_ver{
+    uint8_t status;
+    uint8_t ver_major;
+    uint8_t ver_minor;
+    uint8_t ver_patch;
+    uint32_t sdk_commit_id;
+};
+/*If this API return a value other than 0, it means it fails to get controller sdk version.*/
+int bt_get_controller_sdk_version(struct bt_controller_sdk_ver *version);
+#endif
+
 #if defined(CONFIG_BT_SMP) || defined(CONFIG_BT_BREDR)
 extern const struct bt_conn_auth_cb *bt_auth;
 #endif /* CONFIG_BT_SMP || CONFIG_BT_BREDR */
@@ -295,6 +310,8 @@ int bt_le_set_conn_window(u8_t percentage);
 
 int bt_le_enh_tx_test(u8_t tx_ch, u8_t test_data_len, u8_t pkt_payload, u8_t phy);
 int bt_le_enh_rx_test(u8_t rx_ch, u8_t phy, u8_t mod_index);
+int bt_ble_tx_test_cmd(u8_t tx_ch,u8_t  data_len,u8_t  pkt_payload);
+int bt_ble_rx_test_cmd(u8_t rx_ch);
 int bt_le_test_end(void);
 
 #if defined(BFLB_HOST_ASSISTANT)

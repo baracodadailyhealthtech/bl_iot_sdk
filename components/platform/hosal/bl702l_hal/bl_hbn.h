@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -35,7 +35,7 @@
 #include "bl702l_acomp.h"
 
 
-#define ATTR_HBN_CODE_SECTION      __attribute__((section(".hbn_code." ATTR_UNI_SYMBOL)))
+#define ATTR_HBN_CODE_SECTION      __attribute__((section(".hbn_code." ATTR_UNI_SYMBOL), noinline))
 #define ATTR_HBN_DATA_SECTION      __attribute__((section(".hbn_data")))
 #define ATTR_HBN_NOINIT_SECTION    __attribute__((section(".hbn_noinit")))
 

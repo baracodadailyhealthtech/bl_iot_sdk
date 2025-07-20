@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -28,7 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "bl_gpio_uart.h"
-#include "bl_gpio.h"
 #include "bl_irq.h"
 #include "bl702l_glb.h"
 #include "bl702l_timer.h"
@@ -40,6 +39,7 @@ static uint8_t uart_tx_pin[GPIO_UART_TX_NUM] = {0};
 static uint32_t uart_tx_bit_dur[GPIO_UART_TX_NUM] = {0};  // unit: 0.5us
 
 
+ATTR_TCM_SECTION
 int bl_gpio_uart_tx_init(uint8_t id, uint8_t tx_pin, uint32_t baudrate)
 {
     if(id >= GPIO_UART_TX_NUM){
@@ -60,9 +60,18 @@ int bl_gpio_uart_tx_init(uint8_t id, uint8_t tx_pin, uint32_t baudrate)
     uart_tx_pin[id] = tx_pin;
     uart_tx_bit_dur[id] = (2000000 * 10 / baudrate + 5) / 10;
     
+    GLB_GPIO_Cfg_Type cfg = {
+        .gpioPin = tx_pin,
+        .gpioFun = GPIO_FUN_GPIO,
+        .gpioMode = GPIO_MODE_OUTPUT,
+        .pullType = GPIO_PULL_NONE,
+        .drive = 0,
+        .smtCtrl = 1,
+    };
+    
     // here must set output level before output enable, otherwise will output low by default when output enable, which causes a start bit
-    bl_gpio_output_set(tx_pin, 1);
-    bl_gpio_enable_output(tx_pin, 0, 0);
+    GLB_GPIO_Write(tx_pin, 1);
+    GLB_GPIO_Init(&cfg);
     
     return 0;
 }
@@ -86,6 +95,7 @@ static __attribute__((noinline)) void bl_gpio_uart_send_byte_do(uint32_t gpio_ou
     }
 }
 
+ATTR_TCM_SECTION
 int bl_gpio_uart_send_byte(uint8_t id, uint8_t data)
 {
     uint32_t gpio_output_old;
@@ -188,7 +198,7 @@ static void bl_gpio_uart_recv_byte(void *arg)
     }
 }
 
-int bl_gpio_uart_rx_init(uint8_t rx_pin_1, uint8_t rx_pin_2, uint32_t baudrate, uint32_t fifo_size)
+int bl_gpio_uart_rx_init(uint8_t rx_pin_1, uint8_t rx_pin_2, uint32_t baudrate, uint8_t *rx_fifo, uint32_t fifo_size)
 {
     if(rx_pin_1 > 31 || rx_pin_2 > 31 || rx_pin_1 == rx_pin_2){
         return -1;
@@ -203,14 +213,9 @@ int bl_gpio_uart_rx_init(uint8_t rx_pin_1, uint8_t rx_pin_2, uint32_t baudrate, 
     }
     
     uart_rx_pin = rx_pin_1;
-    uart_rx_bit_dur = lround(2000000 / (float)baudrate);
+    uart_rx_bit_dur = (2000000 * 10 / baudrate + 5) / 10;
     
-    if(uart_rx_fifo){
-        free(uart_rx_fifo);
-        uart_rx_fifo = NULL;
-    }
-    
-    uart_rx_fifo = malloc(fifo_size);
+    uart_rx_fifo = rx_fifo;
     uart_rx_fifo_size = fifo_size;
     uart_rx_fifo_wptr = 0;
     uart_rx_fifo_rptr = 0;
@@ -246,7 +251,6 @@ int bl_gpio_uart_rx_init(uint8_t rx_pin_1, uint8_t rx_pin_2, uint32_t baudrate, 
         NULL,
     };
     
-    hosal_gpio_finalize(&gpio);
     hosal_gpio_init(&gpio);
     hosal_gpio_irq_set(&gpio, (hosal_gpio_irq_trigger_t)GLB_GPIO_INT_TRIG_ASYNC_FALLING_EDGE, bl_gpio_uart_recv_byte, NULL);
     

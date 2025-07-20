@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -66,7 +66,6 @@ typedef enum {
     HOSAL_IRQ_TRIG_POS_PULSE,        /**< @brief GPIO posedge pulse trigger interrupt */
     HOSAL_IRQ_TRIG_NEG_LEVEL,        /**< @brief  GPIO negedge level trigger interrupt (32k 3T)*/
     HOSAL_IRQ_TRIG_POS_LEVEL,        /**< @brief  GPIO posedge level trigger interrupt (32k 3T)*/
-    HOSAL_IRQ_TRIG_NEG_POS_PULSE,
 
 #if defined(BL702L)
     HOSAL_IRQ_TRIG_SYNC_FALLING_EDGE = 0,        /*!< GPIO interrupt sync mode, GPIO falling edge trigger interrupt */

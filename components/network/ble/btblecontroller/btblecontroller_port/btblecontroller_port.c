@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -233,17 +233,34 @@ __attribute__((weak)) void btblecontroller_pds_trim_rc32m()
     PDS_Trim_RC32M();
 }
 
-__attribute__((weak)) int btblecontroller_printf(const char *fmt, ...)
-{
-    return 0;
-}
-
 __attribute__((weak)) uint8_t btblecontrolller_get_chip_version()
 {
     extern void bflb_efuse_get_device_info(bflb_efuse_device_info_type *device_info);
     bflb_efuse_device_info_type device_info;
     bflb_efuse_get_device_info(&device_info);
     return device_info.version;
+}
+#endif
+
+__attribute__((weak)) int btblecontroller_printf(const char *fmt, ...)
+{
+    #if defined(CFG_IOT_SDK)
+    extern void vprint(const char *fmt, va_list argp);
+    va_list argp;
+    va_start(argp, fmt);
+    vprint(fmt, argp);
+    va_end(argp);
+    #endif
+
+    return 0;
+}
+
+
+#if defined(BL702L) || defined(BL616)
+__attribute__((weak)) void btblecontroller_sys_reset(void)
+{
+    __disable_irq();
+    GLB_SW_POR_Reset();
 }
 #endif
 

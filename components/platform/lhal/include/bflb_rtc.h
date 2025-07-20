@@ -2,7 +2,6 @@
 #define _BFLB_RTC_H
 
 #include "bflb_core.h"
-#include <time.h>
 
 /** @addtogroup LHAL
   * @{

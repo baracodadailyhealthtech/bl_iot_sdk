@@ -61,6 +61,13 @@ SECTIONS
     *(.camera_desc)
     _bl_driver_camera_end = .;
 
+    /* gsensor driver */
+    . = ALIGN(4);
+    _bl_driver_gsensor_start = .;
+    KEEP(*(.gsensor_desc))
+    *(.gsensor_desc)
+    _bl_driver_gsensor_end = .;
+
     /* static cli cmds */
     . = ALIGN(4);
     _bl_static_cli_cmds_start = .;
@@ -88,6 +95,12 @@ SECTIONS
     KEEP(SORT(*)(.static_blogpri_code*))
     *(.static_blogpri_code*)
     _bl_static_blogpri_code_end = .;
+
+    /* section information for components's version */
+    . = ALIGN(4);
+    _version_info_section_start = .;
+    KEEP(*(.version.*))
+    _version_info_section_end = .;
 
     *(.gnu.linkonce.r.*)
   } >flash
@@ -147,11 +160,10 @@ SECTIONS
     *(.retention_noinit)
   } >hbnram
 
-  .rsvd (NOLOAD) :
+  .tcmdata (NOLOAD) :
   {
-    *(.rsvd_data)
-    *(.ble_rsvd_mem)
-  } >hbnram
+    *(.tcm_data)
+  } >tcm_ocram
 
   .tcmcode : ALIGN(4)
   {
@@ -251,6 +263,10 @@ SECTIONS
   /* camera driver */
   PROVIDE( _ld_bl_driver_camera_start = _bl_driver_camera_start );
   PROVIDE( _ld_bl_driver_camera_end   = _bl_driver_camera_end );
+
+  /* gsensor driver */
+  PROVIDE( _ld_bl_driver_gsensor_start = _bl_driver_gsensor_start );
+  PROVIDE( _ld_bl_driver_gsensor_end   = _bl_driver_gsensor_end );
 
   /* cli */
   PROVIDE( _ld_bl_static_cli_cmds_start = _bl_static_cli_cmds_start );

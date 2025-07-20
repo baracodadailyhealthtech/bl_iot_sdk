@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -32,6 +32,8 @@
 #include <time.h>
 #include <hosal_rtc.h>
 #include <bl_rtc.h>
+#include <bl_hbn.h>
+#include <bl_sys.h>
 #include <blog.h>
 
 #define SEC_PER_MIN  ((time_t)60)
@@ -39,7 +41,7 @@
 #define SEC_PER_DAY  ((time_t)24 * SEC_PER_HOUR)
 
 static struct tm *s_rtc_base = NULL;
-static uint64_t s_rtc_ref_cnt = 0;
+ATTR_HBN_NOINIT_SECTION static uint64_t s_rtc_ref_cnt;
 
 static const uint8_t leap_year[12] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 static const uint8_t noleap_year[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -373,6 +375,9 @@ int hosal_rtc_init(hosal_rtc_dev_t *rtc)
             return -1;
         }
         bl_rtc_init();
+        if (BL_RST_POR == bl_sys_rstinfo_get()) {
+            s_rtc_ref_cnt = 0;
+        }
     }
 
     return 0;

@@ -1,10 +1,15 @@
-#!/bin/sh
+#!/bin/bash
 
-options=CONFIG_FTD=1
-options=$options" CONFIG_OPENTHREAD_CONFIG_THREAD_VERSION=4"
-options=$options" OPENTHREAD_RADIO=0"
-options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"third_party/mbedtls/mbedtls-config.h\""
+options="CONFIG_USB_CDC=0 OT_FTD=1 OT_CLI=1 CONFIG_PREFIX=otc"
 
-make $options -j2
+options=$options" CONFIG_EXTMBEDTLS_CONFIG_FILE=\"mbedtls_proj_config.h\""
+options=$options" CONFIG_OPENTHREAD_FILE=\"openthread-core-cli-config.h\""
+options=$options" CONFIG_OPENTHREAD_CHECK_FILE=\"openthread-core-platform-config-check.h\""
+
+
+if [ ! -d build_out ]; then
+mkdir build_out
+fi
+make $options -j4 2>&1 | tee build_out/make.log
 
 exit $?

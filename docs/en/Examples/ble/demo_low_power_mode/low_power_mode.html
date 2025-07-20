@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
+  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../../../index.html"/>
         <link rel="up" title="BLE" href="../index.html"/>
         <link rel="next" title="BL702L_Ble_Remote_Control_Demo" href="../demo_ble_rc/ble_rc.html"/>
         <link rel="prev" title="Ble Introduction" href="../demo_ble/ble.html"/> 
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1973-g7970cf316
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
               </div>
             
           
@@ -106,6 +106,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#low-power-mode">Low Power Mode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#memory-introduction">Memory Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#clock-source">Clock Source</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../demo_ble_rc/ble_rc.html">Remote_Control</a></li>
@@ -114,6 +115,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../zigbee/index.html">Zigbee</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fwupgrade/index.html">FW Upgrade</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
@@ -270,6 +272,33 @@ Freertos is used in SDK. In Freertos’ idle task, it checks whether BL702L devi
 <p>hbnram: 4K ram (common data and rf driver)</p>
 </div></blockquote>
 </div>
+<div class="section" id="clock-source">
+<h2>Clock Source<a class="headerlink" href="#clock-source" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>In the BL70xL, the clock source for the BLE module differs based on the power state:</p>
+<dl class="simple">
+<dt><strong>Awake State:</strong></dt><dd><p>When BL702L/704L is in the awake state, the clock for the BLE module is sourced from XTAL32M.</p>
+</dd>
+<dt><strong>PDS State:</strong></dt><dd><p>When BL702L/704L enters the PDS state, the clock for the BLE module is supplied by either RC32K or XTAL32K.</p>
+<ul class="simple">
+<li><p><strong>RC32K</strong>: Offers an accuracy of approximately +-1%.</p></li>
+<li><p><strong>XTAL32K</strong>: Provides timing accuracy meeting the stringent requirement of less than 500ppm (0.05%).</p></li>
+</ul>
+</dd>
+</dl>
+<p>It is essential to note that the 32K clock is only necessary when BLE operates in the PDS mode. If BL70xL does not transition to PDS during the connection phase, the 32K clock becomes unnecessary.</p>
+<p>Summary for BLE PDS and 32K Clock Usage:</p>
+<ul class="simple">
+<li><p><strong>BLE Advertising (ADV):</strong>
+Both RC32K and XTAL32K meet the required standards.</p></li>
+<li><p><strong>BLE Scanning:</strong>
+Both RC32K and XTAL32K fulfill the operational criteria.</p></li>
+<li><p><strong>BLE Connection:</strong>
+- For the central role, XTAL32K is indispensable.
+- For the peripheral role, XTAL32K is recommended, although RC32K is also permissible with a 10%-20% increase in power consumption.</p></li>
+</ul>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -313,7 +342,7 @@ Freertos is used in SDK. In Freertos’ idle task, it checks whether BL702L devi
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

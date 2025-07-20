@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -51,7 +51,7 @@ static void pwm_mc_init(uint16_t div, uint16_t period)
     PWM_CHx_CFG_Type chxCfg = {
         .modP = PWM_MODE_DISABLE,
         .modN = PWM_MODE_DISABLE,
-#if !defined(IR_OUTPUT_INVERSE)
+#if !defined(CFG_IR_OUTPUT_INVERT)
         .polP = PWM_POL_ACTIVE_LOW,
         .polN = PWM_POL_ACTIVE_LOW,
 #else
@@ -162,7 +162,7 @@ int bl_pwm_ir_tx_ex(uint32_t data[], uint32_t len)
 
     for(i=0; i<len; i++){
         tmpVal = BL_RD_REG(PWM_BASE, PWM_MC0_PERIOD);
-        tmpVal = BL_SET_REG_BITS_VAL(tmpVal, PWM_INT_PERIOD_CNT, (uint16_t)data[i]);
+        tmpVal = BL_SET_REG_BITS_VAL(tmpVal, PWM_INT_PERIOD_CNT, data[i] & 0xFFFF);
         BL_WR_REG(PWM_BASE, PWM_MC0_PERIOD, tmpVal);
 
         if((data[i] >> 31) == 1){
@@ -180,9 +180,17 @@ int bl_pwm_ir_tx_ex(uint32_t data[], uint32_t len)
 }
 
 
+#define IR_NEC_FREQ                37700
+#define IR_NEC_DUTY                0.3333
+#define IR_NEC_PULSE_NUM_9000US    340    // 9000*37700/1000000 = 339.3
+#define IR_NEC_PULSE_NUM_4500US    170    // 4500*37700/1000000 = 169.65
+#define IR_NEC_PULSE_NUM_2250US    85     // 2250*37700/1000000 = 84.825
+#define IR_NEC_PULSE_NUM_1690US    64     // 1690*37700/1000000 = 63.713
+#define IR_NEC_PULSE_NUM_560US     22     //  560*37700/1000000 = 21.112
+
 void bl_pwm_ir_nec_tx_init(uint8_t pin)
 {
-    bl_pwm_ir_tx_cfg(37700, 0.3333);
+    bl_pwm_ir_tx_cfg(IR_NEC_FREQ, IR_NEC_DUTY);
     bl_pwm_ir_tx_pin_cfg(pin);
 }
 
@@ -194,23 +202,23 @@ int bl_pwm_ir_nec_tx(uint8_t addr, uint8_t cmd)
     //printf("addr: 0x%02X, cmd: 0x%02X, data: 0x%08lX\r\n", addr, cmd, data);
 
     // head
-    ir_tx[0] = 340;  // 9ms
-    ir_tx[1] = 170;  // 4.5ms
+    ir_tx[0] = IR_NEC_PULSE_NUM_9000US;
+    ir_tx[1] = IR_NEC_PULSE_NUM_4500US;
 
     // data (lsb first)
     for(int i=0; i<32; i++){
         if(data & (0x1 << i)){
-            ir_tx[2 + 2*i] = 21;      // 560us
-            ir_tx[2 + 2*i + 1] = 64;  // 1690us
+            ir_tx[2 + 2*i] = IR_NEC_PULSE_NUM_560US;
+            ir_tx[2 + 2*i + 1] = IR_NEC_PULSE_NUM_1690US;
         }else{
-            ir_tx[2 + 2*i] = 21;      // 560us
-            ir_tx[2 + 2*i + 1] = 21;  // 560us
+            ir_tx[2 + 2*i] = IR_NEC_PULSE_NUM_560US;
+            ir_tx[2 + 2*i + 1] = IR_NEC_PULSE_NUM_560US;
         }
     }
 
     // tail
-    ir_tx[2 + 64] = 21;  // 560us
-    ir_tx[2 + 65] = 21;  // 560us
+    ir_tx[2 + 64] = IR_NEC_PULSE_NUM_560US;
+    ir_tx[2 + 65] = IR_NEC_PULSE_NUM_560US;
 
     return bl_pwm_ir_tx(ir_tx, sizeof(ir_tx)/sizeof(ir_tx[0]));
 }
@@ -219,17 +227,21 @@ int bl_pwm_ir_nec_tx_repeat(void)
 {
     uint16_t ir_tx[3];
 
-    ir_tx[0] = 340;  // 9ms
-    ir_tx[1] = 85;   // 2.25ms
-    ir_tx[2] = 21;   // 560us
+    ir_tx[0] = IR_NEC_PULSE_NUM_9000US;
+    ir_tx[1] = IR_NEC_PULSE_NUM_2250US;
+    ir_tx[2] = IR_NEC_PULSE_NUM_560US;
 
     return bl_pwm_ir_tx(ir_tx, sizeof(ir_tx)/sizeof(ir_tx[0]));
 }
 
 
+#define IR_RC5_FREQ                37700
+#define IR_RC5_DUTY                0.3333
+#define IR_RC5_PULSE_NUM_889US     34     // 889*37700/1000000 = 33.5153
+
 void bl_pwm_ir_rc5_tx_init(uint8_t pin)
 {
-    bl_pwm_ir_tx_cfg(36000, 0.3333);
+    bl_pwm_ir_tx_cfg(IR_RC5_FREQ, IR_RC5_DUTY);
     bl_pwm_ir_tx_pin_cfg(pin);
 }
 
@@ -241,21 +253,21 @@ int bl_pwm_ir_rc5_tx(uint8_t t, uint8_t addr, uint8_t cmd)
     //printf("t: 0x%02X, addr: 0x%02X, cmd: 0x%02X, data: 0x%08lX\r\n", t, addr, cmd, data);
 
     // S1 (logical 1)
-    ir_tx[0] = 32;
-    ir_tx[1] = 32 | 0x80000000;
+    ir_tx[0] = IR_RC5_PULSE_NUM_889US;
+    ir_tx[1] = IR_RC5_PULSE_NUM_889US | 0x80000000;
 
     // S2 (logical 1)
-    ir_tx[2] = 32;
-    ir_tx[3] = 32 | 0x80000000;
+    ir_tx[2] = IR_RC5_PULSE_NUM_889US;
+    ir_tx[3] = IR_RC5_PULSE_NUM_889US | 0x80000000;
 
     // T + Address + Command (msb first)
     for(int i=0; i<12; i++){
         if(data & (0x1 << (11 - i))){
-            ir_tx[4 + 2*i] = 32;
-            ir_tx[4 + 2*i + 1] = 32 | 0x80000000;
+            ir_tx[4 + 2*i] = IR_RC5_PULSE_NUM_889US;
+            ir_tx[4 + 2*i + 1] = IR_RC5_PULSE_NUM_889US | 0x80000000;
         }else{
-            ir_tx[4 + 2*i] = 32 | 0x80000000;
-            ir_tx[4 + 2*i + 1] = 32;
+            ir_tx[4 + 2*i] = IR_RC5_PULSE_NUM_889US | 0x80000000;
+            ir_tx[4 + 2*i + 1] = IR_RC5_PULSE_NUM_889US;
         }
     }
 

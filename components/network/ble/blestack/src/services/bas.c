@@ -16,7 +16,7 @@
 #include "bluetooth.h"
 #include "conn.h"
 #include "gatt.h"
-#include "uuid.h"
+#include "bt_uuid.h"
 #include "bas.h"
 
 #if !defined(BFLB_BLE)
@@ -65,6 +65,12 @@ void bas_init(void)
 {	
     bt_gatt_service_register(&bas);
 }
+
+void bas_deinit(void)
+{
+    bt_gatt_service_unregister(&bas);
+}
+
 
 u8_t bt_gatt_bas_get_battery_level(void)
 {

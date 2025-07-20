@@ -299,6 +299,9 @@ enum {
 
 	/** Use whitelist to filter devices that can connect. */
 	BT_LE_ADV_OPT_FILTER_CONN = BIT(7),
+#if defined(CONFIG_BT_MESH_V1d1) && defined(CONFIG_AUTO_PTS)
+	BT_LE_ADV_OPT_USE_NRPA = BIT(8),
+#endif /* CONFIG_BT_MESH_V1d1 && CONFIG_AUTO_PTS */
 };
 
 /** LE Advertising Parameters. */
@@ -307,7 +310,7 @@ struct bt_le_adv_param {
 	u8_t  id;
 
 	/** Bit-field of advertising options */
-	u8_t  options;
+	u16_t  options;
 
 	/** Minimum Advertising Interval (N * 0.625) */
 	u16_t interval_min;
@@ -875,6 +878,19 @@ int bt_br_internal_update_a2dp_status(u16_t conHandle,u8_t status);
   * @param DutyValue        the range is 0-100
   */
 int bt_br_set_a2dp_stream_duty(u8_t DutyValue);
+
+/** It's used to set min encryption key size.
+  *
+  * @param KeySize        the range is 1-16
+  */
+int bt_br_set_min_enc_key_size(u8_t KeySize);
+
+/** It's used to set min encryption key size.
+  *
+  *  @param br_power        the range is 0-10, 0xff: use default power
+  *  @param edr_power        the range is 0-8, 0xff: use default power
+  */
+int bt_br_set_tx_pwr(int8_t br_power, int8_t edr_power);
 
 /**
  * @}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -140,8 +140,8 @@ static int __uart_dma_txcfg(hosal_uart_dev_t *uart, hosal_uart_dma_cfg_t *dma_cf
 	};
     UART_FifoCfg_Type fifoCfg =
     {
-        .txFifoDmaThreshold     = 0x01,
-        .rxFifoDmaThreshold     = 0x01,
+        .txFifoDmaThreshold     = 0,
+        .rxFifoDmaThreshold     = 64,
         .txFifoDmaEnable        = ENABLE,
         .rxFifoDmaEnable        = DISABLE,
     };
@@ -198,8 +198,8 @@ static int __uart_dma_rxcfg(hosal_uart_dev_t *uart, hosal_uart_dma_cfg_t *dma_cf
 	};
     UART_FifoCfg_Type fifoCfg =
     {
-        .txFifoDmaThreshold     = 0x01,
-        .rxFifoDmaThreshold     = 0x01,
+        .txFifoDmaThreshold     = 64,
+        .rxFifoDmaThreshold     = 0,
         .txFifoDmaEnable        = DISABLE,
         .rxFifoDmaEnable        = ENABLE,
     };
@@ -377,8 +377,8 @@ int hosal_uart_init(hosal_uart_dev_t *uart)
     };
     UART_FifoCfg_Type fifoCfg =
     {
-        .txFifoDmaThreshold     = 0x10,
-        .rxFifoDmaThreshold     = 0x10,
+        .txFifoDmaThreshold     = 64,
+        .rxFifoDmaThreshold     = 64,
         .txFifoDmaEnable        = DISABLE,
         .rxFifoDmaEnable        = DISABLE,
     };

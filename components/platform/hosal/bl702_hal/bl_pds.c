@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -951,6 +951,7 @@ void bl_pds_restore_flash(SF_Ctrl_Cfg_Type *pSfCtrlCfg, SPI_Flash_Cfg_Type *pFla
     RomDriver_SFlash_Init(pSfCtrlCfg);
     
     RomDriver_SFlash_Releae_Powerdown(pFlashCfg);
+    RomDriver_BL702_Delay_US(pFlashCfg->pdDelay);
     
     RomDriver_SFlash_Reset_Continue_Read(pFlashCfg);
     
@@ -961,8 +962,6 @@ void bl_pds_restore_flash(SF_Ctrl_Cfg_Type *pSfCtrlCfg, SPI_Flash_Cfg_Type *pFla
     RomDriver_SFlash_DisableBurstWrap(pFlashCfg);
     
     RomDriver_SFlash_SetSPIMode(SF_CTRL_SPI_MODE);
-    
-    RomDriver_SF_Ctrl_Set_Flash_Image_Offset(0);
     
     if((pFlashCfg->ioMode&0x0f)==SF_CTRL_QO_MODE||(pFlashCfg->ioMode&0x0f)==SF_CTRL_QIO_MODE){
         RomDriver_SFlash_Qspi_Enable(pFlashCfg);
@@ -1362,7 +1361,7 @@ int bl_pds_start(uint32_t pdsLevel, uint32_t pdsSleepCycles)
     }
     
     // Select RC32M
-    RomDriver_HBN_Set_ROOT_CLK_Sel(HBN_ROOT_CLK_RC32M);
+    RomDriver_GLB_Set_System_CLK(GLB_DLL_XTAL_NONE, GLB_SYS_CLK_RC32M);
     RomDriver_GLB_Power_Off_DLL();
     RomDriver_AON_Power_Off_XTAL();
     

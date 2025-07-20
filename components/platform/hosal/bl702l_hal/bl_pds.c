@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -30,6 +30,22 @@
 #include "bl_pds.h"
 #include "bl_flash.h"
 #include "bl_irq.h"
+#include "bl_gpio_uart.h"
+
+
+#define PDS_LOG_ENABLE             0
+#define PDS_LOG_TX_PIN             14
+#define PDS_LOG_BAUDRATE           1000000
+
+#if PDS_LOG_ENABLE == 0
+#define PDS_LOG_INIT()
+#define PDS_LOG_PUTCHAR(C)
+#define PDS_LOG_PUTS(S)
+#else
+#define PDS_LOG_INIT()             bl_gpio_uart_tx_init(0, PDS_LOG_TX_PIN, PDS_LOG_BAUDRATE)
+#define PDS_LOG_PUTCHAR(C)         bl_gpio_uart_send_byte(0, (uint8_t)(C))
+#define PDS_LOG_PUTS(S)            bl_gpio_uart_send_data(0, (uint8_t *)(S), strlen(S))
+#endif
 
 
 uint16_t bl_rtc_frequency = 32768;
@@ -178,11 +194,13 @@ int bl_pds_pre_process(uint32_t pdsLevel, uint32_t pdsSleepCycles, uint32_t *sto
 ATTR_PDS_SECTION
 int bl_pds_start(uint32_t pdsLevel, uint32_t pdsSleepCycles)
 {
+    PDS_LOG_INIT();
+    
     // Power down flash
     flash_powerdown();
     
     // Select RC32M
-    RomDriver_HBN_Set_ROOT_CLK_Sel(HBN_ROOT_CLK_RC32M);
+    RomDriver_GLB_Set_System_CLK(GLB_DLL_XTAL_NONE, GLB_SYS_CLK_RC32M);
     RomDriver_GLB_Power_Off_DLL();
     RomDriver_AON_Power_Off_XTAL();
     
@@ -203,6 +221,15 @@ int bl_pds_start(uint32_t pdsLevel, uint32_t pdsSleepCycles)
     // Clear HBN_IRQ status
     BL_WR_REG(HBN_BASE, HBN_IRQ_CLR, 0xFFFFFFFF);
     
+    // Use PDS_LOG_PUTCHAR when flash is power down
+    // PDS In
+    PDS_LOG_PUTCHAR(0x0D);
+    PDS_LOG_PUTCHAR(0x0A);
+    PDS_LOG_PUTCHAR('P');
+    PDS_LOG_PUTCHAR('I');
+    PDS_LOG_PUTCHAR(0x0D);
+    PDS_LOG_PUTCHAR(0x0A);
+    
     // Clear PDS_GPIO status
     void bl_pds_gpio_clear_int_status(void);
     bl_pds_gpio_clear_int_status();
@@ -215,6 +242,13 @@ int bl_pds_start(uint32_t pdsLevel, uint32_t pdsSleepCycles)
     RomDriver_HBN_Set_Status_Flag(HBN_STATUS_ENTER_FLAG);
     RomDriver_PDS_Default_Level_Config(bl_pds_misc.pdsCfgPtr, pdsSleepCycles);
     __WFI();
+    
+    // Use PDS_LOG_PUTCHAR when flash is power down
+    // PDS Abort
+    PDS_LOG_PUTCHAR('P');
+    PDS_LOG_PUTCHAR('A');
+    PDS_LOG_PUTCHAR(0x0D);
+    PDS_LOG_PUTCHAR(0x0A);
     
     // Fail to enter PDS mode due to interrupt pending, so disable PDS
     BL_WR_REG(PDS_BASE, PDS_CTL, (0x1<<10)|(0x1<<27));
@@ -456,6 +490,7 @@ void bl_pds_restore_flash(SF_Ctrl_Cfg_Type *pSfCtrlCfg, SPI_Flash_Cfg_Type *pFla
     RomDriver_SFlash_Init(pSfCtrlCfg);
     
     RomDriver_SFlash_Releae_Powerdown(pFlashCfg);
+    RomDriver_BL702L_Delay_US(pFlashCfg->pdDelay);
     
     RomDriver_SFlash_Reset_Continue_Read(pFlashCfg);
     
@@ -466,8 +501,6 @@ void bl_pds_restore_flash(SF_Ctrl_Cfg_Type *pSfCtrlCfg, SPI_Flash_Cfg_Type *pFla
     RomDriver_SFlash_DisableBurstWrap(pFlashCfg);
     
     RomDriver_SFlash_SetSPIMode(SF_CTRL_SPI_MODE);
-    
-    RomDriver_SF_Ctrl_Set_Flash_Image_Offset(0);
     
     if((pFlashCfg->ioMode&0x0f)==SF_CTRL_QO_MODE||(pFlashCfg->ioMode&0x0f)==SF_CTRL_QIO_MODE){
         RomDriver_SFlash_Qspi_Enable(pFlashCfg);
@@ -545,6 +578,15 @@ void bl_pds_restore_cpu_reg(void)
 ATTR_PDS_SECTION
 void bl_pds_restore(void)
 {
+    PDS_LOG_INIT();
+    
+    // Use PDS_LOG_PUTCHAR when flash is power down
+    // PDS Out
+    PDS_LOG_PUTCHAR('P');
+    PDS_LOG_PUTCHAR('O');
+    PDS_LOG_PUTCHAR(0x0D);
+    PDS_LOG_PUTCHAR(0x0A);
+    
 #if 0
     GLB_GPIO_Type pinList[4];
     
@@ -601,8 +643,19 @@ void bl_pds_restore(void)
         *(volatile uint32_t *)(CLIC_HART0_ADDR + CLIC_INTIP + n) = 0;
     }
     
+    // Use PDS_LOG_PUTCHAR when flash is power down
+    // Flash Restore Begin
+    PDS_LOG_PUTCHAR('F');
+    PDS_LOG_PUTCHAR('B');
+    PDS_LOG_PUTCHAR(0x0D);
+    PDS_LOG_PUTCHAR(0x0A);
+    
     // Configure flash (must use rom driver, since tcm code is lost and flash is power down)
     flash_restore();
+    
+    // Use PDS_LOG_PUTS when flash is restored
+    // Flash Restore End
+    PDS_LOG_PUTS("FE\r\n");
     
     // Set cpuRegStored flag
     bl_pds_misc.cpuRegStored = 1;
@@ -614,6 +667,10 @@ void bl_pds_restore(void)
     
     // Clear cpuRegStored flag
     bl_pds_misc.cpuRegStored = 0;
+    
+    // Use PDS_LOG_PUTS when flash is restored
+    // Jump to App
+    PDS_LOG_PUTS("JA\r\n");
     
     // Restore cpu registers
     bl_pds_restore_cpu_reg();

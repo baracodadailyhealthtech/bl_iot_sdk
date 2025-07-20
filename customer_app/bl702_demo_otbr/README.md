@@ -25,8 +25,27 @@ Type following command to build:
     #define THREAD_EXTPANID     {0x11, 0x11, 0x11, 0x11, 0x22, 0x22, 0x22, 0x22}
     #define THREAD_NETWORK_KEY  {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff}
     ```
+    
   - `CONFIG_THREAD_AUTO_START=0` in `genromap` doesn't form a Thread network. 
     Openthread command line is available on UART with `otc ` prefix to create and start a Thread network, such as `otc state`. 
+  
+- in `proj_config.mk`
+
+  - `CONFIG_EASYFLASH_ENABLE`, save Thread network stack information to PSM partition managed by easyflash
+
+  - `CONFIG_LITTLEFS`, save Thread network stack information to PSM partition managed by littlefs by default
+
+    littlefs requires more flash size and please refer to `bl702_demo_otbr/partition_cfg_2M.toml`
+
+
+
+
+`proj_config.mk` has following two options:
+
+| option                  | comments                                                     |
+| ----------------------- | ------------------------------------------------------------ |
+| CONFIG_EASYFLASH_ENABLE |                                                              |
+| CONFIG_LITTLEFS         | save Thread network stack information to PSM partition managed by littlefs by default<br>littlefs requires more flash size and please refer to `bl702_demo_thread/partition_cfg_1M.toml` |
 
 # Ethernet OTBR
 
@@ -52,7 +71,7 @@ Type following command to build:
   - After connected and IPv6 address assigned. The IP information will be printed out.
 
   - Then Thread network will automatically start if `CONFIG_THREAD_AUTO_START=1`. 
-  
+
 # Some helpful commands:
   - Command `ipinfo`: to get assigned IP address.
   - Command `otc state`: to get Thread state. 

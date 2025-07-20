@@ -36,6 +36,9 @@ enum {
 	BT_CONN_AUTO_VERSION_INFO,      /* Auto-initiated LE version done */
 	BT_CONN_PARAM_UPDATE_GOING,
 
+	#if defined(BFLB_BLE_AVOID_REMOVE_GATT_SUBSCRIPTION_RISK)
+	BT_CONN_GATT_REMOVE_SUBSCRIPTION_GOING,
+	#endif
 	/* Total number of flags - must be at the end of the enum */
 	BT_CONN_NUM_FLAGS,
 };
@@ -276,9 +279,16 @@ void notify_le_param_updated(struct bt_conn *conn);
 
 void notify_le_phy_updated(struct bt_conn *conn, u8_t tx_phy, u8_t rx_phy);
 
+#if defined(CONFIG_USER_DATA_LEN_UPDATE)
+void notify_le_datalen_updated(struct bt_conn *conn, u16_t tx_octets, u16_t tx_time,u16_t rx_octets,u16_t rx_time);
+#endif
+
 bool le_param_req(struct bt_conn *conn, struct bt_le_conn_param *param);
 
 #if defined(CONFIG_BT_SMP)
+/* If role specific LTK is present */
+bool bt_conn_ltk_present(const struct bt_conn *conn);
+
 /* rand and ediv should be in BT order */
 int bt_conn_le_start_encryption(struct bt_conn *conn, u8_t rand[8],
 				u8_t ediv[2], const u8_t *ltk, size_t len);

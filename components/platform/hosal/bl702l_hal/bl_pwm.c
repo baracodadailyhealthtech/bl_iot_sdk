@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -58,7 +58,11 @@ static void pwm_sc_init(uint16_t div, uint16_t period)
         .ch = PWM_SC0,
         .clk = PWM_SC_CLK_BCLK,
         .stopMode = PWM_SC_STOP_ABRUPT,
+#if !defined(CFG_PWM_OUTPUT_INVERT)
         .pol = PWM_SC_POL_NORMAL,
+#else
+        .pol = PWM_SC_POL_INVERT,
+#endif
         .clkDiv = div,
         .period = period,
         .threshold1 = 0,
@@ -67,18 +71,21 @@ static void pwm_sc_init(uint16_t div, uint16_t period)
         .stpInt = DISABLE,
     };
 
-    PWM_SC_Channel_Disable(PWM_SC0);
     PWM_SC_Channel_Init(&pwmCfg);
+    PWM_SC_SW_Force_Value(PWM_SC0, pwmCfg.pol);
+    PWM_SC_SW_Mode(PWM_SC0, ENABLE);
 }
 
 static void pwm_sc_start(void)
 {
     PWM_SC_Channel_Enable(PWM_SC0);
+    PWM_SC_SW_Mode(PWM_SC0, DISABLE);
 }
 
 static void pwm_sc_stop(void)
 {
     PWM_SC_Channel_Disable(PWM_SC0);
+    PWM_SC_SW_Mode(PWM_SC0, ENABLE);
 }
 
 static void pwm_sc_set_duty(float duty, uint16_t *threshold1, uint16_t *threshold2)
@@ -127,8 +134,13 @@ static void pwm_mc_init(uint16_t div, uint16_t period)
     PWM_CHx_CFG_Type chxCfg = {
         .modP = PWM_MODE_DISABLE,
         .modN = PWM_MODE_DISABLE,
+#if !defined(CFG_PWM_OUTPUT_INVERT)
         .polP = PWM_POL_ACTIVE_HIGH,
         .polN = PWM_POL_ACTIVE_HIGH,
+#else
+        .polP = PWM_POL_ACTIVE_LOW,
+        .polN = PWM_POL_ACTIVE_LOW,
+#endif
         .idlP = PWM_IDLE_STATE_INACTIVE,
         .idlN = PWM_IDLE_STATE_INACTIVE,
         .brkP = PWM_BREAK_STATE_INACTIVE,

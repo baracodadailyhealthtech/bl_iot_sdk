@@ -10,7 +10,7 @@
 #include "bluetooth.h"
 #include "hci_host.h"
 #include "conn.h"
-#include "uuid.h"
+#include "bt_uuid.h"
 #include "gatt.h"
 #include "bt_log.h"
 #include "ble_rc_hog.h"

@@ -25,16 +25,20 @@
 #if defined(BFLB_DYNAMIC_ALLOC_MEM)
 #include "bl_port.h"
 #endif
+#if !defined(CONFIG_BT_HOST_HCI_TL)
 #include "bl_hci_wrapper.h"
 #endif
+#endif
 
-#if (BFLB_STATIC_ALLOC_MEM)
+
+//#if (BFLB_STATIC_ALLOC_MEM)
 #include "l2cap.h"
 #include <gatt.h>
 #include <conn.h>
 #include "conn_internal.h"
+#include "l2cap_internal.h"
 #include "att_internal.h"
-#endif
+//#endif
 
 #if defined(CONFIG_NET_BUF_LOG)
 #define NET_BUF_DBG(fmt, ...) LOG_DBG("(%p) " fmt, k_current_get(), \
@@ -102,9 +106,12 @@ extern struct net_buf_pool friend_buf_pool;
 #if defined(CONFIG_BT_BREDR)
 extern struct net_buf_pool br_sig_pool;
 extern struct net_buf_pool sdp_pool;
+extern struct net_buf_pool dummy_pool;
 #if defined(CONFIG_BT_HFP)
 extern struct net_buf_pool hf_pool;
-extern struct net_buf_pool dummy_pool;
+#endif
+#if defined(CONFIG_BT_SPP)
+extern struct net_buf_pool spp_pool;
 #endif
 #endif
 
@@ -117,6 +124,10 @@ extern struct net_buf_pool data_pool;
 __attribute__((section(".tcm_data"))) u8_t server_data_pool[1 * SERVER_BUF_SIZE];
 __attribute__((section(".tcm_data"))) u8_t data_data_pool[1 * DATA_MTU];
 #endif
+#endif
+
+#if defined(CONFIG_DYNAMIC_GATTS)
+extern struct net_buf_pool dynamic_gatt_pool;
 #endif
 
 struct net_buf_pool *_net_buf_pool_list[] = {&hci_cmd_pool, &hci_rx_pool,
@@ -147,14 +158,20 @@ struct net_buf_pool *_net_buf_pool_list[] = {&hci_cmd_pool, &hci_rx_pool,
 	#if defined(CONFIG_BT_BREDR)
 	&sdp_pool,
 	&br_sig_pool,
+	&dummy_pool,
 	#if defined(CONFIG_BT_HFP)
 	&hf_pool,
-	&dummy_pool,
+	#endif
+	#if defined(CONFIG_BT_SPP)
+	&spp_pool,
 	#endif
 	#endif
 	#if defined(CONFIG_AUTO_PTS)
 	&server_pool,
 	&data_pool,
+	#endif
+	#if defined(CONFIG_DYNAMIC_GATTS)
+	&dynamic_gatt_pool,
 	#endif
 };
 
@@ -801,11 +818,13 @@ void net_buf_unref(struct net_buf *buf)
 		buf = frags;
 
 	#if defined(BFLB_BLE)
+       #if !defined(CONFIG_BT_HOST_HCI_TL)
 		if (pool == &hci_rx_pool)
 		{
 			bl_trigger_queued_msg();
 			return;
 		}
+       #endif
 	#endif
 	}
 }

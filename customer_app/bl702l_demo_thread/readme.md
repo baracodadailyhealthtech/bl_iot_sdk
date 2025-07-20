@@ -19,6 +19,13 @@ Type following command to build:
 | CONFIG_FTD    | `0`, build MTD image, which enables joiner<br />`1`, build FTD image, which enables both of commissioner and joiner. |
 | CONFIG_PREFIX | set prefix for command. |
 
+`proj_config.mk` has following two options:
+
+| option                  | comments                                                     |
+| ----------------------- | ------------------------------------------------------------ |
+| CONFIG_EASYFLASH_ENABLE | save Thread network stack information to PSM partition managed by easyflash |
+| CONFIG_LITTLEFS         | save Thread network stack information to PSM partition managed by littlefs by default<br>littlefs requires more flash size and please refer to `bl702l_demo_thread/partition_cfg_1M.toml` |
+
 ### Execution - 1
 
 1. Build a FTD image and a MTD image,  (Two FTD images are also OK) and download to the eval boards.
@@ -74,6 +81,8 @@ Type following command to build:
 6. Ping each other
 
    Type `ipaddr`  to get IP address, and then `ping <ip address>` in command line of another device. And then sniffer tool should captured ICMPv6 packets.
+
+*Note, flash version may have limits to use enh-ack and CSL function due to flash access speed.*
 
 Please refer the [official page](https://openthread.google.cn/guides/build/commissioning) for more detail information.
 

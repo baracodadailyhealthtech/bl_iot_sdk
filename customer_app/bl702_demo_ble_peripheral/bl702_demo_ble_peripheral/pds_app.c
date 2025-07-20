@@ -15,10 +15,33 @@
 #define printf(...)                (void)0
 #endif
 bool pds_start;
+static uint8_t reduceSleepTime_32768cycle = 75;
 
 void pdsapp_init(void)
 {
     hal_pds_init();
+
+    SPI_Flash_Cfg_Type *flashCfg = bl_flash_get_flashCfg();
+    uint8_t ioMode =  flashCfg->ioMode & 0xF;
+    uint8_t contRead = flashCfg->cReadSupport;
+    uint8_t cpuClk = GLB_Get_Root_CLK_Sel();
+    if(ioMode == 4 && contRead == 1 && cpuClk == GLB_ROOT_CLK_XTAL)
+    {
+       reduceSleepTime_32768cycle = 100;
+    }
+    else if(ioMode == 1 && contRead == 0 && cpuClk == GLB_ROOT_CLK_XTAL)
+    {
+   #if (DEBUG_PRINT)
+       reduceSleepTime_32768cycle = 130;
+   #else
+       //reduceSleepTime = 35;
+       reduceSleepTime_32768cycle = 75;  // there is 1ms delay after xtal power on after pds wakeup
+   #endif
+    }
+    else
+    {
+       reduceSleepTime_32768cycle = 130;
+    }
 }
 
 void pdsapp_enable_pds(bool enable)
@@ -69,7 +92,6 @@ void vApplicationSleep(TickType_t xExpectedIdleTime_ms)
     int32_t bleSleepDuration_32768cycles = 0;
     int32_t expectedIdleTime_32768cycles = 0;
     eSleepModeStatus eSleepStatus;
-    bool freertos_max_idle = false;
 #if (LE_PDS_FLASH)
     uint8_t ioMode;
     uint8_t contRead; 
@@ -78,26 +100,20 @@ void vApplicationSleep(TickType_t xExpectedIdleTime_ms)
     if (pds_start == 0)
         return;
 
-    if(xExpectedIdleTime_ms + xTaskGetTickCount() == portMAX_DELAY){
-        freertos_max_idle = true;
-    }else{   
-        xExpectedIdleTime_ms -= 1;
-        expectedIdleTime_32768cycles = 32768 * xExpectedIdleTime_ms / 1000;
-    }
-
-    if((!freertos_max_idle)&&(expectedIdleTime_32768cycles < TIME_5MS_IN_32768CYCLE)){
-        return;
-    }
-        
     eSleepStatus = eTaskConfirmSleepModeStatus();
     if(eSleepStatus == eAbortSleep || ble_controller_sleep_is_ongoing())
     {
         return;
     }
 
+    expectedIdleTime_32768cycles = 32768 * xExpectedIdleTime_ms / 1000;
+    if(expectedIdleTime_32768cycles < TIME_5MS_IN_32768CYCLE){
+        return;
+    }
+
     pdsapp_before_sleep_callback();
 
-    bleSleepDuration_32768cycles = ble_controller_sleep(0);
+    bleSleepDuration_32768cycles = ble_controller_sleep(expectedIdleTime_32768cycles);
 
     if(bleSleepDuration_32768cycles < TIME_5MS_IN_32768CYCLE)
     {
@@ -106,36 +122,15 @@ void vApplicationSleep(TickType_t xExpectedIdleTime_ms)
     }
     else
     { 
-        printf("Sleep_cycles=%ld\r\n", bleSleepDuration_32768cycles);
-        uint8_t reduceSleepTime;
-        SPI_Flash_Cfg_Type *flashCfg = bl_flash_get_flashCfg();
-        uint8_t ioMode =  flashCfg->ioMode & 0xF;
-        uint8_t contRead = flashCfg->cReadSupport;
-        uint8_t cpuClk = GLB_Get_Root_CLK_Sel();
-        if(ioMode == 4 && contRead == 1 && cpuClk == GLB_ROOT_CLK_XTAL)
+        if(expectedIdleTime_32768cycles < bleSleepDuration_32768cycles)
         {
-           reduceSleepTime = 100;
-        }
-        else if(ioMode == 1 && contRead == 0 && cpuClk == GLB_ROOT_CLK_XTAL)
-        {
-           #if (DEBUG_PRINT)
-           reduceSleepTime = 130;
-           #else
-           //reduceSleepTime = 35;
-           reduceSleepTime = 75;  // there is 1ms delay after xtal power on after pds wakeup
-           #endif
+            printf("Sleep_cycles=%ld\r\n", expectedIdleTime_32768cycles - reduceSleepTime_32768cycle);
+            hal_pds_enter_with_time_compensation(31, expectedIdleTime_32768cycles - reduceSleepTime_32768cycle);
         }
         else
         {
-           reduceSleepTime = 130;
-        }
-        if(eSleepStatus == eStandardSleep && ((!freertos_max_idle) && (expectedIdleTime_32768cycles < bleSleepDuration_32768cycles)))
-        {
-           hal_pds_enter_with_time_compensation(31, expectedIdleTime_32768cycles - reduceSleepTime);
-        }
-        else
-        {
-           hal_pds_enter_with_time_compensation(31, bleSleepDuration_32768cycles - reduceSleepTime);
+            printf("Sleep_cycles=%ld\r\n", bleSleepDuration_32768cycles - reduceSleepTime_32768cycle);
+            hal_pds_enter_with_time_compensation(31, bleSleepDuration_32768cycles - reduceSleepTime_32768cycle);
         }
         pdsapp_restore();
 

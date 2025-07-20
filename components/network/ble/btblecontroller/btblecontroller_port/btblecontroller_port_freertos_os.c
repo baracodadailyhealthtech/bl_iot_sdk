@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -87,6 +87,11 @@ __attribute__((weak)) int btblecontroller_xport_is_inside_interrupt(void)
 __attribute__((weak)) void btblecontroller_task_delay(uint32_t ms)
 {
     vTaskDelay(pdMS_TO_TICKS(ms));
+}
+
+__attribute__((weak)) void * btblecontroller_task_get_current_task_handle(void)
+{
+    return xTaskGetCurrentTaskHandle();
 }
 
 __attribute__((weak)) void *btblecontroller_malloc(size_t xWantedSize)

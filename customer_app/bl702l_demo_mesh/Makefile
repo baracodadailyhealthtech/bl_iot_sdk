@@ -26,6 +26,9 @@ INCLUDE_COMPONENTS += bl702l bl702l_std bl702l_rf
 INCLUDE_COMPONENTS += newlibc hosal vfs yloop utils cli blog
 INCLUDE_COMPONENTS += blfdt
 INCLUDE_COMPONENTS += blmtd easyflash4
+ifeq ($(CONFIG_BLE_MESH_CERT_BASED_PROV),1)
+INCLUDE_COMPONENTS += mbedtls_lts lwip
+endif
 INCLUDE_COMPONENTS += coredump
 
 ifeq ($(CONFIG_BUILD_ROM_CODE),1)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -36,15 +36,10 @@
 #include <bl_uart.h>
 #include <hosal_uart.h>
 
-#include <openthread-core-config.h>
-#include <openthread/config.h>
-
+#include <openthread_port.h>
 #include <openthread/platform/debug_uart.h>
 #include <openthread/platform/logging.h>
-#include <openthread_port.h>
 #include <utils/uart.h>
-
-
 
 #if SYS_AOS_LOOP_ENABLE
 #include <vfs.h>
@@ -214,12 +209,8 @@ otError otPlatUartDisable(void)
 
 otError otPlatUartSend(const uint8_t *aBuf, uint16_t aBufLength)
 {
-    OT_CLI_UART_OUTPUT_LOCK();
-
     hosal_uart_send(&uart_stdio, aBuf, aBufLength);
     otPlatUartSendDone();
-
-    OT_CLI_UART_OUTPUT_UNLOCK();
 
     return OT_ERROR_NONE;
 }
@@ -306,5 +297,3 @@ void ot_uartLog(const char *fmt, va_list argp)
     }
 #endif
 }
-
-

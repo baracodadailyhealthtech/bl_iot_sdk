@@ -39,7 +39,9 @@
 #include "util.h"
 //#endif
 #include "mesh_config.h"
-
+#if defined(CONFIG_AUTO_PTS)
+#include "testing.h"
+#endif
 
 #define AID_MASK                    ((u8_t)(BIT_MASK(6)))
 
@@ -1177,7 +1179,7 @@ static int trans_ack(struct bt_mesh_net_rx *rx, u8_t hdr,
 
 #if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
 	BT_PTS("[PTS]   - SeqZero: 0x%04X", seq_zero);
-	BT_PTS("[PTS]   - BlockAck: 0x%08X", ack);
+	BT_PTS("[PTS]   - BlockAck: 0x%08lX", ack);
 #endif
 
 	BT_DBG("OBO %u seq_zero 0x%04x ack 0x%08lx", obo, seq_zero, ack);
@@ -1350,7 +1352,7 @@ static int trans_unseg(struct net_buf_simple *buf, struct bt_mesh_net_rx *rx,
 
 	if (bt_mesh_rpl_check(rx, NULL)) {
 #if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
-		BT_PTS("[PTS] Replayed message (SEQ = 0x%06X) ignored", rx->seq);
+		BT_PTS("[PTS] Replayed message (SEQ = 0x%06lX) ignored", rx->seq);
 #endif
 
 		BT_WARN("Replay: src 0x%04x dst 0x%04x seq 0x%06lx",
@@ -1456,7 +1458,7 @@ static int send_ack(struct bt_mesh_subnet *sub, u16_t src, u16_t dst,
 	}
 
 #if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
-	BT_PTS("[PTS] Sending BlockAck 0x%08X (SeqZero = 0x%04X)", block, seq_zero);
+	BT_PTS("[PTS] Sending BlockAck 0x%08lX (SeqZero = 0x%04X)", block, seq_zero);
 #endif
 
 	sys_put_be16(((seq_zero << 2) & 0x7ffc) | (obo << 15), buf);

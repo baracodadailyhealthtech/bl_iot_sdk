@@ -1310,7 +1310,8 @@ tcp_slowtmr_start:
                                       " pcb->rto %"S16_F"\n",
                                       pcb->rtime, pcb->rto));
 #else
-        if (pcb->unacked != NULL && (tcp_ticks - pcb->rtime) >= pcb->rto) {
+
+        if ((pcb->unacked != NULL || ((pcb->unacked == NULL) && (pcb->unsent != NULL))) && (tcp_ticks - pcb->rtime) >= pcb->rto) {
           /* Time for a retransmission. */
           LWIP_DEBUGF(TCP_RTO_DEBUG, ("tcp_slowtmr: rtime %ld"
                                       " pcb->rto %d\n",

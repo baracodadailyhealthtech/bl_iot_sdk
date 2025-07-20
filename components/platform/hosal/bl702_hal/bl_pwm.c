@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -56,7 +56,11 @@ static void pwm_init(uint8_t id, uint16_t div, uint16_t period)
         .ch = id,
         .clk = PWM_CLK_BCLK,
         .stopMode = PWM_STOP_ABRUPT,
+#if !defined(CFG_PWM_OUTPUT_INVERT)
         .pol = PWM_POL_NORMAL,
+#else
+        .pol = PWM_POL_INVERT,
+#endif
         .clkDiv = div,
         .period = period,
         .threshold1 = 0,
@@ -64,18 +68,21 @@ static void pwm_init(uint8_t id, uint16_t div, uint16_t period)
         .intPulseCnt = 0,
     };
 
-    PWM_Channel_Disable(id);
     PWM_Channel_Init(&pwmCfg);
+    PWM_SW_Force_Value(id, pwmCfg.pol);
+    PWM_SW_Mode(id, ENABLE);
 }
 
 static void pwm_start(uint8_t id)
 {
     PWM_Channel_Enable(id);
+    PWM_SW_Mode(id, DISABLE);
 }
 
 static void pwm_stop(uint8_t id)
 {
     PWM_Channel_Disable(id);
+    PWM_SW_Mode(id, ENABLE);
 }
 
 static void pwm_set_duty(uint8_t id, float duty, uint16_t *threshold1, uint16_t *threshold2)

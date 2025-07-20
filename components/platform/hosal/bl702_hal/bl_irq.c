@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -347,7 +347,7 @@ static void registerdump(unsigned int *regs)
 #define REG_A2              9
 #define REG_A3              10
 #define REG_A4              11
-#define REG_A5              13
+#define REG_A5              12
 #define REG_A6              13
 #define REG_A7              14
 #define REG_S2              15
@@ -401,6 +401,7 @@ void exception_entry(uint32_t mcause, uint32_t mepc, uint32_t mtval, uintptr_t *
 		mepc,
 		mtval
 	);
+#if !defined(CFG_USE_ROM_CODE)
     if ((mcause & 0x3ff) == EXCPT_LOAD_MISALIGNED){
         misaligned_load_trap(regs, mcause, mepc);
     } else if ((mcause & 0x3ff) == EXCPT_STORE_MISALIGNED){
@@ -423,6 +424,10 @@ void exception_entry(uint32_t mcause, uint32_t mepc, uint32_t mtval, uintptr_t *
 #endif
         }
     }
+#else
+    __dump_exception_code_str(mcause & 0xFFFF);
+    while(1);
+#endif
 }
 
 void check_trap(uint32_t label_is_exception, uint32_t sp)

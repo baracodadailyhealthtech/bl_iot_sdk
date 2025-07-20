@@ -535,7 +535,7 @@ static void generic_status(struct bt_mesh_model *model,
 
     node = bt_mesh_is_client_recv_publish_msg(model, ctx, buf, true);
     if (!node) {
-        BT_DBG("Unexpected generic status message 0x%x", ctx->recv_op);
+        BT_DBG("Unexpected generic status message 0x%lx", ctx->recv_op);
     } else {
         switch (node->opcode) {
         case BLE_MESH_MODEL_OP_GEN_ONOFF_GET:

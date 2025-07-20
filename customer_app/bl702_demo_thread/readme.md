@@ -18,8 +18,13 @@ Type following command to build:
 | ------------- | ------------------------------------------------------------ |
 | CONFIG_FTD    | `0`, build MTD image, which enables joiner<br />`1`, build FTD image, which enables both of commissioner and joiner. |
 | CONFIG_PREFIX | set prefix for command. |
-| CONFIG_USB_CDC | `1`, enable CDC; <br />`0`, disabe CDC|
-| CONFIG_BT_OAD_SERVER | `1`, enable BLE for OTA upgrade; <br /> `0`, disable BLE |
+
+`proj_config.mk` has following two options:
+
+| option                  | comments                                                     |
+| ----------------------- | ------------------------------------------------------------ |
+| CONFIG_EASYFLASH_ENABLE | save Thread network stack information to PSM partition managed by easyflash |
+| CONFIG_LITTLEFS         | save Thread network stack information to PSM partition managed by littlefs by default<br>littlefs requires more flash size and please refer to `bl702_demo_thread/partition_cfg_1M.toml` |
 
 ### Execution - 1
 
@@ -126,55 +131,6 @@ While，directly configuring dataset to attach the device to the network also wo
 
    Type `ipaddr`  to get IP address, and then `ping <ip address>` in command line of another device. And then sniffer tool should captured ICMPv6 packets.
 
-## LED example
-
-LED example can toggle each other's on-board led through connecting IO12 PIN to VDD.
-
-### Build
-
-Type following command to build:
-
-```shell
-./genotled
-```
-
-`genotled` script has two build options to build FTD/MTD devices and build whether bouffalolab command  line set together.  
-
-| option        | comments                                                     |
-| ------------- | ------------------------------------------------------------ |
-| CONFIG_FTD    | `0`, build MTD(SED) image, which sets rx-on-when-idle=false during startup<br />`1`, build FTD image. |
-| CONFIG_PREFIX | `0`, original openthread cli command names, eg, type `state` to get status of device. <br />`1`, build bouffalolab command line set together, openthread command line set works as `otc` command's sub set. eg, type `otc state` to get status of device. |
-| CONFIG_OTDEMO | `1`, use UDP to send on/off message <br />`2`, use CoAP to send on/off message |
-| CONFIG_PP     | Set polling period of SED device, which is valid when CONFIG_FTD=0. And unit is `ms`. |
-
-### Execution
-
-1. Build a FTD image and a MTD image with UDP or CoAP selected,  (Two FTD images are also OK) and download to the eval boards.
-
-2. Power on FTD device, a network with PANID `0xB702` will start. 
-
-   > Please observe on-board LED on/off status to check whether it becomes a leader.
-
-3. Power on another FTD device or MTD/SED device, it will attach to the network.
-
-   > Please observe on-board LED on/off status to check whether it attaches to the network.
-
-4. Connecting PIN IO12 to VDD to trigger UDP/CoAP message send out with on/off control.
-
-   > It will go through all neighbors (just parent for MTD/SED) to send out message.
-
-5. Observe RX0_LED wtheter to be toggled.
-
-### LED indications
-
-|TX1_LED| RX1_LED| 状态|
-|-|-|-|
-|off|off|thread is not started|
-|on|off|router|
-|on|on|child|
-|off|on|leader|
-
-
 ## NCP/RCP example
 ### Build
 
@@ -188,8 +144,8 @@ Type following command to build:
 
 | option        | comments                                                     |
 | ------------- | ------------------------------------------------------------ |
-| CONFIG_NCP    | `1`, build NCP device, and `CONFIG_FTD` option is valid to configure <br />`0`, build RCP device. |
-| CONFIG_FTD    | `0`, build MTD image;<br />`1`, build FTD image. |
+| OT_NCP        | `1`, build NCP device, and `OT_FTD` option is valid to configure <br />`0`, build RCP device. |
+| OT_FTD        | `0`, build MTD image;<br />`1`, build FTD image. |
 
 > **NOTE**, NCP/RCP only works with UART.
 ### pyspinel

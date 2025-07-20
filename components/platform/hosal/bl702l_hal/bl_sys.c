@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -197,17 +197,29 @@ int bl_sys_cache_config(void)
 
 int bl_sys_run_at_max_speed(void)
 {
+    unsigned long mstatus_tmp;
+    mstatus_tmp = read_csr(mstatus);
+    clear_csr(mstatus, MSTATUS_MIE);
+
     GLB_Set_System_CLK(GLB_DLL_XTAL_32M, GLB_SYS_CLK_DLL128M);
     HBN_Set_XCLK_CLK_Sel(HBN_XCLK_CLK_XTAL);
     GLB_Set_SF_CLK(1, GLB_SFLASH_CLK_42P67M, 0);
+
+    write_csr(mstatus, mstatus_tmp);
 
     return 0;
 }
 
 int bl_sys_run_at_normal_speed(void)
 {
+    unsigned long mstatus_tmp;
+    mstatus_tmp = read_csr(mstatus);
+    clear_csr(mstatus, MSTATUS_MIE);
+
     GLB_Set_System_CLK(GLB_DLL_XTAL_32M, GLB_SYS_CLK_XTAL);
     GLB_Set_SF_CLK(1, GLB_SFLASH_CLK_XCLK, 0);
+
+    write_csr(mstatus, mstatus_tmp);
 
     return 0;
 }

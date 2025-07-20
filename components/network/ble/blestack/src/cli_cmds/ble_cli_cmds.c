@@ -56,7 +56,7 @@ static int ble_adv_id;
 BLE_CLI(enable);
 BLE_CLI(set_chan_map);
 BLE_CLI(init);
-#if defined(BL702)
+#if defined(BL702) || defined (BL616) || defined(BL702L)
 BLE_CLI(set_2M_phy);
 BLE_CLI(set_coded_phy);
 BLE_CLI(set_default_phy);
@@ -147,6 +147,8 @@ BLE_CLI(gatts_get_char);
 BLE_CLI(gatts_get_desp);
 #endif
 #endif
+BLE_CLI(le_tx_test);
+BLE_CLI(le_rx_test);
 BLE_CLI(le_enh_tx_test);
 BLE_CLI(le_enh_rx_test);
 BLE_CLI(le_test_end);
@@ -160,7 +162,7 @@ BLE_CLI(le_test_end);
 #if defined(CONFIG_BLE_TP_SERVER)
     SHELL_CMD_EXPORT_ALIAS(blecli_tp_start, ble_tp_start, throughput start Parameter:[TP test 1:enable; 0:disable]);
 #endif /* CONFIG_BLE_TP_SERVER */
-#if defined(BL702)
+#if defined(BL702) || defined (BL616) || defined(BL702L)
 #if defined(CONFIG_BT_CONN)
     SHELL_CMD_EXPORT_ALIAS(blecli_set_default_phy, ble_set_default_phy, ble set default phy Parameter:[defualt phys]);
     SHELL_CMD_EXPORT_ALIAS(blecli_set_2M_phy, ble_set_2M_Phy, ble set 2M Phy Parameter:[defualt phys]);
@@ -303,9 +305,13 @@ BLE_CLI(le_test_end);
     SHELL_CMD_EXPORT_ALIAS(blecli_gatts_get_desp, ble_get_svc_desp, );
 #endif /* CONFIG_BT_PERIPHERAL */
 #endif /* BFLB_BLE_DYNAMIC_SERVICE */
-    SHELL_CMD_EXPORT_ALIAS(blecli_le_enh_tx_test, ble_tx_test, LE tx test \
+    SHELL_CMD_EXPORT_ALIAS(blecli_le_tx_test, ble_tx_test, LE tx test \
+        parameter:[tx channel:1 datalen:1 octet;packet payload:1);
+    SHELL_CMD_EXPORT_ALIAS(blecli_le_rx_test, ble_rx_test, LE tx test \
+        parameter:[rx channel:1);
+    SHELL_CMD_EXPORT_ALIAS(blecli_le_enh_tx_test, ble_enh_tx_test, LE enh tx test \
         parameter:[tx channel:1 octet;test data length:1 octet;packet payload:1 octet; phy:1 octet);
-    SHELL_CMD_EXPORT_ALIAS(blecli_le_enh_rx_test, ble_rx_test, LE tx test \
+    SHELL_CMD_EXPORT_ALIAS(blecli_le_enh_rx_test, ble_enh_rx_test, LE enh tx test \
         parameter:[rx channel:1 octet;phy:1 octet;modulation index:1 octet);
     SHELL_CMD_EXPORT_ALIAS(blecli_le_test_end, ble_test_end, );
 #else /* CONFIG_SHELL */
@@ -321,7 +327,7 @@ const struct cli_command btStackCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
 #if defined(CONFIG_BLE_TP_SERVER)
     {"ble_tp_start", "throughput start\r\nParameter [TP test,1:enable, 0:disable]\r\n", blecli_tp_start},
 #endif
-#if defined(BL702)
+#if defined(BL702)|| defined (BL616) || defined(BL702L)
 #if defined(CONFIG_BT_CONN)
     {"ble_set_default_phy", "ble set default phy\r\nParameter [defualt phys]\r\n", blecli_set_default_phy},
     {"ble_set_2M_Phy", "ble set 2M Phy\r\nParameter [defualt phys]\r\n", blecli_set_2M_phy},
@@ -529,9 +535,7 @@ const struct cli_command btStackCmdSet[] STATIC_CLI_CMD_ATTRIBUTE = {
 #endif
     {"ble_set_data_len", "", blecli_set_data_len},
     {"ble_conn_info", "", blecli_get_all_conn_info},
-#if defined(CONFIG_SET_TX_PWR)
     {"ble_set_tx_pwr", "", blecli_set_tx_pwr},
-#endif
 #if defined(CONFIG_HOGP_SERVER)
     {"ble_hog_srv_notify", "", blecli_hog_srv_notify},
 #endif
@@ -743,7 +747,7 @@ BLE_CLI(init)
     vOutputString("Init successfully\r\n");
 }
 
-#if defined(BL702)
+#if defined(BL702) || defined (BL616) ||defined(BL702L)
 #if defined(CONFIG_BT_CONN)
 BLE_CLI(set_2M_phy)
 {
@@ -811,6 +815,54 @@ BLE_CLI(set_default_phy)
 }
 #endif
 #endif
+
+BLE_CLI(le_rx_test)
+{
+    int err;
+    u8_t rx_ch;
+
+    if(argc != 2){
+       vOutputString("Number of Parameters is not correct\r\n");
+       return;
+    }
+    get_uint8_from_string(&argv[1], &rx_ch); 
+    
+    err = bt_ble_rx_test_cmd(rx_ch);
+    if(err)
+    {
+        vOutputString("le rx test failed (err %d)\r\n", err); 
+    }
+    else
+    {
+        vOutputString("le rx test success\r\n");
+    }
+}
+
+BLE_CLI(le_tx_test)
+{
+    int err;
+    u8_t tx_ch;
+    u8_t data_len;
+    u8_t pkt_payload;
+
+    if(argc != 4){
+       vOutputString("Number of Parameters is not correct\r\n");
+       return;
+    }
+    get_uint8_from_string(&argv[1], &tx_ch); 
+    get_uint8_from_string(&argv[2], &data_len); 
+    get_uint8_from_string(&argv[3], &pkt_payload); 
+    
+    err = bt_ble_tx_test_cmd(tx_ch, data_len, pkt_payload);
+    if(err)
+    {
+        vOutputString("le tx test failed (err %d)\r\n", err); 
+    }
+    else
+    {
+        vOutputString("le tx test success\r\n");
+    }
+}
 
 BLE_CLI(le_enh_tx_test)
 {
@@ -1587,7 +1639,7 @@ BLE_CLI(l2cap_disconnect)
     int err = 0;
     uint16_t tx_cid;
 
-    if(argc != 1){
+    if(argc != 2){
         vOutputString("Number of Parameters is not correct\r\n");
         return;
     }
@@ -1609,16 +1661,20 @@ BLE_CLI(register_test_psm)
     int err = 0;
     uint16_t psm;
     uint8_t sec_level;
+    uint8_t l2cap_policy;
+    bool add_allow;
 
-    if(argc != 3){
+    if(argc != 5){
         vOutputString("Number of Parameters is not correct\r\n");
         return;
     }
     get_uint16_from_string(&argv[1], &psm);
     get_uint8_from_string(&argv[2], &sec_level);
-    
-    extern int bt_register_test_psm(uint16_t psm, uint8_t sec_level);
-    bt_register_test_psm(psm, sec_level);
+    get_uint8_from_string(&argv[3], &l2cap_policy);
+    get_uint8_from_string(&argv[4], (uint8_t *)&add_allow);
+
+    extern int bt_register_test_psm(uint16_t psm, uint8_t sec_level, uint8_t policy,bool add_allow);
+    err = bt_register_test_psm(psm, sec_level,l2cap_policy,add_allow);
 
     if (err) {
         vOutputString("Fail to register test psm(err %d)\r\n", err);
@@ -2097,9 +2153,18 @@ static struct bt_gatt_write_params write_params;
 static void write_func(struct bt_conn *conn, u8_t err,
 		       struct bt_gatt_write_params *params)
 {
+    int ret = 0;
 	vOutputString("Write complete: err %u \r\n", err);
 
-	(void)memset(&write_params, 0, sizeof(write_params));
+    if(err == BT_ATT_ERR_PREPARE_QUEUE_FULL){
+        ret = bt_gatt_cancle_prepare_writes(conn, params);
+        if(ret){
+            vOutputString("Fail to cancel prepare writes(err %d)\r\n", ret);
+        }else{
+            vOutputString("Cancel prepare writes pending\r\n");
+        }
+    }else
+        memset(params, 0, sizeof(struct bt_gatt_write_params));
 }
 
 BLE_CLI(write)

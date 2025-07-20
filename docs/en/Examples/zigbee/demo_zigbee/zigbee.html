@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Zigbee &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
+  <title>Zigbee &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../../../index.html"/>
         <link rel="up" title="Zigbee" href="../index.html"/>
         <link rel="next" title="zsed_demo" href="../BL702L_ZSED_Sensor/app_demo.html"/>
         <link rel="prev" title="Zigbee" href="../index.html"/> 
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1973-g7970cf316
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
               </div>
             
           
@@ -113,6 +113,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fwupgrade/index.html">FW Upgrade</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
@@ -194,81 +195,107 @@
 </div>
 <div class="section" id="id2">
 <h2>使用步骤<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
+<p>进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程并通过 <code class="docutils literal notranslate"><span class="pre">genzb</span></code> 脚本命令编译，完成后下载Bin文件；</p>
 <ul>
-<li><p>进入 <code class="docutils literal notranslate"><span class="pre">customer_app/bl702_demo_event</span></code> 工程并通过 <code class="docutils literal notranslate"><span class="pre">genzb</span></code> 脚本命令编译，完成后下载Bin文件，toml文件对应customer_app/bl702_demo_event/partition_cfg_1M_NoOta.toml；</p></li>
-<li><ol class="arabic simple">
-<li><p>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0007</span> <span class="pre">0x00</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0007, input cluster 0个, output cluster 7个</p></li>
-</ol>
+<li><ol class="arabic">
+<li><p>Device1 使用</p>
 <blockquote>
-<div><div class="figure align-default">
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0007</span> <span class="pre">0x00</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0007, input cluster 0个, output cluster 7个</p>
+<div class="figure align-default">
 <img alt="" src="../../../_images/ZC-RegisterEP.png" />
 </div>
 </div></blockquote>
 </li>
-<li><ol class="arabic simple" start="2">
-<li><p>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">0</span></code> 命令设置设备类型ZC; 使用 <code class="docutils literal notranslate"><span class="pre">zb_form</span> <span class="pre">15</span> <span class="pre">0xaaaa</span></code> 创建信道15，PANID 0xaaaa的ZHA网络 ,打印的部分log如下。</p></li>
 </ol>
+</li>
+<li><ol class="arabic" start="2">
+<li><p>Device1 使用</p>
 <blockquote>
-<div><div class="figure align-default">
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">0</span></code> 命令设置设备类型ZC;</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_form</span> <span class="pre">15</span> <span class="pre">0xaaaa</span></code> 创建信道15，PANID 0xaaaa的ZHA网络 ,打印的部分log如下。</p>
+<div class="figure align-default">
 <img alt="" src="../../../_images/ZC-Startup.png" />
 </div>
 </div></blockquote>
 </li>
-<li><ol class="arabic simple" start="3">
-<li><p>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span> <span class="pre">120</span></code> 开放网络120秒；</p></li>
 </ol>
+</li>
+<li><ol class="arabic" start="3">
+<li><p>Device1 使用</p>
 <blockquote>
-<div><div class="figure align-default">
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_nwk_permit_join</span> <span class="pre">120</span></code> 开放网络120秒；</p>
+<div class="figure align-default">
 <img alt="" src="../../../_images/zb_nwk_permit_join.png" />
 </div>
 </div></blockquote>
 </li>
-<li><ol class="arabic simple" start="4">
-<li><p>Device2 使用 <code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0102</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span> <span class="pre">0x00</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0102, input cluster 7个, output cluster 0个; 如果Device2要做touchlink target，input cluster中需要注册touchlink cluster, touchlink cluster id 为0x1000，例如zb_register_dev 1 0x0104 0x0102 0x08 0x0000 0x0003 0x0004 0x0005 0x0006 0x0008 0x0300 0x1000 0x00。</p></li>
 </ol>
+</li>
+<li><ol class="arabic" start="4">
+<li><p>Device2 使用</p>
 <blockquote>
-<div><div class="figure align-default">
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_register_dev</span> <span class="pre">1</span> <span class="pre">0x0104</span> <span class="pre">0x0102</span> <span class="pre">0x07</span> <span class="pre">0x0000</span> <span class="pre">0x0003</span> <span class="pre">0x0004</span> <span class="pre">0x0005</span> <span class="pre">0x0006</span> <span class="pre">0x0008</span> <span class="pre">0x0300</span> <span class="pre">0x00</span></code> 命令注册 endpoint 1, profile id 为0x0104, device id为0x0102, input cluster 7个, output cluster 0个;</p>
+<p>如果Device2要做touchlink target，input cluster中需要注册touchlink cluster, touchlink cluster id 为0x1000，例如zb_register_dev 1 0x0104 0x0102 0x08 0x0000 0x0003 0x0004 0x0005 0x0006 0x0008 0x0300 0x1000 0x00。</p>
+<div class="figure align-default">
 <img alt="" src="../../../_images/ZR-RegisterEP.png" />
 </div>
 </div></blockquote>
 </li>
-<li><ol class="arabic simple" start="5">
-<li><p>Device2 使用 <code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">1</span></code> 命令设置设备类型ZR， 使用 <code class="docutils literal notranslate"><span class="pre">zb_start</span></code> 自动搜索zigbee网络，找到网络后打印的部分log如下。</p></li>
 </ol>
+</li>
+<li><ol class="arabic" start="5">
+<li><p>Device2 使用</p>
 <blockquote>
-<div><div class="figure align-default">
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_set_role</span> <span class="pre">1</span></code> 命令设置设备类型ZR;</p>
+<p><code class="docutils literal notranslate"><span class="pre">zb_start</span></code> 自动搜索zigbee网络，找到网络后打印的部分log如下。</p>
+<div class="figure align-default">
 <img alt="" src="../../../_images/ZR-Startup.png" />
 </div>
 </div></blockquote>
 </li>
-<li><ol class="arabic simple" start="6">
-<li><p>Device1 使用 <code class="docutils literal notranslate"><span class="pre">zb_zcl_onoff</span> <span class="pre">2</span> <span class="pre">0x6d4e</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">2</span></code> 命令向Device2 ep1 发送zcl:toggle 命令,地址模式为短地址</p></li>
 </ol>
+</li>
+<li><ol class="arabic" start="6">
+<li><p>Device1 使用</p>
 <blockquote>
-<div><div class="figure align-default">
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_zcl_onoff</span> <span class="pre">2</span> <span class="pre">0x6d4e</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">2</span></code> 命令向Device2 ep1 发送zcl:toggle 命令,地址模式为短地址</p>
+<div class="figure align-default">
 <img alt="" src="../../../_images/ZC-SendOnOff.png" />
 </div>
 </div></blockquote>
 </li>
-<li><ol class="arabic simple" start="7">
-<li><p>Device1/2 使用 <code class="docutils literal notranslate"><span class="pre">zb_reset</span></code>, 擦除zigbee flash存储内容。</p></li>
 </ol>
+</li>
+<li><ol class="arabic" start="7">
+<li><p>Device1/2 使用</p>
 <blockquote>
-<div><div class="figure align-default">
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_reset</span></code>, 擦除zigbee flash存储内容。</p>
+<div class="figure align-default">
 <img alt="" src="../../../_images/Device_reset.png" />
 </div>
 </div></blockquote>
 </li>
-<li><ol class="arabic simple" start="8">
-<li><p>Device1/2 使用 <code class="docutils literal notranslate"><span class="pre">zb_reboot</span></code>, 重启程序。</p></li>
 </ol>
+</li>
+<li><ol class="arabic" start="8">
+<li><p>Device1/2 使用</p>
 <blockquote>
-<div><div class="figure align-default">
+<div><p><code class="docutils literal notranslate"><span class="pre">zb_reboot</span></code>, 重启程序。</p>
+<div class="figure align-default">
 <img alt="" src="../../../_images/Device_reboot.png" />
 </div>
 </div></blockquote>
 </li>
+</ol>
+</li>
 </ul>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<ul class="simple">
+<li><p>由于样例程序默认使能了CLI等调试功能，编译出的固件较大，因此使用1M Flash版本的开发板时，分区表请使用customer_app/bl702_demo_event/partition_cfg_1M_NoOta.toml。</p></li>
+<li><p><a class="reference external" href="https://dev.bouffalolab.com/media/doc/faq/702/html/content/FAQ.html#bl702flash">BL70x/BL70xL 分区表</a>，在正常工作状态下, Zigbee Stack 使用到 <strong>&lt;&lt;backup&gt;&gt;</strong>， <strong>&lt;&lt;media&gt;&gt;</strong>, <strong>&lt;&lt;factory&gt;&gt;</strong> 这三个分区。由于软件需要，这三个分区被放置在flash的最后24K，因此用户增大，减小或改变分区表时，需要根据实际flash大小，将以上分区调整至末尾位置，并保持相对关系不变。</p></li>
+</ul>
+</div>
 </div>
 <div class="section" id="cli">
 <h2>Cli命令介绍<a class="headerlink" href="#cli" title="永久链接至标题"></a></h2>
@@ -1406,7 +1433,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

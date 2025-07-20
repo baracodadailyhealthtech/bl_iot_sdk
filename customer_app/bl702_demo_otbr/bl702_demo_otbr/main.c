@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -34,8 +34,6 @@
 
 #include <lwip/tcpip.h>
 
-#include <netutils/netutils.h>
-
 #include <openthread/dataset_ftd.h>
 #if OPENTHREAD_CONFIG_BORDER_ROUTING_ENABLE
 #include <openthread/border_router.h>
@@ -43,6 +41,7 @@
 #if OPENTHREAD_CONFIG_BACKBONE_ROUTER_ENABLE
 #include <openthread/backbone_router_ftd.h>
 #endif /* OPENTHREAD_CONFIG_BORDER_ROUTING_ENABLE */
+#include <openthread/platform/settings.h>
 #include <openthread_port.h>
 
 #include <main.h>
@@ -78,42 +77,25 @@ void _cli_init(int fd_console)
     extern void usb_cdc_start(int fd_console);
     usb_cdc_start(fd_console);
 #endif /* CFG_USB_CDC_ENABLE */
-
-    /*Put CLI which needs to be init here*/
-#if defined(CFG_EFLASH_LOADER_ENABLE)
-    extern int helper_eflash_loader_cli_init(void);
-    helper_eflash_loader_cli_init();
-#endif
-
-#if defined(CFG_RFPHY_CLI_ENABLE)
-    extern int helper_rfphy_cli_init(void);
-    helper_rfphy_cli_init();
-#endif
-
-    /*Put CLI which needs to be init here*/
-    network_netutils_iperf_cli_register();
-    network_netutils_ping_cli_register();
 }
 
-static void cmd_ipinfo(char *buf, int len, int argc, char **argv)
+static void cmd_ifconfig(char *buf, int len, int argc, char **argv)
 {
-    struct netif  * netif = otbr_getBackboneNetif();
+    struct netif  * netif = otbr_getInfraNetif();
     ip6_addr_t    * ip6addr;
     
-    printf("Backbone Address info:\r\n");
-    printf("Hwaddr %02X:%02X:%02X:%02X:%02X:%02X\r\n", netif->hwaddr[0], 
+    printf("Infra net interface: %s\r\n", netif->flags & NETIF_FLAG_UP ? "UP": "DOWN");
+    printf("\tMAC address: %02X:%02X:%02X:%02X:%02X:%02X\r\n", netif->hwaddr[0], 
         netif->hwaddr[1], netif->hwaddr[2], netif->hwaddr[3], netif->hwaddr[4], netif->hwaddr[5]);
 
     if (netif->flags & NETIF_FLAG_UP) {
-#if LWIP_IPV4
         if(!ip4_addr_isany(netif_ip4_addr(netif))){
-            printf("IP: %s\r\n", ip4addr_ntoa(netif_ip4_addr(netif)));
-            printf("MASK: %s\r\n", ip4addr_ntoa(netif_ip4_netmask(netif)));
-            printf("Gateway: %s\r\n", ip4addr_ntoa(netif_ip4_gw(netif)));
+            printf("\tIPv4 address: %s\r\n", ip4addr_ntoa(netif_ip4_addr(netif)));
+            printf("\tIPv4 mask: %s\r\n", ip4addr_ntoa(netif_ip4_netmask(netif)));
+            printf("\tGateway address: %s\r\n", ip4addr_ntoa(netif_ip4_gw(netif)));
         }
-#endif /* LWIP_IPV4 */
 
-        for (uint32_t i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i ++ ) {
+        for (int i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i ++ ) {
             if (!ip6_addr_isany(netif_ip6_addr(netif, i)) && 
                 ip6_addr_ispreferred(netif_ip6_addr_state(netif, i))) {
 
@@ -123,51 +105,44 @@ static void cmd_ipinfo(char *buf, int len, int argc, char **argv)
                 }
 
                 if (ip6_addr_islinklocal(ip6addr)) {
-                    printf("LOCAL IP6 addr %s\r\n", ip6addr_ntoa(ip6addr));
+                    printf("\tIPv6 linklocal address: %s\r\n", ip6addr_ntoa(ip6addr));
                 }
                 else{
-                    printf("GLOBAL IP6 addr %s\r\n", ip6addr_ntoa(ip6addr));
+                    printf("\tIPv6 address %d: %s\r\n", i, ip6addr_ntoa(ip6addr));
                 }
             }
         }
     }
-    else{
-        printf("netif isn't up\r\n");
-    }
 
     netif = otbr_getThreadNetif();
-    printf("Thread Address info:\r\n");
-    printf("Hwaddr %02X:%02X:%02X:%02X:%02X:%02X\r\n", netif->hwaddr[0], 
+    printf("Thread net interface: %s\r\n", netif->flags & NETIF_FLAG_UP ? "UP": "DOWN");
+    printf("\tMAC address: %02X:%02X:%02X:%02X:%02X:%02X\r\n", netif->hwaddr[0], 
         netif->hwaddr[1], netif->hwaddr[2], netif->hwaddr[3], netif->hwaddr[4], netif->hwaddr[5]);
-    if (netif->flags & NETIF_FLAG_UP) {
-#if LWIP_IPV4
-        if(!ip4_addr_isany(netif_ip4_addr(netif))){
-            printf("IP: %s\r\n", ip4addr_ntoa(netif_ip4_addr(netif)));
-            printf("MASK: %s\r\n", ip4addr_ntoa(netif_ip4_netmask(netif)));
-            printf("Gateway: %s\r\n", ip4addr_ntoa(netif_ip4_gw(netif)));
-        }
-#endif /* LWIP_IPV4 */
 
-        for (uint32_t i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i ++ ) {
-          if (!ip6_addr_isany(netif_ip6_addr(netif, i)) && 
-              ip6_addr_ispreferred(netif_ip6_addr_state(netif, i))) {
-                
+    if (netif->flags & NETIF_FLAG_UP) {
+        if(!ip4_addr_isany(netif_ip4_addr(netif))){
+            printf("\tIPv4 address: %s\r\n", ip4addr_ntoa(netif_ip4_addr(netif)));
+            printf("\tIPv4 mask: %s\r\n", ip4addr_ntoa(netif_ip4_netmask(netif)));
+            printf("\tGateway address: %s\r\n", ip4addr_ntoa(netif_ip4_gw(netif)));
+        }
+
+        for (int i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i ++ ) {
+            if (!ip6_addr_isany(netif_ip6_addr(netif, i)) && 
+                ip6_addr_ispreferred(netif_ip6_addr_state(netif, i))) {
+
                 ip6addr = (ip6_addr_t *)netif_ip6_addr(netif, i);
                 if (ip6_addr_isany(ip6addr)) {
                     continue;
                 }
 
                 if (ip6_addr_islinklocal(ip6addr)) {
-                    printf("LOCAL IP6 addr %s\r\n", ip6addr_ntoa(ip6addr));
+                    printf("\tIPv6 linklocal address: %s\r\n", ip6addr_ntoa(ip6addr));
                 }
                 else{
-                    printf("GLOBAL IP6 addr %s\r\n", ip6addr_ntoa(ip6addr));
+                    printf("\tIPv6 address %d: %s\r\n", i, ip6addr_ntoa(ip6addr));
                 }
             }
         }
-    }
-    else{
-        printf("netif isn't up\r\n");
     }
 }
 
@@ -198,14 +173,14 @@ static void cmd_ipaddr(char *buf, int len, int argc, char **argv)
 
     if (!isAdd) {
         if (index) {
-            netif_ip6_addr_set_state(otbr_getBackboneNetif(), index, IP6_ADDR_INVALID);
+            netif_ip6_addr_set_state(otbr_getInfraNetif(), index, IP6_ADDR_INVALID);
         }
         return;
     }
 
     if (ip6addr_aton(argv[3], &ip6addr)) {
-        netif_ip6_addr_set(otbr_getBackboneNetif(), index, &ip6addr);
-        netif_ip6_addr_set_state(otbr_getBackboneNetif(), index, IP6_ADDR_PREFERRED);
+        netif_ip6_addr_set(otbr_getInfraNetif(), index, &ip6addr);
+        netif_ip6_addr_set_state(otbr_getInfraNetif(), index, IP6_ADDR_PREFERRED);
 
         otbr_instance_routing_init();
     }
@@ -213,12 +188,13 @@ static void cmd_ipaddr(char *buf, int len, int argc, char **argv)
 
 const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = {
 #ifdef CFG_USE_WIFI_BR
-    {"wifi_connect", "connect to Wi-Fi AP", cmd_connect},
-    {"wifi_disconnect", "wifi disconnect from Wi-Fi AP", cmd_disconnect},
-    {"wifi_scan", "wifi scan", cmd_scan},
+    {"wifi_sta_connect", "connect to Wi-Fi AP", cmd_connect},
+    {"wifi_sta_disconnect", "wifi disconnect from Wi-Fi AP", cmd_disconnect},
+    {"wifi_sta_scan", "wifi scan", cmd_scan},
     {"get_net_info", "get_net_info", cmd_get_info},
+    {"wifi_config", "config wifi SSID & Password", cmd_wifi_config},
 #endif /* CFG_USE_WIFI_BR */
-    {"ipinfo", "eth ipaddr", cmd_ipinfo},
+    {"ifconfig", "ip addresses", cmd_ifconfig},
     {"ipaddr", "ipaddr operation", cmd_ipaddr},
 };
 
@@ -277,9 +253,11 @@ int main(int argc, char *argv[])
     bl_rtc_init();
     hal_tcal_init();
 
-#if defined(CFG_USE_WIFI_BR) && defined (WIFI_LWIP_RESET_PIN) 
+#if defined(CFG_USE_WIFI_BR)
     wifi_lwip_hw_reset();
 #endif /* CFG_USE_WIFI_BR */
+
+    otPlatSettingsInit(NULL, NULL, 0);
 
     opt.byte = 0;
 
@@ -303,7 +281,7 @@ int main(int argc, char *argv[])
 #else
     eth_lwip_init();
 #endif /*CFG_ETHERNET_ENABLE*/
-
+    
     otrStart(opt);
 
     return 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -120,7 +120,6 @@
 #include "zb_stack_cli.h"
 #endif
 #include "zigbee_app.h"
-//#include "zb_bdb.h"
 #endif
 #if defined(CONFIG_ZIGBEE_PROV)
 #include "blsync_ble_app.h"
@@ -129,17 +128,9 @@
 #include "bl_psram.h"
 #endif /* CFG_USE_PSRAM */
 
-
-#define PDS_WAKEUP_GPIO 17
-#define HBN_WAKEUP_GPIO 9
-
 #ifdef CFG_ETHERNET_ENABLE
 //extern err_t ethernetif_init(struct netif *netif);
 extern err_t eth_init(struct netif *netif);
-
-#define ETH_USE_DHCP 1
-
-#if ETH_USE_DHCP
 static void netif_status_callback(struct netif *netif)
 {
     if (netif->flags & NETIF_FLAG_UP) {
@@ -217,280 +208,7 @@ void lwip_init_netif(void)
     /* Set callback to be called when interface is brought up/down or address is changed while up */
     netif_set_status_callback(&eth_mac, netif_status_callback);
 }
-#else
-void lwip_init_netif(void)
-{
-    ip_addr_t ipaddr, netmask, gw;
-
-    IP4_ADDR(&gw, 192,168,99,1);
-    IP4_ADDR(&ipaddr, 192,168,99,150);
-    IP4_ADDR(&netmask, 255,255,255,0);
-
-    netif_add(&eth_mac, &ipaddr, &netmask, &gw, NULL, eth_init, ethernet_input);
-    netif_set_default(&eth_mac);
-    netif_set_up(&eth_mac);
-}
-#endif /* ETH_USE_DHCP */
 #endif /* CFG_ETHERNET_ENABLE */
-
-bool pds_start = false;
-bool wfi_disable = false;
-void bl702_low_power_config(void);
-#if defined(CFG_ZIGBEE_PDS) || (CFG_BLE_PDS)
-static void cmd_start_pds(char *buf, int len, int argc, char **argv)
-{
-    pds_start = true;
-}
-#endif
-
-#if defined(CFG_ZIGBEE_HBN)
-bool hbn_start = false;
-static void cmd_start_hbn(char *buf, int len, int argc, char **argv)
-{
-    hbn_start = true;
-}
-#endif
-
-static void cmd_lowpower_config(char *buf, int len, int argc, char **argv)
-{
-    bl702_low_power_config();
-}
-
-typedef enum {
-    TEST_OP_GET32 = 0,
-    TEST_OP_GET16,
-    TEST_OP_SET32 = 256,
-    TEST_OP_SET16,
-    TEST_OP_MAX = 0x7FFFFFFF
-} test_op_t;
-static __attribute__ ((noinline)) uint32_t misaligned_acc_test(void *ptr, test_op_t op, uint32_t v)
-{
-    uint32_t res = 0;
-
-    switch (op) {
-        case TEST_OP_GET32:
-            res = *(volatile uint32_t *)ptr;
-            break;
-        case TEST_OP_GET16:
-            res = *(volatile uint16_t *)ptr;
-            break;
-        case TEST_OP_SET32:
-            *(volatile uint32_t *)ptr = v;
-            break;
-        case TEST_OP_SET16:
-            *(volatile uint16_t *)ptr = v;
-            break;
-        default:
-            break;
-    }
-
-    return res;
-}
-
-//uint32_t bl_timer_now_us(void){return 0;}
-void test_align(uint32_t buf)
-{
-    volatile uint32_t testv[4] = {0};
-    uint32_t t1 = 0;
-    uint32_t t2 = 0;
-    uint32_t t3 = 0;
-    uint32_t i = 0;
-    volatile uint32_t reg = buf;
-
-    portDISABLE_INTERRUPTS();
-
-    /* test get 32 */
-    __asm volatile ("nop":::"memory");
-    t1 = *(volatile uint32_t*)0x4000A52C;
-    // 3*n + 5
-    testv[0] = *(volatile uint32_t *)(reg + 0 * 8 + 1);
-    t2 = *(volatile uint32_t*)0x4000A52C;
-    // 3*n + 1
-    testv[1] = *(volatile uint32_t *)(reg + 1 * 8 + 0);
-    t3 = *(volatile uint32_t*)0x4000A52C;
-    log_info("testv[0] = %08lx, testv[1] = %08lx\r\n", testv[0], testv[1]);
-    log_info("time_us = %ld & %ld ---> %d\r\n", (t2 - t1), (t3 - t2), (t2 - t1)/(t3 - t2));
-
-    /* test get 16 */
-    __asm volatile ("nop":::"memory");
-    t1 = bl_timer_now_us();
-    for (i = 0; i < 1 * 1000 * 1000; i++) {
-        testv[0] = misaligned_acc_test((void *)(reg + 2 * 8 + 1), TEST_OP_GET16, 0);
-    }
-    t2 = bl_timer_now_us();
-    for (i = 0; i < 1 * 1000 * 1000; i++) {
-        testv[1] = misaligned_acc_test((void *)(reg + 3 * 8 + 0), TEST_OP_GET16, 0);
-    }
-    t3 = bl_timer_now_us();
-    log_info("testv[0] = %08lx, testv[1] = %08lx\r\n", testv[0], testv[1]);
-    log_info("time_us = %ld & %ld ---> %d\r\n", (t2 - t1), (t3 - t2), (t2 - t1)/(t3 - t2));
-
-    /* test set 32 */
-    __asm volatile ("nop":::"memory");
-    t1 = bl_timer_now_us();
-    for (i = 0; i < 1 * 1000 * 1000; i++) {
-        misaligned_acc_test((void *)(reg + 4 * 8 + 1), TEST_OP_SET32, 0x44332211);
-    }
-    t2 = bl_timer_now_us();
-    for (i = 0; i < 1 * 1000 * 1000; i++) {
-        misaligned_acc_test((void *)(reg + 5 * 8 + 0), TEST_OP_SET32, 0x44332211);
-    }
-    t3 = bl_timer_now_us();
-    log_info("time_us = %ld & %ld ---> %d\r\n", (t2 - t1), (t3 - t2), (t2 - t1)/(t3 - t2));
-
-    /* test set 16 */
-    __asm volatile ("nop":::"memory");
-    t1 = bl_timer_now_us();
-    for (i = 0; i < 1 * 1000 * 1000; i++) {
-        misaligned_acc_test((void *)(reg + 6 * 8 + 1), TEST_OP_SET16, 0x6655);
-    }
-    t2 = bl_timer_now_us();
-    for (i = 0; i < 1 * 1000 * 1000; i++) {
-        misaligned_acc_test((void *)(reg + 7 * 8 + 0), TEST_OP_SET16, 0x6655);
-    }
-    t3 = bl_timer_now_us();
-    log_info("time_us = %ld & %ld ---> %d\r\n", (t2 - t1), (t3 - t2), (t2 - t1)/(t3 - t2));
-
-    portENABLE_INTERRUPTS();
-}
-
-void test_misaligned_access(void) __attribute__((optimize("O0")));
-void test_misaligned_access(void)// __attribute__((optimize("O0")))
-{
-#define TEST_V_LEN         (32)
-    __attribute__ ((aligned(16))) volatile unsigned char test_vector[TEST_V_LEN] = {0};
-    int i = 0;
-    volatile uint32_t v = 0;
-    uint32_t addr = (uint32_t)test_vector;
-    volatile char *pb = (volatile char *)test_vector;
-    register float a asm("fa0") = 0.0f;
-    register float b asm("fa1") = 0.5f;
-
-    for (i = 0; i < TEST_V_LEN; i ++)
-        test_vector[i] = i;
-
-    addr += 1; // offset 1
-    __asm volatile ("nop");
-    v = *(volatile uint16_t *)(addr); // 0x0201
-    __asm volatile ("nop");
-    printf("%s: v=%8lx, should be 0x0201\r\n", __func__, v);
-    __asm volatile ("nop");
-    *(volatile uint16_t *)(addr) = 0x5aa5;
-    __asm volatile ("nop");
-    __asm volatile ("nop");
-    v = *(volatile uint16_t *)(addr); // 0x5aa5
-    __asm volatile ("nop");
-    printf("%s: v=%8lx, should be 0x5aa5\r\n", __func__, v);
-
-    addr += 4; // offset 5
-    __asm volatile ("nop");
-    v = *(volatile uint32_t *)(addr); //0x08070605
-    __asm volatile ("nop");
-    printf("%s: v=%8lx, should be 0x08070605\r\n", __func__, v);
-    __asm volatile ("nop");
-    *(volatile uint32_t *)(addr) = 0xa5aa55a5;
-    __asm volatile ("nop");
-    __asm volatile ("nop");
-    v = *(volatile uint32_t *)(addr); // 0xa5aa55a5
-    __asm volatile ("nop");
-    printf("%s: v=%8lx, should be 0xa5aa55a5\r\n", __func__, v);
-
-    pb[0x11] = 0x00;
-    pb[0x12] = 0x00;
-    pb[0x13] = 0xc0;
-    pb[0x14] = 0x3f;
-
-    addr += 12; // offset 0x11
-    __asm volatile ("nop");
-    a = *(float *)(addr);
-    __asm volatile ("nop");
-    v = a * 4.0f; /* should be 6 */
-    __asm volatile ("nop");
-    __asm volatile ("nop");
-    printf("%s: v=%8lx, should be 0x6\r\n", __func__, v);
-    b = v / 12.0f;
-    __asm volatile ("nop");
-    addr += 4; // offset 0x15
-    *(float *)(addr) = b;
-    __asm volatile ("nop");
-    v = *(volatile uint32_t *)(addr); // 0x3f000000
-    __asm volatile ("nop");
-    printf("%s: v=%8lx, should be 0x3f000000\r\n", __func__, v);
-}
-
-static void cmd_align(char *buf, int len, int argc, char **argv)
-{
-    char *testbuf = NULL;
-    int i = 0;
-
-    log_info("align test start.\r\n");
-    test_misaligned_access();
-
-    testbuf = aos_malloc(1024);
-    if (!testbuf) {
-        log_error("mem error.\r\n");
-    }
- 
-    memset(testbuf, 0xEE, 1024);
-    for (i = 0; i < 32; i++) {
-        testbuf[i] = i;
-    }
-    test_align((uint32_t)(testbuf));
-
-    log_buf(testbuf, 64);
-    aos_free(testbuf);
-
-    log_info("align test end.\r\n");
-}
-#if defined(CONFIG_ZIGBEE_PROV)
-static void cmd_blsync_blezb_start(void)
-{
-    blsync_ble_start();
-}
-#endif
-
-static void cmd_wdt_set(char *buf, int len, int argc, char **argv)
-{
-    if(argc != 2){
-        log_info("Number of parameters error.\r\n");
-        return;
-    }
-    if(strcmp(argv[1], "enable") == 0){
-        bl_wdt_init(4000);
-    }
-    else if(strcmp(argv[1], "disable") == 0){
-        bl_wdt_disable();
-    }
-    else{
-        log_info("Second parameter error.\r\n");
-    }
-}
-
-static void cmd_wdt_rst_cnt_get(char *buf, int len, int argc, char **argv)
-{
-    //extern int bl_sys_wdt_rst_count_get();
-    if(argc != 1){
-        log_info("Number of parameters error.\r\n");
-        return;
-    }
-    printf("wdt reset count %d\r\n", bl_sys_wdt_rst_count_get());
-}
-
-const static struct cli_command cmds_user[] STATIC_CLI_CMD_ATTRIBUTE = { 
-        #if defined(CFG_ZIGBEE_PDS) || (CFG_BLE_PDS)
-        {"pds_start", "enable pds", cmd_start_pds},
-        #endif
-        {"lw_cfg", "lowpower configuration for active current test", cmd_lowpower_config},
-        #if defined(CFG_ZIGBEE_HBN)
-        {"hbn_start", "enable hbn", cmd_start_hbn},
-        #endif
-        {"aligntc", "align case test", cmd_align},
-        #if defined(CONFIG_ZIGBEE_PROV)
-        { "blsync_blezb_start", "start zigbee provisioning via ble", cmd_blsync_blezb_start},
-        #endif
-        { "wdt_set", "enable or disable wdt", cmd_wdt_set},
-        { "wdt_rst_cnt_get", "get wdt rest count", cmd_wdt_rst_cnt_get},
-};
 
 void vApplicationMallocFailedHook(void)
 {
@@ -511,42 +229,7 @@ void vApplicationMallocFailedHook(void)
 void vApplicationIdleHook(void)
 {
     bl_wdt_feed();
-    bool bWFI_disable =  false;
-    #if defined (CFG_BLE_PDS) && !defined(CFG_ZIGBEE_PDS)
-    bWFI_disable = wfi_disable;
-    #else
-    bWFI_disable = pds_start;
-    #endif
-    if(!bWFI_disable){
-        __asm volatile(
-                "   wfi     "
-        );
-        /*empty*/
-    }
-}
-
-void bl702_low_power_config(void)
-{
-#if !defined(CFG_USB_CDC_ENABLE)
-    // Power off DLL
-    GLB_Power_Off_DLL();
-#endif
-    
-    // Disable secure engine
-    Sec_Eng_Trng_Disable();
-    SEC_Eng_Turn_Off_Sec_Ring();
-    
-#if !defined(CFG_BLE_ENABLE)
-    // if ble is not enabled, Disable BLE clock
-    GLB_Set_BLE_CLK(0);
-#endif
-#if !defined(CFG_ZIGBEE_ENABLE)
-    // if zigbee is not enabled, Disable Zigbee clock
-    GLB_Set_MAC154_ZIGBEE_CLK(0);
-#endif
-    
-    // Gate peripheral clock
-    BL_WR_REG(GLB_BASE, GLB_CGEN_CFG1, 0x00214BC3);
+    __asm volatile("wfi");
 }
 
 #if ( configUSE_TICK_HOOK != 0 )
@@ -627,7 +310,6 @@ void zigbee_init(void)
     if (status != ZB_SUCC)
     {
         printf("BL Zbstack Init fail : 0x%08x\r\n", status);
-        //ASSERT(false);
     }
     else
     {
@@ -636,42 +318,10 @@ void zigbee_init(void)
     #if defined(CFG_ZIGBEE_CLI)
     zb_cli_register();
     #endif
-    register_zb_cb();
-    
-    zb_app_startup();
 
-    //zb_bdb_init();
+    zb_app_startup();
 }
 #endif
-
-void event_cb_key_event(input_event_t *event, void *private_data)
-{
-    switch (event->code) {
-        case KEY_1:
-        {
-            printf("[KEY_1] [EVT] INIT DONE %lld\r\n", aos_now_ms());
-            printf("short press \r\n");
-        }
-        break;
-        case KEY_2:
-        {
-            printf("[KEY_2] [EVT] INIT DONE %lld\r\n", aos_now_ms());
-            printf("long press \r\n");
-        }
-        break;
-        case KEY_3:
-        {
-            printf("[KEY_3] [EVT] INIT DONE %lld\r\n", aos_now_ms());
-            printf("longlong press \r\n");
-        }
-        break;
-        default:
-        {
-            printf("[KEY] [EVT] Unknown code %u, %lld\r\n", event->code, aos_now_ms());
-            /*nothing*/
-        }
-    }
-}
 
 void _dump_lib_info(void)
 {
@@ -680,92 +330,14 @@ void _dump_lib_info(void)
     puts(ble_controller_get_lib_ver());
     puts("\r\n");
 #endif
-
-#if defined(CFG_ZIGBEE_ENABLE)
-    puts("Zigbee LIB Version: ");
-    puts(zb_getLibVer());
-    puts("\r\n");
-#endif
 }
-
-#if defined(CFG_ZIGBEE_HBN)
-void hbn_wakeup_pin_interrupt(void *arg)
-{
-    gpio_ctx_t *pstnode = (gpio_ctx_t *)arg;
-    uint64_t time = bl_rtc_get_delta_time_ms(bl_hbn_get_wakeup_time());
-    
-    printf("GPIO%d released, total press time: %llu ms\r\n", pstnode->gpioPin, time);
-}
-#endif
 
 static void system_init(void)
 {
-#if defined(CFG_ZIGBEE_HBN)
-    if(bl_sys_rstinfo_get() == BL_RST_SOFTWARE && bl_hbn_get_wakeup_source() == HBN_WAKEUP_BY_GPIO){
-        uint8_t wkpin = __builtin_ctz(bl_hbn_get_wakeup_gpio());
-        printf("HBN wakeup by GPIO%d\r\n", wkpin);
-        bl_gpio_enable_input(wkpin, 0, 0);
-        if(bl_gpio_input_get_value(wkpin) == 1){
-            printf("GPIO%d already released\r\n", wkpin);
-        }else{
-            hal_gpio_register_handler(hbn_wakeup_pin_interrupt, wkpin, GLB_GPIO_INT_CONTROL_ASYNC, GLB_GPIO_INT_TRIG_POS_PULSE, NULL);
-        }
-    }
-#endif
-
-#if defined(CFG_ZIGBEE_HBN)
-    extern void zb_hbn_init(void);
-    zb_hbn_init();
-#endif
-
-    //hal_pds_init();
-#if defined(CFG_ZIGBEE_PDS)
-    extern void zb_pds_init(void);
-    zb_pds_init();
-#endif
-
-#if defined(CFG_BLE_PDS)
-    extern void ble_pds_init(void);
-    ble_pds_init();
-#endif
-
-    //configure pds gpio wakeup after pds init and hbn init complete.
-    #if (CFG_PDS_LEVEL == 3)
-    bl_pds_gpio_wakeup_cfg_ex(1<<PDS_WAKEUP_GPIO);
-    #endif
-
-#if defined(CFG_ZIGBEE_HBN)
-    //configure hbn gpio wakeup after pds init and hbn init complete.
-    uint8_t pin_list[1];
-    pin_list[0] = HBN_WAKEUP_GPIO;
-    bl_hbn_gpio_wakeup_cfg(pin_list, 1);
-#endif
-
 #if defined(CFG_WATCHDOG_ENABLE)
     bl_wdt_init(4000);
 #endif
 }
-
-#if defined(CFG_ZIGBEE_PDS) && (CFG_PDS_LEVEL == 31)
-uint8_t* zb_allocateFlashCacheBuffer(uint32_t bufferSize)
-{
-    extern uint8_t _tcm_rsvd_start;
-    extern uint8_t _tcm_rsvd_end;
-
-    if ((&_tcm_rsvd_start + bufferSize) <= &_tcm_rsvd_end)
-    {
-        return &_tcm_rsvd_start;
-    }
-
-    printf("Failed to allocate buffer for flash cache\r\n");
-    return NULL;
-}
-
-void zb_freeFlashCacheBuffer(uint8_t* pBuffer)
-{
-    //no need to free
-}
-#endif
 
 static void system_thread_init()
 {
@@ -776,8 +348,6 @@ static void system_thread_init()
         hal_gpio_init_from_dts(fdt, offset);
         fdt_button_module_init((const void *)fdt, (int)offset);
     }
-
-    aos_register_event_filter(EV_KEY, event_cb_key_event, NULL);
 #endif /* CFG_ETHERNET_ENABLE */
 
 #if defined(CFG_BLE_ENABLE)
@@ -795,7 +365,13 @@ static void system_thread_init()
     ble_init();
     #endif
 #endif
+
 #if defined(CFG_ZIGBEE_ENABLE)
+
+    #ifdef CFG_ZC_REPLACE_ENABLE
+    replaced_zc_addr_restore();
+    #endif 
+
     zigbee_init();
 #endif
 }

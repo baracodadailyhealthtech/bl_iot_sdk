@@ -6,6 +6,5 @@
 
 // Public Functions
 void rom_lmac154_hook_init(void);
-char * lmac154_getLibVersion(void);
 
 #endif

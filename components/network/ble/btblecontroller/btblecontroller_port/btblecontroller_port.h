@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -59,6 +59,9 @@ void btblecontroller_software_btdm_reset();
 void btblecontroller_software_pds_reset();
 void btblecontroller_pds_trim_rc32m();
 uint8_t btblecontrolller_get_chip_version();
+#if defined(BL702L) || defined(BL616)
+void btblecontroller_sys_reset(void);
+#endif
 #if defined(CONFIG_BT_MFG_HCI_CMD) || defined(CONFIG_BLE_MFG_HCI_CMD)
 int btblecontroller_putchar(int c);
 #endif

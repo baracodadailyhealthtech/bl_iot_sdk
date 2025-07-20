@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -263,7 +263,7 @@ static int cd_getchar(char *inbuf) {
 static void cd_putchar(const char *buf, size_t len) {
   size_t i;
   for (i=0; i<len; i++) {
-    bl_uart_data_send(COREDUMP_UART, buf[i]);
+    putchar(buf[i]);
   }
 }
 

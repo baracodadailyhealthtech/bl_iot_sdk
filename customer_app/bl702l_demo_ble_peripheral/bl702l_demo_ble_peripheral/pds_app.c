@@ -75,54 +75,6 @@ void pdsapp_gpio_wakeup_init(void)
 #endif
 }
 
-void gpio_init(void)
-{
-    int pins[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
-    hosal_gpio_dev_t pin;
-
-    for(int i=0; i<29; i++)
-    {
-        pin.port = pins[i];
-        pin.config = OUTPUT_PUSH_PULL;
-        hosal_gpio_output_set(&pin, 1);
-        hosal_gpio_init(&pin);
-        // hosal_gpio_output_set(&pin, 1);
-    }
-}
-
-// GPIO0->
-// GPIO1->
-// GPIO2->
-// GPIO3->
-// GPIO4->
-// GPIO5->
-// GPIO6->
-// GPIO7->
-// GPIO8->NOK
-// GPIO9->OK
-// GPIO10->
-// GPIO11->
-// GPIO12->OK
-// GPIO13->OK
-// GPIO14->
-// GPIO15->
-// GPIO16->
-// GPIO17->NOK
-// GPIO18->NOK
-// GPIO19->NOK
-// GPIO20->NOK
-// GPIO21->NOK
-// GPIO22->NOK
-// GPIO23->NOK
-// GPIO24->NOK
-// GPIO25->
-// GPIO26->
-// GPIO27->
-// GPIO28->
-// GPIO29->NOK
-// GPIO30->NOK
-// GPIO31->NOK
-
 /*
 #1.When the device prepares to go into sleep mode, pdsapp_before_sleep_callback will be called. 
 #2.If ble sleep preparation is aborted before sleep, pdsapp_sleep_aborted_callback will be called.
@@ -130,18 +82,11 @@ void gpio_init(void)
 */
 int pdsapp_before_sleep_callback(void)
 {
-    // printf("sleep\r\n");
-    // bl_pds_gpio_pull_set(0x98183200, 0);
-    bl_pds_gpio_pull_set(0xfffe3fff, 0);
     return 0;
 }
 
 void pdsapp_sleep_aborted_callback(void)
 {
-    // printf("aborted\r\n");
-
-    gpio_init();
-    bl_pds_gpio_pull_disable();
 }
 
 void pdsapp_after_sleep_callback(void)
@@ -175,11 +120,6 @@ void pdsapp_after_sleep_callback(void)
         }
 #endif
     }
-
-    gpio_init();
-    bl_pds_gpio_pull_disable();
-
-    // printf("wakeup\r .\n");
 }
 
 #if !defined(CFG_USE_ROM_CODE) || defined(CFG_BUILD_FREERTOS)
@@ -194,8 +134,6 @@ void pdsapp_init(void)
     #if defined(CFG_USE_ROM_CODE) && !defined(CFG_BUILD_FREERTOS)
     vApplicationSleep = btble_vApplicationSleepExt;
     #endif
-
-    gpio_init();
 
     btble_pds_init(&app_conf);
 

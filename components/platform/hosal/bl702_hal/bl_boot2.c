@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -103,7 +103,7 @@ PtTable_Error_Type PtTable_Update_Entry(const SPI_Flash_Cfg_Type *pFlashCfg,
         return PT_ERROR_FALSH_WRITE;
     }
     /* Write flash */
-    ret=bl_flash_write(writeAddr,(uint8_t *)ptStuff,sizeof(PtTable_Stuff_Config));
+    ret=bl_flash_write(writeAddr,(uint8_t *)ptStuff,sizeof(PtTable_Config)+entriesLen+4);
     if(ret!=SUCCESS){
         //MSG_ERR("Flash Write error\r\n");
         return PT_ERROR_FALSH_WRITE;

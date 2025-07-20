@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -188,6 +188,8 @@ void btble_controller_init(uint8_t task_priority);
 #if defined(CFG_NUTTX)
 void btblecontroller_main( void *pvParameters );
 #endif
+//API for different RTOS porting to handle btbelcontroller task's messages.
+void btblecontroller_proc(void *data);
 
 void btble_controller_deinit(void);
 int32_t btble_controller_sleep(int32_t max_sleep_cycles);
@@ -196,11 +198,18 @@ void btble_controller_sleep_restore();
 void btble_controller_reset(void);
 #endif
 
+/* key: 32 bytes ecdh private key. This key shall be malloced and passed to btblecontroller_set_private_key api,
+ * and when encrypt is done shall call btblecontroller_del_private_key to delete key and then free malloced key.*/
+void btblecontroller_set_private_key(uint8_t* key);
+uint8_t* btblecontroller_del_private_key(void);
+
 char *btble_controller_get_lib_ver(void);
 
 void btble_controller_remaining_mem(uint8_t** addr, int* size);
 
 void btble_controller_set_cs2(uint8_t enable);    // cs2 is enabled by default
+
+void btble_controller_set_local_sdk_ver(uint32_t sdk_ver);
 
 #if defined(BL702L)
 void btble_controller_sleep_init(void);
@@ -223,7 +232,11 @@ void btble_set_sleep_aborted_callback(btble_sleep_aborted_cb_t cb);
 #if defined (CONFIG_BLE_MFG) || defined (CONFIG_BT_MFG) 
 int bt_mfg_cli_register(void);
 int reset_cmd_handler(void);
+int rd_bd_addr_cmd_handler(void);
+
 #if defined (CONFIG_BLE_MFG)
+int hci_le_tx_test_v1_cmd_handler(struct hci_le_tx_test_v1_cmd const *param, uint16_t opcode, bool from_hci);
+int hci_le_rx_test_v1_cmd_handler(struct hci_le_rx_test_v1_cmd const *param, uint16_t opcode, bool from_hci);
 int hci_le_tx_test_v2_cmd_handler(struct hci_le_tx_test_v2_cmd const *param, uint16_t opcode, bool from_hci);
 int hci_le_tx_test_v4_cmd_handler(struct hci_le_tx_test_v4_cmd const *param, uint16_t opcode,bool from_hci);
 int hci_le_rx_test_v2_cmd_handler(struct hci_le_rx_test_v2_cmd const *param, uint16_t opcode, bool from_hci);
@@ -236,4 +249,17 @@ int hci_vs_tx_test_cmd_handler(struct hci_vs_tx_test_cmd const *param, uint16_t 
 int hci_vs_test_end_cmd_handler(void const *param, uint16_t opcode, bool from_hci);
 #endif
 #endif
+
+//sco/esco callback to codec
+typedef void (*bt_sco_codec_cb_t) (uint16_t   interval_halfslot,
+                                uint32_t   tx_buffer_0,
+                                uint32_t   tx_buffer_1,
+                                uint32_t   rx_buffer_0,
+                                uint32_t   rx_buffer_1,
+                                uint32_t   tx_buffer_size,
+                                uint32_t   rx_buffer_size,
+                                uint32_t   start_time_halfslot,
+                                uint8_t    buffer_index);
+void btble_controller_sco_codec_callback_register(bt_sco_codec_cb_t cb);
+
 #endif

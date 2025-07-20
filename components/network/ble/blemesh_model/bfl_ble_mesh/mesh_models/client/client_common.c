@@ -75,7 +75,7 @@ bt_mesh_client_node_t *bt_mesh_is_client_recv_publish_msg(
      *  this message to the application layer.
      */
     if (!BT_MESH_ADDR_IS_UNICAST(ctx->recv_dst)) {
-        BT_DBG("Unexpected status message 0x%x", ctx->recv_op);
+        BT_DBG("Unexpected status message 0x%lx", ctx->recv_op);
         if (cli->publish_status && need_pub) {
             cli->publish_status(ctx->recv_op, model, ctx, buf);
         }
@@ -94,7 +94,7 @@ bt_mesh_client_node_t *bt_mesh_is_client_recv_publish_msg(
     }
 	
     if ((node = bt_mesh_client_pick_node(&data->queue, ctx->addr)) == NULL) {
-        BT_DBG("Unexpected status message 0x%x", ctx->recv_op);
+        BT_DBG("Unexpected status message 0x%lx", ctx->recv_op);
         if (cli->publish_status && need_pub) {
             cli->publish_status(ctx->recv_op, model, ctx, buf);
         }
@@ -102,7 +102,7 @@ bt_mesh_client_node_t *bt_mesh_is_client_recv_publish_msg(
     }
 
     if (node->op_pending != ctx->recv_op) {
-        BT_DBG("Unexpected status message 0x%x", ctx->recv_op);
+        BT_DBG("Unexpected status message 0x%lx", ctx->recv_op);
         if (cli->publish_status && need_pub) {
             cli->publish_status(ctx->recv_op, model, ctx, buf);
         }
@@ -110,7 +110,7 @@ bt_mesh_client_node_t *bt_mesh_is_client_recv_publish_msg(
     }
 
     if (k_delayed_work_remaining_get(&node->timer) == 0) {
-        BT_DBG("Unexpected status message 0x%x", ctx->recv_op);
+        BT_DBG("Unexpected status message 0x%lx", ctx->recv_op);
         if (cli->publish_status && need_pub) {
             cli->publish_status(ctx->recv_op, model, ctx, buf);
         }
@@ -213,7 +213,7 @@ static s32_t bt_mesh_client_calc_timeout(struct bt_mesh_msg_ctx *ctx,
         s32_t seg_duration = seg_count * (duration + HCI_TIME_FOR_START_ADV);
         time = (seg_duration + seg_retrans_to) * seg_retrans_num;
 
-        BT_INFO("Original timeout %dms, calculated timeout %dms", timeout, time);
+        BT_INFO("Original timeout %ldms, calculated timeout %ldms", timeout, time);
 
         if (time < timeout) {
             /* If the calculated time is smaller than the input timeout value,
@@ -228,7 +228,7 @@ static s32_t bt_mesh_client_calc_timeout(struct bt_mesh_msg_ctx *ctx,
         time = timeout;
     }
 
-    BT_INFO("Client message 0x%08x with timeout %dms", opcode, time);
+    BT_INFO("Client message 0x%08lx with timeout %ldms", opcode, time);
 
     return time;
 }

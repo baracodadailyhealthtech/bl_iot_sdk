@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -35,6 +35,10 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#ifdef LWIP_HOOK_INCLUDE
+#include LWIP_HOOK_INCLUDE
 #endif
 
 bool otbr_lwip_hook_ip6_input(struct pbuf *p, struct netif *inp);

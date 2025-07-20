@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -52,6 +52,7 @@ int btblecontroller_queue_recv(btblecontroller_QueueHandle_t q, void *msg, uint3
 int btblecontroller_queue_send_from_isr(btblecontroller_QueueHandle_t q, void *msg, uint32_t size);
 int btblecontroller_xport_is_inside_interrupt(void);
 void btblecontroller_task_delay(uint32_t ms);
+void *btblecontroller_task_get_current_task_handle(void);
 void *btblecontroller_malloc(size_t xWantedSize);
 void btblecontroller_free(void *buf);
 #endif

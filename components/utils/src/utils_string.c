@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -88,7 +88,7 @@ void get_bytearray_from_string(char** params, uint8_t *result,int array_size)
 
 void get_uint8_from_string(char** params, uint8_t *result)
 {
-	uint32_t p = 0;
+	uint64_t p = 0;
 	int state=0;
 	
 	state = params_filter(params,&p);
@@ -100,7 +100,7 @@ void get_uint8_from_string(char** params, uint8_t *result)
 
 void get_uint16_from_string(char** params, uint16_t *result)
 {
-	uint32_t p = 0;
+	uint64_t p = 0;
 	int state=0;
 	
 	state = params_filter(params,&p);
@@ -112,7 +112,7 @@ void get_uint16_from_string(char** params, uint16_t *result)
 
 void get_uint32_from_string(char** params, uint32_t *result)
 {
-    uint32_t p = 0;
+    uint64_t p = 0;
 	int state=0;
 	
 	state = params_filter(params,&p);

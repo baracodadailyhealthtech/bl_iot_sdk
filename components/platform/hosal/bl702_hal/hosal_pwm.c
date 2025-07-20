@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -65,7 +65,7 @@ int hosal_pwm_init(hosal_pwm_dev_t *pwm)
 
     bl_pwm_port_init(pwm->port, pwm->config.freq);
     bl_pwm_gpio_init(pwm->port, pwm->config.pin);
-    bl_pwm_set_duty(pwm->port, pwm->config.duty_cycle / 100);
+    bl_pwm_set_duty(pwm->port, (float)pwm->config.duty_cycle / 100);
 
     return 0;
 }
@@ -118,7 +118,7 @@ int hosal_pwm_para_chg(hosal_pwm_dev_t *pwm, hosal_pwm_config_t para)
     bl_pwm_port_init(pwm->port, pwm->config.freq);
 
     pwm->config.duty_cycle = para.duty_cycle;
-    bl_pwm_set_duty(pwm->port, pwm->config.duty_cycle / 100);
+    bl_pwm_set_duty(pwm->port, (float)pwm->config.duty_cycle / 100);
 
     bl_pwm_start(pwm->port);
 
@@ -148,7 +148,7 @@ int hosal_pwm_freq_set(hosal_pwm_dev_t *pwm, uint32_t freq)
     pwm->config.freq = freq;
     bl_pwm_port_init(pwm->port, pwm->config.freq);
 
-    bl_pwm_set_duty(pwm->port, pwm->config.duty_cycle / 100);
+    bl_pwm_set_duty(pwm->port, (float)pwm->config.duty_cycle / 100);
 
     bl_pwm_start(pwm->port);
 
@@ -193,7 +193,7 @@ int hosal_pwm_duty_set(hosal_pwm_dev_t *pwm, uint32_t duty)
     }
 
     pwm->config.duty_cycle = duty;
-    bl_pwm_set_duty(pwm->port, pwm->config.duty_cycle / 100);
+    bl_pwm_set_duty(pwm->port, (float)pwm->config.duty_cycle / 100);
 
     return 0;
 }

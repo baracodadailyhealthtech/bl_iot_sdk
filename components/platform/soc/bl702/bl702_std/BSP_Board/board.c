@@ -214,7 +214,6 @@ static void board_pin_mux_init(void)
             uint8_t uart_sig = gpio_cfg.gpioPin % 8;
             /*link to one uart sig*/
             GLB_UART_Fun_Sel((GLB_UART_SIG_Type)uart_sig, (GLB_UART_SIG_FUN_Type)uart_func);
-            GLB_UART_Fun_Sel((GLB_UART_SIG_Type)uart_func, (GLB_UART_SIG_FUN_Type)uart_sig);
         } else if (af_pin_table[i].func == GPIO_FUN_PWM) {
             /*if pwm func*/
             gpio_cfg.pullType = GPIO_PULL_DOWN;
@@ -718,6 +717,11 @@ void peripheral_clock_init(void)
     tmpVal |= (1 << BL_AHB_SLAVE1_USB);
     GLB_Set_USB_CLK(1);
 #endif
+
+#if defined(BSP_USING_DMA)
+    tmpVal |= (1 << BL_AHB_SLAVE1_DMA);
+#endif
+
     BL_WR_REG(GLB_BASE, GLB_CGEN_CFG1, tmpVal);
 }
 
@@ -782,11 +786,9 @@ void system_mtimer_clock_reinit(void)
     GLB_Set_MTimer_CLK(1, GLB_MTIMER_CLK_BCLK, 7);
 }
 
-void bflb_early_init(int select_internal_flash)
+void bflb_early_init(void)
 {
-    if(select_internal_flash){
-        GLB_Select_Internal_Flash();
-    }
+    HBN_Hw_Pu_Pd_Cfg(DISABLE);
 
     AON_Set_DCDC18_Top_0(0xc, 0x3);
     PDS_Set_Clkpll_Top_Ctrl(0x0);
@@ -795,4 +797,8 @@ void bflb_early_init(int select_internal_flash)
     AON_Set_Xtal_CapCode_Extra(1);
 
     GLB_Set_USB_CLK(0);
+
+    // Link APIs in syscalls.c
+    extern void __libc_init_array(void);
+    __libc_init_array();
 }

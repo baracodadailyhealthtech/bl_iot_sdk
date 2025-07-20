@@ -1,0 +1,3 @@
+#!/bin/sh
+make CONFIG_BTBLECONTROLLER_LIB=uarthci -j2
+exit $?

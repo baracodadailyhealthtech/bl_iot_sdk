@@ -667,7 +667,7 @@ static bool tcp_timer_calculate_next_wake(u32_t * next_wake_ms)
       min_wake_time = LWIP_MIN(TCP_FAST_INTERVAL, min_wake_time);
     }
 
-    if (pcb->unacked != NULL) {
+    if (pcb->unacked != NULL || ((pcb->unacked == NULL) && (pcb->unsent != NULL))) {
       /* calculate retransmission timeouts */
       LWIP_DEBUGF(TCP_DEBUG, ("calculate_next_wake: retransmission timeout %ldms\n", (pcb->rto - (tcp_ticks - pcb->rtime)) * TCP_SLOW_INTERVAL));
       min_wake_time = LWIP_MIN((pcb->rto - (tcp_ticks - pcb->rtime)) * TCP_SLOW_INTERVAL, min_wake_time);

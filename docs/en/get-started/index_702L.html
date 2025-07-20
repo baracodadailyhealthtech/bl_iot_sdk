@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
+  <title>BL IOT SDK Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../index.html"/>
         <link rel="next" title="API 参考" href="../api-reference/index.html"/>
         <link rel="prev" title="BL IOT SDK Development Guide" href="index_702.html"/> 
 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1973-g7970cf316
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
               </div>
             
           
@@ -101,23 +101,24 @@
 <li class="toctree-l2"><a class="reference internal" href="#preparation">Preparation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hardware-connection">Hardware Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#software-installation">Software Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#set-compilation-environment">1. Set Compilation Environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#set-environment-variables">2. Set Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#establishing-the-compilation-environment">1. Establishing the Compilation Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-environment-variables">2. Setting Environment Variables</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#project-compilation">Project Compilation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#firmware-programming">Firmware Programming</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#let-the-chip-enter-programming-mode">1. Let the chip enter programming mode</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#download-firmware-using-bldevcube">2. Download firmware using BLDevCube</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#run-firmware">3. Run firmware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compiling-the-project">Compiling the Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flashing-firmware">Flashing Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#entering-the-chip-into-flashing-mode">1. Entering the Chip into Flashing Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#downloading-firmware-with-bldevcube">2. Downloading Firmware with BLDevCube</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-firmware">3. Running the Firmware</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#debug-software">Debug Software</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id7">1. Hardware connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#install-and-configure-cklink">2. Install and configure CKLink</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#install-and-use-freedom-studio">3. Install and use Freedom Studio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging-software">Debugging Software</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cklink-connection">1. CKLink connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-and-configure-t-headdebugserver">2. Install and configure T-HeadDebugServer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gdb-debugging">3. GDB Debugging</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#other-instructions">Other Instructions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api-reference/index.html">API 参考</a></li>
@@ -194,32 +195,28 @@
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>The BL702L/704L series chip is a general purpose microcontroller which is developed by Bouffalo Lab Technology, and based on <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> processor. It has a main frequency of up to 128MHz and rich peripherals. It also supports BLE 5.0, Zigbee 3.0 and other functions, and can be widely used in IoT and other low-power fields.</p>
-<p>The <a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> is an IOT software development kit specially provided by Bouffalo Lab team for BL60X, BL70X and subsequent chips.</p>
-<p>This article uses a simple example to show how to build a development environment, compile example code, burn firmware and view output in a Windows environment, aiming to guide users to build a complete BL70X IOT application development environment.</p>
+<div><p>The BL702L/704L series chip, developed by Bouffalo Lab Technology, is a general-purpose microcontroller based on the <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> processor, with a main frequency of up to 128 MHz, ultra-low power consumption, and an array of rich peripherals. In addition, it supports BLE 5.0, Zigbee 3.0, and other functionalities, making it widely applicable in IoT and other low-power fields.</p>
+<p>The <a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> is an IOT software development kit specifically designed for BL60X, BL70X, and subsequent chips from Bouffalo Lab. It supports Windows, Linux, macOS operating systems, and offers a rich set of examples to facilitate rapid IoT application development utilizing the BL series chips.</p>
+<p>This document is focused on the Windows operating system, illustrating how to set up the development environment, compile example code, flash firmware, and debug through a simple example. It is aiming to help users quickly get acquainted with the BL70X IOT application development process. For more platforms and software usage, please refer to  <a class="reference internal" href="Developer_Environment_BL702/BL70X_DVK/BL702L_DVK_V12.html#bl702l-dvk-v12"><span class="std std-ref">BL70xL Development Guide</span></a>。</p>
 </div></blockquote>
 </div>
 <div class="section" id="preparation">
 <h2>Preparation<a class="headerlink" href="#preparation" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>Before starting this example, the required development environment includes:</p>
-<ul>
-<li><p>Hardware</p>
+<div><p>Before starting this example,  ensure your development environment includes the following components:</p>
 <ul class="simple">
-<li><p><strong>BL702L/704L DVK board</strong></p></li>
+<li><p>Hardware</p>
+<ul>
+<li><p><strong>BL70xL_IoT_DVK_V12 board</strong></p></li>
 <li><p><strong>USB cable</strong></p></li>
 <li><p><strong>PC</strong> (Windows OS)</p></li>
 </ul>
 </li>
 <li><p>Software</p>
-<ul class="simple">
-<li><p><strong>MSYS2</strong>           (Windows compilation tool)</p></li>
-<li><p><strong>Freedom Studio</strong>  (Windows debug tool)</p></li>
+<ul>
+<li><p><strong>MSYS2</strong>           (Windows compilation, debugging tool)</p></li>
 <li><p><strong>BLDevCube</strong>       (Firmware programming tool)</p></li>
 </ul>
-<div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/bl702l_iot.png"><img alt="../_images/bl702l_iot.png" src="../_images/bl702l_iot.png" style="width: 4.5in; height: 5in;" /></a>
-</div>
 </li>
 </ul>
 </div></blockquote>
@@ -227,25 +224,38 @@
 <div class="section" id="hardware-connection">
 <h2>Hardware Connection<a class="headerlink" href="#hardware-connection" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>The BL702L/704L DVK board reserves rich communication interfaces for the chip, and supports programming firmware and debugging software through UART, JTAG and other connection methods.</p>
-<p>The BL702L/704L DVK board integrates a BL702 chip, which is used to realize the conversion between USB-CDC (UART) and USB-CKLink (JTAG), and can easily realize software programming, serial communication and online debugging and other functions.</p>
+<div><p>The BL70xL_IoT_DVK V1.2 development board integrates a BL616 chip for USB-CDC (UART) and JTAG conversion. There is no need to connect any additional hardware. Through the USB interface on the development board, users can achieve all functions such as software flashing, serial communication, and online debugging of the BL70xL chip.</p>
+<blockquote>
+<div><div class="figure align-center" id="id7">
+<a class="reference internal image-reference" href="../_images/bl702l_iot.png"><img alt="../_images/bl702l_iot.png" src="../_images/bl702l_iot.png" style="width: 4.5in; height: 3in;" /></a>
+<p class="caption"><span class="caption-text"><em>BL70xL_IOT_DVK V1.2</em></span><a class="headerlink" href="#id7" title="永久链接至图片"></a></p>
+</div>
+<div class="figure align-center" id="id8">
+<a class="reference internal image-reference" href="../_images/bl702l_iot_usb.png"><img alt="../_images/bl702l_iot_usb.png" src="../_images/bl702l_iot_usb.png" style="width: 3in; height: 3in;" /></a>
+<p class="caption"><span class="caption-text"><em>USB Interface</em></span><a class="headerlink" href="#id8" title="永久链接至图片"></a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注解</p>
+<p><a class="reference internal" href="Developer_Environment_BL702/BL70X_DVK/BL702L_DVK_V10.html#bl702l-dvk-v10"><span class="std std-ref">For BL70xL_DVK_V1.0 development board, please refer to</span></a></p>
+</div>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="software-installation">
 <h2>Software Installation<a class="headerlink" href="#software-installation" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>Before starting to compile the project, please complete the installation of all the following tools correctly. The specific steps and environment variable settings are as follows:</p>
+<div><p>Before initiating the project compilation, confirm that all tools are correctly installed.</p>
 <blockquote>
 <div><div class="admonition important">
 <p class="admonition-title">重要</p>
-<p>Please pay attention to the settings of environment variables, drivers and other information in the document, which will avoid abnormal errors in subsequent operations.</p>
+<p>Please pay attention to environment variable settings, driver configurations, and other relevant information in the document to prevent operational errors.</p>
 </div>
 </div></blockquote>
 </div></blockquote>
-<div class="section" id="set-compilation-environment">
-<h3>1. Set Compilation Environment<a class="headerlink" href="#set-compilation-environment" title="永久链接至标题"></a></h3>
+<div class="section" id="establishing-the-compilation-environment">
+<h3>1. Establishing the Compilation Environment<a class="headerlink" href="#establishing-the-compilation-environment" title="永久链接至标题"></a></h3>
 <ul>
-<li><p><a class="reference external" href="https://www.msys2.org/">Get the MSYS2 installation package and installation steps</a></p></li>
+<li><p><a class="reference external" href="https://www.msys2.org/">Obtain the MSYS2 installation package and installation steps</a></p></li>
 <li><p>Open MSYS2 and install make, then enter the command: <code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code>,
 and follow the prompts until the installation is completed</p>
 <div class="figure align-default">
@@ -257,26 +267,26 @@ and follow the prompts until the installation is completed</p>
 </li>
 </ul>
 </div>
-<div class="section" id="set-environment-variables">
-<h3>2. Set Environment Variables<a class="headerlink" href="#set-environment-variables" title="永久链接至标题"></a></h3>
+<div class="section" id="setting-environment-variables">
+<h3>2. Setting Environment Variables<a class="headerlink" href="#setting-environment-variables" title="永久链接至标题"></a></h3>
 <ul>
-<li><p>To compile using gcc, you need to add gcc to the environment variable in MSYS2. The method is as follows:</p>
+<li><p>To compile using gcc, add gcc to the MSYS2 environment variable. The method is as follows:</p>
 <blockquote>
 <div><p>1.(Recommended) Add the following instructions to the MSYS2 startup file home/xxx/.bash_profile:
 <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=/yyy/zzz/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
 <p>2.(Not recommended, need to repeat this operation every time MSYS2 restarts) In the MSYS2 command line, directly enter the following command:
 <code class="docutils literal notranslate"><span class="pre">PATH=/yyy/zzz/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
-<p>Note: Here you need to replace the above yyy and zzz according to the actual path of the user's gcc, for example
+<p>Note: Replace above 'yyy' and 'zzz' with the actual path to your gcc installation, for example
 <code class="docutils literal notranslate"><span class="pre">PATH=/d/Work/Code/bl_iot_sdk/toolchain/riscv/MSYS/bin:$PATH</span></code></p>
 </div></blockquote>
 </li>
 </ul>
 </div>
 </div>
-<div class="section" id="project-compilation">
-<h2>Project Compilation<a class="headerlink" href="#project-compilation" title="永久链接至标题"></a></h2>
+<div class="section" id="compiling-the-project">
+<h2>Compiling the Project<a class="headerlink" href="#compiling-the-project" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>This section describes how to compile the bl702l_demo_event project under the customer_app directory.</p>
+<div><p>This section explains how to compile the <strong>bl702l_demo_ble_peripheral</strong> project under the customer_app directory.</p>
 <ol class="arabic simple">
 <li><p>Open the MSYS2 platform and enter the local <strong>bl_iot_sdk/customer_app/bl702l_demo_ble_peripheral</strong> folder</p></li>
 </ol>
@@ -289,7 +299,7 @@ and follow the prompts until the installation is completed</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="2">
-<li><p>Execute the script <strong>genblem1s1p</strong> to start compiling the project</p></li>
+<li><p>Execute the script <strong>genblem1s1p</strong> to initiate the compilation process:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
@@ -300,7 +310,7 @@ and follow the prompts until the installation is completed</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p>After the compilation is complete, a <code class="docutils literal notranslate"><span class="pre">build_out</span></code> folder with the following files are added to the current directory:</p></li>
+<li><p>Upon successful compilation, a <code class="docutils literal notranslate"><span class="pre">build_out</span></code> will be created containing the following files:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
@@ -315,40 +325,40 @@ and follow the prompts until the installation is completed</p>
 </div></blockquote>
 </div></blockquote>
 </div>
-<div class="section" id="firmware-programming">
-<h2>Firmware Programming<a class="headerlink" href="#firmware-programming" title="永久链接至标题"></a></h2>
+<div class="section" id="flashing-firmware">
+<h2>Flashing Firmware<a class="headerlink" href="#flashing-firmware" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>This section introduces how to use <strong>BLDevCube</strong> integrated development tool to program firmware into BL702L/704L DVK board.</p>
 </div></blockquote>
-<div class="section" id="let-the-chip-enter-programming-mode">
-<h3>1. Let the chip enter programming mode<a class="headerlink" href="#let-the-chip-enter-programming-mode" title="永久链接至标题"></a></h3>
+<div class="section" id="entering-the-chip-into-flashing-mode">
+<h3>1. Entering the Chip into Flashing Mode<a class="headerlink" href="#entering-the-chip-into-flashing-mode" title="永久链接至标题"></a></h3>
 <blockquote>
-<div><p>1.1 After connecting to BL702L/704L DVK board with <code class="docutils literal notranslate"><span class="pre">USB</span> <span class="pre">cable</span></code></p>
+<div><p>1.1 Connect to the DVK board using a  USB cable</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>First press the <code class="docutils literal notranslate"><span class="pre">Boot</span></code> key on the board, do not release</p></li>
-<li><p>Then press the <code class="docutils literal notranslate"><span class="pre">RST</span></code> key on the board and release it; at this time the chip enters <code class="docutils literal notranslate"><span class="pre">UART</span> <span class="pre">programming</span> <span class="pre">mode</span></code></p></li>
+<li><p>First press and hold the <code class="docutils literal notranslate"><span class="pre">Boot</span></code> key on the board</p></li>
+<li><p>Then press the <code class="docutils literal notranslate"><span class="pre">RST</span></code> key on the board and release it; at this time the chip will enter <code class="docutils literal notranslate"><span class="pre">UART</span> <span class="pre">programming</span> <span class="pre">mode</span></code></p></li>
 <li><p>Finally release the <code class="docutils literal notranslate"><span class="pre">Boot</span></code> key</p></li>
 </ul>
 </div></blockquote>
 </div></blockquote>
 </div>
-<div class="section" id="download-firmware-using-bldevcube">
-<h3>2. Download firmware using BLDevCube<a class="headerlink" href="#download-firmware-using-bldevcube" title="永久链接至标题"></a></h3>
+<div class="section" id="downloading-firmware-with-bldevcube">
+<h3>2. Downloading Firmware with BLDevCube<a class="headerlink" href="#downloading-firmware-with-bldevcube" title="永久链接至标题"></a></h3>
 <blockquote>
-<div><p>2.1 Open <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>, select <code class="docutils literal notranslate"><span class="pre">BL702L/704L</span></code> in the drop-down box of <code class="docutils literal notranslate"><span class="pre">Chip</span></code>, click <code class="docutils literal notranslate"><span class="pre">Finish</span></code> and enter the main interface of <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Cube</span></code></p>
+<div><p>2.1 Open <code class="docutils literal notranslate"><span class="pre">BLDevCube.exe</span></code>, select <code class="docutils literal notranslate"><span class="pre">BL702L/704L</span></code> from <code class="docutils literal notranslate"><span class="pre">Chip</span></code> dropdown menu, click <code class="docutils literal notranslate"><span class="pre">Finish</span></code> and enter the main interface of <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Cube</span></code></p>
 <blockquote>
 <div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/chipselection_bl702l.png"><img alt="../_images/chipselection_bl702l.png" src="../_images/chipselection_bl702l.png" style="width: 2.5in; height: 4in;" /></a>
 </div>
 </div></blockquote>
-<p>2.2 After entering the main interface, enter the <code class="docutils literal notranslate"><span class="pre">IOT</span></code> download interface by default</p>
+<p>2.2 Once in the main interface, you will be directed to the <code class="docutils literal notranslate"><span class="pre">IOT</span></code> download interface by default</p>
 <blockquote>
 <div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image243.png"><img alt="../_images/image243.png" src="../_images/image243.png" style="width: 9in; height: 4.8in;" /></a>
 </div>
 </div></blockquote>
-<p>2.3  Configure BLDevCube</p>
+<p>2.3 Configure BLDevCube</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Configuration information includes:</p>
@@ -375,7 +385,7 @@ and follow the prompts until the installation is completed</p>
 <a class="reference internal image-reference" href="../_images/image253.png"><img alt="../_images/image253.png" src="../_images/image253.png" style="width: 9in; height: 4.8in;" /></a>
 </div>
 </div></blockquote>
-<p>2.4  After completing the above configuraiton correctly, click <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">&amp;</span> <span class="pre">Download</span></code> for downloading，after the successful download, you can see the status bar turns green</p>
+<p>2.4  After correctly configuring the above settings, click <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">&amp;</span> <span class="pre">Download</span></code>  to initiate the download process. A successful download will be indicated by a green status bar.</p>
 <blockquote>
 <div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image263.png"><img alt="../_images/image263.png" src="../_images/image263.png" style="width: 9in; height: 4.8in;" /></a>
@@ -383,8 +393,8 @@ and follow the prompts until the installation is completed</p>
 </div></blockquote>
 </div></blockquote>
 </div>
-<div class="section" id="run-firmware">
-<h3>3. Run firmware<a class="headerlink" href="#run-firmware" title="永久链接至标题"></a></h3>
+<div class="section" id="running-the-firmware">
+<h3>3. Running the Firmware<a class="headerlink" href="#running-the-firmware" title="永久链接至标题"></a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>Open the serial port tool installed on the PC, select 2000000 baud rate</p></li>
@@ -401,33 +411,36 @@ and follow the prompts until the installation is completed</p>
 </div></blockquote>
 </div>
 </div>
-<div class="section" id="debug-software">
-<h2>Debug Software<a class="headerlink" href="#debug-software" title="永久链接至标题"></a></h2>
+<div class="section" id="debugging-software">
+<h2>Debugging Software<a class="headerlink" href="#debugging-software" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>This section describes how to use Freedom Studio to debug code.</p>
-</div></blockquote>
-<div class="section" id="id7">
-<h3>1. Hardware connection<a class="headerlink" href="#id7" title="永久链接至标题"></a></h3>
-<blockquote>
-<div><p>1.1 Use jumper caps to connect the following 4 groups of JTAG signals of the <code class="docutils literal notranslate"><span class="pre">J3</span></code> connector on the BL702L/704L DVK board:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>IO0(J3.10) - TMS(J3.12)</strong></p></li>
-<li><p><strong>IO1(J3.09) - TDI(J3.11)</strong></p></li>
-<li><p><strong>IO2(J3.13) - TCK(J3.15)</strong></p></li>
-<li><p><strong>IO7(J3.18) - TDO(J3.16)</strong></p></li>
-</ul>
-<div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image155.png"><img alt="../_images/image155.png" src="../_images/image155.png" style="width: 4in; height: 2in;" /></a>
+<div><p>This section describes software debugging using the onboard CKLink debugger, along with the T-HeadDebugServer and GDB debugging environment.</p>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>For the installation and debugging method of Freedom Studio + OpenOCD, please refer to <a class="reference external" href="./Developer_Environment_BL702/freedom_studio/freedom_studio.html">OpenOCD</a></p>
 </div>
 </div></blockquote>
+<div class="section" id="cklink-connection">
+<h3>1. CKLink connection<a class="headerlink" href="#cklink-connection" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p><strong>CKLink</strong> is a RISC-V JTAG debugger developed by T-HEAD. The BL70xL_IoT_DVK V1.2 development board integrates a BL616 chip to achieve CKLink functionality.</p>
+<p>In the factory state, the CKLink of BL70xL_IoT_DVK V1.2 development board is connected to the BL70xL JTAG interface. Upon connecting to a computer via USB, a device named <code class="docutils literal notranslate"><span class="pre">CKLink-Lite</span></code> will appears in <code class="docutils literal notranslate"><span class="pre">Device</span> <span class="pre">Manager</span> <span class="pre">-&gt;</span> <span class="pre">Universal</span> <span class="pre">Serial</span> <span class="pre">Bus</span> <span class="pre">devices</span></code>, indicating a successful connection of CKLink.</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/CKLink-Lite.jpg"><img alt="../_images/CKLink-Lite.jpg" src="../_images/CKLink-Lite.jpg" style="width: 4in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">注解</p>
+<p>Different versions of BL70xL development boards have varying default debugger and JTAG connection status. Before use, please ensure the JTAG interface is correctly connected. For BL70xLIOTDVK V1.0 development board, please refer to :ref: <a class="reference external" href="BL702L_DVK_V10">BL70xL_DVK_V1.0</a></p>
+</div>
 </div></blockquote>
 </div>
-<div class="section" id="install-and-configure-cklink">
-<h3>2. Install and configure CKLink<a class="headerlink" href="#install-and-configure-cklink" title="永久链接至标题"></a></h3>
+<div class="section" id="install-and-configure-t-headdebugserver">
+<h3>2. Install and configure T-HeadDebugServer<a class="headerlink" href="#install-and-configure-t-headdebugserver" title="永久链接至标题"></a></h3>
 <blockquote>
-<div><p>2.1 Download the latest version <a class="reference external" href="https://occ.t-head.cn/community/download?id=4103855596351066112">CKLink driver from T-HEAD official website</a></p>
-<p>2.2 Unzip the downloaded CKLink installation package, double-click Setup, and click next all the way. After the installation is complete, there will be a T-HeadDebugServer icon on the desktop</p>
+<div><p>2.1 Download the latest version <a class="reference external" href="https://occ.t-head.cn/community/download?id=4103855596351066112">T-HeadDebugServer installation package from T-HEAD official website</a></p>
+<p>2.2 Unzip the downloaded installation package, double-click Setup, and click next all the way. After the installation is complete, there will be a T-HeadDebugServer icon on the desktop</p>
 <p>2.3 After connecting the JTAG pins of the board with the CKLink debugger, click the <code class="docutils literal notranslate"><span class="pre">triangle</span></code> button, if it turns into a <code class="docutils literal notranslate"><span class="pre">circle</span></code>, it means that the JTAG connection is successful. If it fails, you need to check if the JTAG connection is correct</p>
 <blockquote>
 <div><div class="figure align-center">
@@ -436,45 +449,67 @@ and follow the prompts until the installation is completed</p>
 </div></blockquote>
 </div></blockquote>
 </div>
-<div class="section" id="install-and-use-freedom-studio">
-<h3>3. Install and use Freedom Studio<a class="headerlink" href="#install-and-use-freedom-studio" title="永久链接至标题"></a></h3>
+<div class="section" id="gdb-debugging">
+<h3>3. GDB Debugging<a class="headerlink" href="#gdb-debugging" title="永久链接至标题"></a></h3>
 <blockquote>
-<div><p>3.1 Download and unzip Freedom Studio, download website <code class="docutils literal notranslate"><span class="pre">https://github.com/sifive/freedom-studio/releases</span></code>, version <code class="docutils literal notranslate"><span class="pre">FreedomStudio-2019-08-2</span></code></p>
-<p>3.2 Run <code class="docutils literal notranslate"><span class="pre">FreedomStudio.exe</span></code></p>
-<p>3.3 Click <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">|</span> <span class="pre">Import</span></code> menu and open Import dialog box, import project <code class="docutils literal notranslate"><span class="pre">C/C++</span> <span class="pre">Existing</span> <span class="pre">Code</span> <span class="pre">as</span> <span class="pre">Makefile</span> <span class="pre">Project</span></code></p>
-<blockquote>
-<div><div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image330.png"><img alt="../_images/image330.png" src="../_images/image330.png" style="width: 4in; height: 6in;" /></a>
-</div>
-</div></blockquote>
-<p>3.4 Click <code class="docutils literal notranslate"><span class="pre">Browse</span></code> button and select project folder, make sure the <code class="docutils literal notranslate"><span class="pre">Project</span> <span class="pre">Name</span></code> is bl_iot_sdk</p>
-<blockquote>
-<div><div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image425.png"><img alt="../_images/image425.png" src="../_images/image425.png" style="width: 4in; height: 6in;" /></a>
-</div>
-</div></blockquote>
-<p>3.5 Open the <code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Configurations</span></code> dialog box as shown below</p>
-<blockquote>
-<div><div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image517.png"><img alt="../_images/image517.png" src="../_images/image517.png" style="width: 4in; height: 2in;" /></a>
-</div>
-</div></blockquote>
-<p>3.6 If you want to see the current code running status, please select <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch</span></code>; If you want to execute the code from scratch, please select <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_bl702l.launch</span></code>. Click <code class="docutils literal notranslate"><span class="pre">Browse</span></code> button to change elf file, and click <code class="docutils literal notranslate"><span class="pre">Debug</span></code> button to start debug.</p>
-<blockquote>
-<div><div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image65.png"><img alt="../_images/image65.png" src="../_images/image65.png" style="width: 9in; height: 4.8in;" /></a>
-</div>
-<div class="admonition important">
+<div><div class="admonition important">
 <p class="admonition-title">重要</p>
-<p>Before using bl_iot_sdk_debug_freedom_studio_win_bl702l.launch, the chip needs to enter the UART programming mode.</p>
-</div>
-<div class="admonition important">
-<p class="admonition-title">重要</p>
-<p>Since low-power firmware will enter low-power mode and cause JTAG failure, bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch cannot be used for debugging.</p>
+<p><strong>bl702ldemoble_peripheral</strong> is a low-power product example. When entering low-power mode, the JTAG connection automatically disconnects. To demonstrate the debugging process, in this example, the code <em>btble_pds_enable(1)</em> will be modified to <em>btble_pds_enable(0)</em>, which is used to prevent the device from entering low-power mode and disconnecting the JTAG connection.</p>
+<p>3.1 Open the <code class="docutils literal notranslate"><span class="pre">MSYS2</span> <span class="pre">MINGW64</span></code> terminal, enter <code class="docutils literal notranslate"><span class="pre">riscv64-unknown-elf-gdb</span></code> command to start GDB:</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_1.png"><img alt="../_images/gdb_debug_1.png" src="../_images/gdb_debug_1.png" style="width: 6in; height: 4in;" /></a>
 </div>
 </div></blockquote>
+<p>3.2 Input command <code class="docutils literal notranslate"><span class="pre">file</span> <span class="pre">build_out/bl702l_demo_ble_peripheral.elf</span></code> to load the elf file:</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_2.png"><img alt="../_images/gdb_debug_2.png" src="../_images/gdb_debug_2.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<p>3.3 Input command <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">remote</span> <span class="pre">:1025</span></code> to connect to the T-HeadDebugServer (<code class="docutils literal notranslate"><span class="pre">1025</span></code>  is the default port of T-HeadDebugServer):</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_3.png"><img alt="../_images/gdb_debug_3.png" src="../_images/gdb_debug_3.png" style="width: 6in; height: 4in;" /></a>
+</div>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_4.png"><img alt="../_images/gdb_debug_4.png" src="../_images/gdb_debug_4.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<p>3.4 Input command <code class="docutils literal notranslate"><span class="pre">hb</span> <span class="pre">bleapp_connected</span></code> to set a hard breakpoint at the beginning of the <code class="docutils literal notranslate"><span class="pre">bleapp_connected</span></code> function, then enter <code class="docutils literal notranslate"><span class="pre">c</span></code> to continue debugging:</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_5.png"><img alt="../_images/gdb_debug_5.png" src="../_images/gdb_debug_5.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<p>3.5 Use a &quot;Master&quot; device to scan and connect to the &quot;Slave&quot; device, and the GDB debugging environment will automatically break at the beginning of the <code class="docutils literal notranslate"><span class="pre">bleapp_connected</span></code> function.</p>
+<blockquote>
+<div><ul>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">bt</span></code> to print the backtrace of the current function call stack；</p></li>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&lt;变量名&gt;</span></code> to print the value of the variable；</p></li>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">c</span></code> to continue debugging；</p></li>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">n</span></code> to step to the next line；</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_6.png"><img alt="../_images/gdb_debug_6.png" src="../_images/gdb_debug_6.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<p>3.6 Input command <code class="docutils literal notranslate"><span class="pre">q</span></code> to quit GDB:</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_7.png"><img alt="../_images/gdb_debug_7.png" src="../_images/gdb_debug_7.png" style="width: 6in; height: 4in;" /></a>
+</div>
 </div></blockquote>
 </div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="other-instructions">
+<h2>Other Instructions<a class="headerlink" href="#other-instructions" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>For more information on the use of other platforms and software, please refer to the  <a class="reference internal" href="Developer_Environment_BL702/BL70X_DVK/BL702L_DVK_V12.html#bl702l-dvk-v12"><span class="std std-ref">BL70xL Development Guide</span></a>。</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -519,7 +554,7 @@ and follow the prompts until the installation is completed</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

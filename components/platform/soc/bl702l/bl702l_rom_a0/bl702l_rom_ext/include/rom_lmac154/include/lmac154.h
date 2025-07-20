@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define VERSION_LMAC154_BL702LA0_MAJOR 1
+#define VERSION_LMAC154_BL702LA0_MINOR 6
+#define VERSION_LMAC154_BL702LA0_PATCH 3
 
 typedef void (*lmac154_isr_t)(void);
 
@@ -119,8 +122,8 @@ typedef enum {
 } lmac154_fptResult_t;
 
 
-typedef struct {
-    union {
+typedef union {
+    struct {
         uint32_t isExist:1;
         uint32_t isFramePended:1;
         uint32_t nbrIdx:7;
@@ -335,8 +338,8 @@ lmac154_isr_t lmac154_get2015InterruptHandler(void);
  * @return The version of liblmac154.a
  *
 *******************************************************************************/
-char * lmac154_getLibVersion(void);
-
+uint32_t lmac154_getVersionNumber(void);
+char * lmac154_getVersionString(void);
 
 /****************************************************************************//**
  * @brief  Enable standard or enhanced rx promiscuous mode (default disabled)
@@ -407,6 +410,16 @@ void lmac154_disableRx(void);
  *
 *******************************************************************************/
 void lmac154_setRxStateWhenIdle(bool isRxOnWhenIdle);
+
+/****************************************************************************//**
+ * @brief  Get rx on/off state when idle state
+ *
+ * @param  None 
+ *
+ * @return true is rx on when idle; otherwhile is rx off when idle
+ *
+*******************************************************************************/
+bool lmac154_isRxStateWhenIdle(void);
 
 
 /****************************************************************************//**
@@ -880,6 +893,17 @@ void lmac154_disableHwAutoTxAck(void);
 
 
 /****************************************************************************//**
+ * @brief  Get whether hardware auto transmission of ack frame is enabled
+ *
+ * @param  None
+ *
+ * @return ture, enabled
+ *
+*******************************************************************************/
+bool lmac154_isHwAutoTxAckEnabled(void);
+
+
+/****************************************************************************//**
  * @brief  Enable lmac154_ackEvent (default enabled)
  *
  * @param  None
@@ -1037,6 +1061,17 @@ void lmac154_setAckWaitTime(uint16_t time_us);
 
 
 /****************************************************************************//**
+ * @brief  Set the maximum wait time for enh-ack ack frame (default 1500us)
+ *
+ * @param  time_us: maximum wait time
+ *
+ * @return None
+ *
+*******************************************************************************/
+void lmac154_setEnhAckWaitTime(uint16_t time_us);
+
+
+/****************************************************************************//**
  * @brief  Set the maximum and minimum CSMA-CA backoff exponent
  *
  * @param  max_be: maximum BE ranging from 3 to 8, default 5
@@ -1107,7 +1142,7 @@ void lmac154_sleepRestoreRegs(uint32_t *retentionMem);
  * @return Result
  *
 *******************************************************************************/
-lmac154_fptSearchResult_t lmac154_framePendingResult(void);
+lmac154_fptSearchResult_t lmac154_framePendingResult(uint32_t tout);
 
 /****************************************************************************//**
  * @brief  Run AES CCM
@@ -1260,5 +1295,174 @@ void lmac154_rxMhrEvent(uint8_t *rx_buf, uint8_t rx_len, uint8_t pkt_len);
 *******************************************************************************/
 void lmac154_rxSecMhrEvent(uint8_t *rx_buf, uint8_t rx_len, uint8_t pkt_len);
 
+/****************************************************************************//**
+ * @brief  Set tx-rx transition time
+ *
+ * @param  time: us
+ *
+ * @return None
+ *
+*******************************************************************************/
+void lmac154_setTxRxTransTime(uint8_t timeInUs);
+
+/****** include fpt function declare only for compiling pass on a0 & a1 *******/
+typedef enum {
+    LMAC154_FPT_STATUS_SUCCESS          = 0,
+    LMAC154_FPT_STATUS_NO_RESOURCE      = -1,
+    LMAC154_FPT_STATUS_ADDR_NOT_FOUND   = -2,
+    LMAC154_FPT_STATUS_EMPTY            = -3,
+    LMAC154_FPT_STATUS_INVALID_PARAM    = -4,
+    LMAC154_FPT_STATUS_INVALID_OPT      = -5
+}lmac154_fpt_status_t;
+
+// hardware frame pending table (256 bytes)
+// shared by short addresses and long addresses (supports up to 128 short addresses or 32 long addresses or mixed)
+// used by hardware to set the frame pending bit of hw auto tx ack
+// if the address is not found in the table (e.g. not set or removed), the frame pending bit of hw auto tx ack is 1
+
+
+/****************************************************************************//**
+ * @brief  Add (or update) the key-value pair {sadr: pending} to (in) the frame pending table
+ *
+ * @param  sadr: 16-bit short address
+ * @param  pending: value of the corresponding frame pending bit
+ *
+ * @return LMAC154_FPT_STATUS_SUCCESS or LMAC154_FPT_STATUS_NO_RESOURCE
+ *
+*******************************************************************************/
+lmac154_fpt_status_t lmac154_fptSetShortAddrPending(uint16_t sadr, uint8_t pending);
+
+
+/****************************************************************************//**
+ * @brief  Add (or update) the key-value pair {ladr: pending} to (in) the frame pending table
+ *
+ * @param  ladr: pointer to 64-bit long address
+ * @param  pending: value of the corresponding frame pending bit
+ *
+ * @return LMAC154_FPT_STATUS_SUCCESS or LMAC154_FPT_STATUS_NO_RESOURCE
+ *
+*******************************************************************************/
+lmac154_fpt_status_t lmac154_fptSetLongAddrPending(uint8_t *ladr, uint8_t pending);
+
+
+/****************************************************************************//**
+ * @brief  Get the corresponding frame pending bit of the short address in the frame pending table
+ *
+ * @param  sadr: 16-bit short address
+ * @param  pending: value of the corresponding frame pending bit
+ *
+ * @return LMAC154_FPT_STATUS_SUCCESS or LMAC154_FPT_STATUS_ADDR_NOT_FOUND
+ *
+*******************************************************************************/
+lmac154_fpt_status_t lmac154_fptGetShortAddrPending(uint16_t sadr, uint8_t *pending);
+
+
+/****************************************************************************//**
+ * @brief  Get the corresponding frame pending bit of the long address in the frame pending table
+ *
+ * @param  ladr: pointer to 64-bit long address
+ * @param  pending: value of the corresponding frame pending bit
+ *
+ * @return LMAC154_FPT_STATUS_SUCCESS or LMAC154_FPT_STATUS_ADDR_NOT_FOUND
+ *
+*******************************************************************************/
+lmac154_fpt_status_t lmac154_fptGetLongAddrPending(uint8_t *ladr, uint8_t *pending);
+
+
+/****************************************************************************//**
+ * @brief  Remove the key-value pair {sadr: pending} from the frame pending table
+ *
+ * @param  sadr: 16-bit short address
+ *
+ * @return LMAC154_FPT_STATUS_SUCCESS or LMAC154_FPT_STATUS_ADDR_NOT_FOUND
+ *
+*******************************************************************************/
+lmac154_fpt_status_t lmac154_fptRemoveShortAddr(uint16_t sadr);
+
+
+/****************************************************************************//**
+ * @brief  Remove the key-value pair {ladr: pending} from the frame pending table
+ *
+ * @param  ladr: pointer to 64-bit long address
+ *
+ * @return LMAC154_FPT_STATUS_SUCCESS or LMAC154_FPT_STATUS_ADDR_NOT_FOUND
+ *
+*******************************************************************************/
+lmac154_fpt_status_t lmac154_fptRemoveLongAddr(uint8_t *ladr);
+
+
+/****************************************************************************//**
+ * @brief  Get short address list in the frame pending table
+ *
+ * @param  list: pointer to list buffer
+ * @param  entry_num: number of entries
+ *
+ * @return None
+ *
+*******************************************************************************/
+void lmac154_fpt_GetShortAddrList(void *list, uint8_t *entry_num);
+
+
+/****************************************************************************//**
+ * @brief  Get long address list in the frame pending table
+ *
+ * @param  list: pointer to list buffer
+ * @param  entry_num: number of entries
+ *
+ * @return None
+ *
+*******************************************************************************/
+void lmac154_fptGetLongAddrList(void *list, uint8_t *entry_num);
+
+
+/****************************************************************************//**
+ * @brief  Remove all Short Address from pending table
+ *
+  * @return None
+ *
+*******************************************************************************/
+void lmac154_fptRemoveAllShortAddr(void);
+
+
+/****************************************************************************//**
+ * @brief  Remove all Extended Address from pending table
+ *
+  * @return None
+ *
+*******************************************************************************/
+void lmac154_fptRemoveAllLongAddr(void);
+
+
+/****************************************************************************//**
+ * @brief  Set frame pending bit according to frame pending table, or force to set to 1
+ *
+ * @param  force: 0: set according to frame pending table (default), 1: force to set to 1
+ *
+ * @return None
+ *
+*******************************************************************************/
+void lmac154_fptForcePending(uint8_t force);
+
+
+/****************************************************************************//**
+ * @brief  Clear the frame pending table
+ *
+ * @param  None
+ *
+ * @return None
+ *
+*******************************************************************************/
+void lmac154_fptClear(void);
+
+
+/****************************************************************************//**
+ * @brief  Print the frame pending table using specified print function
+ *
+ * @param  print_func: user specified print function
+ *
+ * @return None
+ *
+*******************************************************************************/
+void lmac154_fptDump(int print_func(const char *fmt, ...));
 
 #endif

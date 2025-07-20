@@ -893,7 +893,7 @@ void light_lc_work_handler(struct k_work *work)
     }
 
 #if defined(CONFIG_BT_MESH_PTS) || defined(CONFIG_AUTO_PTS)
-    BT_WARN("light_lc_work_handler [%x]", srv->transition.counter);
+    BT_WARN("light_lc_work_handler [%lx]", srv->transition.counter);
 #endif /* CONFIG_AUTO_PTS */
     bt_mesh_light_server_lock();
 

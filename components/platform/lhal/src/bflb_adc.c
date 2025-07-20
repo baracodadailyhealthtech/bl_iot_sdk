@@ -869,8 +869,6 @@ int bflb_adc_feature_control(struct bflb_device_s *dev, int cmd, size_t arg)
                 regval &= ~AON_GPADC_VBAT_EN;
                 putreg32(regval, reg_base + AON_GPADC_REG_CONFIG2_OFFSET);
             }
-            break;
-            
         default:
             ret = -EPERM;
             break;

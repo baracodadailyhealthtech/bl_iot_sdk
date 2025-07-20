@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
+  <title>Low_Power_Mode_BL702L &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../../../genindex.html"/>
         <link rel="search" title="搜索" href="../../../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../../../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../../../index.html"/>
         <link rel="up" title="BLE" href="../index.html"/>
         <link rel="next" title="Mesh" href="../demo_mesh/mesh.html"/>
         <link rel="prev" title="Ble Introduction" href="../demo_ble/ble.html"/> 
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1973-g7970cf316
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
               </div>
             
           
@@ -112,6 +112,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../zigbee/index.html">Zigbee</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../network/index.html">Ethernet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fwupgrade/index.html">FW Upgrade</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
@@ -189,70 +190,101 @@
 <span id="ble-index"></span><h1>Low_Power_Mode_BL702L<a class="headerlink" href="#low-power-mode-bl702l" title="永久链接至标题"></a></h1>
 <div class="section" id="id1">
 <h2>总览<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
-<p>本示例主要介绍如何使用低功耗模式。</p>
+<p>本示例主要介绍BLE 相关的低功耗内容, 包括低功耗模式的介绍、低功耗API的介绍、如何使用低功耗模式 以及低功耗时钟的注意事项。</p>
 </div>
 <div class="section" id="id2">
 <h2>低功耗模式<a class="headerlink" href="#id2" title="永久链接至标题"></a></h2>
-<ul>
-<li><p>系统进入低功耗流程</p>
-<p>系统低功耗模式简称 PDS (Power Down Sleep)。
-SDK中使用了Freertos。Freertos的idle task会检查当前BL702L是否处于无任务处理状态，是否能进入到低功耗模式。</p>
+<div class="section" id="id3">
+<h3>系统进入低功耗流程<a class="headerlink" href="#id3" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>系统低功耗模式简称 PDS (Power Down Sleep)。
+SDK中使用了Freertos。Freertos的idle task会检查当前BL702L是否处于无任务处理状态,是否能进入到低功耗模式。</p>
 <ol class="arabic simple">
-<li><p>如果Freertos处于idle状态，能睡眠，继续检查当前BLE是否能睡眠。如果Ble不能睡眠，则BL702L不能进入低功耗模式。如果BLE能睡眠，获取Ble的睡眠时间。</p></li>
-<li><p>最终BL702L的睡眠时间将取Freertos能睡眠的时间和BLE能睡眠的时间中的较小值。如果最终的睡眠时间小于一个阈值，例如5ms，BL702L将不进入低功耗模式。</p></li>
+<li><p>如果Freertos处于idle状态,能睡眠,继续检查当前BLE是否能睡眠。如果Ble不能睡眠,则BL702L不能进入低功耗模式。如果BLE能睡眠,获取Ble的睡眠时间。</p></li>
+<li><p>最终BL702L的睡眠时间将取Freertos能睡眠的时间和BLE能睡眠的时间中的较小值。如果最终的睡眠时间小于一个阈值,例如5ms,BL702L将不进入低功耗模式。</p></li>
 </ol>
 <blockquote>
-<div><p>如果BLE的睡眠时间大于Freertos的睡眠时间，当BL702L醒来时，Ble仍然处理睡眠状态。在这种情况下，Ble会在以下两种情况醒来。</p>
+<div><p>如果BLE的睡眠时间大于Freertos的睡眠时间,当BL702L醒来时,Ble仍然处理睡眠状态。在这种情况下,Ble会在以下两种情况醒来。</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>Ble的睡眠时间结束。</p></li>
-<li><p>如果有Ble的行为要发生，例如应用层要做Ble advertising，软件会唤醒Ble。</p></li>
+<li><p>如果有Ble的行为要发生,例如应用层要做Ble advertising,软件会唤醒Ble。</p></li>
 </ol>
 </div></blockquote>
-<p>如果Ble的睡眠时间小于等于Freertos的睡眠时间, BL702L先从PDS醒来，然后Ble醒。</p>
+<p>如果Ble的睡眠时间小于等于Freertos的睡眠时间, BL702L先从PDS醒来,然后Ble醒。</p>
 </div></blockquote>
-</li>
-<li><p>低功耗API</p>
-<ol class="arabic simple">
+</div></blockquote>
+</div>
+<div class="section" id="api">
+<h3>低功耗API<a class="headerlink" href="#api" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">btble_pds_enable</span> <span class="pre">(uint8_t</span> <span class="pre">enable)</span></code></p></li>
 </ol>
 <blockquote>
 <div><p>该API用来使能或者禁用低功耗功能。</p>
-<p>当enable=1时，使能低功耗功能。BL702L在idle状态下进入低功耗模式。</p>
-<p>当enable=0时，禁用低功耗功能。BL702L在idle状态下不进入低功耗模式。</p>
+<p>当enable=1时,使能低功耗功能。BL702L在idle状态下进入低功耗模式。</p>
+<p>当enable=0时,禁用低功耗功能。BL702L在idle状态下不进入低功耗模式。</p>
 </div></blockquote>
 <ol class="arabic simple" start="2">
 <li><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">btble_set_before_sleep_callback</span> <span class="pre">(btble_before_sleep_cb_t</span> <span class="pre">cb)</span></code></p></li>
 </ol>
 <blockquote>
-<div><p>如果应用层在Ble睡眠前有事情要做，需要调用该API来注册callback函数。应用层在该callback函数中做需要做的事情。例如应用层有key scan的相关应用，在Ble睡眠前需要disable key scan中断，就可以在该callback函数中完成。</p>
-<p>Ble可能因为睡眠条件不满足而不能进入睡眠，这种情况下，应用层需要在btble_set_sleep_aborted_callback注册的callback函数中重新enable key scan中断。</p>
+<div><p>如果应用层在Ble睡眠前有事情要做,需要调用该API来注册callback函数。应用层在该callback函数中做需要做的事情。例如应用层有key scan的相关应用,在Ble睡眠前需要disable key scan中断,就可以在该callback函数中完成。</p>
+<p>Ble可能因为睡眠条件不满足而不能进入睡眠,这种情况下,应用层需要在btble_set_sleep_aborted_callback注册的callback函数中重新enable key scan中断。</p>
 </div></blockquote>
 <ol class="arabic simple" start="3">
 <li><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">btble_set_sleep_aborted_callback</span> <span class="pre">(btble_sleep_aborted_cb_t</span> <span class="pre">cb)</span></code></p></li>
 </ol>
 <blockquote>
-<div><p>在Freertos idle task中，当BL702L不能进入低功耗模式的时候, 通过btble_set_sleep_aborted_callback注册的callback函数将会被调用。</p>
+<div><p>在Freertos idle task中,当BL702L不能进入低功耗模式的时候, 通过btble_set_sleep_aborted_callback注册的callback函数将会被调用。</p>
 </div></blockquote>
 <ol class="arabic simple" start="4">
 <li><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">btble_set_after_sleep_callback</span> <span class="pre">(btble_after_sleep_cb_t</span> <span class="pre">cb)</span></code></p></li>
 </ol>
 <blockquote>
-<div><p>当BL702L醒来后，该函数注册的callback函数会被调用到。应用层可以在该callback函数中做需要做的事情。</p>
-<p>例如，应用层使用了key scan功能，则需要在该callback函数中恢复key scan的配置因为该配置在低功耗模式下会丢掉。</p>
+<div><p>当BL702L醒来后,该函数注册的callback函数会被调用到。应用层可以在该callback函数中做需要做的事情。</p>
+<p>例如,应用层使用了key scan功能,则需要在该callback函数中恢复key scan的配置因为该配置在低功耗模式下会丢掉。</p>
 </div></blockquote>
-</li>
-<li><p>如何测量电流及平均功耗</p>
+</div></blockquote>
+</div>
+<div class="section" id="id4">
+<h3>如何测量电流及平均功耗<a class="headerlink" href="#id4" title="永久链接至标题"></a></h3>
 <blockquote>
+<div><blockquote>
 <div><div class="figure align-default">
 <img alt="" src="../../../_images/image110.png" />
 </div>
 </div></blockquote>
-<p>参考以上原理图，</p>
-<p>1.使用万用表测量电流的时候，万用表的正极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33</span></code>，万用表的负极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33_MOD</span></code>。</p>
-<p>2.使用power monitor测量平均功耗的时候，一般通过power monitor给开发板供电，power monitor的正极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33_MOD</span></code> ，power monitor的负极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">GND</span></code>。</p>
-</li>
+<p>参考以上原理图,</p>
+<p>1.使用万用表测量电流的时候,万用表的正极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33</span></code>,万用表的负极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33_MOD</span></code>。</p>
+<p>2.使用power monitor测量平均功耗的时候,一般通过power monitor给开发板供电,power monitor的正极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">VDD33_MOD</span></code> ,power monitor的负极接 <code class="docutils literal notranslate"><span class="pre">J2</span></code> 上的 <code class="docutils literal notranslate"><span class="pre">GND</span></code>。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id5">
+<h3>低功耗时钟的注意事项<a class="headerlink" href="#id5" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>在BL70xL芯片上, BLE模块的时钟源由系统的功耗模式决定:</p>
+<blockquote>
+<div><p><strong>工作模式</strong>: BLE模块在工作模式下, 时钟源由高速32M晶振提供, 确保了高精度的时序需求</p>
+<p><strong>低功耗模式</strong>: BLE模块进入低功耗模式, 高速时钟被门控, BLE模块自动切换到低速32K时钟,以满足更低功耗的需求。32K时钟源可分为:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>外部 XTAL32K: 精度高, 满足BLE连接状态的时钟偏差小于500ppm(0.05%); 功耗低;</p></li>
+<li><p>内部 RC32K: RC32K的精度为 ±1% ; 相比XTAL32K, 功耗增加10%-20% ;</p></li>
 </ul>
+</div></blockquote>
+</div></blockquote>
+<p>因此，对于非低功耗设备, BLE默认使用32M时钟, 不需要引用32K时钟源; 对于低功耗设备, 32K时钟源是必须的, 对于不同BLE角色和工作模式, 时钟源的选择推荐：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>广播模式: XTAL32K, RC32K;</p></li>
+<li><p>扫描模式: XTAL32K, RC32K;</p></li>
+<li><p>连接模式: 中心设备 XTAL32K; 外围设备 RC32K;</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
 </div>
 </div>
 
@@ -297,7 +329,7 @@ SDK中使用了Freertos。Freertos的idle task会检查当前BL702L是否处于�
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

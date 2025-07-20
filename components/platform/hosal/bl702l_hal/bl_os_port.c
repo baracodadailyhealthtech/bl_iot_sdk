@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -30,6 +30,7 @@
 #include "bl_os_port.h"
 #include "FreeRTOS.h"
 #include "timers.h"
+#include "semphr.h"
 #include "event_groups.h"
 
 
@@ -47,9 +48,7 @@ int bl_os_timer_start(void *xTimer)
         xResult = xTimerStart(xTimer, 0);
     }else{
         xResult = xTimerStartFromISR(xTimer, &xHigherPriorityTaskWoken);
-        if(xResult != pdFAIL){
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
     
     return xResult;
@@ -64,9 +63,7 @@ int bl_os_timer_stop(void *xTimer)
         xResult = xTimerStop(xTimer, 0);
     }else{
         xResult = xTimerStopFromISR(xTimer, &xHigherPriorityTaskWoken);
-        if(xResult != pdFAIL){
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
     
     return xResult;
@@ -81,9 +78,7 @@ int bl_os_timer_change_period(void *xTimer, uint32_t period)
         xResult = xTimerChangePeriod(xTimer, period, 0);
     }else{
         xResult = xTimerChangePeriodFromISR(xTimer, period, &xHigherPriorityTaskWoken);
-        if(xResult != pdFAIL){
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
     
     return xResult;
@@ -98,9 +93,7 @@ int bl_os_timer_reset(void *xTimer)
         xResult = xTimerReset(xTimer, 0);
     }else{
         xResult = xTimerResetFromISR(xTimer, &xHigherPriorityTaskWoken);
-        if(xResult != pdFAIL){
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
     
     return xResult;
@@ -109,6 +102,48 @@ int bl_os_timer_reset(void *xTimer)
 int bl_os_timer_delete(void *xTimer)
 {
     return xTimerDelete(xTimer, 0);
+}
+
+
+void *bl_os_semphr_create(void)
+{
+    return xSemaphoreCreateBinary();
+}
+
+int bl_os_semphr_take(void *xSemaphore, uint32_t timeout)
+{
+    BaseType_t xResult = pdFAIL;
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    
+    if(!xPortIsInsideInterrupt()){
+        xResult = xSemaphoreTake(xSemaphore, timeout);
+    }else{
+        xResult = xSemaphoreTakeFromISR(xSemaphore, &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+    
+    return xResult;
+}
+
+int bl_os_semphr_give(void *xSemaphore)
+{
+    BaseType_t xResult = pdFAIL;
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    
+    if(!xPortIsInsideInterrupt()){
+        xResult = xSemaphoreGive(xSemaphore);
+    }else{
+        xResult = xSemaphoreGiveFromISR(xSemaphore, &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+    
+    return xResult;
+}
+
+int bl_os_semphr_delete(void *xSemaphore)
+{
+    vSemaphoreDelete(xSemaphore);
+    return pdPASS;
 }
 
 
@@ -144,9 +179,7 @@ int bl_os_event_group_set_bits(void *xEventGroup, uint32_t bits)
         xEventGroupSetBits(xEventGroup, bits);
     }else{
         xResult = xEventGroupSetBitsFromISR(xEventGroup, bits, &xHigherPriorityTaskWoken);
-        if(xResult != pdFAIL){
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
     
     return xResult;

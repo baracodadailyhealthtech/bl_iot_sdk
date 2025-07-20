@@ -9,7 +9,7 @@ PROJECT_BOARD := evb
 export PROJECT_PATH PROJECT_BOARD
 #CONFIG_TOOLPREFIX :=
 
-BLECONTROLLER_LIBS := m1s1 m0s1 m0s1s m0s1p m16s1 m0s0sp
+BLECONTROLLER_LIBS := m1s1 m0s1 m0s1s m0s1p m16s1 m0s0sp m0s1t10
 BLECONTROLLER_LIB_DEFAULT := m1s1
 BLECONTROLLER_LIB_PREFIX := blecontroller_702_
 
@@ -29,7 +29,7 @@ endif
 INCLUDE_COMPONENTS += bl702 bl702_std newlibc bl702_rf hosal vfs yloop utils cli blog
 INCLUDE_COMPONENTS += blmtd blfdt
 INCLUDE_COMPONENTS += easyflash4 coredump
-INCLUDE_COMPONENTS += lmac154
+INCLUDE_COMPONENTS += lmac154 mfd
 
 ifeq ($(CONFIG_USB_CDC),1)
 INCLUDE_COMPONENTS += bl702_usb_cdc
@@ -46,9 +46,11 @@ else
 		INCLUDE_COMPONENTS += $(addprefix $(ZBSTACK_LIB_PREFIX), $(CONFIG_ZBSTACK_LIB))
 	endif
 endif
-INCLUDE_COMPONENTS += zbcli ecdsa macphy154
+INCLUDE_COMPONENTS += zbcli ecdsa macphy154 zcl
 ifeq ($(CONFIG_ZB_NCP_ENABLE), 1)
 INCLUDE_COMPONENTS += zbncp
+else
+INCLUDE_COMPONENTS += zbapp
 endif
 endif
 
@@ -73,8 +75,13 @@ endif
 endif
 
 ifeq ($(CONFIG_THREAD), 1)
-INCLUDE_COMPONENTS += mbedtls_lts mdns openthread openthread_port
-INCLUDE_COMPONENTS += openthread_utils_bl702 openthread_br lwip
+INCLUDE_COMPONENTS += thread openthread_port openthread_utils_bl702 openthread_br
+INCLUDE_COMPONENTS += mbedtls_lts lwip
+ifeq ($(CONFIG_LITTLEFS), 1)
+    INCLUDE_COMPONENTS += littlefs
+else ifeq ($(CONFIG_EASYFLASH_ENABLE), 1)
+    INCLUDE_COMPONENTS += easyflash4
+endif
 endif
 
 ifeq ($(CONFIG_ETHERNET),1)
@@ -106,7 +113,6 @@ endif
 INCLUDE_COMPONENTS += $(PROJECT_NAME)
 
 ifeq ($(CONFIG_THREAD),1)
-include $(BL60X_SDK_PATH)/components/network/thread/openthread_br/otbr_config.mk
 include $(BL60X_SDK_PATH)/components/network/thread/openthread_common.mk
 endif
 

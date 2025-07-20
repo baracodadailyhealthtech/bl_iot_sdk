@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -40,7 +40,7 @@ void UART0_IRQHandler(void);
 //TODO Do in std driver
 #define UART_NUMBER_SUPPORTED   1
 #define UART_FIFO_TX_CNT        UART_TX_FIFO_SIZE
-static const uint32_t uartAddr[] = {UART0_BASE};
+static const uint32_t uartAddr[UART_NUMBER_SUPPORTED] = {UART0_BASE};
 
 typedef struct bl_uart_notify {
     cb_uart_notify_t rx_cb;
@@ -105,8 +105,8 @@ int bl_uart_init(uint8_t id, uint8_t tx_pin, uint8_t rx_pin, uint8_t cts_pin, ui
     };
     UART_FifoCfg_Type fifoCfg =
     {
-        .txFifoDmaThreshold     = 0x08,
-        .rxFifoDmaThreshold     = 0x08,
+        .txFifoDmaThreshold     = 8,
+        .rxFifoDmaThreshold     = 8,
         .txFifoDmaEnable        = DISABLE,
         .rxFifoDmaEnable        = DISABLE,
     };

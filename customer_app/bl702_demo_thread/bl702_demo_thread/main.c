@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -33,7 +33,14 @@
 #include <task.h>
 
 #include <bl_wireless.h>
-#include <main.h>
+
+#include <openthread/thread.h>
+#include <openthread/thread_ftd.h>
+#include <openthread/icmp6.h>
+#include <openthread/cli.h>
+#include <openthread/ncp.h>
+#include <openthread/coap.h>
+#include <openthread_port.h>
 
 void vApplicationTickHook( void )
 {
@@ -57,21 +64,19 @@ void otrAppProcess(ot_system_event_t sevent)
 }
 
 #ifdef SYS_AOS_CLI_ENABLE
-
 void _cli_init(int fd_console)
 {
+#ifdef SYS_AOS_CLI_ENABLE
     ot_uartSetFd(fd_console);
-
+#endif
 #if defined(CFG_USB_CDC_ENABLE)
     extern void usb_cdc_start(int fd_console);
     usb_cdc_start(fd_console);
 #endif
 }
-
 #endif
 
 #if defined(CFG_USB_CDC_ENABLE)
-
 void usb_cdc_update_serial_number(uint32_t * pdeviceserial0, uint32_t * pdeviceserial1, uint32_t * pdeviceserial2) 
 {
     uint8_t addr[8] = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8};
@@ -86,24 +91,19 @@ void usb_cdc_update_serial_number(uint32_t * pdeviceserial0, uint32_t * pdevices
 }
 #endif
 
-#ifndef CONFIG_OTDEMO
 void otrInitUser(otInstance * instance)
 {
-#ifdef CONFIG_NCP
+#ifdef OT_NCP
     otAppNcpInit((otInstance * )instance);
 #else
     otAppCliInit((otInstance * )instance);
 #endif
 }
-#endif
 
 int main(int argc, char *argv[])
 {
     otRadio_opt_t opt;
 
-#if defined(CFG_BLE_ENABLE)
-    ble_stack_start();
-#endif
     opt.byte = 0;
 
     opt.bf.isCoexEnable = true;
@@ -126,9 +126,6 @@ int main(int argc, char *argv[])
 #endif
 
     otrStart(opt);
-#ifdef CONFIG_OTDEMO
-    app_task();
-#endif
 
     return 0;
 }

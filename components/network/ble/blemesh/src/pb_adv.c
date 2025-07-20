@@ -24,6 +24,9 @@
 #define LOG_MODULE_NAME bt_mesh_pb_adv
 #include "bt_log.h"
 #include "bt_errno.h"
+#if defined(CONFIG_AUTO_PTS)
+#include "testing.h"
+#endif
 
 
 #define GPCF(gpc)           (gpc & 0x03)

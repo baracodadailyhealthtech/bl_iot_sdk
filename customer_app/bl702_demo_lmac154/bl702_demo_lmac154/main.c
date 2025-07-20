@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -95,7 +95,7 @@ void proc_hellow_entry(void *pvParameters)
 void _dump_lib_info(void)
 {
     puts("LMAC154 LIB Version: ");
-    puts(lmac154_getLibVersion());
+    puts(lmac154_getVersionString());
     puts("\r\n");
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -37,7 +37,7 @@
 void bl_pwm_ir_tx_cfg(float freq_hz, float duty_cycle);
 void bl_pwm_ir_tx_pin_cfg(uint8_t pin);  // pin: pin % 5 != 0
 int bl_pwm_ir_tx(uint16_t data[], uint32_t len);  // transmit mark and space alternately
-int bl_pwm_ir_tx_ex(uint32_t data[], uint32_t len);  // transmit mark or space according to bit31 of data
+int bl_pwm_ir_tx_ex(uint32_t data[], uint32_t len);  // transmit mark or space according to the msb of each data
 
 void bl_pwm_ir_nec_tx_init(uint8_t pin);  // pin: pin % 5 != 0
 int bl_pwm_ir_nec_tx(uint8_t addr, uint8_t cmd);  // addr: 8-bit address; cmd: 8-bit command

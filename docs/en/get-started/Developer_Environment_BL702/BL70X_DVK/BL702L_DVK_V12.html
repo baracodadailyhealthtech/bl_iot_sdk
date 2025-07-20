@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BL70xL Development Guide &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="关于这些文档"
+              href="../../../about.html"/>
+        <link rel="index" title="索引"
+              href="../../../genindex.html"/>
+        <link rel="search" title="搜索" href="../../../search.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> BL IoT SDK
+          
+
+          
+            
+            <img src="../../../_static/Bouffalolab-logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_702.html">702快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_702L.html">702L快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Examples/index.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Components/index.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../QA/index.html">QA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hw-reference/index.html">H/W 参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">相关资源</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BL IoT SDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>BL70xL Development Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/get-started/Developer_Environment_BL702/BL70X_DVK/BL702L_DVK_V12.rst.txt" rel="nofollow"> 查看页面源码</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bl70xl-development-guide">
+<span id="bl702l-dvk-v12"></span><h1>BL70xL Development Guide<a class="headerlink" href="#bl70xl-development-guide" title="永久链接至标题"></a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>The BL70xL IoT SDK is compatible with <strong>Windows</strong>, <strong>Linux</strong> and <strong>MacOS</strong> operating systems, supporting mainstream <strong>GCC</strong> compilation and <strong>GDB</strong>, <strong>Eclipse</strong> debugging. Users can find the corresponding toolchains and compilation scripts in the directory <code class="docutils literal notranslate"><span class="pre">SDK/toolchain/riscv</span></code>.</p>
+<p>From the perspective of the BL70xL DVK V1.2 development board, there are slight differences in usage across different operating systems:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Windows</strong>:  Supports <strong>CKLink</strong>, <strong>Sipeed-RV-Debugger</strong>；</p></li>
+<li><p><strong>Linux</strong>:  Supports <strong>CKLink</strong>, <strong>Sipeed-RV-Debugger</strong>；</p></li>
+<li><p><strong>MacOS</strong>：Supports <strong>Sipeed-RV-Debugger</strong>；</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="debugging-connection">
+<h2>Debugging Connection<a class="headerlink" href="#debugging-connection" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>The JTAG interface of the BL70xL can be connected to a computer in various ways, with the most convenient being the onboard <strong>CKLink</strong> debuggers. For users who cannot use CKLink, the <strong>Sipeed-RV-Debugger</strong> can also be used for debugging connections.</p>
+</div></blockquote>
+<div class="section" id="cklink-connection">
+<h3>1.1 CKLink Connection<a class="headerlink" href="#cklink-connection" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p><strong>CKLink</strong> is a RISC-V JTAG debugger developed by T-HEAD. The BL70xL_IOT_DVK V1.2 utilizes the BL616 to implement the CKLink functionality, allowing users to perform online debugging directly through the onboard USB interface. For specific usage instructions, please refer to the <a class="reference external" href="./../../index_702L.html">702L快速入门</a></p>
+</div></blockquote>
+</div>
+<div class="section" id="sipeed-rv-debugger-connection">
+<h3>1.2 Sipeed-RV-Debugger Connection<a class="headerlink" href="#sipeed-rv-debugger-connection" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p><a class="reference external" href="./../Sipeed-RV-Debugger-Plus/sipeed-rv-debugger-plus.html">Sipeed-RV-Debugger-Plus Debugger Installation and Usage</a></p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../../../_images/bl702l_sipeed_rv_debugger_plus.jpg"><img alt="../../../_images/bl702l_sipeed_rv_debugger_plus.jpg" src="../../../_images/bl702l_sipeed_rv_debugger_plus.jpg" style="width: 4in; height: 2in;" /></a>
+</div>
+</div></blockquote>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>On the BL70xL_IOT_DVK V1.2 development board, before connecting the JTAG pins to the Sipeed-RV-Debugger, it is necessary to disconnect the 70xL JTAG pins from the CKLink and remove the resistor as shown in the figure:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../../../_images/BL70xL_IoT_DVK_V12_JTAG_616.jpg"><img alt="../../../_images/BL70xL_IoT_DVK_V12_JTAG_616.jpg" src="../../../_images/BL70xL_IoT_DVK_V12_JTAG_616.jpg" style="width: 4in; height: 2in;" /></a>
+</div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="debugging-software">
+<h2>Debugging Software<a class="headerlink" href="#debugging-software" title="永久链接至标题"></a></h2>
+<div class="section" id="freedom-studio-debugging">
+<h3>2.1 Freedom-Studio Debugging<a class="headerlink" href="#freedom-studio-debugging" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>Freedom Studio is an integrated development environment released by SiFive, which has integrated a pre-compiled RISC-V GCC toolchain, OpenOCD, and some documentation, making it more suitable for beginners。</p>
+<p>Freedom Studio is based on the Eclipse IDE and supports Windows, Linux, and macOS. For installation and usage, refer to <a class="reference external" href="./../freedom_studio/freedom_studio.html">Freedom Studio Guide</a></p>
+</div></blockquote>
+</div>
+<div class="section" id="gdb-debugging">
+<h3>2.2 GDB Debugging<a class="headerlink" href="#gdb-debugging" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>In the Windows environment, online debugging can be performed using GDB through a CKLink connection and T-HeadDebugServer, refer to <a class="reference external" href="./../../index_702L.html">BL702L Quick Start Guide</a>。</p>
+<p>In other environments, or when connected via Sipeed-RV-Debugger, online debugging with GDB can be performed by referring to the BL documentation <a class="reference external" href="https://dev.bouffalolab.com/media/doc/602/openocd/zh/html/index.html">OpenOCD和GDB简介与使用</a>。</p>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bouffalo Lab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Stanford-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

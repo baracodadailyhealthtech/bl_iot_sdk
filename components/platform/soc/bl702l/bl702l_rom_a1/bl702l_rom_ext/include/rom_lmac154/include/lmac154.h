@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define VERSION_LMAC154_BL702LA1_MAJOR 1
+#define VERSION_LMAC154_BL702LA1_MINOR 6
+#define VERSION_LMAC154_BL702LA1_PATCH 4
 
 typedef void (*lmac154_isr_t)(void);
 
@@ -125,8 +128,8 @@ typedef enum {
     LMAC154_FPT_STATUS_INVALID_OPT      = -5
 }lmac154_fpt_status_t;
 
-typedef struct {
-    union {
+typedef union {
+    struct {
         uint32_t isExist:1;
         uint32_t isFramePended:1;
         uint32_t nbrIdx:7;
@@ -403,6 +406,26 @@ void lmac154_disableRx(void);
  *
 *******************************************************************************/
 void lmac154_setRxStateWhenIdle(bool isRxOnWhenIdle);
+
+/****************************************************************************//**
+ * @brief  Get rx on/off state when idle state
+ *
+ * @param  None 
+ *
+ * @return true is rx on when idle; otherwhile is rx off when idle
+ *
+*******************************************************************************/
+bool lmac154_isRxStateWhenIdle(void);
+
+/****************************************************************************//**
+ * @brief  Get rx on/off state when idle state
+ *
+ * @param  None 
+ *
+ * @return true is rx on when idle; otherwhile is rx off when idle
+ *
+*******************************************************************************/
+bool lmac154_isRxStateWhenIdle(void);
 
 
 /****************************************************************************//**
@@ -876,6 +899,17 @@ void lmac154_disableHwAutoTxAck(void);
 
 
 /****************************************************************************//**
+ * @brief  Get whether hardware auto transmission of ack frame is enabled
+ *
+ * @param  None
+ *
+ * @return ture, enabled
+ *
+*******************************************************************************/
+bool lmac154_isHwAutoTxAckEnabled(void);
+
+
+/****************************************************************************//**
  * @brief  Enable lmac154_ackEvent (default enabled)
  *
  * @param  None
@@ -1033,6 +1067,17 @@ void lmac154_setAckWaitTime(uint16_t time_us);
 
 
 /****************************************************************************//**
+ * @brief  Set the maximum wait time for enh-ack ack frame (default 1500us)
+ *
+ * @param  time_us: maximum wait time
+ *
+ * @return None
+ *
+*******************************************************************************/
+void lmac154_setEnhAckWaitTime(uint16_t time_us);
+
+
+/****************************************************************************//**
  * @brief  Set the maximum and minimum CSMA-CA backoff exponent
  *
  * @param  max_be: maximum BE ranging from 3 to 8, default 5
@@ -1103,7 +1148,7 @@ void lmac154_sleepRestoreRegs(uint32_t *retentionMem);
  * @return Result
  *
 *******************************************************************************/
-lmac154_fptSearchResult_t lmac154_framePendingResult(void);
+lmac154_fptSearchResult_t lmac154_framePendingResult(uint32_t tout);
 
 /****************************************************************************//**
  * @brief  Run AES CCM

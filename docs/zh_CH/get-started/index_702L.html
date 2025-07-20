@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档</title>
+  <title>BL IOT SDK 开发指南 &mdash; BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="索引"
               href="../genindex.html"/>
         <link rel="search" title="搜索" href="../search.html"/>
-    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-1973-g7970cf316 文档" href="../index.html"/>
+    <link rel="top" title="BL IoT SDK release_bl_iot_sdk_1.6.40-2106-g501852ce2 文档" href="../index.html"/>
         <link rel="next" title="API 参考" href="../api-reference/index.html"/>
         <link rel="prev" title="BL IOT SDK 开发指南" href="index_702.html"/> 
 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                release_bl_iot_sdk_1.6.40-1973-g7970cf316
+                release_bl_iot_sdk_1.6.40-2106-g501852ce2
               </div>
             
           
@@ -113,11 +113,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#id12">调试软件</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id13">1. 硬件跳线</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#cklink">2. 安装和配置 CKLink</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#freedom-studio">3. 安装和使用 Freedom Studio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cklink">1. CKLink连接</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t-headdebugserver">2. T-HeadDebugServer 安装和配置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gdb">3. GDB 调试</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">其它说明</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api-reference/index.html">API 参考</a></li>
@@ -190,36 +191,32 @@
            <div itemprop="articleBody">
             
   <div class="section" id="bl-iot-sdk">
-<h1>BL IOT SDK 开发指南<a class="headerlink" href="#bl-iot-sdk" title="永久链接至标题"></a></h1>
+<span id="bl-iot-sdk-guide"></span><h1>BL IOT SDK 开发指南<a class="headerlink" href="#bl-iot-sdk" title="永久链接至标题"></a></h1>
 <div class="section" id="id1">
 <h2>概述<a class="headerlink" href="#id1" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>BL702L/704L 系列芯片是博流智能科技有限公司开发的，基于 <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V</a> 处理器的通用微控制器，具有高达128M Hz的主频以及丰富的外设，同时支持 BLE 5.0、Zigbee 3.0 等功能，可被广泛应用于 IoT 和其他低功耗领域中。</p>
-<p><a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> 是博流团队专为 BL60X、BL70X 以及后续芯片提供的 IOT 软件开发包。</p>
-<p>本文通过一个简单的示例展示如何在 Windows 环境下，搭建开发环境，编译示例代码，烧录固件以及查看输出，旨在指导用户搭建一套完整的 BL70X IOT 应用开发环境。</p>
+<div><p>BL702L/704L 系列芯片是博流智能科技有限公司开发的，基于 <a class="reference external" href="https://en.wikipedia.org/wiki/RISC-V">RISC-V 32-bit</a> 处理器的通用微控制器，具有高达128M Hz的主频，极低的功耗，丰富的外设，同时支持 BLE 5.0、Zigbee 3.0 等功能，可被广泛应用于 IoT 和其他低功耗领域中。</p>
+<p><a class="reference external" href="https://github.com/bouffalolab/bl_iot_sdk">BL IOT SDK</a> 是博流团队专为 BL60X、BL70X 以及后续芯片提供的 IOT 软件开发包，包含了丰富的组件和示例，支持 Windows， Linux， macOS 操作系统, 可以帮助用户快速开发基于 BL 系列芯片的 IOT 应用。</p>
+<p>本文以 Windows 操作系统为例，通过一个简单的示例展示如何搭建开发环境，编译代码，烧录固件以及查看输出，旨在帮助用户快速熟悉 BL70xL IOT 应用开发流程。更多平台和软件使用请参考  <a class="reference internal" href="Developer_Environment_BL702/BL70X_DVK/BL702L_DVK_V12.html#bl702l-dvk-v12"><span class="std std-ref">BL70xL 开发说明</span></a>。</p>
 </div></blockquote>
 </div>
 <div class="section" id="id3">
 <h2>准备工作<a class="headerlink" href="#id3" title="永久链接至标题"></a></h2>
 <blockquote>
 <div><p>在开始本示例前，必须具备的开发环境包括：</p>
-<ul>
-<li><p>硬件</p>
 <ul class="simple">
-<li><p><strong>BL702L/704L DVK开发板</strong></p></li>
+<li><p>硬件</p>
+<ul>
+<li><p><strong>BL70xL_IOT_DVK V1.2 开发板</strong></p></li>
 <li><p><strong>USB数据线</strong></p></li>
-<li><p><strong>电脑</strong> (Windows系统)</p></li>
+<li><p><strong>电脑</strong>            (Windows系统)</p></li>
 </ul>
 </li>
 <li><p>软件</p>
-<ul class="simple">
-<li><p><strong>MSYS2</strong>           (Windows 编译工具)</p></li>
-<li><p><strong>Freedom Studio</strong>  (Windows 调试工具)</p></li>
+<ul>
+<li><p><strong>MSYS2</strong>           (编译, 调试工具)</p></li>
 <li><p><strong>BLDevCube</strong>       (固件烧写工具)</p></li>
 </ul>
-<div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/bl702l_iot.png"><img alt="../_images/bl702l_iot.png" src="../_images/bl702l_iot.png" style="width: 4.5in; height: 5in;" /></a>
-</div>
 </li>
 </ul>
 </div></blockquote>
@@ -227,8 +224,21 @@
 <div class="section" id="id4">
 <h2>硬件连接<a class="headerlink" href="#id4" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>BL702L/704L DVK 开发板为芯片保留了丰富的通信接口，支持通过 UART、JTAG 等多种连接方式烧录固件以及调试软件。</p>
-<p>BL702L/704L DVK 开发板集成了一颗 BL702 芯片，用于实现 USB-CDC(UART) 和 USB-CKLink(JTAG) 的转换，可方便的通过开发板上的 USB 接口实现软件烧录、串口通信以及在线调试等功能。</p>
+<div><p>BL70xL_IOT_DVK V1.2 开发板集成了一颗 BL616 芯片，用于实现 USB-CDC(UART) 和 JTAG 的转换，用户无需外接其它转接板，调试器等硬件, 通过开发板上的 USB 接口就可实现对 BL70xL 芯片的软件烧录、串口通信、在线调试等全部功能。</p>
+<blockquote>
+<div><div class="figure align-center" id="id15">
+<a class="reference internal image-reference" href="../_images/bl702l_iot.png"><img alt="../_images/bl702l_iot.png" src="../_images/bl702l_iot.png" style="width: 3in; height: 3in;" /></a>
+<p class="caption"><span class="caption-text"><em>BL70xL_IOT_DVK V1.2</em></span><a class="headerlink" href="#id15" title="永久链接至图片"></a></p>
+</div>
+<div class="figure align-center" id="id16">
+<a class="reference internal image-reference" href="../_images/bl702l_iot_usb.png"><img alt="../_images/bl702l_iot_usb.png" src="../_images/bl702l_iot_usb.png" style="width: 3in; height: 3in;" /></a>
+<p class="caption"><span class="caption-text"><em>USB接口示意图</em></span><a class="headerlink" href="#id16" title="永久链接至图片"></a></p>
+</div>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">注解</p>
+<p><a class="reference internal" href="Developer_Environment_BL702/BL70X_DVK/BL702L_DVK_V10.html#bl702l-dvk-v10"><span class="std std-ref">BL70xL_DVK_V1.0 开发板请参考</span></a></p>
+</div>
 </div></blockquote>
 </div>
 <div class="section" id="id5">
@@ -248,11 +258,11 @@
 <li><p><a class="reference external" href="https://www.msys2.org/">获取MSYS2安装包和安装步骤</a></p></li>
 <li><p>打开MSYS2并安装make，输入命令：<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-S</span> <span class="pre">make</span></code>
 后回车，并根据提示直到安装完成</p>
-<div class="figure align-default">
-<img alt="" src="../_images/image150.png" />
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image150.png"><img alt="" src="../_images/image150.png" style="width: 6in; height: 3.5in;" /></a>
 </div>
-<div class="figure align-default">
-<img alt="" src="../_images/image240.png" />
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/image240.png"><img alt="" src="../_images/image240.png" style="width: 6in; height: 3.5in;" /></a>
 </div>
 </li>
 </ul>
@@ -310,7 +320,7 @@
 </ul>
 <p><a class="reference external" href="https://dev.bouffalolab.com/download">Bouffalo Lab Parse Tool For Windows</a> 是博流团队提供的 map 文件解析软件，可用于内存文件分析</p>
 <div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image2113.png"><img alt="../_images/image2113.png" src="../_images/image2113.png" style="width: 6in; height: 3.8in;" /></a>
+<a class="reference internal image-reference" href="../_images/image2113.png"><img alt="../_images/image2113.png" src="../_images/image2113.png" style="width: 6in; height: 3.5in;" /></a>
 </div>
 </div></blockquote>
 </div></blockquote>
@@ -404,31 +414,31 @@
 <div class="section" id="id12">
 <h2>调试软件<a class="headerlink" href="#id12" title="永久链接至标题"></a></h2>
 <blockquote>
-<div><p>本部分介绍如何使用Freedom Studio进行代码的调试。</p>
+<div><p>本部分介绍使用板载的 CKLink 调试器 和T-HeadDebugServer, GDB 调试环境进行软件调试。</p>
 </div></blockquote>
-<div class="section" id="id13">
-<h3>1. 硬件跳线<a class="headerlink" href="#id13" title="永久链接至标题"></a></h3>
-<blockquote>
-<div><p>1.1 分别用跳线帽连接 BL702L/704L DVK 开发板上 <code class="docutils literal notranslate"><span class="pre">J3</span></code> 接插件的以下4组 JTAG 信号：</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>IO0(J3.10) - TMS(J3.12)</strong></p></li>
-<li><p><strong>IO1(J3.09) - TDI(J3.11)</strong></p></li>
-<li><p><strong>IO2(J3.13) - TCK(J3.15)</strong></p></li>
-<li><p><strong>IO7(J3.18) - TDO(J3.16)</strong></p></li>
-</ul>
-<div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image155.png"><img alt="../_images/image155.png" src="../_images/image155.png" style="width: 4in; height: 2in;" /></a>
-</div>
-</div></blockquote>
-</div></blockquote>
-</div>
 <div class="section" id="cklink">
-<h3>2. 安装和配置 CKLink<a class="headerlink" href="#cklink" title="永久链接至标题"></a></h3>
+<h3>1. CKLink连接<a class="headerlink" href="#cklink" title="永久链接至标题"></a></h3>
 <blockquote>
-<div><p>2.1 从 T-HEAD 官网下载最新版本 <a class="reference external" href="https://occ.t-head.cn/community/download?id=4103855596351066112">CKLink 驱动</a></p>
-<p>2.2 将下载的 CKLink 安装包解压，并双击 Setup，一路 next 即可，安装完成以后，桌面会有一个 T-HeadDebugServer 图标</p>
-<p>2.3 将板子的 JTAG 引脚和 CKLink 调试器连接以后，点击 <code class="docutils literal notranslate"><span class="pre">三角</span></code> 按钮，如果变成 <code class="docutils literal notranslate"><span class="pre">圆圈</span></code>，则表示 JTAG 连接成功。如果失败，则需要检查 JTAG 线序是否正确。</p>
+<div><p><em>CKLink</em> 是 T-HEAD 开发的 RISC-V JTAG 调试器，BL70xL_IOT_DVK V1.2 开发板上集成一颗 BL616 芯片实现了 <em>CKLink</em> 功能。</p>
+<p>BL70xL_IOT_DVK V1.2 开发板出厂状态， <em>CKLink</em> 已经连接到BL70xL JTAG接口， 当通过板上 USB 接口与电脑连接时， <code class="docutils literal notranslate"><span class="pre">设备管理器</span> <span class="pre">-&gt;</span> <span class="pre">通用串行总线设备</span></code> 中出现一个名为 <code class="docutils literal notranslate"><span class="pre">CKLink-Lite</span></code> 的设备，表明CKLink连接成功。</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/CKLink-Lite.jpg"><img alt="../_images/CKLink-Lite.jpg" src="../_images/CKLink-Lite.jpg" style="width: 4in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">注解</p>
+<p>不同系列 BL70xL 开发板集成的调试器和JTAG连接状态可能不同，使用前请务必确认JTAG接口是否正确连接。BL70xL_IOT_DVK V1.0 开发板，请参考 <a class="reference internal" href="Developer_Environment_BL702/BL70X_DVK/BL702L_DVK_V10.html#bl702l-dvk-v10"><span class="std std-ref">BL70xL_DVK_V1.0</span></a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="t-headdebugserver">
+<h3>2. T-HeadDebugServer 安装和配置<a class="headerlink" href="#t-headdebugserver" title="永久链接至标题"></a></h3>
+<blockquote>
+<div><p>T-HeadDebugServer 是 T-HEAD 推出的调试工具，用来配合GDB完成RISC-V CPU的在线调试。</p>
+<p>2.1 从 T-HEAD 官网下载最新版本 <a class="reference external" href="https://occ.t-head.cn/community/download?id=4103855596351066112">T-HeadDebugServer</a></p>
+<p>2.2 将下载的 T-HeadDebugServer 安装包解压，并双击 Setup，一路 next 即可，安装完成以后，桌面会有一个 T-HeadDebugServer 图标</p>
+<p>2.3 点击 <code class="docutils literal notranslate"><span class="pre">三角</span></code> 按钮，如果变成 <code class="docutils literal notranslate"><span class="pre">圆圈</span></code>，则表示 JTAG 连接成功。如果失败，则需要检查 JTAG 线序是否正确。</p>
 <blockquote>
 <div><div class="figure align-center">
 <a class="reference internal image-reference" href="../_images/image244.png"><img alt="../_images/image244.png" src="../_images/image244.png" style="width: 6in; height: 4in;" /></a>
@@ -436,45 +446,67 @@
 </div></blockquote>
 </div></blockquote>
 </div>
-<div class="section" id="freedom-studio">
-<h3>3. 安装和使用 Freedom Studio<a class="headerlink" href="#freedom-studio" title="永久链接至标题"></a></h3>
+<div class="section" id="gdb">
+<h3>3. GDB 调试<a class="headerlink" href="#gdb" title="永久链接至标题"></a></h3>
 <blockquote>
-<div><p>3.1 下载并解压缩 Freedom Studio，下载地址<code class="docutils literal notranslate"><span class="pre">https://github.com/sifive/freedom-studio/releases</span></code>，版本 <code class="docutils literal notranslate"><span class="pre">FreedomStudio-2019-08-2</span></code></p>
-<p>3.2 运行 <code class="docutils literal notranslate"><span class="pre">FreedomStudio.exe</span></code></p>
-<p>3.3 点击 <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">|</span> <span class="pre">Import</span></code> 菜单打开 Import 对话框，导入工程 <code class="docutils literal notranslate"><span class="pre">C/C++</span> <span class="pre">Existing</span> <span class="pre">Code</span> <span class="pre">as</span> <span class="pre">Makefile</span> <span class="pre">Project</span></code></p>
-<blockquote>
-<div><div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image330.png"><img alt="../_images/image330.png" src="../_images/image330.png" style="width: 4in; height: 6in;" /></a>
-</div>
-</div></blockquote>
-<p>3.4 点击 <code class="docutils literal notranslate"><span class="pre">Browse</span></code> 按钮选择工程文件夹，确保 <code class="docutils literal notranslate"><span class="pre">Project</span> <span class="pre">Name</span></code> 为 bl_iot_sdk</p>
-<blockquote>
-<div><div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image425.png"><img alt="../_images/image425.png" src="../_images/image425.png" style="width: 4in; height: 6in;" /></a>
-</div>
-</div></blockquote>
-<p>3.5 按下图所示打开 <code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Configurations</span></code> 对话框</p>
-<blockquote>
-<div><div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image513.png"><img alt="../_images/image513.png" src="../_images/image513.png" style="width: 4in; height: 2in;" /></a>
-</div>
-</div></blockquote>
-<p>3.6 如果想查看当前代码运行情况，请选择 <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch</span></code>；如果想从头执行代码，请选择 <code class="docutils literal notranslate"><span class="pre">bl_iot_sdk_debug_freedom_studio_win_bl702l.launch</span></code>。点击 <code class="docutils literal notranslate"><span class="pre">Browse</span></code> 按钮更换elf文件，点击 <code class="docutils literal notranslate"><span class="pre">Debug</span></code> 按钮开始调试。</p>
-<blockquote>
-<div><div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/image65.png"><img alt="../_images/image65.png" src="../_images/image65.png" style="width: 9in; height: 4.8in;" /></a>
-</div>
-<div class="admonition important">
+<div><div class="admonition important">
 <p class="admonition-title">重要</p>
-<p>使用 bl_iot_sdk_debug_freedom_studio_win_bl702l.launch 前需要让芯片进入烧写模式</p>
+<p><strong>bl702l_demo_ble_peripheral</strong> 为低功耗产品示例，进入低功耗模式下，JTAG连接自动断开。为演示调试过程，本例将示例代码 <strong>pds_app.c</strong> 中的 <code class="docutils literal notranslate"><span class="pre">btble_pds_enable(1);</span></code> 修改为 <code class="docutils literal notranslate"><span class="pre">btble_pds_enable(0)；</span></code>, 避免设备进入低功耗模式而断开JTAG连接。</p>
 </div>
-<div class="admonition important">
-<p class="admonition-title">重要</p>
-<p>由于低功耗固件会进低功耗模式造成JTAG不通，因此不可以使用bl_iot_sdk_debug_freedom_studio_win_attach_bl702l.launch进行调试</p>
+<p>3.1 打开 MSYS2 终端，输入命令 <code class="docutils literal notranslate"><span class="pre">riscv64-unknown-elf-gdb</span></code> 打开 GDB 调试环境</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_1.png"><img alt="../_images/gdb_debug_1.png" src="../_images/gdb_debug_1.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<p>3.2 输入命令 <code class="docutils literal notranslate"><span class="pre">file</span> <span class="pre">build_out/bl702l_demo_ble_peripheral.elf</span></code> 加载 elf 文件</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_2.png"><img alt="../_images/gdb_debug_2.png" src="../_images/gdb_debug_2.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<p>3.3 输入命令 <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">remote</span> <span class="pre">:1025</span></code> 连接 T-HeadDebugServer，其中 <code class="docutils literal notranslate"><span class="pre">1025</span></code> 是 T-HeadDebugServer 默认端口</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_3.png"><img alt="../_images/gdb_debug_3.png" src="../_images/gdb_debug_3.png" style="width: 6in; height: 4in;" /></a>
+</div>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_4.png"><img alt="../_images/gdb_debug_4.png" src="../_images/gdb_debug_4.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<p>3.4 输入命令 <code class="docutils literal notranslate"><span class="pre">hb</span> <span class="pre">bleapp_connected</span></code> 设置断点，然后输入命令 <code class="docutils literal notranslate"><span class="pre">c</span></code> 开始调试</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_5.png"><img alt="../_images/gdb_debug_5.png" src="../_images/gdb_debug_5.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</div></blockquote>
+<p>3.5 Master 扫描并连接该设备，GDB调试环境会自动断点到“bleapp_connected”函数；</p>
+<blockquote>
+<div><ul>
+<li><p>输入命令 <code class="docutils literal notranslate"><span class="pre">bt</span></code> 查看函数调用栈；</p></li>
+<li><p>输入命令 <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&lt;变量名&gt;</span></code> 监视变量值；</p></li>
+<li><p>输入命令 <code class="docutils literal notranslate"><span class="pre">c</span></code> 继续运行；</p></li>
+<li><p>输入命令 <code class="docutils literal notranslate"><span class="pre">n</span></code> 单步调试；</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_6.png"><img alt="../_images/gdb_debug_6.png" src="../_images/gdb_debug_6.png" style="width: 6in; height: 4in;" /></a>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<p>3.6 输入命令 <code class="docutils literal notranslate"><span class="pre">quit</span></code> 退出 GDB 调试环境</p>
+<blockquote>
+<div><div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/gdb_debug_7.png"><img alt="../_images/gdb_debug_7.png" src="../_images/gdb_debug_7.png" style="width: 6in; height: 4in;" /></a>
 </div>
 </div></blockquote>
 </div></blockquote>
 </div>
+</div>
+<div class="section" id="id14">
+<h2>其它说明<a class="headerlink" href="#id14" title="永久链接至标题"></a></h2>
+<blockquote>
+<div><p>更多平台和软件使用请参考  <a class="reference internal" href="Developer_Environment_BL702/BL70X_DVK/BL702L_DVK_V12.html#bl702l-dvk-v12"><span class="std std-ref">BL70xL 开发说明</span></a>。</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -519,7 +551,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'release_bl_iot_sdk_1.6.40-1973-g7970cf316',
+            VERSION:'release_bl_iot_sdk_1.6.40-2106-g501852ce2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

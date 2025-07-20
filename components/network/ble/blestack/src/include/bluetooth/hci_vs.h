@@ -157,6 +157,18 @@ struct bt_hci_cp_vs_le_throughput_calc {
     bool enable;
     u8_t interval;
 }__packed;
+
+#if !defined(BL602) && !defined(BL702)
+#define BT_HCI_OP_VS_GET_CONTROLLER_SDK_VER BT_OP(BT_OGF_VS, 0x007C)
+struct bt_hci_rp_get_controller_sdk_ver{
+    uint8_t status;
+    uint8_t ver_major;
+    uint8_t ver_minor;
+    uint8_t ver_patch;
+    uint8_t sdk_commit_id[4];
+} __packed;
+#endif
+
 /* Events */
 
 struct bt_hci_evt_vs {
@@ -345,6 +357,18 @@ struct hci_vsc_ble_conn_window_setting_cmd
     uint8_t percentage;
 }__packed;
 
+#define HCI_VS_BT_SET_TX_PWR   BT_OP(BT_OGF_VS, 0x007a)
+struct hci_vsc_bt_tx_pwr_cmd
+{
+    int8_t br_power;
+    int8_t edr_power;
+}__packed;
+
+#define BT_HCI_OP_VS_LE_SET_ADV_DATA_CMD_OPCODE BT_OP(BT_OGF_VS, 0x007D)
+
+#define BT_HCI_OP_VS_LE_SET_SCAN_RSP_DATA_CMD_OPCODE BT_OP(BT_OGF_VS, 0x007E)
+
+#define BT_HCI_OP_VS_LE_SET_ADV_EN_CMD_OPCODE BT_OP(BT_OGF_VS, 0x007F)
 
 
 #ifdef __cplusplus

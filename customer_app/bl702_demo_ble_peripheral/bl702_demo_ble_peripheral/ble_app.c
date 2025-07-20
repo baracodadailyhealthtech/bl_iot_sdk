@@ -18,6 +18,40 @@
 #define BLE_APP_ADV_INT_MAX 0xA0  //100ms
 
 struct bt_conn *bleapp_default_conn;
+k_timer_t ble_conn_param_update_timer;
+
+int ble_connection_update(u16_t interval_min, u16_t interval_max, u16_t latency, u16_t timeout)
+{
+    int err = 0;
+    struct bt_le_conn_param param;
+
+    if(!bleapp_default_conn)
+        return -1;
+
+    param.interval_min = interval_min;
+    param.interval_max = interval_max;
+    param.latency = latency;
+    param.timeout = timeout;
+
+    err = bt_conn_le_param_update(bleapp_default_conn, &param);
+    return err;
+}
+
+static void ble_conn_update_timer_cb(void *timer)
+{
+    printf("%s hdl=%p\r\n", __func__,ble_conn_param_update_timer.timer.hdl);
+    k_timer_delete(&ble_conn_param_update_timer);
+    ble_conn_param_update_timer.timer.hdl = NULL;
+    ble_connection_update(800, 800, 0, 1000);
+}
+
+void ble_create_conn_update_timer(void)
+{
+    printf("%s\r\n", __func__);
+    k_timer_init(&ble_conn_param_update_timer, ble_conn_update_timer_cb, NULL);
+    k_timer_start(&ble_conn_param_update_timer, pdMS_TO_TICKS(5 * 1000));
+    printf("%s,end\r\n", __func__);
+}
 
 static void bleapp_connected(struct bt_conn *conn, u8_t err)
 {
@@ -35,6 +69,12 @@ static void bleapp_connected(struct bt_conn *conn, u8_t err)
     if (!bleapp_default_conn) {
         bleapp_default_conn = conn;
     }
+
+    #if 0
+    //Test the case of connection interval 1s.
+    if(conn->role == BT_CONN_ROLE_SLAVE)
+        ble_create_conn_update_timer();
+    #endif
 }
 
 static void bleapp_disconnected(struct bt_conn *conn, u8_t reason)

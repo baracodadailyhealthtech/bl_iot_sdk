@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -27,21 +27,17 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-
-#include <openthread/config.h>
-#include <openthread/platform/logging.h>
 #include <openthread_port.h>
 
-/* this should not be a WEAK function */
+#include <openthread/cli.h>
+#include <openthread/platform/logging.h>
+
 void otPlatLog(otLogLevel aLogLevel, otLogRegion aLogRegion, const char *aFormat, ...)
 {
     va_list argp;
 
     va_start(argp, aFormat);
-    ot_uartLog(aFormat, argp);
+    otCliPlatLogv(aLogLevel, aLogRegion, aFormat, argp);
     va_end(argp);
 }
 

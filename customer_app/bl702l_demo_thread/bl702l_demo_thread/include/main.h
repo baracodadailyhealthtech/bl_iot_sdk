@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -32,12 +32,6 @@
 
 #include <openthread/thread.h>
 #include <openthread/cli.h>
-#if OPENTHREAD_CONFIG_CHILD_SUPERVISION_ENABLE
-#include <child_supervision.h>
-#endif
-#if OPENTHREAD_CONFIG_MAC_CSL_RECEIVER_ENABLE
-#include <config/mac.h>
-#endif
 
 #define THREAD_CHANNEL          11
 #define THREAD_PANID            0xB702
@@ -55,10 +49,9 @@
 #define THREAD_EXTPANID     	{0x11, 0x11, 0x11, 0x11, 0x22, 0x22, 0x22, 0x22}
 #define THREAD_NETWORK_KEY  	{0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff}
 
-void uart_init(uint8_t tx_pin, uint8_t rx_pin, uint32_t baudrate);
-int printf_ram(const char *format, ...);
-
-uint32_t app_pds_callback(otPds_op_t pdsOp, uint32_t sleepTimeMs, int isWakeupFromRtc);
+// void uart_init(uint8_t tx_pin, uint8_t rx_pin, uint32_t baudrate);
+// int printf_ram(const char *format, ...);
+// uint32_t app_pds_callback(otPds_op_t pdsOp, uint32_t sleepTimeMs, int isWakeupFromRtc);
 
 void app_task(void);
 

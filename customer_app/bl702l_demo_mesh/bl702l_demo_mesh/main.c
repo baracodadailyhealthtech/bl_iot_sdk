@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Bouffalolab.
+ * Copyright (c) 2016-2025 Bouffalolab.
  *
  * This file is part of
  *     *** Bouffalolab Software Dev Kit ***
@@ -71,6 +71,10 @@ void bt_enable_cb(int err)
         #ifdef CONFIG_BT_STACK_CLI 
         ble_cli_register();
         #endif
+        bt_addr_le_t bt_addr;
+        bt_get_local_public_address(&bt_addr);
+        printf("BD_ADDR:(MSB)%02x:%02x:%02x:%02x:%02x:%02x(LSB) \r\n",
+            bt_addr.a.val[5], bt_addr.a.val[4], bt_addr.a.val[3], bt_addr.a.val[2], bt_addr.a.val[1], bt_addr.a.val[0]);
         mesh_app_init();
     }
 }

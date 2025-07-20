@@ -84,3 +84,8 @@ ifeq ($(EXT_CFG_FILE), $(wildcard $(EXT_CFG_FILE)))
 include $(PROJECT_PATH)/proj_config_ext.mk
 endif
 
+
+ifeq ($(CONFIG_ZC_REPLACE_ENABLE), 1)
+CONFIG_EASYFLASH_ENABLE:=1
+endif
+
