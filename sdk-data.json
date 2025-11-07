@@ -144,6 +144,7 @@
 				"components/platform/lhal/include/arch",
 				"components/platform/lhal/include/arch/risc-v/t-head",
 				"components/platform/lhal/include/arch/risc-v/t-head/Core/Include",
+				"components/platform/lhal/include/arch/risc-v/t-head/csi_dsp/include",
 				"components/platform/lhal/config/bl702l"
 			],
 			"source_dir": "components/platform/lhal",
